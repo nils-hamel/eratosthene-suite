@@ -1,0 +1,12 @@
+bin
+dev
+doc/html
+obj
+src/*/bin
+src/*/dev
+src/*/doc/html
+src/*/obj
+lib/libcommon/bin
+lib/libcommon/dev
+lib/libcommon/doc/html
+lib/libcommon/obj
