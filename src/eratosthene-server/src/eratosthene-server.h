@@ -58,7 +58,7 @@
     # include <stdlib.h>
     # include <stdint.h>
     # include <string.h>
-    # include <eratosthene.h>
+    # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions
@@ -83,7 +83,7 @@
     /*! \brief Arguments and parameters parser
      */
 
-    char * er_read_string( int const argc, char ** argv, char const * const er_argument );
+    char * er_read_string( int const argc, char ** argv, char const * const er_long, char const * const er_short );
 
     /*! \brief Arguments and parameters parser
      */
