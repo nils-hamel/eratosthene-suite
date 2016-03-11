@@ -43,6 +43,7 @@
     header - includes
  */
 
+    # include "eratosthene-client-model.h"
     # include <GL/gl.h>
     # include <GL/glu.h>
     # include <GL/glut.h>
@@ -53,7 +54,7 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_ENGINE_C    { 0, GLUT_UP, 0, 0, 0, 0, 0, 0, _LE_SOCK_NULL }
+    # define ER_ENGINE_C    { 0, GLUT_UP, 0, 0, 0, 0, 0, 0, _LE_SOCK_NULL, _EARTH_RAD * 1.5, 0, 0 }
 
     /* Define mouse velocity */
     # define ER_ENGINE_MOVE 0.01f
@@ -86,6 +87,10 @@
         int       eg_t;
 
         le_sock_t eg_client;
+
+        float     eg_valt;
+        float     eg_vlon;
+        float     eg_vlat;
 
     } er_engine_t;
 

@@ -62,7 +62,7 @@
         glutPassiveMotionFunc( er_engine_move    );
 
         /* Setting color clear value */
-        glClearColor( 1.0, 1.0, 1.0, 0.0 );
+        glClearColor( 0.0, 0.0, 0.0, 0.0 );
 
         /* Setting depth clear value */
         glClearDepth( 1.0 );
@@ -101,20 +101,12 @@
         /* Push matrix */
         glPushMatrix(); {
 
-            static float ax = 0.0;
-            static float ay = 0.0;
+            glTranslatef( 0, 0, -er_handle.eg_valt );
 
-            float adx = ( ( float ) er_handle.eg_u - er_handle.eg_x ) * ER_ENGINE_MOVE;
-            float ady = ( ( float ) er_handle.eg_v - er_handle.eg_y ) * ER_ENGINE_MOVE;
+            glRotatef( er_handle.eg_vlon, 0.0, 1.0, 0.0 );
+            glRotatef( er_handle.eg_vlat, 1.0, 0.0, 0.0 );
 
-            glTranslatef( 0, 0, -8 );
-
-            glRotated( ax += ady, 1.0, 0.0, 0.0 );
-            glRotated( ay += adx, 0.0, 1.0, 0.0 );
-
-            /* Rendering engine */
-            glColor3f( 0.0, 0.0, 0.0 );
-            glutWireTeapot( 2 );
+            er_model();
 
         /* Pop matrix */
         } glPopMatrix();
@@ -143,7 +135,7 @@
         glLoadIdentity();
 
         /* Compute projectio matrix */
-        gluPerspective( 45, ( float ) er_width / er_height, 1.0, 100.0 );
+        gluPerspective( 45, ( float ) er_width / er_height, 1.0, 1000.0 );
 
     }
 
@@ -164,7 +156,16 @@
 
             } break;
 
+            case ( 'q' ) : er_handle.eg_valt *= 1.1; break;
+            case ( 'e' ) : er_handle.eg_valt *= 0.9; break;
+            case ( 'd' ) : er_handle.eg_vlon += 0.1; break;
+            case ( 'a' ) : er_handle.eg_vlon -= 0.1; break;
+            case ( 'w' ) : er_handle.eg_vlat += 0.1; break;
+            case ( 's' ) : er_handle.eg_vlat -= 0.1; break;
+
         };
+
+        fprintf( stderr, "%u %i\n", er_keycode, GLUT_KEY_UP );
 
         /* Schedule render callback */
         glutPostRedisplay();
