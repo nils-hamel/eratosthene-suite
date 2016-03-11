@@ -18,10 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   eratosthene-inject.h
+    /*! \file   eratosthene-client.h
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Eratosthene injection software
+     *  Eratosthene client software
      */
 
     /*! \mainpage eratosthene-suite
@@ -39,8 +39,8 @@
     header - inclusion guard
  */
 
-    # ifndef __ER_INJECT__
-    # define __ER_INJECT__
+    # ifndef __ER_CLIENT__
+    # define __ER_CLIENT__
 
 /*
     header - C/C++ compatibility
@@ -58,20 +58,12 @@
     # include <stdlib.h>
     # include <stdint.h>
     # include <string.h>
+    # include <common-args.h>
     # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions
  */
-
-    /* Define stream data format */
-    # define ER_INJECT_FORMAT  "%" _LE_REAL_S \
-                              " %" _LE_REAL_S \
-                              " %" _LE_REAL_S \
-                              " %" _LE_TIME_S \
-                              " %" _LE_DATA_S \
-                              " %" _LE_DATA_S \
-                              " %" _LE_DATA_S
 
 /*
     header - preprocessor macros
@@ -88,21 +80,6 @@
 /*
     header - function prototypes
  */
-
-    /*! \brief Arguments and parameters parser
-     */
-
-    char * er_read_string( int const argc, char ** argv, char const * const er_long, char const * const er_short );
-
-    /*! \brief Arguments and parameters parser
-     */
-
-    unsigned int er_read_uint( int const argc, char ** argv, char const * const er_long, char const * const er_short, unsigned int er_default );
-
-    /*! \brief injection procedure
-     */
-
-    void er_injection( le_sock_t const er_client, FILE * const er_stream );
 
     /*! \brief Main function
      */
