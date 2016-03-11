@@ -99,6 +99,11 @@
 
     unsigned int er_read_uint( int const argc, char ** argv, char const * const er_long, char const * const er_short, unsigned int er_default );
 
+    /*! \brief injection procedure
+     */
+
+    void er_injection( le_sock_t const er_client, FILE * const er_stream );
+
     /*! \brief Main function
      */
 
