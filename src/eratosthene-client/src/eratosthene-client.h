@@ -54,10 +54,9 @@
     header - includes
  */
 
+    # include "eratosthene-client-render.h"
     # include <stdio.h>
     # include <stdlib.h>
-    # include <stdint.h>
-    # include <string.h>
     # include <common-args.h>
     # include <eratosthene-include.h>
 

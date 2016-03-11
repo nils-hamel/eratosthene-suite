@@ -48,8 +48,11 @@
 
             } else {
 
+                /* Initialise GL/GLU/GLUT */
+                glutInit( & argc, argv );
+
                 /* Rendering engine */
-                /* ... */
+                er_engine( er_client );
 
             }
 
