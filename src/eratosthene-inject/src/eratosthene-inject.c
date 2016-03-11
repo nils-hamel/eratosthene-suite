@@ -119,45 +119,32 @@
             er_ptrt = ( le_time_t * ) ( er_ptrp + 3 );
             er_ptrd = ( le_data_t * ) ( er_ptrt + 1 );
 
-            /* Read stream element */
-            if ( fscanf( er_stream, ER_INJECT_FORMAT, 
+            /* Read stream element and update i/o parser */
+            if ( fscanf( er_stream, ER_INJECT_FORMAT, er_ptrp, er_ptrp + 1, er_ptrp + 2, er_ptrt, er_ptrd, er_ptrd + 1, er_ptrd + 2 ) == 7 ) {
 
-                er_ptrp, 
-                er_ptrp + 1, 
-                er_ptrp + 2, 
-                er_ptrt,
-                er_ptrd,
-                er_ptrd + 1,
-                er_ptrd + 2
-
-            ) == 7 ) {
-
-                /* Update i/o parser */
                 er_parse += LE_ARRAY_LINE;
 
             }
 
-            /* Check i/o buffer state */
-            if ( ( er_parse == LE_NETWORK_BUFFER_SYNC ) || ( feof( er_stream ) ) ) {
+            /* Check i/o buffer and stream state */
+            if ( ( er_parse == LE_NETWORK_BUFFER_SYNC ) || ( ( er_flag = feof( er_stream ) ? _LE_FALSE : _LE_TRUE ) == _LE_FALSE ) ) {
 
                 /* Write buffer to socket */
                 if ( write( er_client, er_buffer, er_parse ) != er_parse ) {
 
                     /* Display message */
-                    fprintf( stderr, "eratosthene-inject : warning : partial buffer writing on socket\n" );
+                    fprintf( stderr, "eratosthene-inject : error : partial buffer writing on socket\n" );
 
-                } else {
-
-                    /* Update i/o counter */
-                    er_count += er_parse / LE_ARRAY_LINE;
-
-                    /* Reset i/o parser */
-                    er_parse = 0;
-
-                    /* Injection end detection */
-                    if ( feof( er_stream ) ) er_flag = _LE_FALSE;
+                    /* Abort injection */
+                    return;
 
                 }
+
+                /* Update i/o counter */
+                er_count += er_parse / LE_ARRAY_LINE;
+
+                /* Reset i/o parser */
+                er_parse = 0;
 
             }
 
