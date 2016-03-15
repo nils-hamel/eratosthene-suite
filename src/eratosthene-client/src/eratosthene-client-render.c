@@ -116,10 +116,10 @@
             );
 
             /* Motion management - rotations */
-            glRotatef( er_handle.eg_vlon, 0.0, 1.0, 0.0 );
-            glRotatef( er_handle.eg_vlat, 1.0, 0.0, 0.0 );
             glRotatef( er_handle.eg_vgam, 1.0, 0.0, 0.0 );
             glRotatef( er_handle.eg_vazm, 0.0, 0.0, 1.0 );
+            glRotatef( er_handle.eg_vlon, 0.0, 1.0, 0.0 );
+            glRotatef( er_handle.eg_vlat, 1.0, 0.0, 0.0 );
 
             /* Display earth model */
             er_model( er_handle.eg_vscl );
@@ -186,6 +186,8 @@
 
         };
 
+        fprintf( stderr, "%i\n", er_keycode );
+
         /* Schedule render callback */
         glutPostRedisplay();
 
@@ -250,10 +252,19 @@
 
         }
 
+        /* Mouse switch event */
+        if ( ( er_handle.eg_button == GLUT_MIDDLE_BUTTON ) && ( er_handle.eg_state == GLUT_DOWN ) ) {
+
+            /* Update longitude and latitude */
+            er_handle.eg_vlon -= ER_ENGINE_MOVE * ( er_handle.eg_v - er_handle.eg_y ) * sin( er_handle.eg_vazm * ER_D2R );
+            er_handle.eg_vlat += ER_ENGINE_MOVE * ( er_handle.eg_v - er_handle.eg_y ) * cos( er_handle.eg_vazm * ER_D2R );
+
+        }
+
         /* Mouse event switch */
         if ( ( er_handle.eg_button == GLUT_RIGHT_BUTTON ) && ( er_handle.eg_state == GLUT_DOWN ) ) {
 
-            /* Update azimuth angle */
+            /* Update azimuth and gamma angles */
             er_handle.eg_vazm += ER_ENGINE_MOVE * ( er_handle.eg_u - er_handle.eg_x );
             er_handle.eg_vgam += ER_ENGINE_MOVE * ( er_handle.eg_v - er_handle.eg_y );
 
@@ -279,7 +290,7 @@
         if ( er_handle.eg_vazm < -360.0 ) er_handle.eg_vazm += 360;
 
         /* Angles ranges - clamp */
-        if ( er_handle.eg_vgam < -89.0 ) er_handle.eg_vgam = -89.0;
+        if ( er_handle.eg_vgam < -90.0 ) er_handle.eg_vgam = -90.0;
         if ( er_handle.eg_vgam > + 0.0 ) er_handle.eg_vgam = + 0.0;
 
         /* Parameter ranges - clamp */

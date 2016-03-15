@@ -55,7 +55,7 @@
     /* Define earth parameters and limits */
     # define ER_ERA ( LE_GEODESY_WGS84_A / 1000.0 )
     # define ER_ER2 ( ER_ERA / 2.0 )
-    # define ER_ERL ( ER_ERA * 1.1 )
+    # define ER_ERL ( ER_ERA * 1.0 )
     # define ER_ERU ( ER_ERA * 2.0 )
 
 /*
