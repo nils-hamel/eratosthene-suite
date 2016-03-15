@@ -24,13 +24,15 @@
     source - model function
  */
 
-    void er_model( void ) {
+    void er_model( float er_scale ) {
 
         /* Draw template earth */
         glColor3f( 0.8, 0.8, 0.8 );
-        glutWireSphere( _EARTH_RAD, 128, 128 );
-        glColor3f( 0.1, 0.3, 0.7 );
-        glutSolidSphere( _EARTH_RAD - 1.0, 128, 128 );
+        GLUquadricObj *quadric;
+        quadric = gluNewQuadric();
+        gluQuadricDrawStyle(quadric, GLU_LINE );
+        gluSphere( quadric, ER_ERA, 256, 128 );
+        gluDeleteQuadric(quadric); 
 
     }
 

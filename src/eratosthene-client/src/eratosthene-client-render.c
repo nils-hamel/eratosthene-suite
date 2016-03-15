@@ -89,6 +89,12 @@
 
     void er_engine_render( void ) {
 
+        /* Range management */
+        er_engine_range();
+
+        /* Recompute near/far planes */
+        er_engine_reshape( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
+
         /* Clear color and depth buffers */
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
@@ -101,12 +107,22 @@
         /* Push matrix */
         glPushMatrix(); {
 
-            glTranslatef( 0, 0, -er_handle.eg_valt );
+            /* Motion management - translation */
+            glTranslatef( 0.0,
 
+                + sin( er_handle.eg_vgam * ER_D2R ) * er_handle.eg_valt,
+                - cos( er_handle.eg_vgam * ER_D2R ) * er_handle.eg_valt
+
+            );
+
+            /* Motion management - rotations */
             glRotatef( er_handle.eg_vlon, 0.0, 1.0, 0.0 );
             glRotatef( er_handle.eg_vlat, 1.0, 0.0, 0.0 );
+            glRotatef( er_handle.eg_vgam, 1.0, 0.0, 0.0 );
+            glRotatef( er_handle.eg_vazm, 0.0, 0.0, 1.0 );
 
-            er_model();
+            /* Display earth model */
+            er_model( er_handle.eg_vscl );
 
         /* Pop matrix */
         } glPopMatrix();
@@ -135,7 +151,7 @@
         glLoadIdentity();
 
         /* Compute projectio matrix */
-        gluPerspective( 45, ( float ) er_width / er_height, 1.0, 1000.0 );
+        gluPerspective( 45, ( float ) er_width / er_height, 1.0, er_handle.eg_valt - ER_ER2 );
 
     }
 
@@ -156,16 +172,19 @@
 
             } break;
 
-            case ( 'q' ) : er_handle.eg_valt *= 1.1; break;
-            case ( 'e' ) : er_handle.eg_valt *= 0.9; break;
-            case ( 'd' ) : er_handle.eg_vlon += 0.1; break;
-            case ( 'a' ) : er_handle.eg_vlon -= 0.1; break;
-            case ( 'w' ) : er_handle.eg_vlat += 0.1; break;
-            case ( 's' ) : er_handle.eg_vlat -= 0.1; break;
+            /* Reset point of view */
+            case ( 'r' ) : {
+
+                /* Reset variables */
+                er_handle.eg_vlon = 0.0;
+                er_handle.eg_vlat = 0.0;
+                er_handle.eg_valt = 1.5 * ER_ERA;
+                er_handle.eg_vazm = 0.0;
+                er_handle.eg_vgam = 0.0;
+
+            } break;
 
         };
-
-        fprintf( stderr, "%u %i\n", er_keycode, GLUT_KEY_UP );
 
         /* Schedule render callback */
         glutPostRedisplay();
@@ -185,6 +204,22 @@
         er_handle.eg_y      = er_y;
         er_handle.eg_u      = er_x;
         er_handle.eg_v      = er_y;
+
+        /* Mouse event switch */
+        if ( ( er_handle.eg_button == 3 ) && ( er_handle.eg_state == GLUT_DOWN ) ) {
+
+            /* Update altitude */
+            er_handle.eg_valt *= 1.01;
+
+        }
+
+        /* Mouse event switch */
+        if ( ( er_handle.eg_button == 4 ) && ( er_handle.eg_state == GLUT_DOWN ) ) {
+
+            /* Update altitude */
+            er_handle.eg_valt /= 1.01;
+
+        }
 
         /* Schedule render callback */
         glutPostRedisplay();
@@ -206,8 +241,50 @@
         er_handle.eg_s = er_x;
         er_handle.eg_t = er_y;
 
+        /* Mouse event switch */
+        if ( ( er_handle.eg_button == GLUT_LEFT_BUTTON ) && ( er_handle.eg_state == GLUT_DOWN ) ) {
+
+            /* Update longitude and latitude */
+            er_handle.eg_vlon += ER_ENGINE_MOVE * ( er_handle.eg_u - er_handle.eg_x );
+            er_handle.eg_vlat += ER_ENGINE_MOVE * ( er_handle.eg_v - er_handle.eg_y );
+
+        }
+
+        /* Mouse event switch */
+        if ( ( er_handle.eg_button == GLUT_RIGHT_BUTTON ) && ( er_handle.eg_state == GLUT_DOWN ) ) {
+
+            /* Update azimuth angle */
+            er_handle.eg_vazm += ER_ENGINE_MOVE * ( er_handle.eg_u - er_handle.eg_x );
+            er_handle.eg_vgam += ER_ENGINE_MOVE * ( er_handle.eg_v - er_handle.eg_y );
+
+        }
+
         /* Schedule render callback */
         glutPostRedisplay();
+
+    }
+
+/*
+    source - rendering engine - ranges managament
+ */
+
+    void er_engine_range() {
+
+        /* Angle ranges - cyclic */
+        if ( er_handle.eg_vlon > +360.0 ) er_handle.eg_vlon -= 360;
+        if ( er_handle.eg_vlon < -360.0 ) er_handle.eg_vlon += 360;
+        if ( er_handle.eg_vlat > +360.0 ) er_handle.eg_vlat -= 360;
+        if ( er_handle.eg_vlat < -360.0 ) er_handle.eg_vlat += 360;
+        if ( er_handle.eg_vazm > +360.0 ) er_handle.eg_vazm -= 360;
+        if ( er_handle.eg_vazm < -360.0 ) er_handle.eg_vazm += 360;
+
+        /* Angles ranges - clamp */
+        if ( er_handle.eg_vgam < -89.0 ) er_handle.eg_vgam = -89.0;
+        if ( er_handle.eg_vgam > + 0.0 ) er_handle.eg_vgam = + 0.0;
+
+        /* Parameter ranges - clamp */
+        if ( er_handle.eg_valt < ER_ERL ) er_handle.eg_valt = ER_ERL;
+        if ( er_handle.eg_valt > ER_ERU ) er_handle.eg_valt = ER_ERU;
 
     }
 

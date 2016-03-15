@@ -47,6 +47,7 @@
     # include <GL/gl.h>
     # include <GL/glu.h>
     # include <GL/glut.h>
+    # include <math.h>
     # include <eratosthene-include.h>
 
 /*
@@ -54,10 +55,14 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_ENGINE_C    { 0, GLUT_UP, 0, 0, 0, 0, 0, 0, _LE_SOCK_NULL, _EARTH_RAD * 1.5, 0, 0 }
+    # define ER_ENGINE_C    { 0, GLUT_UP, 0, 0, 0, 0, 0, 0, _LE_SOCK_NULL, 1.5 * ER_ERA, 0, 0, 0.0, 0.0, 1.0 }
 
     /* Define mouse velocity */
-    # define ER_ENGINE_MOVE 0.01f
+    # define ER_ENGINE_MOVE ( 0.001f )
+
+    /* Define trigonometric constants */
+    # define ER_D2R         ( 3.1415926535 / 180.0 )
+    # define ER_R2D         ( 180.0 / 3.1415926535 )
 
 /*
     header - preprocessor macros
@@ -91,6 +96,9 @@
         float     eg_valt;
         float     eg_vlon;
         float     eg_vlat;
+        float     eg_vazm;
+        float     eg_vgam;
+        float     eg_vscl;
 
     } er_engine_t;
 
@@ -127,6 +135,11 @@
      */
 
     void er_engine_move( int er_x, int er_y );    
+
+    /*! \brief rendering engine - ranges managament
+     */
+
+    void er_engine_range();
 
     /* Help wellcome :( */ extern void glutLeaveMainLoop( void ); /* :( */
 

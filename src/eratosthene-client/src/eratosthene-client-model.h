@@ -52,8 +52,11 @@
     header - preprocessor definitions
  */
 
-    /* Define template earth size */
-    # define _EARTH_RAD 600.0
+    /* Define earth parameters and limits */
+    # define ER_ERA ( LE_GEODESY_WGS84_A / 1000.0 )
+    # define ER_ER2 ( ER_ERA / 2.0 )
+    # define ER_ERL ( ER_ERA * 1.1 )
+    # define ER_ERU ( ER_ERA * 2.0 )
 
 /*
     header - preprocessor macros
@@ -74,7 +77,7 @@
     /*! \brief model function
      */
 
-    void er_model( void );
+    void er_model( float er_scale );
 
 /*
     header - C/C++ compatibility
