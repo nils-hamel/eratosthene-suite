@@ -52,11 +52,18 @@
     header - preprocessor definitions
  */
 
+    /* Define pseudo-constructor */
+    # define ER_MODEL_C { 0, NULL, NULL }
+
     /* Define earth parameters and limits */
-    # define ER_ERA ( LE_GEODESY_WGS84_A / 1000.0 )
-    # define ER_ER2 ( ER_ERA / 2.0 )
-    # define ER_ERL ( ER_ERA * 1.0 )
-    # define ER_ERU ( ER_ERA * 2.0 )
+    # define ER_ERA     ( LE_GEODESY_WGS84_A / 1000.0 )
+    # define ER_ER2     ( ER_ERA / 2.0 )
+    # define ER_ERL     ( ER_ERA * 1.0 )
+    # define ER_ERU     ( ER_ERA * 2.0 )
+
+    /* Define tiling parameters */
+    # define ER_TI      (  2 )
+    # define ER_TL      ( 13 )
 
 /*
     header - preprocessor macros
@@ -70,6 +77,15 @@
     header - structures
  */
 
+    typedef struct er_model_struct {
+
+        le_size_t    md_size;
+        float      * md_vert;
+        float      * md_colo;
+        float      * md_swap;
+
+    } er_model_t;
+
 /*
     header - function prototypes
  */
@@ -77,7 +93,12 @@
     /*! \brief model function
      */
 
-    void er_model( float er_scale );
+    void er_model_display( float er_scale );
+
+    /*! \brief query management
+     */
+
+    void er_model_query( er_model_t * const er_model, le_sock_t const er_socket, le_char_t const * const er_query );
 
 /*
     header - C/C++ compatibility

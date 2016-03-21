@@ -18,7 +18,7 @@ The code documentation is built using Doxygen.
 
 ## Copyright and License
 
-**eratosthene-suite** - Nils Hamel
+**eratosthene-suite** - Nils Hamel <br >
 Copyright (c) 2016 EPFL CDH DHLAB
 
 This program is licensed under the terms of the GNU GPLv3.

@@ -122,7 +122,7 @@
             glRotatef( er_handle.eg_vlat, 1.0, 0.0, 0.0 );
 
             /* Display earth model */
-            er_model( er_handle.eg_vscl );
+            er_model_display( er_handle.eg_vscl );
 
         /* Pop matrix */
         } glPopMatrix();
@@ -185,8 +185,6 @@
             } break;
 
         };
-
-        fprintf( stderr, "%i\n", er_keycode );
 
         /* Schedule render callback */
         glutPostRedisplay();
@@ -266,7 +264,7 @@
 
             /* Update azimuth and gamma angles */
             er_handle.eg_vazm += ER_ENGINE_MOVE * ( er_handle.eg_u - er_handle.eg_x );
-            er_handle.eg_vgam += ER_ENGINE_MOVE * ( er_handle.eg_v - er_handle.eg_y );
+            er_handle.eg_vgam += ER_ENGINE_MOVE * ( er_handle.eg_v - er_handle.eg_y ) * 2.0;
 
         }
 
