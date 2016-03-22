@@ -18,18 +18,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   eratosthene-client-model.h
+    /*! \file   eratosthene-client-cell.h
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Eratosthene client - Model module
+     *  Eratosthene client - Cell module
      */
 
 /*
     header - inclusion guard
  */
 
-    # ifndef __ER_CLIENT_MODEL__
-    # define __ER_CLIENT_MODEL__
+    # ifndef __ER_CLIENT_CELL__
+    # define __ER_CLIENT_CELL__
 
 /*
     header - C/C++ compatibility
@@ -43,10 +43,6 @@
     header - includes
  */
 
-    # include "eratosthene-client-cell.h"
-    # include <GL/gl.h>
-    # include <GL/glu.h>
-    # include <GL/glut.h>
     # include <eratosthene-include.h>
 
 /*
@@ -54,17 +50,7 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_MODEL_C { 0, NULL, NULL, NULL }
-
-    /* Define earth parameters and limits */
-    # define ER_ERA     ( LE_GEODESY_WGS84_A / 1000.0 )
-    # define ER_ER2     ( ER_ERA / 2.0 )
-    # define ER_ERL     ( ER_ERA * 1.0 )
-    # define ER_ERU     ( ER_ERA * 2.0 )
-
-    /* Define tiling parameters */
-    # define ER_TI      (  2 )
-    # define ER_TL      ( 13 )
+    # define ER_CELL_C { 0, NULL, NULL, NULL }
 
 /*
     header - preprocessor macros
@@ -78,33 +64,38 @@
     header - structures
  */
 
-    typedef struct er_model2_struct {
+    typedef struct er_cell_struct {
 
-        le_size_t    md_size;
-        float      * md_vert;
-        float      * md_colo;
-        float      * md_swap;
-
-    } er_model2_t;
+        le_size_t   ce_size;
+        le_real_t * ce_pose;
+        le_data_t * ce_data;
+        le_void_t * ce_swap;
+        
+    } er_cell_t;
 
 /*
     header - function prototypes
  */
 
-    /*! \brief model display
+    /*! \brief accessor methods
      */
 
-    void er_model_display2( er_model2_t const * const er_model );
+    le_size_t er_cell_get_size( er_cell_t const * const er_cell );
 
-    /*! \brief model management */
-
-    void er_model_update2( er_model2_t * const er_model, le_sock_t const er_socket );
-
-    /*! \brief query management
+    /*! \brief accessor methods
      */
 
-    void er_model_query( er_cell_t * const er_cell, le_char_t const * const er_query, le_sock_t const er_socket );
-    void er_model_query2( er_model2_t * const er_model, le_sock_t const er_socket, le_char_t const * const er_query );
+    le_real_t * er_cell_get_pose( er_cell_t const * const er_cell );
+
+    /*! \brief accessor methods
+     */
+
+    le_data_t * er_cell_get_data( er_cell_t const * const er_cell );
+
+    /*! \brief mutator methods
+     */
+
+    le_enum_t er_cell_set_push( er_cell_t * const er_cell, le_size_t const er_block );
 
 /*
     header - C/C++ compatibility

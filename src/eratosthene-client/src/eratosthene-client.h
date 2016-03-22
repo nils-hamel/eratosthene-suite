@@ -1,5 +1,5 @@
 /*
- *  liberatosthene - geodetic system
+ *  eratosthene-suite - geodetic system
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016 EPFL CDH DHLAB
@@ -21,7 +21,7 @@
     /*! \file   eratosthene-client.h
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Eratosthene client software
+     *  Eratosthene client
      */
 
     /*! \mainpage eratosthene-suite

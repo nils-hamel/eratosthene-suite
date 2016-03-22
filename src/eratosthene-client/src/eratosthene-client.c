@@ -1,5 +1,5 @@
 /*
- *  liberatosthene - geodetic system
+ *  eratosthene-suite - geodetic system
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016 EPFL CDH DHLAB
@@ -40,21 +40,11 @@
 
         } else {
 
-            /* Client/server query handshake */
-            if ( le_client_handshake_mode( er_client, LE_NETWORK_MODE_QMOD ) != LE_ERROR_SUCCESS ) {
+            /* Initialise GL/GLU/GLUT */
+            glutInit( & argc, argv );
 
-                /* Display message */
-                fprintf( stderr, "eratosthene-client : error : authorisation failed\n" );
-
-            } else {
-
-                /* Initialise GL/GLU/GLUT */
-                glutInit( & argc, argv );
-
-                /* Rendering engine */
-                er_engine( er_client );
-
-            }
+            /* Rendering engine */
+            er_engine( er_client );
 
             /* Delete client handle */
             le_client_delete( er_client );

@@ -1,5 +1,5 @@
 /*
- *  liberatosthene - geodetic system
+ *  eratosthene-suite - geodetic system
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016 EPFL CDH DHLAB
@@ -75,8 +75,16 @@
         /* Shade model configuration */
         glShadeModel( GL_SMOOTH );
 
+        /* Enable vertex and color arrays */
+        glEnableClientState( GL_VERTEX_ARRAY );
+        glEnableClientState( GL_COLOR_ARRAY  );
+
         /* GLUT event management loop */
         glutMainLoop();
+
+        /* Disable vertex and color arrays */
+        glDisableClientState( GL_COLOR_ARRAY  );
+        glDisableClientState( GL_VERTEX_ARRAY );
 
         /* Delete rendering engine window */
         glutDestroyWindow( er_window );
@@ -91,6 +99,9 @@
 
         /* Range management */
         er_engine_range();
+
+        /* Model management */
+        er_model_update2( & ( er_handle.eg_model ), er_handle.eg_client );
 
         /* Recompute near/far planes */
         er_engine_reshape( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
@@ -118,11 +129,11 @@
             /* Motion management - rotations */
             glRotatef( er_handle.eg_vgam, 1.0, 0.0, 0.0 );
             glRotatef( er_handle.eg_vazm, 0.0, 0.0, 1.0 );
-            glRotatef( er_handle.eg_vlon, 0.0, 1.0, 0.0 );
             glRotatef( er_handle.eg_vlat, 1.0, 0.0, 0.0 );
+            glRotatef( er_handle.eg_vlon, 0.0, 1.0, 0.0 );
 
             /* Display earth model */
-            er_model_display( er_handle.eg_vscl );
+            er_model_display2( & ( er_handle.eg_model ) );
 
         /* Pop matrix */
         } glPopMatrix();

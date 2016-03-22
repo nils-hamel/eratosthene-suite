@@ -1,5 +1,5 @@
 /*
- *  liberatosthene - geodetic system
+ *  eratosthene-suite - geodetic system
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016 EPFL CDH DHLAB
@@ -21,7 +21,7 @@
     /*! \file   eratosthene-client-render.h
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Eratosthene client software - Rendering module
+     *  Eratosthene client - Rendering module
      */
 
 /*
@@ -55,7 +55,24 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_ENGINE_C    { 0, GLUT_UP, 0, 0, 0, 0, 0, 0, _LE_SOCK_NULL, 1.5 * ER_ERA, 0, 0, 0.0, 0.0, 1.0 }
+    # define ER_ENGINE_C    {\
+        0,\
+        GLUT_UP,\
+        0,\
+        0,\
+        0,\
+        0,\
+        0,\
+        0,\
+        _LE_SOCK_NULL,\
+        1.5 * ER_ERA,\
+        0.0,\
+        0.0,\
+        0.0,\
+        0.0,\
+        1.0,\
+        ER_MODEL_C\
+    }
 
     /* Define mouse velocity */
     # define ER_ENGINE_MOVE ( 0.001f )
@@ -82,23 +99,25 @@
 
     typedef struct er_engine_struct {
 
-        int       eg_button;
-        int       eg_state;
-        int       eg_x;
-        int       eg_y;
-        int       eg_u;
-        int       eg_v;
-        int       eg_s;
-        int       eg_t;
+        int        eg_button;
+        int        eg_state;
+        int        eg_x;
+        int        eg_y;
+        int        eg_u;
+        int        eg_v;
+        int        eg_s;
+        int        eg_t;
 
-        le_sock_t eg_client;
+        le_sock_t  eg_client;
 
-        float     eg_valt;
-        float     eg_vlon;
-        float     eg_vlat;
-        float     eg_vazm;
-        float     eg_vgam;
-        float     eg_vscl;
+        float      eg_valt;
+        float      eg_vlon;
+        float      eg_vlat;
+        float      eg_vazm;
+        float      eg_vgam;
+        float      eg_vscl;
+
+        er_model2_t eg_model;
 
     } er_engine_t;
 
