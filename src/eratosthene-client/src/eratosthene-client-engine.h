@@ -28,8 +28,8 @@
     header - inclusion guard
  */
 
-    # ifndef __ER_CLIENT_RENDER__
-    # define __ER_CLIENT_RENDER__
+    # ifndef __ER_CLIENT_ENGINE__
+    # define __ER_CLIENT_ENGINE__
 
 /*
     header - C/C++ compatibility
@@ -46,8 +46,10 @@
     # include "eratosthene-client-model.h"
     # include <GL/gl.h>
     # include <GL/glu.h>
-    # include <GL/glut.h>
+    # include <GL/freeglut.h>
+    //# include <GL/glut.h>
     # include <math.h>
+    # include <string.h>
     # include <eratosthene-include.h>
 
 /*
@@ -55,7 +57,9 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_ENGINE_C    {\
+    # define ER_ENGINE_C {\
+        { 0 },\
+        _LE_USE_PORT,\
         0,\
         GLUT_UP,\
         0,\
@@ -64,7 +68,6 @@
         0,\
         0,\
         0,\
-        _LE_SOCK_NULL,\
         1.5 * ER_ERA,\
         0.0,\
         0.0,\
@@ -99,6 +102,9 @@
 
     typedef struct er_engine_struct {
 
+        char       eg_ip[256];
+        int        eg_port;
+
         int        eg_button;
         int        eg_state;
         int        eg_x;
@@ -108,8 +114,6 @@
         int        eg_s;
         int        eg_t;
 
-        le_sock_t  eg_client;
-
         float      eg_valt;
         float      eg_vlon;
         float      eg_vlat;
@@ -117,7 +121,7 @@
         float      eg_vgam;
         float      eg_vscl;
 
-        er_model2_t eg_model;
+        er_model_t eg_model;
 
     } er_engine_t;
 
@@ -128,7 +132,7 @@
     /*! \brief rendering engine
      */
 
-    void er_engine( le_sock_t const er_client );
+    void er_engine_main( le_char_t const * const er_ip, le_sock_t const er_port );
 
     /*! \brief rendering engine - render callback
      */
@@ -159,8 +163,6 @@
      */
 
     void er_engine_range();
-
-    /* Help wellcome :( */ extern void glutLeaveMainLoop( void ); /* :( */
 
 /*
     header - C/C++ compatibility

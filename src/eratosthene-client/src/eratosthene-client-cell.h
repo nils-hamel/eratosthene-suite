@@ -50,7 +50,7 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_CELL_C { 0, NULL, NULL, NULL }
+    # define ER_CELL_C { _LE_FALSE, { 0 }, 0, NULL, NULL, NULL }
 
 /*
     header - preprocessor macros
@@ -66,6 +66,8 @@
 
     typedef struct er_cell_struct {
 
+        le_enum_t   ce_stat;
+        le_char_t   ce_addr[_LE_USE_DEPTH];
         le_size_t   ce_size;
         le_real_t * ce_pose;
         le_data_t * ce_data;
@@ -76,6 +78,16 @@
 /*
     header - function prototypes
  */
+
+    /*! \brief constructor/destructor methods
+     */
+
+    er_cell_t er_cell_create( le_void_t );
+
+    /*! \brief constructor/destructor methods
+     */
+
+    le_void_t er_cell_delete( er_cell_t * const er_cell );
 
     /*! \brief accessor methods
      */

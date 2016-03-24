@@ -26,30 +26,11 @@
 
     int main( int argc, char ** argv ) {
 
-        /* Server port variables */
-        unsigned int er_port = lc_read_uint( argc, argv, "--port", "-t", _LE_USE_PORT );
+        /* Initialise GL/GLU/GLUT */
+        glutInit( & argc, argv );
 
-        /* Socket handle variables */
-        le_sock_t er_client = _LE_SOCK_NULL;
-
-        /* Create client handle */
-        if ( ( er_client = le_client_create( ( le_char_t * ) lc_read_string( argc, argv, "--ip", "-i" ), er_port ) ) == _LE_SOCK_NULL ) {
-
-            /* Display message */
-            fprintf( stderr, "eratosthene-client : error : unable to connect to server\n" );
-
-        } else {
-
-            /* Initialise GL/GLU/GLUT */
-            glutInit( & argc, argv );
-
-            /* Rendering engine */
-            er_engine( er_client );
-
-            /* Delete client handle */
-            le_client_delete( er_client );
-
-        }        
+        /* Engine main function */
+        er_engine_main( ( le_char_t * ) lc_read_string( argc, argv, "--ip", "-i" ), lc_read_uint( argc, argv, "--port", "-t", _LE_USE_PORT ) );
 
         /* Return to system */
         return( EXIT_SUCCESS );

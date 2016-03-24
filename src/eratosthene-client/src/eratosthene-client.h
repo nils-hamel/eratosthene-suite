@@ -54,7 +54,7 @@
     header - includes
  */
 
-    # include "eratosthene-client-render.h"
+    # include "eratosthene-client-engine.h"
     # include <stdio.h>
     # include <stdlib.h>
     # include <common-args.h>
@@ -80,7 +80,7 @@
     header - function prototypes
  */
 
-    /*! \brief Main function
+    /*! \brief main function
      */
 
     int main( int argc, char ** argv );

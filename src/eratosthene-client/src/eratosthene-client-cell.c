@@ -21,6 +21,46 @@
     # include "eratosthene-client-cell.h"
 
 /*
+    source - constructor/destructor methods
+ */
+
+    er_cell_t er_cell_create( le_void_t ) {
+        
+        /* Cell variables */
+        er_cell_t er_cell = ER_CELL_C;
+
+        /* Return constructed cell */
+        return( er_cell );
+
+    }
+
+    le_void_t er_cell_delete( er_cell_t * const er_cell ) {
+
+        /* Check array state */
+        if ( er_cell->ce_pose != NULL ) {
+
+            /* Unallocate cell memory */
+            free( er_cell->ce_pose );
+
+            /* Invalidate cell pointer */
+            er_cell->ce_pose = NULL;
+
+        }
+
+        /* Check array state */
+        if ( er_cell->ce_data != NULL ) {
+
+            /* Unallocate cell memory */
+            free( er_cell->ce_data );
+
+            /* Invalidate cell pointer */
+            er_cell->ce_data = NULL;
+
+        }
+
+    }
+
+/*
     source - accessor methods
  */
 
@@ -52,35 +92,31 @@
     le_enum_t er_cell_set_push( er_cell_t * const er_cell, le_size_t const er_block ) {
 
         /* Memory reallocation */
-        if ( ( er_cell->ce_swap = ( le_void_t * ) realloc( er_cell->ce_pose, er_cell->ce_size + er_block * sizeof( le_real_t ) ) ) == NULL ) {
+        if ( ( er_cell->ce_swap = realloc( ( le_void_t * ) er_cell->ce_pose, ( er_cell->ce_size + er_block ) * sizeof( le_real_t ) ) ) == NULL ) {
 
             /* Send message */
             return( LE_ERROR_MEMORY );
 
-        } else {
+        }
 
-            /* Assign memory segment */
-            er_cell->ce_pose = ( le_real_t * ) er_cell->ce_swap;
+        /* Assign memory segment */
+        er_cell->ce_pose = ( le_real_t * ) er_cell->ce_swap;
 
-            /* Memory reallocation */
-            if ( ( er_cell->ce_swap = ( le_void_t * ) realloc( er_cell->ce_data, er_cell->ce_size + er_block * sizeof( le_data_t ) ) ) == NULL ) {
+        /* Memory reallocation */
+        if ( ( er_cell->ce_swap = realloc( ( le_void_t * ) er_cell->ce_data, ( er_cell->ce_size + er_block ) * sizeof( le_data_t ) ) ) == NULL ) {
 
-                /* Send message */
-                return( LE_ERROR_MEMORY );
-
-            } else {
-
-                /* Assign memory segment */
-                er_cell->ce_data = ( le_data_t * ) er_cell->ce_swap;
-
-                /* Update cell size */
-                er_cell->ce_size += er_block;
-
-                /* Send message */
-                return( LE_ERROR_SUCCESS );
-
-            }
+            /* Send message */
+            return( LE_ERROR_MEMORY );
 
         }
+
+        /* Assign memory segment */
+        er_cell->ce_data = ( le_data_t * ) er_cell->ce_swap;
+
+        /* Update cell size */
+        er_cell->ce_size += er_block;
+
+        /* Send message */
+        return( LE_ERROR_SUCCESS );
 
     }    

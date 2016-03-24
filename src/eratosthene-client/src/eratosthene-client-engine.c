@@ -18,31 +18,25 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    # include "eratosthene-client-render.h"
+    # include "eratosthene-client-engine.h"
 
 /*
     source - ugly global variable (GLUT callbacks)
  */
 
-    er_engine_t er_handle = ER_ENGINE_C;
+    er_engine_t er_engine = ER_ENGINE_C;
 
 /*
     source - rendering engine
  */
 
-    void er_engine( le_sock_t const er_client ) {
-
-        /* Windows handle variables */
-        int er_window = 0;
-
-        /* Assign client socket to handle */
-        er_handle.eg_client = er_client;
+    void er_engine_main( le_char_t const * const er_ip, le_sock_t const er_port ) {
 
         /* Setting windows parameteres */
         glutInitWindowSize( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
 
         /* Create rendering engine window */
-        er_window = glutCreateWindow( "eratosthene-client" );
+        glutCreateWindow( "eratosthene-client" );
 
         /* Display rendering engine window in fullscreen */
         glutFullScreen();
@@ -52,6 +46,9 @@
 
         /* Rendering engine display configuration */
         glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_STENCIL );
+
+        /* Setting GLUT options */
+        glutSetOption( GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION );
 
         /* Assign callback functions */
         glutDisplayFunc      ( er_engine_render  );
@@ -79,15 +76,24 @@
         glEnableClientState( GL_VERTEX_ARRAY );
         glEnableClientState( GL_COLOR_ARRAY  );
 
+        /* Assign server address */
+        strcpy( ( char * ) er_engine.eg_ip, ( char * ) er_ip );
+
+        /* Assign server port */
+        er_engine.eg_port = er_port;
+
+        /* Create model */
+        er_engine.eg_model = er_model_create();
+
         /* GLUT event management loop */
         glutMainLoop();
+
+        /* Delete model */
+        er_model_delete( & ( er_engine.eg_model ) );
 
         /* Disable vertex and color arrays */
         glDisableClientState( GL_COLOR_ARRAY  );
         glDisableClientState( GL_VERTEX_ARRAY );
-
-        /* Delete rendering engine window */
-        glutDestroyWindow( er_window );
 
     }
 
@@ -101,7 +107,7 @@
         er_engine_range();
 
         /* Model management */
-        er_model_update2( & ( er_handle.eg_model ), er_handle.eg_client );
+        er_model_update( ( le_char_t * ) er_engine.eg_ip, er_engine.eg_port, & er_engine.eg_model, er_engine.eg_vlon, er_engine.eg_vlat, er_engine.eg_valt );
 
         /* Recompute near/far planes */
         er_engine_reshape( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
@@ -109,40 +115,31 @@
         /* Clear color and depth buffers */
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-        /* Matrix mode to model view */
-        glMatrixMode( GL_MODELVIEW );
-
-        /* Set model view matrix to identity */
-        glLoadIdentity();
-
         /* Push matrix */
         glPushMatrix(); {
 
             /* Motion management - translation */
             glTranslatef( 0.0,
 
-                + sin( er_handle.eg_vgam * ER_D2R ) * er_handle.eg_valt,
-                - cos( er_handle.eg_vgam * ER_D2R ) * er_handle.eg_valt
+                + sin( er_engine.eg_vgam * ER_D2R ) * er_engine.eg_valt,
+                - cos( er_engine.eg_vgam * ER_D2R ) * er_engine.eg_valt
 
             );
 
             /* Motion management - rotations */
-            glRotatef( er_handle.eg_vgam, 1.0, 0.0, 0.0 );
-            glRotatef( er_handle.eg_vazm, 0.0, 0.0, 1.0 );
-            glRotatef( er_handle.eg_vlat, 1.0, 0.0, 0.0 );
-            glRotatef( er_handle.eg_vlon, 0.0, 1.0, 0.0 );
+            glRotatef( er_engine.eg_vgam, 1.0, 0.0, 0.0 );
+            glRotatef( er_engine.eg_vazm, 0.0, 0.0, 1.0 );
+            glRotatef( er_engine.eg_vlat, 1.0, 0.0, 0.0 );
+            glRotatef( er_engine.eg_vlon, 0.0, 1.0, 0.0 );
 
             /* Display earth model */
-            er_model_display2( & ( er_handle.eg_model ) );
+            er_model_main( & ( er_engine.eg_model ) );
 
         /* Pop matrix */
         } glPopMatrix();
 
-        /* Force primitives trigger */
-        glFlush();
-
-        /* Wait primitives */
-        glFinish();
+        /* Swap buffers */
+        glutSwapBuffers();
 
     }
 
@@ -162,7 +159,13 @@
         glLoadIdentity();
 
         /* Compute projectio matrix */
-        gluPerspective( 45, ( float ) er_width / er_height, 1.0, er_handle.eg_valt - ER_ER2 );
+        gluPerspective( 45, ( float ) er_width / er_height, 1.0, er_engine.eg_valt - ER_ER2 );
+
+        /* Matrix mode to modelview */
+        glMatrixMode( GL_MODELVIEW );
+
+        /* Set model view matrix to identity */
+        glLoadIdentity();
 
     }
 
@@ -183,15 +186,31 @@
 
             } break;
 
+            /* Point size control */
+            case ( 'w' ) : {
+
+                /* Update point size */
+                //er_engine_.eg_point = ( er_engine_.eg_point < 8 ) ? er_engine_.eg_point + 1 : 8;
+
+            } break;
+
+            /* Point size control */
+            case ( 'q' ) : {
+
+                /* Update point size */
+                //er_engine_.eg_point = ( er_engine_.eg_point > 1 ) ? er_engine_.eg_point - 1 : 1;
+
+            } break;
+
             /* Reset point of view */
             case ( 'r' ) : {
 
                 /* Reset variables */
-                er_handle.eg_vlon = 0.0;
-                er_handle.eg_vlat = 0.0;
-                er_handle.eg_valt = 1.5 * ER_ERA;
-                er_handle.eg_vazm = 0.0;
-                er_handle.eg_vgam = 0.0;
+                er_engine.eg_vlon = 0.0;
+                er_engine.eg_vlat = 0.0;
+                er_engine.eg_valt = 1.5 * ER_ERA;
+                er_engine.eg_vazm = 0.0;
+                er_engine.eg_vgam = 0.0;
 
             } break;
 
@@ -209,26 +228,26 @@
     void er_engine_mouse( int er_button, int er_state, int er_x, int er_y ) {
 
         /* Update engine handle */
-        er_handle.eg_button = er_button;
-        er_handle.eg_state  = er_state;
-        er_handle.eg_x      = er_x;
-        er_handle.eg_y      = er_y;
-        er_handle.eg_u      = er_x;
-        er_handle.eg_v      = er_y;
+        er_engine.eg_button = er_button;
+        er_engine.eg_state  = er_state;
+        er_engine.eg_x      = er_x;
+        er_engine.eg_y      = er_y;
+        er_engine.eg_u      = er_x;
+        er_engine.eg_v      = er_y;
 
         /* Mouse event switch */
-        if ( ( er_handle.eg_button == 3 ) && ( er_handle.eg_state == GLUT_DOWN ) ) {
+        if ( ( er_engine.eg_button == 3 ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
 
             /* Update altitude */
-            er_handle.eg_valt *= 1.01;
+            er_engine.eg_valt *= 1.01;
 
         }
 
         /* Mouse event switch */
-        if ( ( er_handle.eg_button == 4 ) && ( er_handle.eg_state == GLUT_DOWN ) ) {
+        if ( ( er_engine.eg_button == 4 ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
 
             /* Update altitude */
-            er_handle.eg_valt /= 1.01;
+            er_engine.eg_valt /= 1.01;
 
         }
 
@@ -240,42 +259,42 @@
     void er_engine_move( int er_x, int er_y ) {
 
         /* Check mouse state */
-        if ( er_handle.eg_state == GLUT_DOWN ) {
+        if ( er_engine.eg_state == GLUT_DOWN ) {
 
             /* Update engine handle */
-            er_handle.eg_u = er_x;
-            er_handle.eg_v = er_y;
+            er_engine.eg_u = er_x;
+            er_engine.eg_v = er_y;
 
         }
 
         /* Update engine handle */
-        er_handle.eg_s = er_x;
-        er_handle.eg_t = er_y;
+        er_engine.eg_s = er_x;
+        er_engine.eg_t = er_y;
 
         /* Mouse event switch */
-        if ( ( er_handle.eg_button == GLUT_LEFT_BUTTON ) && ( er_handle.eg_state == GLUT_DOWN ) ) {
+        if ( ( er_engine.eg_button == GLUT_LEFT_BUTTON ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
 
             /* Update longitude and latitude */
-            er_handle.eg_vlon += ER_ENGINE_MOVE * ( er_handle.eg_u - er_handle.eg_x );
-            er_handle.eg_vlat += ER_ENGINE_MOVE * ( er_handle.eg_v - er_handle.eg_y );
+            er_engine.eg_vlon += ER_ENGINE_MOVE * ( er_engine.eg_u - er_engine.eg_x );
+            er_engine.eg_vlat += ER_ENGINE_MOVE * ( er_engine.eg_v - er_engine.eg_y );
 
         }
 
         /* Mouse switch event */
-        if ( ( er_handle.eg_button == GLUT_MIDDLE_BUTTON ) && ( er_handle.eg_state == GLUT_DOWN ) ) {
+        if ( ( er_engine.eg_button == GLUT_MIDDLE_BUTTON ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
 
             /* Update longitude and latitude */
-            er_handle.eg_vlon -= ER_ENGINE_MOVE * ( er_handle.eg_v - er_handle.eg_y ) * sin( er_handle.eg_vazm * ER_D2R );
-            er_handle.eg_vlat += ER_ENGINE_MOVE * ( er_handle.eg_v - er_handle.eg_y ) * cos( er_handle.eg_vazm * ER_D2R );
+            er_engine.eg_vlon -= ER_ENGINE_MOVE * ( er_engine.eg_v - er_engine.eg_y ) * sin( er_engine.eg_vazm * ER_D2R );
+            er_engine.eg_vlat += ER_ENGINE_MOVE * ( er_engine.eg_v - er_engine.eg_y ) * cos( er_engine.eg_vazm * ER_D2R );
 
         }
 
         /* Mouse event switch */
-        if ( ( er_handle.eg_button == GLUT_RIGHT_BUTTON ) && ( er_handle.eg_state == GLUT_DOWN ) ) {
+        if ( ( er_engine.eg_button == GLUT_RIGHT_BUTTON ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
 
             /* Update azimuth and gamma angles */
-            er_handle.eg_vazm += ER_ENGINE_MOVE * ( er_handle.eg_u - er_handle.eg_x );
-            er_handle.eg_vgam += ER_ENGINE_MOVE * ( er_handle.eg_v - er_handle.eg_y ) * 2.0;
+            er_engine.eg_vazm -= ER_ENGINE_MOVE * ( er_engine.eg_u - er_engine.eg_x );
+            er_engine.eg_vgam += ER_ENGINE_MOVE * ( er_engine.eg_v - er_engine.eg_y ) * 2.0;
 
         }
 
@@ -291,20 +310,20 @@
     void er_engine_range() {
 
         /* Angle ranges - cyclic */
-        if ( er_handle.eg_vlon > +360.0 ) er_handle.eg_vlon -= 360;
-        if ( er_handle.eg_vlon < -360.0 ) er_handle.eg_vlon += 360;
-        if ( er_handle.eg_vlat > +360.0 ) er_handle.eg_vlat -= 360;
-        if ( er_handle.eg_vlat < -360.0 ) er_handle.eg_vlat += 360;
-        if ( er_handle.eg_vazm > +360.0 ) er_handle.eg_vazm -= 360;
-        if ( er_handle.eg_vazm < -360.0 ) er_handle.eg_vazm += 360;
+        if ( er_engine.eg_vlon > +360.0 ) er_engine.eg_vlon -= 360;
+        if ( er_engine.eg_vlon < -360.0 ) er_engine.eg_vlon += 360;
+        if ( er_engine.eg_vlat > +360.0 ) er_engine.eg_vlat -= 360;
+        if ( er_engine.eg_vlat < -360.0 ) er_engine.eg_vlat += 360;
+        if ( er_engine.eg_vazm > +360.0 ) er_engine.eg_vazm -= 360;
+        if ( er_engine.eg_vazm < -360.0 ) er_engine.eg_vazm += 360;
 
         /* Angles ranges - clamp */
-        if ( er_handle.eg_vgam < -90.0 ) er_handle.eg_vgam = -90.0;
-        if ( er_handle.eg_vgam > + 0.0 ) er_handle.eg_vgam = + 0.0;
+        if ( er_engine.eg_vgam < -90.0 ) er_engine.eg_vgam = -90.0;
+        if ( er_engine.eg_vgam > + 0.0 ) er_engine.eg_vgam = + 0.0;
 
         /* Parameter ranges - clamp */
-        if ( er_handle.eg_valt < ER_ERL ) er_handle.eg_valt = ER_ERL;
-        if ( er_handle.eg_valt > ER_ERU ) er_handle.eg_valt = ER_ERU;
+        if ( er_engine.eg_valt < ER_ERL ) er_engine.eg_valt = ER_ERL;
+        if ( er_engine.eg_valt > ER_ERU ) er_engine.eg_valt = ER_ERU;
 
     }
 

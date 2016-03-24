@@ -47,6 +47,7 @@
     # include <GL/gl.h>
     # include <GL/glu.h>
     # include <GL/glut.h>
+    # include <math.h>
     # include <eratosthene-include.h>
 
 /*
@@ -54,7 +55,10 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_MODEL_C { 0, NULL, NULL, NULL }
+    # define ER_MODEL_C { 1, { ER_CELL_C } }
+
+    /* Define fundamental segmentation */
+    # define ER_MODEL_SEG   512
 
     /* Define earth parameters and limits */
     # define ER_ERA     ( LE_GEODESY_WGS84_A / 1000.0 )
@@ -78,33 +82,40 @@
     header - structures
  */
 
-    typedef struct er_model2_struct {
+    typedef struct er_model_struct {
 
-        le_size_t    md_size;
-        float      * md_vert;
-        float      * md_colo;
-        float      * md_swap;
+        le_size_t md_psiz;
+        er_cell_t md_cell[ER_MODEL_SEG];
 
-    } er_model2_t;
+    } er_model_t;
 
 /*
     header - function prototypes
  */
 
+    /*! \brief constructor/destructor methods
+     */
+
+    er_model_t er_model_create( le_void_t );
+
+    /*! \brief constructor/destructor methods
+     */
+
+    le_void_t er_model_delete( er_model_t * const er_model );
+
     /*! \brief model display
      */
 
-    void er_model_display2( er_model2_t const * const er_model );
+    void er_model_main( er_model_t const * const er_model );
 
     /*! \brief model management */
 
-    void er_model_update2( er_model2_t * const er_model, le_sock_t const er_socket );
+    void er_model_update( le_char_t const * const er_ip, le_sock_t const er_port, er_model_t * const er_model, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
 
     /*! \brief query management
      */
 
     void er_model_query( er_cell_t * const er_cell, le_char_t const * const er_query, le_sock_t const er_socket );
-    void er_model_query2( er_model2_t * const er_model, le_sock_t const er_socket, le_char_t const * const er_query );
 
 /*
     header - C/C++ compatibility
