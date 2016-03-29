@@ -43,6 +43,7 @@
     header - includes
  */
 
+    # include "eratosthene-client-geodesy.h"
     # include "eratosthene-client-cell.h"
     # include <GL/gl.h>
     # include <GL/glu.h>
@@ -59,16 +60,6 @@
 
     /* Define fundamental segmentation */
     # define ER_MODEL_SEG   512
-
-    /* Define earth parameters and limits */
-    # define ER_ERA     ( LE_GEODESY_WGS84_A / 1000.0 )
-    # define ER_ER2     ( ER_ERA / 2.0 )
-    # define ER_ERL     ( ER_ERA * 1.0 )
-    # define ER_ERU     ( ER_ERA * 2.0 )
-
-    /* Define tiling parameters */
-    # define ER_TI      (  2 )
-    # define ER_TL      ( 13 )
 
 /*
     header - preprocessor macros
@@ -125,11 +116,6 @@
     /*! \brief model management */
 
     void er_model_client( le_char_t const * const er_ip, le_sock_t const er_port, er_model_t * const er_model );
-
-    /*! \brief query management
-     */
-
-    void er_model_query( er_cell_t * const er_cell, le_char_t const * const er_query, le_sock_t const er_socket );
 
 /*
     header - C/C++ compatibility

@@ -173,106 +173,29 @@
                 if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
                     
                     /* Send query to server */
-                    er_model_query( er_model->md_cell + er_parse, ( er_model->md_cell + er_parse )->ce_push, er_socket );
+                    //er_model_query( er_model->md_cell + er_parse, ( er_model->md_cell + er_parse )->ce_push, er_socket );
+                    if ( ( er_cell_set_query( er_model->md_cell + er_parse, ( er_model->md_cell + er_parse )->ce_push, er_socket ) ) == LE_ERROR_SUCCESS ) {
+
+                        /* Update pushed query */
+                        strcpy( ( char * ) ( er_model->md_cell + er_parse )->ce_addr, ( char * ) ( er_model->md_cell + er_parse )->ce_push );
+
+                        /* Unlock cell after update */
+                        ( er_model->md_cell + er_parse )->ce_stat = ( er_model->md_cell + er_parse )->ce_size > 0 ? ER_CELL_DISPLAY : ER_CELL_EMPTY;
+
+                    } else {
+
+                        /* Unlock cell after update */
+                        ( er_model->md_cell + er_parse )->ce_stat = ER_CELL_EMPTY;
+
+                    }
 
                     /* Close server connexion */
                     le_client_delete( er_socket );
 
-                    /* Update pushed query */
-                    strcpy( ( char * ) ( er_model->md_cell + er_parse )->ce_addr, ( char * ) ( er_model->md_cell + er_parse )->ce_push );
-
                 }
-
-                /* Unlock cell after update */
-                ( er_model->md_cell + er_parse )->ce_stat = ( er_model->md_cell + er_parse )->ce_size > 0 ? ER_CELL_DISPLAY : ER_CELL_EMPTY;
 
                 /* Schedule render callback */
                 glutPostRedisplay();
-
-            }
-
-        }
-
-    }
-
-/*
-    source - query management
- */
-
-    void er_model_query( er_cell_t * const er_cell, le_char_t const * const er_query, le_sock_t const er_socket ) {
-
-        /* Parsing variables */
-        le_size_t er_parse = 0;
-
-        /* Tracking variables */
-        le_size_t er_track = 0;
-
-        /* Socket i/o count variables */
-        le_size_t er_count = 0;
-
-        /* Socket i/o buffer variables */
-        le_byte_t er_buffer[LE_NETWORK_BUFFER_SYNC] = LE_NETWORK_BUFFER_C;
-
-        /* Array pointer variables */
-        le_real_t * er_ptrp = NULL;
-        le_time_t * er_ptrt = NULL;
-        le_data_t * er_ptrd = NULL;
-
-        /* Cell pointer variables */
-        le_real_t * er_celp = NULL;
-        le_data_t * er_celd = NULL;
-
-        /* Client/server query handshake */
-        if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_QMOD ) != LE_ERROR_SUCCESS ) {
-
-            /* Abort query */
-            return;
-
-        }
-
-        /* Query string to socket buffer */
-        strcpy( ( char * ) er_buffer, ( char * ) er_query );
-
-        /* Write query address */
-        if ( write( er_socket, er_buffer, LE_NETWORK_BUFFER_ADDR ) != LE_NETWORK_BUFFER_ADDR ) {
-
-            /* Abort query */
-            return;
-
-        }
-
-        /* Reading query elements */
-        while( ( er_count = read( er_socket, er_buffer, LE_NETWORK_BUFFER_SYNC ) ) > 0 ) {
-
-            /* Retrieve cell size */
-            er_track = er_cell_get_size( er_cell );
-
-            /* Resize cell arrays */
-            if ( er_cell_set_push( er_cell, ( er_count / LE_ARRAY_LINE ) * 3 ) == LE_ERROR_SUCCESS ) {
-
-                /* Retrieve array pointers */
-                er_celp = er_cell_get_pose( er_cell );
-                er_celd = er_cell_get_data( er_cell );
-                
-                /* Parsing received elements */
-                for ( er_parse = 0; er_parse < er_count; er_parse += LE_ARRAY_LINE, er_track += 3 ) {
-
-                    /* Compute pointers */
-                    er_ptrp = ( le_real_t * ) ( er_buffer + er_parse );
-                    er_ptrt = ( le_time_t * ) ( er_ptrp + 3 );
-                    er_ptrd = ( le_data_t * ) ( er_ptrt + 1 );
-
-                    /* Assign vertex */
-                    er_celp[ er_track + 2 ] = ( ( er_ptrp[2] * 0.001 ) + ER_ERA ) * cos( er_ptrp[1] ) * cos( er_ptrp[0] );
-                    er_celp[ er_track     ] = ( ( er_ptrp[2] * 0.001 ) + ER_ERA ) * cos( er_ptrp[1] ) * sin( er_ptrp[0] );
-                    er_celp[ er_track + 1 ] = ( ( er_ptrp[2] * 0.001 ) + ER_ERA ) * sin( er_ptrp[1] );
-
-                    /* Assign color */
-                    er_celd[ er_track     ] = er_ptrd[0];
-                    er_celd[ er_track + 1 ] = er_ptrd[1];
-                    er_celd[ er_track + 2 ] = er_ptrd[2];
-
-                }
 
             }
 

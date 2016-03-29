@@ -43,6 +43,8 @@
     header - includes
  */
 
+    # include "eratosthene-client-geodesy.h"
+    # include <math.h>
     # include <eratosthene-include.h>
 
 /*
@@ -115,6 +117,11 @@
      */
 
     le_enum_t er_cell_set_push( er_cell_t * const er_cell, le_size_t const er_block );
+
+    /*! \brief mutator methods
+     */
+
+    le_enum_t er_cell_set_query( er_cell_t * const er_cell, le_char_t const * const er_query, le_sock_t const er_socket );
 
 /*
     header - C/C++ compatibility
