@@ -75,10 +75,6 @@
         /* Shade model configuration */
         glShadeModel( GL_SMOOTH );
 
-        /* Enable vertex and color arrays */
-        glEnableClientState( GL_VERTEX_ARRAY );
-        glEnableClientState( GL_COLOR_ARRAY  );
-
         /* Assign server address */
         strcpy( ( char * ) er_engine.eg_ip, ( char * ) er_ip );
 
@@ -87,6 +83,10 @@
 
         /* Create model */
         er_engine.eg_model = er_model_create();
+
+        /* Enable vertex and color arrays */
+        glEnableClientState( GL_VERTEX_ARRAY );
+        glEnableClientState( GL_COLOR_ARRAY  );
 
         /* Create auxiliary engine */
         pthread_create( & er_auxiliary, NULL, er_engine_auxiliary, NULL );
@@ -97,12 +97,12 @@
         /* Delete auxiliary engine */
         pthread_cancel( er_auxiliary );
 
-        /* Delete model */
-        er_model_delete( & ( er_engine.eg_model ) );
-
         /* Disable vertex and color arrays */
         glDisableClientState( GL_COLOR_ARRAY  );
         glDisableClientState( GL_VERTEX_ARRAY );
+
+        /* Delete model */
+        er_model_delete( & ( er_engine.eg_model ) );
 
     }
 

@@ -107,7 +107,7 @@
     /*! \brief model display
      */
 
-    void er_model_main( er_model_t const * const er_model );
+    void er_model_main( er_model_t * const er_model );
 
     /*! \brief model management */
 

@@ -52,12 +52,12 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_CELL_C { ER_CELL_EMPTY, { 0 }, { 0 }, { 0 }, 0, NULL, NULL, NULL }
+    # define ER_CELL_C      { ER_CELL_IDLE, { 0 }, { 0 }, { 0 }, 0, NULL, NULL }
 
     /* Define cell states */
-    # define ER_CELL_DISPLAY 0x00
-    # define ER_CELL_EMPTY   0x01
-    # define ER_CELL_UPDATE  0x02
+    # define ER_CELL_IDLE   ( 0x00 )
+    # define ER_CELL_UPDATE ( 0x01 )
+    # define ER_CELL_DRAW   ( 0x02 )
 
 /*
     header - preprocessor macros
@@ -80,7 +80,6 @@
         le_size_t   ce_size;
         le_real_t * ce_pose;
         le_data_t * ce_data;
-        le_void_t * ce_swap;
         
     } er_cell_t;
 
@@ -101,6 +100,11 @@
     /*! \brief accessor methods
      */
 
+    le_enum_t er_cell_get_state( er_cell_t const * const er_cell );
+
+    /*! \brief accessor methods
+     */
+
     le_size_t er_cell_get_size( er_cell_t const * const er_cell );
 
     /*! \brief accessor methods
@@ -116,12 +120,22 @@
     /*! \brief mutator methods
      */
 
+    le_void_t er_cell_set_state( er_cell_t * const er_cell, le_enum_t const er_state );
+
+    /*! \brief mutator methods
+     */
+
+    le_void_t er_cell_set_waitstate( er_cell_t * const er_cell, le_enum_t const er_wait, le_enum_t const er_state );
+
+    /*! \brief mutator methods
+     */
+
     le_enum_t er_cell_set_push( er_cell_t * const er_cell, le_size_t const er_block );
 
     /*! \brief mutator methods
      */
 
-    le_enum_t er_cell_set_query( er_cell_t * const er_cell, le_char_t const * const er_query, le_sock_t const er_socket );
+    le_void_t er_cell_set_query( er_cell_t * const er_cell, le_sock_t const er_socket );
 
 /*
     header - C/C++ compatibility

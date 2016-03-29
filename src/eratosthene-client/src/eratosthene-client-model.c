@@ -91,7 +91,7 @@
     source - model display
  */
 
-    void er_model_main( er_model_t const * const er_model ) {
+    void er_model_main( er_model_t * const er_model ) {
 
         /* Parsing variables */
         le_size_t er_parse = 0;
@@ -99,15 +99,26 @@
         /* Display cells */
         for ( ; er_parse < ER_MODEL_SEG; er_parse ++ ) {
 
-            /* Check cell state */
-            if ( ( er_model->md_cell + er_parse )->ce_stat == ER_CELL_DISPLAY ) {
+            /* Check cell size */
+            if ( er_cell_get_size( er_model->md_cell + er_parse ) > 0 ) {
 
-                /* Vertex and color array configuration */
-                glVertexPointer( 3, GL_DOUBLE, 0, ( er_model->md_cell + er_parse )->ce_pose );
-                glColorPointer ( 3, GL_FLOAT , 0, ( er_model->md_cell + er_parse )->ce_data );
+                /* Check cell state */
+                if ( er_cell_get_state( er_model->md_cell + er_parse ) == ER_CELL_IDLE ) {
 
-                /* Trigger cell primitive drawing */
-                glDrawArrays( GL_POINTS, 0, ( er_model->md_cell + er_parse)->ce_size / 3 );
+                    /* Lock cell */
+                    er_cell_set_state( er_model->md_cell + er_parse, ER_CELL_DRAW );
+
+                    /* Vertex and color array configuration */
+                    glVertexPointer( 3, GL_DOUBLE, 0, ( er_model->md_cell + er_parse )->ce_pose );
+                    glColorPointer ( 3, GL_FLOAT , 0, ( er_model->md_cell + er_parse )->ce_data );
+
+                    /* Trigger cell primitive drawing */
+                    glDrawArrays( GL_POINTS, 0, ( er_model->md_cell + er_parse)->ce_size / 3 );
+
+                    /* Unlock cell */
+                    er_cell_set_state( er_model->md_cell + er_parse, ER_CELL_IDLE );
+
+                }
 
             }
 
@@ -166,36 +177,16 @@
             /* Check query necessities */
             if ( strcmp( ( char * ) ( er_model->md_cell + er_parse )->ce_addr, ( char * ) ( er_model->md_cell + er_parse )->ce_push ) != 0 ) {
 
-                /* Lock cell for update */
-                ( er_model->md_cell + er_parse )->ce_stat = ER_CELL_UPDATE;
-
                 /* Establish server connexion */
                 if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
                     
-                    /* Send query to server */
-                    //er_model_query( er_model->md_cell + er_parse, ( er_model->md_cell + er_parse )->ce_push, er_socket );
-                    if ( ( er_cell_set_query( er_model->md_cell + er_parse, ( er_model->md_cell + er_parse )->ce_push, er_socket ) ) == LE_ERROR_SUCCESS ) {
-
-                        /* Update pushed query */
-                        strcpy( ( char * ) ( er_model->md_cell + er_parse )->ce_addr, ( char * ) ( er_model->md_cell + er_parse )->ce_push );
-
-                        /* Unlock cell after update */
-                        ( er_model->md_cell + er_parse )->ce_stat = ( er_model->md_cell + er_parse )->ce_size > 0 ? ER_CELL_DISPLAY : ER_CELL_EMPTY;
-
-                    } else {
-
-                        /* Unlock cell after update */
-                        ( er_model->md_cell + er_parse )->ce_stat = ER_CELL_EMPTY;
-
-                    }
+                    /* Update cell through server query */
+                    er_cell_set_query( er_model->md_cell + er_parse, er_socket );
 
                     /* Close server connexion */
                     le_client_delete( er_socket );
 
                 }
-
-                /* Schedule render callback */
-                glutPostRedisplay();
 
             }
 

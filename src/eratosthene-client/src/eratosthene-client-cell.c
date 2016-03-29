@@ -47,14 +47,14 @@
 
     le_void_t er_cell_delete( er_cell_t * const er_cell ) {
 
+        /* Cell variables */
+        er_cell_t er_reset = ER_CELL_C;
+
         /* Check array state */
         if ( er_cell->ce_pose != NULL ) {
 
             /* Unallocate cell memory */
             free( er_cell->ce_pose );
-
-            /* Invalidate cell pointer */
-            er_cell->ce_pose = NULL;
 
         }
 
@@ -64,16 +64,23 @@
             /* Unallocate cell memory */
             free( er_cell->ce_data );
 
-            /* Invalidate cell pointer */
-            er_cell->ce_data = NULL;
-
         }
+
+        /* Reset cell */
+        * er_cell = er_reset;
 
     }
 
 /*
     source - accessor methods
  */
+
+    le_enum_t er_cell_get_state( er_cell_t const * const er_cell ) {
+
+        /* Return cell state */
+        return( er_cell->ce_stat );
+
+    }
 
     le_size_t er_cell_get_size( er_cell_t const * const er_cell ) {
 
@@ -100,10 +107,39 @@
     source - mutator methods
  */
 
+    le_void_t er_cell_set_state( er_cell_t * const er_cell, le_enum_t const er_state ) {
+
+        /* Assign cell state */ 
+        er_cell->ce_stat = er_state;
+
+    }
+
+    le_void_t er_cell_set_waitstate( er_cell_t * const er_cell, le_enum_t const er_wait, le_enum_t const er_state ) {
+
+        /* Wait expected state */
+        while ( er_cell->ce_stat != er_wait );
+
+        /* Assign cell state */
+        er_cell->ce_stat = er_state;
+
+    }
+
     le_enum_t er_cell_set_push( er_cell_t * const er_cell, le_size_t const er_block ) {
 
+        /* Swap variables */
+        le_void_t * er_pswap = NULL;
+        le_void_t * er_dswap = NULL;
+
         /* Memory reallocation */
-        if ( ( er_cell->ce_swap = realloc( ( le_void_t * ) er_cell->ce_pose, ( er_cell->ce_size + er_block ) * sizeof( le_real_t ) ) ) == NULL ) {
+        if ( ( er_pswap = realloc( ( le_void_t * ) er_cell->ce_pose, ( er_cell->ce_size + er_block ) * sizeof( le_real_t ) ) ) == NULL ) {
+
+            /* Send message */
+            return( LE_ERROR_MEMORY );
+
+        }
+
+        /* Memory reallocation */
+        if ( ( er_dswap = realloc( ( le_void_t * ) er_cell->ce_data, ( er_cell->ce_size + er_block ) * sizeof( le_data_t ) ) ) == NULL ) {
 
             /* Send message */
             return( LE_ERROR_MEMORY );
@@ -111,18 +147,8 @@
         }
 
         /* Assign memory segment */
-        er_cell->ce_pose = ( le_real_t * ) er_cell->ce_swap;
-
-        /* Memory reallocation */
-        if ( ( er_cell->ce_swap = realloc( ( le_void_t * ) er_cell->ce_data, ( er_cell->ce_size + er_block ) * sizeof( le_data_t ) ) ) == NULL ) {
-
-            /* Send message */
-            return( LE_ERROR_MEMORY );
-
-        }
-
-        /* Assign memory segment */
-        er_cell->ce_data = ( le_data_t * ) er_cell->ce_swap;
+        er_cell->ce_pose = ( le_real_t * ) er_pswap;
+        er_cell->ce_data = ( le_data_t * ) er_dswap;
 
         /* Update cell size */
         er_cell->ce_size += er_block;
@@ -132,7 +158,7 @@
 
     }
 
-    le_enum_t er_cell_set_query( er_cell_t * const er_cell, le_char_t const * const er_query, le_sock_t const er_socket ) {
+    le_void_t er_cell_set_query( er_cell_t * const er_cell, le_sock_t const er_socket ) {
 
         /* Parsing variables */
         le_size_t er_parse = 0;
@@ -151,41 +177,42 @@
         le_time_t * er_ptrt = NULL;
         le_data_t * er_ptrd = NULL;
 
-        /* Cell pointer variables */
-        le_real_t * er_celp = NULL;
-        le_data_t * er_celd = NULL;
+        /* Lock cell */
+        er_cell_set_waitstate( er_cell, ER_CELL_IDLE, ER_CELL_UPDATE );
+
+        /* Reset size */
+        er_cell->ce_size = 0;
 
         /* Client/server query handshake */
         if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_QMOD ) != LE_ERROR_SUCCESS ) {
 
-            /* Send message */
-            return( LE_ERROR_AUTH );
+            /* Unlock cell */
+            er_cell_set_state( er_cell, ER_CELL_IDLE );
+
+            /* Abort update */
+            return;
 
         }
 
         /* Query string to socket buffer */
-        strcpy( ( char * ) er_buffer, ( char * ) er_query );
+        strcpy( ( char * ) er_buffer, ( char * ) er_cell->ce_push );
 
         /* Write query address */
         if ( write( er_socket, er_buffer, LE_NETWORK_BUFFER_ADDR ) != LE_NETWORK_BUFFER_ADDR ) {
 
-            /* Send message */
-            return( LE_ERROR_IO_WRITE );
+            /* Unlock cell */
+            er_cell_set_state( er_cell, ER_CELL_IDLE );
+
+            /* Abort update */
+            return;
 
         }
 
         /* Reading query elements */
         while( ( er_count = read( er_socket, er_buffer, LE_NETWORK_BUFFER_SYNC ) ) > 0 ) {
 
-            /* Retrieve cell size */
-            er_track = er_cell->ce_size;
-
             /* Resize cell arrays */
             if ( er_cell_set_push( er_cell, ( er_count / LE_ARRAY_LINE ) * 3 ) == LE_ERROR_SUCCESS ) {
-
-                /* Retrieve array pointers */
-                er_celp = er_cell_get_pose( er_cell );
-                er_celd = er_cell_get_data( er_cell );
                 
                 /* Parsing received elements */
                 for ( er_parse = 0; er_parse < er_count; er_parse += LE_ARRAY_LINE, er_track += 3 ) {
@@ -196,23 +223,34 @@
                     er_ptrd = ( le_data_t * ) ( er_ptrt + 1 );
 
                     /* Assign vertex */
-                    er_celp[ er_track + 2 ] = ( ( er_ptrp[2] * 0.001 ) + ER_ERA ) * cos( er_ptrp[1] ) * cos( er_ptrp[0] );
-                    er_celp[ er_track     ] = ( ( er_ptrp[2] * 0.001 ) + ER_ERA ) * cos( er_ptrp[1] ) * sin( er_ptrp[0] );
-                    er_celp[ er_track + 1 ] = ( ( er_ptrp[2] * 0.001 ) + ER_ERA ) * sin( er_ptrp[1] );
+                    er_cell->ce_pose[er_track + 2] = ( ( er_ptrp[2] * 0.001 ) + ER_ERA ) * cos( er_ptrp[1] ) * cos( er_ptrp[0] );
+                    er_cell->ce_pose[er_track    ] = ( ( er_ptrp[2] * 0.001 ) + ER_ERA ) * cos( er_ptrp[1] ) * sin( er_ptrp[0] );
+                    er_cell->ce_pose[er_track + 1] = ( ( er_ptrp[2] * 0.001 ) + ER_ERA ) * sin( er_ptrp[1] );
 
                     /* Assign color */
-                    er_celd[ er_track     ] = er_ptrd[0];
-                    er_celd[ er_track + 1 ] = er_ptrd[1];
-                    er_celd[ er_track + 2 ] = er_ptrd[2];
+                    er_cell->ce_data[er_track    ] = er_ptrd[0];
+                    er_cell->ce_data[er_track + 1] = er_ptrd[1];
+                    er_cell->ce_data[er_track + 2] = er_ptrd[2];
 
                 }
+
+            } else {
+
+                /* Unlock cell */
+                er_cell_set_state( er_cell, ER_CELL_IDLE );
+
+                /* Abort update */
+                return;
 
             }
 
         }
 
-        /* Send message */
-        return( LE_ERROR_SUCCESS );
+        /* Update cell address */
+        strcpy( ( char * ) er_cell->ce_addr, ( char * ) er_cell->ce_push );
+
+        /* Unlock cell */
+        er_cell_set_state( er_cell, ER_CELL_IDLE );
 
     }
 
