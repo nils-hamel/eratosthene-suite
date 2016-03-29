@@ -24,10 +24,21 @@
     source - constructor/destructor methods
  */
 
-    er_cell_t er_cell_create( le_void_t ) {
-        
+    er_cell_t er_cell_create( le_size_t er_address ) {
+
+        /* Decomposition variables */
+        le_size_t er_index = 0;
+
         /* Cell variables */
         er_cell_t er_cell = ER_CELL_C;
+
+        /* Compute cell address string */
+        for ( ; er_index < 5; er_index ++, er_address /= 4 ) {
+
+            /* Extract address digit */
+            er_cell.ce_base[4-er_index] = ( er_address % 4 ) + 48;
+
+        }
 
         /* Return constructed cell */
         return( er_cell );

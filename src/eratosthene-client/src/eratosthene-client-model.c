@@ -36,7 +36,7 @@
         for ( ; er_parse < ER_MODEL_SEG; er_parse ++ ) {
 
             /* Create cell */
-            ( er_model.md_cell )[er_parse] = er_cell_create();
+            ( er_model.md_cell )[er_parse] = er_cell_create( er_parse );
 
         }
 
@@ -45,7 +45,7 @@
 
     }
 
-    le_void_t er_model_delete( er_model_t * const er_model ) { fprintf( stderr, "DELETE\n" );
+    le_void_t er_model_delete( er_model_t * const er_model ) {
 
         /* Parsing variables */
         le_size_t er_parse = 0;
@@ -77,8 +77,13 @@
 
     le_void_t er_model_set_psiz( er_model_t * const er_model, le_size_t er_psiz ) {
 
-        /* Assign model point size */
-        er_model->md_psiz = er_psiz;
+        /* Apply limitation */
+        if ( ( er_psiz > 0 ) && ( er_psiz <= 8 ) ) {
+
+            /* Assign model point size */
+            er_model->md_psiz = er_psiz;
+
+        }
 
     }
 
@@ -91,14 +96,11 @@
         /* Parsing variables */
         le_size_t er_parse = 0;
 
-        /* Point size configuration */
-        glPointSize( 4 ); //er_model->md_psiz );
-
-        /* Parsing cells */
+        /* Display cells */
         for ( ; er_parse < ER_MODEL_SEG; er_parse ++ ) {
 
             /* Check cell state */
-            if ( er_model->md_cell[er_parse].ce_size > 0 ) {
+            if ( ( er_model->md_cell + er_parse )->ce_stat == ER_CELL_DISPLAY ) {
 
                 /* Vertex and color array configuration */
                 glVertexPointer( 3, GL_DOUBLE, 0, ( er_model->md_cell + er_parse )->ce_pose );
@@ -115,12 +117,18 @@
         glRotatef( 90.0, 1.0, 0.0, 0.0 );
 
         /* Earth frame - color */
-        glColor3f( 0.3, 0.32, 0.35 );
+        glColor3f( 0.3, 0.32, 0.4 );
 
-        /* Earth frame - model */
+        /* Earth model variables */
         GLUquadricObj * er_earth = gluNewQuadric();
+
+        /* Configure quadric */
         gluQuadricDrawStyle( er_earth, GLU_LINE );
-        gluSphere( er_earth, ER_ERA, 360, 180);
+
+        /* Draw quadric */
+        gluSphere( er_earth, ER_ERA, 360, 180 );
+
+        /* Delete quadric */
         gluDeleteQuadric( er_earth );
 
     }
@@ -129,10 +137,22 @@
     source - model management
  */
 
-    void er_model_update( le_char_t const * const er_ip, le_sock_t const er_port, er_model_t * const er_model, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
+    void er_model_update( er_model_t * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
 
-        /* State variables */
-        static le_enum_t er_state = _LE_FALSE;
+        /* Parsing variables */
+        le_size_t er_parse = 0;
+
+        /* Parsing cells */
+        for ( ; er_parse < ER_MODEL_SEG; er_parse ++ ) {
+
+            /* Push cell address */
+            sprintf( ( char * ) ( er_model->md_cell + er_parse )->ce_push, "/%" _LE_TIME_P "/%s/9", er_time, ( er_model->md_cell + er_parse )->ce_base );
+
+        }
+
+    }
+
+    void er_model_client( le_char_t const * const er_ip, le_sock_t const er_port, er_model_t * const er_model ) {
 
         /* Parsing variables */
         le_size_t er_parse = 0;
@@ -140,64 +160,34 @@
         /* Socket handle variables */
         le_sock_t er_socket = _LE_SOCK_NULL;
 
-        /* Query variables */
-        le_char_t er_query[LE_NETWORK_BUFFER_ADDR] = { 0 };
-
-        /* Check state */
-        if ( er_state == _LE_FALSE ) {
-
-            /* Update state */
-            er_state = _LE_TRUE;
-
-            /* Parsing variables */
-            le_size_t er_index = 0;
-
-            /* Buffer variables */
-            le_size_t er_stamp = 0;
-
-            /* Initialise cells */
-            for ( er_parse = 0; er_parse < ER_MODEL_SEG; er_parse ++ ) {
-
-                /* Initialise cell */
-                er_model->md_cell[er_parse].ce_size = 0;
-                er_model->md_cell[er_parse].ce_pose = NULL;
-                er_model->md_cell[er_parse].ce_data = NULL;
-                er_model->md_cell[er_parse].ce_swap = NULL;
-
-                /* Compose static address */
-                for ( er_index = 0, er_stamp = er_parse; er_index < 5; er_index ++, er_stamp /= 4 ) {
-
-                    /* Assign digits */
-                    er_model->md_cell[er_parse].ce_addr[4-er_index] = ( er_stamp % 4 ) + 48;
-
-                }
-
-            }
-
-        }
-
         /* Parsing cells */
-        for ( er_parse = 0; er_parse < ER_MODEL_SEG; er_parse ++ ) {
+        for ( ; er_parse < ER_MODEL_SEG; er_parse ++ ) {
 
-            /* Check cell state */
-            if ( er_model->md_cell[er_parse].ce_stat == _LE_FALSE ) {
+            /* Check query necessities */
+            if ( strcmp( ( char * ) ( er_model->md_cell + er_parse )->ce_addr, ( char * ) ( er_model->md_cell + er_parse )->ce_push ) != 0 ) {
 
-                /* Build query strings */
-                sprintf( ( char * ) er_query, "/950486422/%s/8", er_model->md_cell[er_parse].ce_addr );
+                /* Lock cell for update */
+                ( er_model->md_cell + er_parse )->ce_stat = ER_CELL_UPDATE;
 
-                /* open server */
+                /* Establish server connexion */
                 if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
-
+                    
                     /* Send query to server */
-                    er_model_query( er_model->md_cell + er_parse, er_query, er_socket );
+                    er_model_query( er_model->md_cell + er_parse, ( er_model->md_cell + er_parse )->ce_push, er_socket );
 
-                    /* close server */
+                    /* Close server connexion */
                     le_client_delete( er_socket );
 
+                    /* Update pushed query */
+                    strcpy( ( char * ) ( er_model->md_cell + er_parse )->ce_addr, ( char * ) ( er_model->md_cell + er_parse )->ce_push );
+
                 }
 
-                /* Update cell state */
-                er_model->md_cell[er_parse].ce_stat = _LE_TRUE;
+                /* Unlock cell after update */
+                ( er_model->md_cell + er_parse )->ce_stat = ( er_model->md_cell + er_parse )->ce_size > 0 ? ER_CELL_DISPLAY : ER_CELL_EMPTY;
+
+                /* Schedule render callback */
+                glutPostRedisplay();
 
             }
 

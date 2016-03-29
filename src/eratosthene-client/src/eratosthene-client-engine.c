@@ -32,6 +32,9 @@
 
     void er_engine_main( le_char_t const * const er_ip, le_sock_t const er_port ) {
 
+        /* Auxiliary engine variables */
+        pthread_t er_auxiliary;
+
         /* Setting windows parameteres */
         glutInitWindowSize( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
 
@@ -85,8 +88,14 @@
         /* Create model */
         er_engine.eg_model = er_model_create();
 
+        /* Create auxiliary engine */
+        pthread_create( & er_auxiliary, NULL, er_engine_auxiliary, NULL );
+
         /* GLUT event management loop */
         glutMainLoop();
+
+        /* Delete auxiliary engine */
+        pthread_cancel( er_auxiliary );
 
         /* Delete model */
         er_model_delete( & ( er_engine.eg_model ) );
@@ -106,14 +115,14 @@
         /* Range management */
         er_engine_range();
 
-        /* Model management */
-        er_model_update( ( le_char_t * ) er_engine.eg_ip, er_engine.eg_port, & er_engine.eg_model, er_engine.eg_vlon, er_engine.eg_vlat, er_engine.eg_valt );
-
         /* Recompute near/far planes */
         er_engine_reshape( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
 
         /* Clear color and depth buffers */
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+        /* Configure points display */
+        glPointSize( er_model_get_psiz( & ( er_engine.eg_model ) ) );
 
         /* Push matrix */
         glPushMatrix(); {
@@ -140,6 +149,22 @@
 
         /* Swap buffers */
         glutSwapBuffers();
+
+    }
+
+    void * er_engine_auxiliary( void * er_void ) {
+
+        /* Auxiliary engine loop */
+        for ( ; ; ) { sleep( 1 );
+            
+            /* Update model */
+            er_model_update( & ( er_engine.eg_model ), 950486422, er_engine.eg_vlon, er_engine.eg_vlat, er_engine.eg_valt );
+
+            /* Query model */
+            er_model_client( ( le_char_t * ) er_engine.eg_ip, er_engine.eg_port, & ( er_engine.eg_model ) );
+
+        /* Return null pointer */
+        } return( NULL );
 
     }
 
@@ -190,7 +215,7 @@
             case ( 'w' ) : {
 
                 /* Update point size */
-                //er_engine_.eg_point = ( er_engine_.eg_point < 8 ) ? er_engine_.eg_point + 1 : 8;
+                er_model_set_psiz( & ( er_engine.eg_model ), er_model_get_psiz( & ( er_engine.eg_model ) ) + 1 );
 
             } break;
 
@@ -198,7 +223,16 @@
             case ( 'q' ) : {
 
                 /* Update point size */
-                //er_engine_.eg_point = ( er_engine_.eg_point > 1 ) ? er_engine_.eg_point - 1 : 1;
+                er_model_set_psiz( & ( er_engine.eg_model ), er_model_get_psiz( & ( er_engine.eg_model ) ) - 1 );
+
+            } break;
+
+            /* Reset azimuth and gamma */
+            case ( 'e' ) : {
+
+                /* Reset variables */
+                er_engine.eg_vazm = 0.0;
+                er_engine.eg_vgam = 0.0;
 
             } break;
 
@@ -294,7 +328,7 @@
 
             /* Update azimuth and gamma angles */
             er_engine.eg_vazm -= ER_ENGINE_MOVE * ( er_engine.eg_u - er_engine.eg_x );
-            er_engine.eg_vgam += ER_ENGINE_MOVE * ( er_engine.eg_v - er_engine.eg_y ) * 2.0;
+            er_engine.eg_vgam -= ER_ENGINE_MOVE * ( er_engine.eg_v - er_engine.eg_y ) * 2.0;
 
         }
 

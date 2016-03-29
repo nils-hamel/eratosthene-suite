@@ -44,12 +44,13 @@
  */
 
     # include "eratosthene-client-model.h"
+    # include <math.h>
+    # include <string.h>
+    # include <unistd.h>
+    # include <pthread.h>
     # include <GL/gl.h>
     # include <GL/glu.h>
     # include <GL/freeglut.h>
-    //# include <GL/glut.h>
-    # include <math.h>
-    # include <string.h>
     # include <eratosthene-include.h>
 
 /*
@@ -133,6 +134,11 @@
      */
 
     void er_engine_main( le_char_t const * const er_ip, le_sock_t const er_port );
+
+    /*! \brief rendering engine
+     */
+
+    void * er_engine_auxiliary( void * er_void );
 
     /*! \brief rendering engine - render callback
      */

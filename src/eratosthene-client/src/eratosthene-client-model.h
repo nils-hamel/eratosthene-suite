@@ -103,6 +103,16 @@
 
     le_void_t er_model_delete( er_model_t * const er_model );
 
+    /*! \brief accessor methods
+     */
+
+    le_size_t er_model_get_psiz( er_model_t const * const er_model );
+
+    /*! \brief mutator methods
+     */
+
+    le_void_t er_model_set_psiz( er_model_t * const er_model, le_size_t er_psiz );
+
     /*! \brief model display
      */
 
@@ -110,7 +120,11 @@
 
     /*! \brief model management */
 
-    void er_model_update( le_char_t const * const er_ip, le_sock_t const er_port, er_model_t * const er_model, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
+    void er_model_update( er_model_t * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
+
+    /*! \brief model management */
+
+    void er_model_client( le_char_t const * const er_ip, le_sock_t const er_port, er_model_t * const er_model );
 
     /*! \brief query management
      */
