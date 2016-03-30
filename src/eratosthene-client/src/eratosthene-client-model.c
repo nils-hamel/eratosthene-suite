@@ -142,52 +142,54 @@
     source - model management
  */
 
-    void er_model_update( er_model_t * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
+    void er_model_update( er_model_t * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t er_alt ) {
 
-        /* Parsing variables */
-        le_size_t er_parse = 0;
-        le_size_t er_index = 0;
-        le_size_t er_depth = 4;
+        /* Scale variables */
+        le_size_t er_depth = 0;
 
         /* Address variables */
-        le_address_t er_ref = LE_ADDRESS_C_SIZE( 24 );
-        le_address_t er_qry = LE_ADDRESS_C_SIZE( 24 );
+        le_address_t er_refa = LE_ADDRESS_C;
+        le_address_t er_qrya = LE_ADDRESS_C;
 
-        /* Pose array variables */
-        le_real_t er_pose[3] = { er_lon, er_lat, er_alt > LE_GEODESY_HMAX ? 0 : er_alt };
+        /* Position array */
+        le_real_t er_pose[3] = { er_lon, er_lat,
+
+            /* Clamp altitude */
+            ( er_alt > LE_GEODESY_HMAX ) ? 0.0 : ( ( er_alt < LE_GEODESY_HMIN ) ? 0.0 : er_alt )
+
+        };
+
+        /* Scale model variables */
+        le_real_t er_scale = ( ( er_alt / 1000.0 ) / ER_ERA ) - 1.0;
+
+        /* Compute adaptative depth */
+        er_scale = 32.0 * ( 1.0 - ( exp( pow( fabs( er_scale ), 0.125 ) ) / exp( 1.0 ) ) );
+
+        /* Clamp adaptative depth */
+        er_depth = ( er_scale < 4.0 ) ? 4 : ( ( er_scale > 13.0 ) ? 13 : er_scale );
+
+        /* Assign address time and depth */
+        le_address_set_time ( & er_qrya, er_time );
+        le_address_set_depth( & er_qrya, 9 );
+
+        /* Assign address size */
+        le_address_set_size( & er_refa, er_depth );
+        le_address_set_size( & er_qrya, er_depth );
 
         /* Compute reference address */
-        le_address_set_pose( & er_ref, er_pose );
+        le_address_set_pose( & er_refa, er_pose );
 
-        while ( ( er_parse < ER_MODEL_SEG ) && ( er_depth <= 17 ) ) {
+        /* Copy address head */
+        memcpy( er_qrya.as_addr, er_refa.as_addr, er_depth );
 
-            /* Copy address head */
-            memcpy( er_qry.as_addr, er_ref.as_addr, er_depth );
+        /* Assign query */
+        le_address_cvas( & er_qrya, ( er_model->md_cell )->ce_push );
 
-            for ( er_index = 0; er_index < ( ( er_depth + 1 >= 10 ) ? 8 : 4 ); er_index ++ ) {
-
-                if ( ( er_index != le_address_get_digit( & er_ref, er_depth ) ) || ( er_depth == 17 ) ) {
-
-                    le_address_set_size ( & er_qry, er_depth + 1 );
-                    le_address_set_digit( & er_qry, er_depth, er_index );
-                    le_address_set_time ( & er_qry, er_time );
-                    le_address_set_depth( & er_qry, 6 );
-
-                    memset( ( er_model->md_cell + er_parse )->ce_push, 0, _LE_USE_DEPTH );
-
-                    le_address_cvas( & er_qry, ( er_model->md_cell + er_parse )->ce_push );
-
-                    fprintf( stderr, "%u : %s\n", er_index, ( er_model->md_cell + er_parse )->ce_push );
-
-                    er_parse ++;
-
-                }
-
-            }
-
-            er_depth ++;
-
-        }
+        le_address_set_pp( & er_qrya, er_depth - 1, 1 );
+        le_address_cvas( & er_qrya, ( er_model->md_cell + 1 )->ce_push );
+        le_address_set_pp( & er_qrya, er_depth - 1, 2 );
+        le_address_cvas( & er_qrya, ( er_model->md_cell + 2 )->ce_push );
+        
 
     }
 
@@ -205,112 +207,7 @@
             /* Check update necessities */
             if ( er_cell_get_update( er_model->md_cell + er_parse ) == _LE_TRUE ) {
 
-                 fprintf( stderr, "Update : %s\n", ( er_model->md_cell + er_parse )->ce_push );
-
-                /* Establish server connexion */
-                if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
-                    
-                    /* Update cell through server query */
-                    er_cell_set_query( er_model->md_cell + er_parse, er_socket );
-
-                    /* Close server connexion */
-                    le_client_delete( er_socket );
-
-                }
-
-            }
-
-        }
-
-    }
-
-    void er_model_update2( er_model_t * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
-
-        /* Parsing variables - static */
-        static le_size_t er_parse = 0;
-
-        /* Address variables */
-        le_char_t er_addr[_LE_USE_DEPTH] = { 0 };
-
-        /* Search requiered update */
-        do {
-
-            /* Update parser */
-            er_parse = ( er_parse + 1 ) % ER_MODEL_SEG;
-
-            /* Compute altimetric model */
-            le_size_t er_malt = 12 - ( 10 * ( er_alt - ER_ERA ) ) / ER_ERA;
-
-            /* Compose address */
-            sprintf( ( char * ) er_addr, "/%" _LE_TIME_P "/%s/%" _LE_SIZE_P, er_time, ( er_model->md_cell + er_parse )->ce_base, er_malt );
-
-            fprintf( stderr, "%s\n", er_addr );
-
-        /* Check for update */
-        } while ( ( er_cell_set_addr( er_model->md_cell + er_parse, er_addr ) == _LE_FALSE ) && ( er_parse != 0 ) );
-
-        return;
-
-        /* Parsing cells */
-        for ( ; er_parse < ER_MODEL_SEG; er_parse ++ ) {
-
-            /* Compute altimetric model */
-            le_size_t er_malt = 12 - ( 10 * ( er_alt - ER_ERA ) ) / ER_ERA;
-
-            /* Push cell address */
-            sprintf( ( char * ) ( er_model->md_cell + er_parse )->ce_push, "/%" _LE_TIME_P "/%s/%" _LE_SIZE_P, er_time, ( er_model->md_cell + er_parse )->ce_base, er_malt );
-
-        }
-
-    }
-
-    void er_model_client2( le_char_t const * const er_ip, le_sock_t const er_port, er_model_t * const er_model ) {
-
-        /* Parsing variables - static */
-        static le_size_t er_parse = 0;
-
-        le_enum_t er_flag = 0;
-
-        /* Socket handle variables */
-        le_sock_t er_socket = _LE_SOCK_NULL;
-
-        do {
-
-            /* Update parser */
-            er_parse = ( er_parse + 1 ) % ER_MODEL_SEG;
-
-            fprintf( stderr, "%u %u\n", er_flag, er_parse );
-
-            if ( ( er_flag = er_cell_get_update( er_model->md_cell + er_parse ) ) == _LE_TRUE ) {
-
-            /* Establish server connexion */
-            if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
-                
-                /* Update cell through server query */
-                er_cell_set_query( er_model->md_cell + er_parse, er_socket );
-
-                /* Close server connexion */
-                le_client_delete( er_socket );
-
-            }
-
-            }
-
-        } while ( ( er_flag  == _LE_FALSE ) && ( er_parse != 0 ) );
-
-        return;
-
-        /* Parsing variables - static */
-        //le_size_t er_parse = 0;
-
-        /* Socket handle variables */
-        //le_sock_t er_socket = _LE_SOCK_NULL;
-
-        /* Parsing cells */
-        for ( ; er_parse < ER_MODEL_SEG; er_parse ++ ) {
-
-            /* Check update necessities */
-            if ( er_cell_get_update( er_model->md_cell + er_parse ) == _LE_TRUE ) {
+                 //fprintf( stderr, "Update : %s\n", ( er_model->md_cell + er_parse )->ce_push );
 
                 /* Establish server connexion */
                 if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {

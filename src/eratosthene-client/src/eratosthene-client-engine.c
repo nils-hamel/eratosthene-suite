@@ -319,7 +319,7 @@
         if ( ( er_engine.eg_button == GLUT_MIDDLE_BUTTON ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
 
             /* Update longitude and latitude */
-            er_engine.eg_vlon -= ER_ENGINE_MOVE * ( er_engine.eg_v - er_engine.eg_y ) * sin( er_engine.eg_vazm * ER_D2R );
+            er_engine.eg_vlon += ER_ENGINE_MOVE * ( er_engine.eg_v - er_engine.eg_y ) * sin( er_engine.eg_vazm * ER_D2R );
             er_engine.eg_vlat += ER_ENGINE_MOVE * ( er_engine.eg_v - er_engine.eg_y ) * cos( er_engine.eg_vazm * ER_D2R );
 
         }
