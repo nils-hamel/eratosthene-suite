@@ -33,7 +33,7 @@
     void er_engine_main( le_char_t const * const er_ip, le_sock_t const er_port ) {
 
         /* Auxiliary engine variables */
-        pthread_t er_auxiliary;
+        //pthread_t er_auxiliary;
 
         /* Setting windows parameteres */
         glutInitWindowSize( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
@@ -60,6 +60,7 @@
         glutMouseFunc        ( er_engine_mouse   );
         glutMotionFunc       ( er_engine_move    );
         glutPassiveMotionFunc( er_engine_move    );
+        glutIdleFunc         ( er_engine_auxiliary );
 
         /* Setting color clear value */
         glClearColor( 0.0, 0.0, 0.0, 0.0 );
@@ -89,13 +90,13 @@
         glEnableClientState( GL_COLOR_ARRAY  );
 
         /* Create auxiliary engine */
-        pthread_create( & er_auxiliary, NULL, er_engine_auxiliary, NULL );
+        //pthread_create( & er_auxiliary, NULL, & er_engine_auxiliary, NULL );
 
         /* GLUT event management loop */
         glutMainLoop();
 
         /* Delete auxiliary engine */
-        pthread_cancel( er_auxiliary );
+        //pthread_cancel( er_auxiliary );
 
         /* Disable vertex and color arrays */
         glDisableClientState( GL_COLOR_ARRAY  );
@@ -114,6 +115,12 @@
 
         /* Range management */
         er_engine_range();
+
+        /* Update model */
+        //er_model_update( & ( er_engine.eg_model ), 950486422, er_engine.eg_vlon, er_engine.eg_vlat, er_engine.eg_valt );
+
+        /* Query model */
+        //er_model_client( ( le_char_t * ) er_engine.eg_ip, er_engine.eg_port, & ( er_engine.eg_model ) );           
 
         /* Recompute near/far planes */
         er_engine_reshape( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
@@ -136,10 +143,10 @@
             );
 
             /* Motion management - rotations */
-            glRotatef( er_engine.eg_vgam, 1.0, 0.0, 0.0 );
-            glRotatef( er_engine.eg_vazm, 0.0, 0.0, 1.0 );
-            glRotatef( er_engine.eg_vlat, 1.0, 0.0, 0.0 );
-            glRotatef( er_engine.eg_vlon, 0.0, 1.0, 0.0 );
+            glRotatef( +er_engine.eg_vgam, 1.0, 0.0, 0.0 );
+            glRotatef( +er_engine.eg_vazm, 0.0, 0.0, 1.0 );
+            glRotatef( +er_engine.eg_vlat, 1.0, 0.0, 0.0 );
+            glRotatef( -er_engine.eg_vlon, 0.0, 1.0, 0.0 );
 
             /* Display earth model */
             er_model_main( & ( er_engine.eg_model ) );
@@ -152,19 +159,13 @@
 
     }
 
-    void * er_engine_auxiliary( void * er_void ) {
+    void er_engine_auxiliary( void ) {
 
-        /* Auxiliary engine loop */
-        for ( ; ; ) { sleep( 1 );
-            
-            /* Update model */
-            er_model_update( & ( er_engine.eg_model ), 950486422, er_engine.eg_vlon, er_engine.eg_vlat, er_engine.eg_valt );
+        /* Update model */
+        er_model_update( & ( er_engine.eg_model ), 950486422, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt * 1000 );
 
-            /* Query model */
-            er_model_client( ( le_char_t * ) er_engine.eg_ip, er_engine.eg_port, & ( er_engine.eg_model ) );
-
-        /* Return null pointer */
-        } return( NULL );
+        /* Query model */
+        er_model_client( ( le_char_t * ) er_engine.eg_ip, er_engine.eg_port, & ( er_engine.eg_model ) );
 
     }
 
@@ -191,6 +192,8 @@
 
         /* Set model view matrix to identity */
         glLoadIdentity();
+
+        glutPostRedisplay();
 
     }
 
@@ -250,7 +253,6 @@
 
         };
 
-        /* Schedule render callback */
         glutPostRedisplay();
 
     }
@@ -273,7 +275,8 @@
         if ( ( er_engine.eg_button == 3 ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
 
             /* Update altitude */
-            er_engine.eg_valt *= 1.01;
+            //er_engine.eg_valt *= 1.01;
+            er_engine.eg_valt += ( er_engine.eg_valt - ER_ERA ) * 0.05;
 
         }
 
@@ -281,12 +284,10 @@
         if ( ( er_engine.eg_button == 4 ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
 
             /* Update altitude */
-            er_engine.eg_valt /= 1.01;
+            //er_engine.eg_valt /= 1.01;
+            er_engine.eg_valt -= ( er_engine.eg_valt - ER_ERA ) * 0.05;
 
         }
-
-        /* Schedule render callback */
-        glutPostRedisplay();
 
     }
 
@@ -309,7 +310,7 @@
         if ( ( er_engine.eg_button == GLUT_LEFT_BUTTON ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
 
             /* Update longitude and latitude */
-            er_engine.eg_vlon += ER_ENGINE_MOVE * ( er_engine.eg_u - er_engine.eg_x );
+            er_engine.eg_vlon -= ER_ENGINE_MOVE * ( er_engine.eg_u - er_engine.eg_x );
             er_engine.eg_vlat += ER_ENGINE_MOVE * ( er_engine.eg_v - er_engine.eg_y );
 
         }
@@ -332,9 +333,6 @@
 
         }
 
-        /* Schedule render callback */
-        glutPostRedisplay();
-
     }
 
 /*
@@ -344,10 +342,10 @@
     void er_engine_range() {
 
         /* Angle ranges - cyclic */
-        if ( er_engine.eg_vlon > +360.0 ) er_engine.eg_vlon -= 360;
-        if ( er_engine.eg_vlon < -360.0 ) er_engine.eg_vlon += 360;
-        if ( er_engine.eg_vlat > +360.0 ) er_engine.eg_vlat -= 360;
-        if ( er_engine.eg_vlat < -360.0 ) er_engine.eg_vlat += 360;
+        if ( er_engine.eg_vlon > +180.0 ) er_engine.eg_vlon -= 360;
+        if ( er_engine.eg_vlon < -180.0 ) er_engine.eg_vlon += 360;
+        if ( er_engine.eg_vlat > + 90.0 ) er_engine.eg_vlat  = +90;
+        if ( er_engine.eg_vlat < - 90.0 ) er_engine.eg_vlat  = -90;
         if ( er_engine.eg_vazm > +360.0 ) er_engine.eg_vazm -= 360;
         if ( er_engine.eg_vazm < -360.0 ) er_engine.eg_vazm += 360;
 

@@ -105,6 +105,11 @@
     /*! \brief accessor methods
      */
 
+    le_enum_t er_cell_get_update( er_cell_t const * const er_cell );
+
+    /*! \brief accessor methods
+     */
+
     le_size_t er_cell_get_size( er_cell_t const * const er_cell );
 
     /*! \brief accessor methods
@@ -120,12 +125,7 @@
     /*! \brief mutator methods
      */
 
-    le_void_t er_cell_set_state( er_cell_t * const er_cell, le_enum_t const er_state );
-
-    /*! \brief mutator methods
-     */
-
-    le_void_t er_cell_set_waitstate( er_cell_t * const er_cell, le_enum_t const er_wait, le_enum_t const er_state );
+    le_enum_t er_cell_set_addr( er_cell_t * const er_cell, le_char_t const * const er_push );
 
     /*! \brief mutator methods
      */

@@ -82,6 +82,23 @@
 
     }
 
+    le_enum_t er_cell_get_update( er_cell_t const * const er_cell ) {
+
+        /* Check update necessities */
+        if ( strcmp( ( char * ) er_cell->ce_push, ( char * ) er_cell->ce_addr ) == 0 ) {
+
+            /* Return answer */
+            return( _LE_FALSE );
+
+        } else {
+
+            /* Return answer */
+            return( _LE_TRUE );
+
+        }
+
+    }
+
     le_size_t er_cell_get_size( er_cell_t const * const er_cell ) {
 
         /* Return cell size */
@@ -107,20 +124,23 @@
     source - mutator methods
  */
 
-    le_void_t er_cell_set_state( er_cell_t * const er_cell, le_enum_t const er_state ) {
+    le_enum_t er_cell_set_addr( er_cell_t * const er_cell, le_char_t const * const er_push ) {
 
-        /* Assign cell state */ 
-        er_cell->ce_stat = er_state;
+        /* Push candidate address */
+        strcpy( ( char * ) er_cell->ce_push, ( char * ) er_push );
 
-    }
+        /* Check update requirement */
+        if ( strcmp( ( char * ) er_cell->ce_push, ( char * ) er_cell->ce_addr ) == 0 ) {
 
-    le_void_t er_cell_set_waitstate( er_cell_t * const er_cell, le_enum_t const er_wait, le_enum_t const er_state ) {
+            /* Return update necessities */
+            return( _LE_FALSE );
 
-        /* Wait expected state */
-        while ( er_cell->ce_stat != er_wait );
+        } else {
 
-        /* Assign cell state */
-        er_cell->ce_stat = er_state;
+            /* Return update necessities */
+            return( _LE_TRUE );
+
+        }
 
     }
 
@@ -138,6 +158,9 @@
 
         }
 
+        /* Assign memory segment */
+        er_cell->ce_pose = ( le_real_t * ) er_pswap;
+
         /* Memory reallocation */
         if ( ( er_dswap = realloc( ( le_void_t * ) er_cell->ce_data, ( er_cell->ce_size + er_block ) * sizeof( le_data_t ) ) ) == NULL ) {
 
@@ -147,7 +170,6 @@
         }
 
         /* Assign memory segment */
-        er_cell->ce_pose = ( le_real_t * ) er_pswap;
         er_cell->ce_data = ( le_data_t * ) er_dswap;
 
         /* Update cell size */
@@ -177,17 +199,8 @@
         le_time_t * er_ptrt = NULL;
         le_data_t * er_ptrd = NULL;
 
-        /* Lock cell */
-        er_cell_set_waitstate( er_cell, ER_CELL_IDLE, ER_CELL_UPDATE );
-
-        /* Reset size */
-        er_cell->ce_size = 0;
-
         /* Client/server query handshake */
         if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_QMOD ) != LE_ERROR_SUCCESS ) {
-
-            /* Unlock cell */
-            er_cell_set_state( er_cell, ER_CELL_IDLE );
 
             /* Abort update */
             return;
@@ -200,13 +213,13 @@
         /* Write query address */
         if ( write( er_socket, er_buffer, LE_NETWORK_BUFFER_ADDR ) != LE_NETWORK_BUFFER_ADDR ) {
 
-            /* Unlock cell */
-            er_cell_set_state( er_cell, ER_CELL_IDLE );
-
             /* Abort update */
             return;
 
         }
+
+        /* Reset size */
+        er_cell->ce_size = 0;
 
         /* Reading query elements */
         while( ( er_count = read( er_socket, er_buffer, LE_NETWORK_BUFFER_SYNC ) ) > 0 ) {
@@ -236,9 +249,6 @@
 
             } else {
 
-                /* Unlock cell */
-                er_cell_set_state( er_cell, ER_CELL_IDLE );
-
                 /* Abort update */
                 return;
 
@@ -248,9 +258,6 @@
 
         /* Update cell address */
         strcpy( ( char * ) er_cell->ce_addr, ( char * ) er_cell->ce_push );
-
-        /* Unlock cell */
-        er_cell_set_state( er_cell, ER_CELL_IDLE );
 
     }
 

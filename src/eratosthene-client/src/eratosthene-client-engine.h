@@ -138,7 +138,7 @@
     /*! \brief rendering engine
      */
 
-    void * er_engine_auxiliary( void * er_void );
+    void er_engine_auxiliary( void );
 
     /*! \brief rendering engine - render callback
      */
