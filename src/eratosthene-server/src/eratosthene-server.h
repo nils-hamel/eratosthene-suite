@@ -58,6 +58,7 @@
     # include <stdlib.h>
     # include <stdint.h>
     # include <string.h>
+    # include <common-args.h>
     # include <eratosthene-include.h>
 
 /*
@@ -79,16 +80,6 @@
 /*
     header - function prototypes
  */
-
-    /*! \brief Arguments and parameters parser
-     */
-
-    char * er_read_string( int const argc, char ** argv, char const * const er_long, char const * const er_short );
-
-    /*! \brief Arguments and parameters parser
-     */
-
-    unsigned int er_read_uint( int const argc, char ** argv, char const * const er_long, char const * const er_short, unsigned int er_default );
 
     /*! \brief Main function
      */
