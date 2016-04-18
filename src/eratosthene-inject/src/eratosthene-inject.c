@@ -21,76 +21,6 @@
     # include "eratosthene-inject.h"
 
 /*
-    source - arguments and parameters parser
- */
-
-    char * er_read_string( int const argc, char ** argv, char const * const er_long, char const * const er_short ) {
-
-        /* Parsing variables */
-        int er_parse = 0;
-
-        /* Parses arguments and parameters */
-        for ( ; er_parse < argc; er_parse ++ ) {
-
-            /* Check argument */
-            if ( ( strcmp( argv[er_parse], er_long ) == 0 ) || ( strcmp( argv[er_parse], er_short ) == 0 ) ) {
-
-                /* Check consistency */
-                if ( ( ++ er_parse ) < argc ) {
-
-                    /* Return pointer */
-                    return( argv[er_parse] );
-
-                } else {
-
-                    /* Return pointer */
-                    return( NULL );
-
-                }
-
-            }
-
-        }
-
-        /* Return pointer */
-        return( NULL );
-
-    }
-
-    unsigned int er_read_uint( int const argc, char ** argv, char const * const er_long, char const * const er_short, unsigned int er_default ) {
-
-        /* Parsing variables */
-        int er_parse = 0;
-
-        /* Parses arguments and parameters */
-        for( ; er_parse < argc; er_parse ++ ) {
-
-            /* Check argument */
-            if ( ( strcmp( argv[er_parse], er_long ) == 0 ) || ( strcmp( argv[er_parse], er_short ) == 0 ) ) {
-
-                /* Check consistency */
-                if ( ( ++ er_parse ) < argc ) {
-
-                    /* Return read value */
-                    return( strtoul( argv[er_parse], NULL, 10 ) );
-
-                } else {
-
-                    /* Return default value */
-                    return( er_default );
-
-                }
-
-            }
-
-        }
-
-        /* Return default value */
-        return( er_default );
-
-    }
-
-/*
     source - injection procedure
  */
 
@@ -162,7 +92,7 @@
     int main( int argc, char ** argv ) {
 
         /* Server port variables */
-        unsigned int er_port = er_read_uint( argc, argv, "--port", "-t", _LE_USE_PORT );
+        unsigned int er_port = lc_read_uint( argc, argv, "--port", "-t", _LE_USE_PORT );
 
         /* Stream handle variables */
         FILE * er_stream = NULL;
@@ -171,7 +101,7 @@
         le_sock_t er_client = _LE_SOCK_NULL;
 
         /* Create input stream */
-        if ( ( er_stream = fopen( er_read_string( argc, argv, "--file", "-f" ), "r" ) ) == NULL ) {
+        if ( ( er_stream = fopen( lc_read_string( argc, argv, "--file", "-f" ), "r" ) ) == NULL ) {
 
             /* Display message */
             fprintf( stderr, "eratosthene-inject : error : unable to access file\n" );
@@ -179,7 +109,7 @@
         } else {
 
             /* Create client handle */
-            if ( ( er_client = le_client_create( ( le_char_t * ) er_read_string( argc, argv, "--ip", "-i" ), er_port ) ) == _LE_SOCK_NULL ) {
+            if ( ( er_client = le_client_create( ( le_char_t * ) lc_read_string( argc, argv, "--ip", "-i" ), er_port ) ) == _LE_SOCK_NULL ) {
 
                 /* Display message */
                 fprintf( stderr, "eratosthene-inject : error : unable to connect to server\n" );
