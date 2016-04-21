@@ -185,7 +185,7 @@
         glLoadIdentity();
 
         /* Compute projectio matrix */
-        gluPerspective( 45, ( float ) er_width / er_height, 1.0, er_engine.eg_valt - ER_ER2 );
+        gluPerspective( 45, ( float ) er_width / er_height, 0.1, er_engine.eg_valt - ER_ER2 );
 
         /* Matrix mode to modelview */
         glMatrixMode( GL_MODELVIEW );

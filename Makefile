@@ -7,14 +7,13 @@
     MAKE_DOCENT:=doc
     MAKE_LIBRAR:=lib
     MAKE_SOURCE:=src
-    MAKE_INPATH:=/media/dhlabv/eratosthene-suite/bin
+    MAKE_INPATH:=/media/dhlabv/bin/eratosthene-suite
     MAKE_CMCOPY:=cp
     MAKE_CMRMFL:=rm -f
     MAKE_CMMKDR:=mkdir -p
     MAKE_CMMKLN:=ln -sf
 
-    BUILD_SUBMD:=$(MAKE_LIBRAR)/liberatosthene
-    #$(MAKE_LIBRAR)/libcommon
+    BUILD_SUBMD:=$(MAKE_LIBRAR)/liberatosthene $(MAKE_LIBRAR)/libcommon
 
 #
 #   make - Modules
@@ -78,6 +77,7 @@
 #
 
     make-install:
+	$(MAKE_CMMKDR) $(MAKE_INPATH)
 	@$(foreach SOFT, $(MAKE_BUILDS), $(MAKE) -C $(MAKE_SOURCE)/$(SOFT) install && ) true
 
     make-uninstall:
