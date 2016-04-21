@@ -14,7 +14,7 @@
     MAKE_LIBRAR:=lib
     MAKE_OBJECT:=obj
     MAKE_SOURCE:=src
-    MAKE_BNPATH:=/media/dhlabv/bin/eratosthene-suite
+    MAKE_BNPATH:=/media/dhlabv/bin/eratosthene-suite/bin
     MAKE_HDPATH:=/media/dhlabv/usr/include
     MAKE_CMCOPY:=cp
     MAKE_CMRMFL:=rm -f
