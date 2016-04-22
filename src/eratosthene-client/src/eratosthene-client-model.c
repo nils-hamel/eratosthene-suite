@@ -219,7 +219,7 @@
                     er_cell_set_query( er_model->md_cell + er_parse, er_socket );
 
                     /* Close server connexion */
-                    le_client_delete( er_socket );
+                    er_socket = le_client_delete( er_socket );
 
                 }
 
