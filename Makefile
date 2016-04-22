@@ -88,5 +88,5 @@
 #
 
     make-directories:
-	$(MAKE_CMMKDR) $(MAKE_BINARY) $(MAKE_DOCENT)
+	$(MAKE_CMMKDR) $(MAKE_BINARY) $(MAKE_DOCENT) $(MAKE_DOCENT)/html
 
