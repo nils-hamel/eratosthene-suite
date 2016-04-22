@@ -58,7 +58,7 @@
                 le_server( er_server, & er_system );
 
                 /* Delete server handle */
-                le_server_delete( er_server );
+                er_server = le_server_delete( er_server );
 
             }
 

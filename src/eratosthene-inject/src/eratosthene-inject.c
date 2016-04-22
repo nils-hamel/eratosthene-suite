@@ -130,7 +130,7 @@
                 }
 
                 /* Delete client handle */
-                le_client_delete( er_client );
+                er_client = le_client_delete( er_client );
 
             }
 
