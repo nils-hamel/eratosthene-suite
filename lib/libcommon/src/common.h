@@ -18,10 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   eratosthene-inject.h
+    /*! \file   common.h
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Eratosthene injection software
+     *  Common header
      */
 
     /*! \mainpage eratosthene-suite
@@ -40,8 +40,8 @@
     header - inclusion guard
  */
 
-    # ifndef __ER_INJECT__
-    # define __ER_INJECT__
+    # ifndef __LC__
+    # define __LC__
 
 /*
     header - C/C++ compatibility
@@ -55,25 +55,9 @@
     header - includes
  */
 
-    # include <stdio.h>
-    # include <stdlib.h>
-    # include <stdint.h>
-    # include <string.h>
-    # include <common-args.h>
-    # include <eratosthene-include.h>
-
 /*
     header - preprocessor definitions
  */
-
-    /* Define stream data format */
-    # define ER_INJECT_FORMAT  "%" _LE_REAL_S \
-                              " %" _LE_REAL_S \
-                              " %" _LE_REAL_S \
-                              " %" _LE_TIME_S \
-                              " %" _LE_DATA_S \
-                              " %" _LE_DATA_S \
-                              " %" _LE_DATA_S
 
 /*
     header - preprocessor macros
@@ -90,16 +74,6 @@
 /*
     header - function prototypes
  */
-
-    /*! \brief injection procedure
-     */
-
-    void er_injection( le_sock_t const er_client, FILE * const er_stream );
-
-    /*! \brief Main function
-     */
-
-    int main( int argc, char ** argv );
 
 /*
     header - C/C++ compatibility

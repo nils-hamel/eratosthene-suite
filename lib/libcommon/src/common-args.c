@@ -1,5 +1,5 @@
 /*
- *  liberatosthene - geodetic system
+ *  eratosthene-suite - geodetic system
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016 EPFL CDH DHLAB
@@ -21,7 +21,7 @@
     # include "common-args.h"
 
 /*
-    source - arguments and parameters parser
+    source - arguments and parameters parsers
  */
 
     char * lc_read_string( int const argc, char ** argv, char const * const er_long, char const * const er_short ) {
@@ -89,3 +89,4 @@
         return( er_default );
 
     }
+

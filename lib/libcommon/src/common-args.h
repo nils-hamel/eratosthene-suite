@@ -1,5 +1,5 @@
 /*
- *  liberatosthene - geodetic system
+ *  eratosthene-suite - geodetic system
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016 EPFL CDH DHLAB
@@ -21,18 +21,7 @@
     /*! \file   common-args.h
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Common library - arguments and parameters
-     */
-
-    /*! \mainpage eratosthene-suite
-     *
-     *  \section eratosthene-suite
-     * 
-     *  ...
-     *
-     *  \section Copyright and License
-     *
-     *  ...
+     *  Arguments and parameters parsers
      */
 
 /*
@@ -78,12 +67,35 @@
     header - function prototypes
  */
 
-    /*! \brief Arguments and parameters parser
+    /*! \brief Arguments and parameters parsers
+     *
+     *  This function searches in the provided arguments list if the specified
+     *  argument is present. When it is, the function returns the pointer to
+     *  the string containing the parameter of the found argument, NULL is
+     *  returned otherwise.
+     *
+     *  \param argc     Standard parameter
+     *  \param argv     Standard parameter
+     *  \param er_long  Long form argument
+     *  \param er_short Short form argument
      */
 
     char * lc_read_string( int const argc, char ** argv, char const * const er_long, char const * const er_short );
 
-    /*! \brief Arguments and parameters parser
+    /*! \brief Arguments and parameters parsers
+     *
+     *  This function searches in the provided argument list if the specified
+     *  argument is present. As it is, the function converts into unsigned int
+     *  the value of the parameter corresponding to the found argument.
+     *
+     *  When the argument is not found in the list, the function simply returns
+     *  the provided default value.
+     *
+     *  \param argc       Standard parameter
+     *  \param argv       Standard parameter
+     *  \param er_long    Long form argument
+     *  \param er_short   Short form argument
+     *  \param er_default Default value
      */
 
     unsigned int lc_read_uint( int const argc, char ** argv, char const * const er_long, char const * const er_short, unsigned int er_default );
