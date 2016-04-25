@@ -37,6 +37,7 @@
         /* Socket i/o count variables */
         le_size_t er_parse = 0;
         le_size_t er_count = 0;
+        le_size_t er_fread = 0;
 
         /* Socket i/o buffer */
         le_byte_t er_buffer[LE_NETWORK_BUFFER_SYNC] = LE_NETWORK_BUFFER_C;
@@ -49,12 +50,17 @@
             er_ptrt = ( le_time_t * ) ( er_ptrp + 3 );
             er_ptrd = ( le_data_t * ) ( er_ptrt + 1 );
 
-            /* Read stream element and update i/o parser */
-            if ( fscanf( er_stream, ER_INJECT_FORMAT, er_ptrp, er_ptrp + 1, er_ptrp + 2, er_ptrt, er_ptrd, er_ptrd + 1, er_ptrd + 2 ) == 7 ) {
+            /* Read stream element - spatial coordinates */
+            er_fread  = fread( ( le_void_t * ) er_ptrp, sizeof( le_real_t ), 3, er_stream );
 
-                er_parse += LE_ARRAY_LINE;
+            /* Read stream element - time coordinates */
+            er_fread += fread( ( le_void_t * ) er_ptrt, sizeof( le_time_t ), 1, er_stream );
 
-            }
+            /* Read stream element - colorimetry */
+            er_fread += fread( ( le_void_t * ) er_ptrd, sizeof( le_data_t ), 3, er_stream );
+
+            /* Check reading consistency and update i/o parser */
+            if ( er_fread == 7 ) er_parse += LE_ARRAY_LINE;
 
             /* Check i/o buffer and stream state */
             if ( ( er_parse == LE_NETWORK_BUFFER_SYNC ) || ( ( er_flag = feof( er_stream ) ? _LE_FALSE : _LE_TRUE ) == _LE_FALSE ) ) {
@@ -101,7 +107,7 @@
         le_sock_t er_client = _LE_SOCK_NULL;
 
         /* Create input stream */
-        if ( ( er_stream = fopen( lc_read_string( argc, argv, "--file", "-f" ), "r" ) ) == NULL ) {
+        if ( ( er_stream = fopen( lc_read_string( argc, argv, "--file", "-f" ), "rb" ) ) == NULL ) {
 
             /* Display message */
             fprintf( stderr, "eratosthene-inject : error : unable to access file\n" );

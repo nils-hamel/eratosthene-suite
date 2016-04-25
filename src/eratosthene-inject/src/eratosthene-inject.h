@@ -66,15 +66,6 @@
     header - preprocessor definitions
  */
 
-    /* Define stream data format */
-    # define ER_INJECT_FORMAT  "%" _LE_REAL_S \
-                              " %" _LE_REAL_S \
-                              " %" _LE_REAL_S \
-                              " %" _LE_TIME_S \
-                              " %" _LE_DATA_S \
-                              " %" _LE_DATA_S \
-                              " %" _LE_DATA_S
-
 /*
     header - preprocessor macros
  */
