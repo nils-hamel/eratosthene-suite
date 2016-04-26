@@ -26,65 +26,36 @@
 
     void er_injection( le_sock_t const er_client, FILE * const er_stream ) {
 
-        /* Write status variables */
-        le_enum_t er_flag = _LE_TRUE;
-
-        /* Array pointer variables */
-        le_real_t * er_ptrp = NULL;
-        le_time_t * er_ptrt = NULL;
-        le_data_t * er_ptrd = NULL;
-
         /* Socket i/o count variables */
-        le_size_t er_parse = 0;
         le_size_t er_count = 0;
         le_size_t er_fread = 0;
+        le_size_t er_write = 0;
 
         /* Socket i/o buffer */
         le_byte_t er_buffer[LE_NETWORK_BUFFER_SYNC] = LE_NETWORK_BUFFER_C;
 
         /* Stream data injection */
-        while ( er_flag == _LE_TRUE ) {
+        do {
 
-            /* Compute array pointers */
-            er_ptrp = ( le_real_t * ) ( er_buffer + er_parse );
-            er_ptrt = ( le_time_t * ) ( er_ptrp + 3 );
-            er_ptrd = ( le_data_t * ) ( er_ptrt + 1 );
-
-            /* Read stream element - spatial coordinates */
-            er_fread  = fread( ( le_void_t * ) er_ptrp, sizeof( le_real_t ), 3, er_stream );
-
-            /* Read stream element - time coordinates */
-            er_fread += fread( ( le_void_t * ) er_ptrt, sizeof( le_time_t ), 1, er_stream );
-
-            /* Read stream element - colorimetry */
-            er_fread += fread( ( le_void_t * ) er_ptrd, sizeof( le_data_t ), 3, er_stream );
-
-            /* Check reading consistency and update i/o parser */
-            if ( er_fread == 7 ) er_parse += LE_ARRAY_LINE;
-
-            /* Check i/o buffer and stream state */
-            if ( ( er_parse == LE_NETWORK_BUFFER_SYNC ) || ( ( er_flag = feof( er_stream ) ? _LE_FALSE : _LE_TRUE ) == _LE_FALSE ) ) {
+            /* Read stream elements */
+            if ( ( er_fread = fread( ( le_void_t * ) er_buffer, sizeof( le_byte_t ), LE_NETWORK_BUFFER_SYNC, er_stream ) ) > 0 ) {
 
                 /* Write buffer to socket */
-                if ( write( er_client, er_buffer, er_parse ) != er_parse ) {
+                if ( ( er_write = write( er_client, er_buffer, er_fread ) ) != er_fread ) {
 
                     /* Display message */
                     fprintf( stderr, "eratosthene-inject : error : partial buffer writing on socket\n" );
 
-                    /* Abort injection */
-                    return;
+                } else {
 
-                }
+                    /* Update i/o counter */
+                    er_count += ( er_fread / LE_ARRAY_LINE );
 
-                /* Update i/o counter */
-                er_count += er_parse / LE_ARRAY_LINE;
-
-                /* Reset i/o parser */
-                er_parse = 0;
+                }    
 
             }
 
-        }
+        } while ( ( er_fread > 0 ) && ( er_fread == er_write ) );
 
         /* Display message */
         fprintf( stderr, "eratosthene-inject : injected %" _LE_SIZE_P " element(s)\n", er_count );
