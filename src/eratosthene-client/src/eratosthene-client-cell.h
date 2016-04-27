@@ -44,6 +44,7 @@
  */
 
     # include "eratosthene-client-geodesy.h"
+    # include <GL/gl.h>
     # include <math.h>
     # include <eratosthene-include.h>
 
@@ -52,12 +53,15 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_CELL_C      { ER_CELL_IDLE, { 0 }, { 0 }, { 0 }, 0, NULL, NULL }
+    # define ER_CELL_C      { { 0 }, { 0 }, 0, NULL, NULL }
+    //# define ER_CELL_C      { ER_CELL_IDLE, { 0 }, { 0 }, { 0 }, 0, NULL, NULL }
+
+    /* Define cell array size */
+    # define ER_CELL_ARRAY  6291456
 
     /* Define cell states */
-    # define ER_CELL_IDLE   ( 0x00 )
-    # define ER_CELL_UPDATE ( 0x01 )
-    # define ER_CELL_DRAW   ( 0x02 )
+    //# define ER_CELL_IDLE ( 0x00 )
+    //# define ER_CELL_LOCK ( 0x01 )
 
 /*
     header - preprocessor macros
@@ -73,10 +77,8 @@
 
     typedef struct er_cell_struct {
 
-        le_enum_t   ce_stat;
-        le_char_t   ce_base[_LE_USE_DEPTH];
-        le_char_t   ce_push[_LE_USE_DEPTH];
         le_char_t   ce_addr[_LE_USE_DEPTH];
+        le_char_t   ce_push[_LE_USE_DEPTH];
         le_size_t   ce_size;
         le_real_t * ce_pose;
         le_data_t * ce_data;
@@ -100,16 +102,6 @@
     /*! \brief accessor methods
      */
 
-    le_enum_t er_cell_get_state( er_cell_t const * const er_cell );
-
-    /*! \brief accessor methods
-     */
-
-    le_enum_t er_cell_get_update( er_cell_t const * const er_cell );
-
-    /*! \brief accessor methods
-     */
-
     le_size_t er_cell_get_size( er_cell_t const * const er_cell );
 
     /*! \brief accessor methods
@@ -121,16 +113,6 @@
      */
 
     le_data_t * er_cell_get_data( er_cell_t const * const er_cell );
-
-    /*! \brief mutator methods
-     */
-
-    le_enum_t er_cell_set_addr( er_cell_t * const er_cell, le_char_t const * const er_push );
-
-    /*! \brief mutator methods
-     */
-
-    le_enum_t er_cell_set_push( er_cell_t * const er_cell, le_size_t const er_block );
 
     /*! \brief mutator methods
      */

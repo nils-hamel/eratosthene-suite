@@ -26,19 +26,14 @@
 
     er_cell_t er_cell_create( le_size_t er_address ) {
 
-        /* Decomposition variables */
-        le_size_t er_index = 0;
-
         /* Cell variables */
         er_cell_t er_cell = ER_CELL_C;
 
-        /* Compute cell address string */
-        for ( ; er_index < 5; er_index ++, er_address /= 4 ) {
+        /* Allocate geodetic array memory */
+        er_cell.ce_pose = malloc( sizeof( le_real_t ) * ER_CELL_ARRAY );
 
-            /* Extract address digit */
-            er_cell.ce_base[4-er_index] = ( er_address % 4 ) + 48;
-
-        }
+        /* Allocate colorimetric array memory */
+        er_cell.ce_data = malloc( sizeof( le_data_t ) * ER_CELL_ARRAY );
 
         /* Return constructed cell */
         return( er_cell );
@@ -50,23 +45,13 @@
         /* Cell variables */
         er_cell_t er_reset = ER_CELL_C;
 
-        /* Check array state */
-        if ( er_cell->ce_pose != NULL ) {
+        /* Check array state and memory unallocation */
+        if ( er_cell->ce_pose != NULL ) free( er_cell->ce_pose );
 
-            /* Unallocate cell memory */
-            free( er_cell->ce_pose );
+        /* Check array state and memory unallocation */
+        if ( er_cell->ce_data != NULL ) free( er_cell->ce_data );
 
-        }
-
-        /* Check array state */
-        if ( er_cell->ce_data != NULL ) {
-
-            /* Unallocate cell memory */
-            free( er_cell->ce_data );
-
-        }
-
-        /* Reset cell */
+        /* Clear cell fields */
         * er_cell = er_reset;
 
     }
@@ -74,30 +59,6 @@
 /*
     source - accessor methods
  */
-
-    le_enum_t er_cell_get_state( er_cell_t const * const er_cell ) {
-
-        /* Return cell state */
-        return( er_cell->ce_stat );
-
-    }
-
-    le_enum_t er_cell_get_update( er_cell_t const * const er_cell ) {
-
-        /* Check update necessities */
-        if ( strcmp( ( char * ) er_cell->ce_push, ( char * ) er_cell->ce_addr ) == 0 ) {
-
-            /* Return answer */
-            return( _LE_FALSE );
-
-        } else {
-
-            /* Return answer */
-            return( _LE_TRUE );
-
-        }
-
-    }
 
     le_size_t er_cell_get_size( er_cell_t const * const er_cell ) {
 
@@ -124,62 +85,6 @@
     source - mutator methods
  */
 
-    le_enum_t er_cell_set_addr( er_cell_t * const er_cell, le_char_t const * const er_push ) {
-
-        /* Push candidate address */
-        strcpy( ( char * ) er_cell->ce_push, ( char * ) er_push );
-
-        /* Check update requirement */
-        if ( strcmp( ( char * ) er_cell->ce_push, ( char * ) er_cell->ce_addr ) == 0 ) {
-
-            /* Return update necessities */
-            return( _LE_FALSE );
-
-        } else {
-
-            /* Return update necessities */
-            return( _LE_TRUE );
-
-        }
-
-    }
-
-    le_enum_t er_cell_set_push( er_cell_t * const er_cell, le_size_t const er_block ) {
-
-        /* Swap variables */
-        le_void_t * er_pswap = NULL;
-        le_void_t * er_dswap = NULL;
-
-        /* Memory reallocation */
-        if ( ( er_pswap = realloc( ( le_void_t * ) er_cell->ce_pose, ( er_cell->ce_size + er_block ) * sizeof( le_real_t ) ) ) == NULL ) {
-
-            /* Send message */
-            return( LE_ERROR_MEMORY );
-
-        }
-
-        /* Assign memory segment */
-        er_cell->ce_pose = ( le_real_t * ) er_pswap;
-
-        /* Memory reallocation */
-        if ( ( er_dswap = realloc( ( le_void_t * ) er_cell->ce_data, ( er_cell->ce_size + er_block ) * sizeof( le_data_t ) ) ) == NULL ) {
-
-            /* Send message */
-            return( LE_ERROR_MEMORY );
-
-        }
-
-        /* Assign memory segment */
-        er_cell->ce_data = ( le_data_t * ) er_dswap;
-
-        /* Update cell size */
-        er_cell->ce_size += er_block;
-
-        /* Send message */
-        return( LE_ERROR_SUCCESS );
-
-    }
-
     le_void_t er_cell_set_query( er_cell_t * const er_cell, le_sock_t const er_socket ) {
 
         /* Parsing variables */
@@ -196,7 +101,6 @@
 
         /* Array pointer variables */
         le_real_t * er_ptrp = NULL;
-        le_time_t * er_ptrt = NULL;
         le_data_t * er_ptrd = NULL;
 
         /* Client/server query handshake */
@@ -218,46 +122,38 @@
 
         }
 
-        /* Reset size */
+        /* Query string to cell address */
+        strcpy( ( char * ) er_cell->ce_addr, ( char * ) er_cell->ce_push );
+
+        /* Reset cell size */
         er_cell->ce_size = 0;
 
         /* Reading query elements */
         while( ( er_count = read( er_socket, er_buffer, LE_NETWORK_BUFFER_SYNC ) ) > 0 ) {
-
-            /* Resize cell arrays */
-            if ( er_cell_set_push( er_cell, ( er_count / LE_ARRAY_LINE ) * 3 ) == LE_ERROR_SUCCESS ) {
                 
-                /* Parsing received elements */
-                for ( er_parse = 0; er_parse < er_count; er_parse += LE_ARRAY_LINE, er_track += 3 ) {
+            /* Parsing received elements */
+            for ( er_parse = 0; er_parse < er_count; er_parse += LE_ARRAY_LINE, er_track += 3 ) {
 
-                    /* Compute pointers */
-                    er_ptrp = ( le_real_t * ) ( er_buffer + er_parse );
-                    er_ptrt = ( le_time_t * ) ( er_ptrp + 3 );
-                    er_ptrd = ( le_data_t * ) ( er_ptrt + 1 );
+                /* Compute pointers */
+                er_ptrp = ( le_real_t * ) ( er_buffer + er_parse      );
+                er_ptrd = ( le_data_t * ) ( er_buffer + er_parse + 32 );
 
-                    /* Assign vertex */
-                    er_cell->ce_pose[er_track + 2] = ( ( er_ptrp[2] * 0.001 ) + ER_ERA ) * cos( er_ptrp[1] ) * cos( er_ptrp[0] );
-                    er_cell->ce_pose[er_track    ] = ( ( er_ptrp[2] * 0.001 ) + ER_ERA ) * cos( er_ptrp[1] ) * sin( er_ptrp[0] );
-                    er_cell->ce_pose[er_track + 1] = ( ( er_ptrp[2] * 0.001 ) + ER_ERA ) * sin( er_ptrp[1] );
+                /* Assign vertex */
+                er_cell->ce_pose[er_track + 2] = ( ( er_ptrp[2] * 0.001 ) + ER_ERA ) * cos( er_ptrp[1] ) * cos( er_ptrp[0] );
+                er_cell->ce_pose[er_track    ] = ( ( er_ptrp[2] * 0.001 ) + ER_ERA ) * cos( er_ptrp[1] ) * sin( er_ptrp[0] );
+                er_cell->ce_pose[er_track + 1] = ( ( er_ptrp[2] * 0.001 ) + ER_ERA ) * sin( er_ptrp[1] );
 
-                    /* Assign color */
-                    er_cell->ce_data[er_track    ] = er_ptrd[0];
-                    er_cell->ce_data[er_track + 1] = er_ptrd[1];
-                    er_cell->ce_data[er_track + 2] = er_ptrd[2];
-
-                }
-
-            } else {
-
-                /* Abort update */
-                return;
+                /* Assign color */
+                er_cell->ce_data[er_track    ] = er_ptrd[0];
+                er_cell->ce_data[er_track + 1] = er_ptrd[1];
+                er_cell->ce_data[er_track + 2] = er_ptrd[2];
 
             }
 
-        }
+            /* Update cell size */
+            er_cell->ce_size += ( er_count / LE_ARRAY_LINE ) * 3;
 
-        /* Update cell address */
-        strcpy( ( char * ) er_cell->ce_addr, ( char * ) er_cell->ce_push );
+        }
 
     }
 
