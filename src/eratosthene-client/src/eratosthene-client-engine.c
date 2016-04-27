@@ -32,8 +32,14 @@
 
     void er_engine_main( le_char_t const * const er_ip, le_sock_t const er_port ) {
 
-        /* Auxiliary engine variables */
-        //pthread_t er_auxiliary;
+        /* Thread variables */
+        pthread_t er_secondary;
+
+        /* Assign server address */
+        strcpy( ( char * ) er_engine.eg_ip, ( char * ) er_ip );
+
+        /* Assign server port */
+        er_engine.eg_port = er_port;
 
         /* Setting windows parameteres */
         glutInitWindowSize( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
@@ -53,15 +59,6 @@
         /* Setting GLUT options */
         glutSetOption( GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION );
 
-        /* Assign callback functions */
-        glutDisplayFunc      ( er_engine_render  );
-        glutReshapeFunc      ( er_engine_reshape );
-        glutKeyboardFunc     ( er_engine_keybd   );
-        glutMouseFunc        ( er_engine_mouse   );
-        glutMotionFunc       ( er_engine_move    );
-        glutPassiveMotionFunc( er_engine_move    );
-        glutIdleFunc         ( er_engine_auxiliary );
-
         /* Setting color clear value */
         glClearColor( 0.0, 0.0, 0.0, 0.0 );
 
@@ -76,12 +73,6 @@
         /* Shade model configuration */
         glShadeModel( GL_SMOOTH );
 
-        /* Assign server address */
-        strcpy( ( char * ) er_engine.eg_ip, ( char * ) er_ip );
-
-        /* Assign server port */
-        er_engine.eg_port = er_port;
-
         /* Create model */
         er_engine.eg_model = er_model_create();
 
@@ -89,14 +80,22 @@
         glEnableClientState( GL_VERTEX_ARRAY );
         glEnableClientState( GL_COLOR_ARRAY  );
 
-        /* Create auxiliary engine */
-        //pthread_create( & er_auxiliary, NULL, & er_engine_auxiliary, NULL );
+        /* Engine secondary loop */
+        pthread_create( & er_secondary, NULL, & er_engine_second, NULL );
 
-        /* GLUT event management loop */
+        /* Engine primary loop */
+        glutDisplayFunc      ( er_engine_render  );
+        glutReshapeFunc      ( er_engine_reshape );
+        glutKeyboardFunc     ( er_engine_keybd   );
+        glutMouseFunc        ( er_engine_mouse   );
+        glutMotionFunc       ( er_engine_move    );
+        glutPassiveMotionFunc( er_engine_move    );
+
+        /* Engine primary loop */
         glutMainLoop();
 
-        /* Delete auxiliary engine */
-        //pthread_cancel( er_auxiliary );
+        /* Engine secondary loop */
+        pthread_cancel( er_secondary );
 
         /* Disable vertex and color arrays */
         glDisableClientState( GL_COLOR_ARRAY  );
@@ -107,20 +106,18 @@
 
     }
 
+    void * er_engine_second( void * ) {
+
+        /* Engine secondary loop */
+        for ( ; ; sleep( 0.25 ) ) er_engine_update();
+
+    }
+
 /*
-    source - rendering engine - render callback
+    source - engine callbacks - primary
  */
 
     void er_engine_render( void ) {
-
-        /* Range management */
-        er_engine_range();
-
-        /* Update model */
-        //er_model_update( & ( er_engine.eg_model ), 950486422, er_engine.eg_vlon, er_engine.eg_vlat, er_engine.eg_valt );
-
-        /* Query model */
-        //er_model_client( ( le_char_t * ) er_engine.eg_ip, er_engine.eg_port, & ( er_engine.eg_model ) );           
 
         /* Recompute near/far planes */
         er_engine_reshape( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
@@ -159,10 +156,13 @@
 
     }
 
-    void er_engine_auxiliary( void ) {
+    void er_engine_update( void ) {
+
+        /* Update ranges */
+        er_engine_range();
 
         /* Update model */
-        er_model_update( & ( er_engine.eg_model ), 950486422, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt * 1000 );
+        er_model_update( & ( er_engine.eg_model ), er_engine.eg_time, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt * 1000 );
 
         /* Query model */
         er_model_client( ( le_char_t * ) er_engine.eg_ip, er_engine.eg_port, & ( er_engine.eg_model ) );
@@ -170,7 +170,7 @@
     }
 
 /*
-    source - rendering engine - reshape callback
+    source - engine callbacks - reshape
  */
 
     void er_engine_reshape( int er_width, int er_height ) {
@@ -198,7 +198,7 @@
     }
 
 /*
-    source - rendering engine - keyboard callback
+    source - engine callbacks - keyboard
  */
 
     void er_engine_keybd( unsigned char er_keycode, int er_x, int er_y ) {
@@ -258,7 +258,7 @@
     }
 
 /*
-    source - rendering engine - mouse callback
+    source - engine callbacks - mouse
  */
 
     void er_engine_mouse( int er_button, int er_state, int er_x, int er_y ) {
@@ -275,7 +275,6 @@
         if ( ( er_engine.eg_button == 3 ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
 
             /* Update altitude */
-            //er_engine.eg_valt *= 1.01;
             er_engine.eg_valt += ( er_engine.eg_valt - ER_ERA ) * 0.05;
 
         }
@@ -284,7 +283,6 @@
         if ( ( er_engine.eg_button == 4 ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
 
             /* Update altitude */
-            //er_engine.eg_valt /= 1.01;
             er_engine.eg_valt -= ( er_engine.eg_valt - ER_ERA ) * 0.05;
 
         }
@@ -301,10 +299,6 @@
             er_engine.eg_v = er_y;
 
         }
-
-        /* Update engine handle */
-        er_engine.eg_s = er_x;
-        er_engine.eg_t = er_y;
 
         /* Mouse event switch */
         if ( ( er_engine.eg_button == GLUT_LEFT_BUTTON ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
@@ -336,22 +330,22 @@
     }
 
 /*
-    source - rendering engine - ranges managament
+    source - engine callbacks - ranges
  */
 
     void er_engine_range() {
 
         /* Angle ranges - cyclic */
-        if ( er_engine.eg_vlon > +180.0 ) er_engine.eg_vlon -= 360;
-        if ( er_engine.eg_vlon < -180.0 ) er_engine.eg_vlon += 360;
-        if ( er_engine.eg_vlat > + 90.0 ) er_engine.eg_vlat  = +90;
-        if ( er_engine.eg_vlat < - 90.0 ) er_engine.eg_vlat  = -90;
-        if ( er_engine.eg_vazm > +360.0 ) er_engine.eg_vazm -= 360;
-        if ( er_engine.eg_vazm < -360.0 ) er_engine.eg_vazm += 360;
+        if ( er_engine.eg_vlon > +180.0 ) er_engine.eg_vlon -= +360.0;
+        if ( er_engine.eg_vlon < -180.0 ) er_engine.eg_vlon += +360.0;
+        if ( er_engine.eg_vlat > + 90.0 ) er_engine.eg_vlat  = + 90.0;
+        if ( er_engine.eg_vlat < - 90.0 ) er_engine.eg_vlat  = - 90.0;
+        if ( er_engine.eg_vazm > +360.0 ) er_engine.eg_vazm -= +360.0;
+        if ( er_engine.eg_vazm < -360.0 ) er_engine.eg_vazm += +360.0;
 
         /* Angles ranges - clamp */
-        if ( er_engine.eg_vgam < -90.0 ) er_engine.eg_vgam = -90.0;
-        if ( er_engine.eg_vgam > + 0.0 ) er_engine.eg_vgam = + 0.0;
+        if ( er_engine.eg_vgam <  -90.0 ) er_engine.eg_vgam = - 90.0;
+        if ( er_engine.eg_vgam >  + 0.0 ) er_engine.eg_vgam = +  0.0;
 
         /* Parameter ranges - clamp */
         if ( er_engine.eg_valt < ER_ERL ) er_engine.eg_valt = ER_ERL;

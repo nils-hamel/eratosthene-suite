@@ -67,14 +67,13 @@
         0,\
         0,\
         0,\
-        0,\
-        0,\
         1.5 * ER_ERA,\
         9,\
         46,\
         0.0,\
         0.0,\
         1.0,\
+        950486422,\
         ER_MODEL_C\
     }
 
@@ -105,23 +104,19 @@
 
         char       eg_ip[256];
         int        eg_port;
-
         int        eg_button;
         int        eg_state;
         int        eg_x;
         int        eg_y;
         int        eg_u;
         int        eg_v;
-        int        eg_s;
-        int        eg_t;
-
         float      eg_valt;
         float      eg_vlon;
         float      eg_vlat;
         float      eg_vazm;
         float      eg_vgam;
         float      eg_vscl;
-
+        le_time_t  eg_time;
         er_model_t eg_model;
 
     } er_engine_t;
@@ -138,34 +133,39 @@
     /*! \brief rendering engine
      */
 
-    void er_engine_auxiliary( void );
+    void * er_engine_second( void * );
 
-    /*! \brief rendering engine - render callback
+    /*! \brief engine callbacks - primary
      */
 
     void er_engine_render( void );
 
-    /*! \brief rendering engine - reshape callback
+    /*! \brief engine callbacks - primary
+     */
+
+    void er_engine_update( void );
+
+    /*! \brief engine callbacks - reshape
      */
 
     void er_engine_reshape( int er_width, int er_height );
 
-    /*! \brief rendering engine - keyboard callback
+    /*! \brief engine callbacks - keyboard
      */
 
     void er_engine_keybd( unsigned char er_keycode, int er_x, int er_y );
 
-    /*! \brief rendering engine - mouse callback
+    /*! \brief engine callbacks - mouse
      */
 
     void er_engine_mouse( int er_button, int er_state, int er_x, int er_y );
 
-    /*! \brief rendering engine - mouse callback
+    /*! \brief engine callbacks - mouse
      */
 
     void er_engine_move( int er_x, int er_y );    
 
-    /*! \brief rendering engine - ranges managament
+    /*! \brief engine callbacks - ranges
      */
 
     void er_engine_range();
