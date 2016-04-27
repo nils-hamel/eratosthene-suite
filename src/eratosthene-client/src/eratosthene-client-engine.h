@@ -44,6 +44,7 @@
  */
 
     # include "eratosthene-client-model.h"
+    # include "eratosthene-client-geodesy.h"
     # include <math.h>
     # include <string.h>
     # include <unistd.h>

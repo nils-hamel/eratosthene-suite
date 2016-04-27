@@ -50,9 +50,10 @@
  */
 
     /* Define earth parameters and limits */
-    # define ER_ERA     ( LE_GEODESY_WGS84_A / 1000.0 )
+    //# define ER_ERA     ( LE_GEODESY_WGS84_A / 1000.0 )
+    # define ER_ERA     ( LE_GEODESY_WGS84_A )
     # define ER_ER2     ( ER_ERA / 2.0 )
-    # define ER_ERL     ( ER_ERA * 1.0 )
+    # define ER_ERL     ( ER_ERA * 0.5 )
     # define ER_ERU     ( ER_ERA * 2.0 )
 
     /* Define tiling parameters */
@@ -75,6 +76,21 @@
     header - function prototypes
  */
 
+    /*! \brief scale functions
+     */
+
+    le_real_t er_geodesy_scale( le_real_t const er_altitude );
+
+    /*! \brief scale functions
+     */
+
+    le_real_t er_geodesy_near( le_real_t const er_altitude );
+
+    /*! \brief scale functions
+     */
+
+    le_real_t er_geodesy_far( le_real_t const er_altitude );
+    
 /*
     header - C/C++ compatibility
  */

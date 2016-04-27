@@ -181,7 +181,8 @@
         er_engine_range();
 
         /* Update model */
-        er_model_update( & ( er_engine.eg_model ), er_engine.eg_time, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt * 1000 );
+        //er_model_update( & ( er_engine.eg_model ), er_engine.eg_time, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt * 1000 );
+        er_model_update( & ( er_engine.eg_model ), er_engine.eg_time, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
 
         /* Query model */
         er_model_query( & ( er_engine.eg_model ), ( le_char_t * ) er_engine.eg_ip, er_engine.eg_port );
@@ -194,6 +195,9 @@
 
     void er_engine_reshape( int er_width, int er_height ) {
 
+        /* Compute scale factor */
+        er_engine.eg_vscl = er_geodesy_scale( er_engine.eg_valt );
+
         /* Reset viewport */
         glViewport( 0, 0, er_width, er_height );
 
@@ -204,16 +208,15 @@
         glLoadIdentity();
 
         /* Compute projectio matrix */
-        gluPerspective( 45, ( float ) er_width / er_height, 0.1, er_engine.eg_valt - ER_ER2 );
+        gluPerspective( 45.0, ( double ) er_width / er_height, er_geodesy_near( er_engine.eg_valt ), er_geodesy_far( er_engine.eg_valt ) );
 
         /* Matrix mode to modelview */
         glMatrixMode( GL_MODELVIEW );
 
         /* Set model view matrix to identity */
         glLoadIdentity();
-        
 
-        /* New */
+        /* Apply scale factor to projection matrix */
         glScaled( er_engine.eg_vscl, er_engine.eg_vscl, er_engine.eg_vscl );
 
     }
