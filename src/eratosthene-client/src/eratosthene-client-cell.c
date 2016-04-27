@@ -24,7 +24,7 @@
     source - constructor/destructor methods
  */
 
-    er_cell_t er_cell_create( le_size_t er_address ) {
+    er_cell_t er_cell_create( le_void_t ) {
 
         /* Cell variables */
         er_cell_t er_cell = ER_CELL_C;
@@ -81,9 +81,76 @@
 
     }
 
+    le_enum_t er_cell_get_push( er_cell_t const * const er_cell ) {
+
+        /* Check for pushed address */
+        if ( * ( er_cell->ce_push ) == '\0' ) {
+
+            /* Return negative answer */
+            return( _LE_FALSE );
+
+        } else {
+
+            /* Return positive answer */
+            return( _LE_TRUE );
+
+        }
+
+    }
+
+    le_enum_t er_cell_get_update( er_cell_t const * const er_cell ) {
+
+        /* Compare address and pushed address */
+        if ( er_cell_get_push( er_cell ) == _LE_TRUE ) {
+
+            /* Compare address and pushed address */
+            if ( strcmp( ( char * ) er_cell->ce_addr, ( char * ) er_cell->ce_push ) != 0 ) {
+
+                /* Return positive answer */
+                return( _LE_TRUE );
+
+            } else {
+
+                /* Return negative answer */
+                return( _LE_FALSE );
+
+            }
+
+        } else {
+
+            /* Return negative answer */
+            return( _LE_FALSE );
+
+        }
+
+    }
+
 /*
     source - mutator methods
  */
+
+    le_enum_t er_cell_set_swap( er_cell_t * const er_cella, er_cell_t * const er_cellb ) {
+
+        /* Compare pushed addresses */
+        if ( strcmp( ( char * ) er_cella->ce_push, ( char * ) er_cellb->ce_addr ) == 0 ) {
+
+            /* Swap pushed addresses */
+            strcpy( ( char * ) er_cellb->ce_push, ( char * ) er_cella->ce_push );
+
+            /* Clear cell pushed address */
+            ( er_cella->ce_push )[0] = '\0';
+
+            /* Return positive answer */
+            return( _LE_TRUE );
+
+        } else {
+
+            /* Return negative answer */
+            return( _LE_FALSE );
+
+        }
+
+    }
 
     le_void_t er_cell_set_query( er_cell_t * const er_cell, le_sock_t const er_socket ) {
 
@@ -124,6 +191,9 @@
 
         /* Query string to cell address */
         strcpy( ( char * ) er_cell->ce_addr, ( char * ) er_cell->ce_push );
+
+        /* Clear cell pushed address */
+        ( er_cell->ce_push )[0] = '\0';
 
         /* Reset cell size */
         er_cell->ce_size = 0;

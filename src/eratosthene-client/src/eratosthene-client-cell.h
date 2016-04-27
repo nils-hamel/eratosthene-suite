@@ -92,7 +92,7 @@
     /*! \brief constructor/destructor methods
      */
 
-    er_cell_t er_cell_create( le_size_t er_address );
+    er_cell_t er_cell_create( le_void_t );
 
     /*! \brief constructor/destructor methods
      */
@@ -113,6 +113,21 @@
      */
 
     le_data_t * er_cell_get_data( er_cell_t const * const er_cell );
+
+    /*! \brief accessor methods
+     */
+
+    le_enum_t er_cell_get_push( er_cell_t const * const er_cell );
+
+    /*! \brief accessor methods
+     */
+
+    le_enum_t er_cell_get_update( er_cell_t const * const er_cell );
+
+    /*! \brief mutator methods
+     */
+
+    le_enum_t er_cell_set_swap( er_cell_t * const er_cella, er_cell_t * const er_cellb );
 
     /*! \brief mutator methods
      */

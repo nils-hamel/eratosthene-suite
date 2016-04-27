@@ -56,10 +56,16 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_MODEL_C { 1, { ER_CELL_C } }
+    # define ER_MODEL_C  { 0, NULL }
+
+    /* Define display array types */
+    # define ER_MODEL_VA GL_DOUBLE
+    # define ER_MODEL_CA GL_UNSIGNED_BYTE
+
+    //# define ER_MODEL_C { 1, { ER_CELL_C } }
 
     /* Define fundamental segmentation */
-    # define ER_MODEL_SEG   512
+    //# define ER_MODEL_SEG   512
 
 /*
     header - preprocessor macros
@@ -75,8 +81,8 @@
 
     typedef struct er_model_struct {
 
-        le_size_t md_psiz;
-        er_cell_t md_cell[ER_MODEL_SEG];
+        le_size_t   md_size;
+        er_cell_t * md_cell;
 
     } er_model_t;
 
@@ -87,35 +93,27 @@
     /*! \brief constructor/destructor methods
      */
 
-    er_model_t er_model_create( le_void_t );
+    er_model_t er_model_create( le_size_t er_cells );
 
     /*! \brief constructor/destructor methods
      */
 
     le_void_t er_model_delete( er_model_t * const er_model );
 
-    /*! \brief accessor methods
+    /*! \brief model display methods
      */
 
-    le_size_t er_model_get_psiz( er_model_t const * const er_model );
+    void er_model_main( er_model_t * const er_model );
 
-    /*! \brief mutator methods
+    /*! \brief model update methods
      */
-
-    le_void_t er_model_set_psiz( er_model_t * const er_model, le_size_t er_psiz );
-
-    /*! \brief model display
-     */
-
-    void er_model_main( er_model_t   * const er_model );
-
-    /*! \brief model management */
 
     void er_model_update( er_model_t * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
 
-    /*! \brief model management */
+    /*! \brief model query methods
+     */
 
-    void er_model_client( le_char_t const * const er_ip, le_sock_t const er_port, er_model_t * const er_model );
+    void er_model_query( er_model_t * const er_model, le_char_t const * const er_ip, le_sock_t const er_port );
 
 /*
     header - C/C++ compatibility

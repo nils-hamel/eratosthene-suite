@@ -74,7 +74,7 @@
         glShadeModel( GL_SMOOTH );
 
         /* Create model */
-        er_engine.eg_model = er_model_create();
+        er_engine.eg_model = er_model_create( 512 );
 
         /* Enable vertex and color arrays */
         glEnableClientState( GL_VERTEX_ARRAY );
@@ -85,6 +85,7 @@
 
         /* Engine primary loop */
         glutDisplayFunc      ( er_engine_render  );
+        glutIdleFunc         ( er_engine_render  );
         glutReshapeFunc      ( er_engine_reshape );
         glutKeyboardFunc     ( er_engine_keybd   );
         glutMouseFunc        ( er_engine_mouse   );
@@ -106,7 +107,7 @@
 
     }
 
-    void * er_engine_second( void * ) {
+    void * er_engine_second( void * er_void ) {
 
         /* Engine secondary loop */
         for ( ; ; sleep( 0.25 ) ) er_engine_update();
@@ -126,7 +127,7 @@
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
         /* Configure points display */
-        glPointSize( er_model_get_psiz( & ( er_engine.eg_model ) ) );
+        glPointSize( er_engine.eg_point );
 
         /* Push matrix */
         glPushMatrix(); {
@@ -148,6 +149,24 @@
             /* Display earth model */
             er_model_main( & ( er_engine.eg_model ) );
 
+            /* Earth frame - orientation */
+            glRotatef( 90.0, 1.0, 0.0, 0.0 );
+
+            /* Earth frame - color */
+            glColor3f( 0.3, 0.32, 0.4 );
+
+            /* Earth model variables */
+            GLUquadricObj * er_earth = gluNewQuadric();
+
+            /* Configure quadric */
+            gluQuadricDrawStyle( er_earth, GLU_LINE );
+
+            /* Draw quadric */
+            gluSphere( er_earth, ER_ERA, 360, 180 );
+
+            /* Delete quadric */
+            gluDeleteQuadric( er_earth );
+
         /* Pop matrix */
         } glPopMatrix();
 
@@ -165,7 +184,7 @@
         er_model_update( & ( er_engine.eg_model ), er_engine.eg_time, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt * 1000 );
 
         /* Query model */
-        er_model_client( ( le_char_t * ) er_engine.eg_ip, er_engine.eg_port, & ( er_engine.eg_model ) );
+        er_model_query( & ( er_engine.eg_model ), ( le_char_t * ) er_engine.eg_ip, er_engine.eg_port );
 
     }
 
@@ -192,8 +211,10 @@
 
         /* Set model view matrix to identity */
         glLoadIdentity();
+        
 
-        glutPostRedisplay();
+        /* New */
+        glScaled( er_engine.eg_vscl, er_engine.eg_vscl, er_engine.eg_vscl );
 
     }
 
@@ -218,7 +239,7 @@
             case ( 'w' ) : {
 
                 /* Update point size */
-                er_model_set_psiz( & ( er_engine.eg_model ), er_model_get_psiz( & ( er_engine.eg_model ) ) + 1 );
+                er_engine.eg_point = ( er_engine.eg_point < 8 ) ? er_engine.eg_point + 1 : 8;
 
             } break;
 
@@ -226,7 +247,7 @@
             case ( 'q' ) : {
 
                 /* Update point size */
-                er_model_set_psiz( & ( er_engine.eg_model ), er_model_get_psiz( & ( er_engine.eg_model ) ) - 1 );
+                er_engine.eg_point = ( er_engine.eg_point > 1 ) ? er_engine.eg_point - 1 : 1;
 
             } break;
 
@@ -251,9 +272,10 @@
 
             } break;
 
-        };
+            case ( 'o' ) : { er_engine.eg_vscl *= 1.10; } break;
+            case ( 'p' ) : { er_engine.eg_vscl *= 0.91; } break;
 
-        glutPostRedisplay();
+        };
 
     }
 

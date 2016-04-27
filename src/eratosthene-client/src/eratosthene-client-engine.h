@@ -74,7 +74,8 @@
         0.0,\
         1.0,\
         950486422,\
-        ER_MODEL_C\
+        ER_MODEL_C,\
+        1\
     }
 
     /* Define mouse velocity */
@@ -115,9 +116,10 @@
         float      eg_vlat;
         float      eg_vazm;
         float      eg_vgam;
-        float      eg_vscl;
+        double     eg_vscl;
         le_time_t  eg_time;
         er_model_t eg_model;
+        int        eg_point;
 
     } er_engine_t;
 
@@ -133,7 +135,7 @@
     /*! \brief rendering engine
      */
 
-    void * er_engine_second( void * );
+    void * er_engine_second( void * er_void );
 
     /*! \brief engine callbacks - primary
      */
