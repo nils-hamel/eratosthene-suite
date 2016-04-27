@@ -43,6 +43,7 @@
     header - includes
  */
 
+    # include <math.h>
     # include <eratosthene-include.h>
 
 /*

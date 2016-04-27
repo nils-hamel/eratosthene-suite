@@ -27,7 +27,7 @@
     le_real_t er_geodesy_scale( le_real_t const er_altitude ) {
 
         /* Compute normalised altitude */
-        le_real_t er_normal = ( er_altitude - LE_GEODESY_WGS84_A ) / LE_GEODESY_WGS84_A;
+        le_real_t er_normal = fabs( ( er_altitude - LE_GEODESY_WGS84_A ) / LE_GEODESY_WGS84_A );
 
         /* Return scale factor */
         return( 1.0 - 0.999 * er_normal );
