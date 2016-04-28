@@ -127,47 +127,47 @@
     /*! \brief rendering engine
      */
 
-    void er_engine_main( le_char_t const * const er_ip, le_sock_t const er_port );
+    le_void_t er_engine_main( le_char_t const * const er_ip, le_sock_t const er_port );
 
     /*! \brief rendering engine
      */
 
-    void * er_engine_second( void * er_void );
+    le_void_t * er_engine_second( le_void_t * er_le_void_t );
 
     /*! \brief engine callbacks - primary
      */
 
-    void er_engine_render( void );
+    le_void_t er_engine_render( le_void_t );
 
     /*! \brief engine callbacks - primary
      */
 
-    void er_engine_update( void );
+    le_void_t er_engine_update( le_void_t );
 
     /*! \brief engine callbacks - reshape
      */
 
-    void er_engine_reshape( int er_width, int er_height );
+    le_void_t er_engine_reshape( int er_width, int er_height );
 
     /*! \brief engine callbacks - keyboard
      */
 
-    void er_engine_keybd( unsigned char er_keycode, int er_x, int er_y );
+    le_void_t er_engine_keybd( unsigned char er_keycode, int er_x, int er_y );
 
     /*! \brief engine callbacks - mouse
      */
 
-    void er_engine_mouse( int er_button, int er_state, int er_x, int er_y );
+    le_void_t er_engine_mouse( int er_button, int er_state, int er_x, int er_y );
 
     /*! \brief engine callbacks - mouse
      */
 
-    void er_engine_move( int er_x, int er_y );    
+    le_void_t er_engine_move( int er_x, int er_y );    
 
     /*! \brief engine callbacks - ranges
      */
 
-    void er_engine_range();
+    le_void_t er_engine_range();
 
 /*
     header - C/C++ compatibility

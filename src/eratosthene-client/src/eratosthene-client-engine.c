@@ -30,7 +30,7 @@
     source - rendering engine
  */
 
-    void er_engine_main( le_char_t const * const er_ip, le_sock_t const er_port ) {
+    le_void_t er_engine_main( le_char_t const * const er_ip, le_sock_t const er_port ) {
 
         /* Thread variables */
         pthread_t er_secondary;
@@ -105,7 +105,7 @@
 
     }
 
-    void * er_engine_second( void * er_void ) {
+    le_void_t * er_engine_second( le_void_t * er_le_void_t ) {
 
         /* Engine secondary loop */
         for ( ; ; sleep( 0.25 ) ) er_engine_update();
@@ -116,7 +116,7 @@
     source - engine callbacks - primary
  */
 
-    void er_engine_render( void ) {
+    le_void_t er_engine_render( le_void_t ) {
 
         /* Recompute near/far planes */
         er_engine_reshape( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
@@ -153,7 +153,7 @@
 
     }
 
-    void er_engine_update( void ) {
+    le_void_t er_engine_update( le_void_t ) {
 
         /* Update ranges */
         er_engine_range();
@@ -170,7 +170,7 @@
     source - engine callbacks - reshape
  */
 
-    void er_engine_reshape( int er_width, int er_height ) {
+    le_void_t er_engine_reshape( int er_width, int er_height ) {
 
         /* Compute scale factor */
         er_engine.eg_vscl = er_geodesy_scale( er_engine.eg_valt );
@@ -202,7 +202,7 @@
     source - engine callbacks - keyboard
  */
 
-    void er_engine_keybd( unsigned char er_keycode, int er_x, int er_y ) {
+    le_void_t er_engine_keybd( unsigned char er_keycode, int er_x, int er_y ) {
 
         /* Switch on keycode */
         switch( er_keycode ) {
@@ -263,7 +263,7 @@
     source - engine callbacks - mouse
  */
 
-    void er_engine_mouse( int er_button, int er_state, int er_x, int er_y ) {
+    le_void_t er_engine_mouse( int er_button, int er_state, int er_x, int er_y ) {
 
         /* Update engine handle */
         er_engine.eg_button = er_button;
@@ -291,7 +291,7 @@
 
     }
 
-    void er_engine_move( int er_x, int er_y ) {
+    le_void_t er_engine_move( int er_x, int er_y ) {
 
         /* Check mouse state */
         if ( er_engine.eg_state == GLUT_DOWN ) {
@@ -335,7 +335,7 @@
     source - engine callbacks - ranges
  */
 
-    void er_engine_range() {
+    le_void_t er_engine_range() {
 
         /* Angle ranges - cyclic */
         if ( er_engine.eg_vlon > +180.0 ) er_engine.eg_vlon -= +360.0;

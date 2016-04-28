@@ -98,22 +98,22 @@
     /*! \brief model display methods
      */
 
-    void er_model_main( er_model_t * const er_model );
+    le_void_t er_model_main( er_model_t * const er_model );
 
     /*! \brief model display methods
      */
 
-    void er_model_earth( void );
+    le_void_t er_model_earth( le_void_t );
 
     /*! \brief model update methods
      */
 
-    void er_model_update( er_model_t * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
+    le_void_t er_model_update( er_model_t * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
 
     /*! \brief model query methods
      */
 
-    void er_model_query( er_model_t * const er_model, le_char_t const * const er_ip, le_sock_t const er_port );
+    le_void_t er_model_query( er_model_t * const er_model, le_char_t const * const er_ip, le_sock_t const er_port );
 
 /*
     header - C/C++ compatibility
