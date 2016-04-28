@@ -110,6 +110,9 @@
         /* Engine secondary loop */
         for ( ; ; sleep( 0.25 ) ) er_engine_update();
 
+        /* Return null pointer */
+        return( NULL );
+
     }
 
 /*

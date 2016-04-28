@@ -139,6 +139,48 @@
 
     le_void_t er_model_update( er_model_t * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t er_alt ) {
 
+        /* Address variables */
+        le_address_t er_addr = LE_ADDRESS_C_SIZE( 5 );
+
+        /* Position vector variables */
+        le_real_t er_pose[] = { er_lon, er_lat, er_alt };
+
+        /* Parsing variables */
+        le_size_t er_parse = 0;
+
+        /* Convert position to address */
+        le_address_set_pose( & er_addr, er_pose );
+
+        /* Assign address time */
+        le_address_set_time( & er_addr, er_time );
+
+        /* Assign address depth */
+        le_address_set_depth( & er_addr, 8 );
+
+        /* Initial address shift */
+        le_address_set_shift( & er_addr, 4, -1, -1, 0 );
+
+        /* Primary tile parser */
+        do {
+
+            /* Push address */
+            le_address_cvas( & er_addr, ( ( er_model->md_cell )[er_parse] ).ce_push );
+
+            /* Check state */
+            if ( ( er_parse % 3 ) == 2 ) {
+
+                /* Shift address */
+                le_address_set_shift( & er_addr, 4, -2, 1, 0 );
+
+            } else {
+
+                /* Shift address */
+                le_address_set_shift( & er_addr, 4, +1, 0, 0 );
+
+            }
+
+        } while ( ( er_parse ++ ) < 9 );
+
     }
 
 /*
@@ -164,13 +206,13 @@
             if ( er_cell_get_push( ( er_model->md_cell ) + er_parse ) == _LE_TRUE ) {
 
                 /* Parsing cells array */
-                er_find = 0; do {
-
+                er_find = 0; do { if ( er_find != er_parse ) {
+                    
                     /* Comapre addresses */
                     er_state = er_cell_set_swap( ( er_model->md_cell ) + er_parse, ( er_model->md_cell ) + er_find );
 
                 /* Ending condition */
-                } while ( ( er_state == _LE_FALSE ) && ( ( ++ er_find ) < er_model->md_size ) );
+                } } while ( ( er_state == _LE_FALSE ) && ( ( ++ er_find ) < er_model->md_size ) );
 
             }
 
