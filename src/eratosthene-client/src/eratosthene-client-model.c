@@ -62,7 +62,7 @@
         le_size_t er_parse = 0;
 
         /* Check cells array state */
-        if ( er_model->md_cell != NULL ) {
+        if ( er_model->md_size > 0 ) {
 
             /* Parsing cells array */
             for ( ; er_parse < er_model->md_size; er_parse ++ ) {
@@ -78,7 +78,7 @@
         }
 
         /* Clear model fields */
-        * er_model = er_reset;
+        * ( er_model ) = er_reset;
 
     }
 
@@ -88,10 +88,8 @@
 
     void er_model_main( er_model_t * const er_model ) {
 
-        /* Parsing variables */
+        /* Parsing and count variables */
         le_size_t er_parse = 0;
-
-        /* Count variables */
         le_size_t er_count = 0;
 
         /* Display cells content */
@@ -127,15 +125,15 @@
 
     void er_model_query( er_model_t * const er_model, le_char_t const * const er_ip, le_sock_t const er_port ) {
 
-        /* Socket variables */
-        le_sock_t er_socket = _LE_SOCK_NULL;
+        /* Parasing variables */
+        le_size_t er_parse = 0;
+        le_size_t er_find  = 0;
 
         /* Flag variables */
         le_enum_t er_state = _LE_FALSE;
 
-        /* Parasing variables */
-        le_size_t er_parse = 0;
-        le_size_t er_find  = 0;
+        /* Socket variables */
+        le_sock_t er_socket = _LE_SOCK_NULL;
 
         /* Parsing cells array */
         for ( er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {

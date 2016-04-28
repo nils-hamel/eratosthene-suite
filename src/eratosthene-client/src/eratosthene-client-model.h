@@ -43,13 +43,13 @@
     header - includes
  */
 
-    # include "eratosthene-client-geodesy.h"
-    # include "eratosthene-client-cell.h"
     # include <GL/gl.h>
     # include <GL/glu.h>
     # include <GL/glut.h>
     # include <math.h>
     # include <eratosthene-include.h>
+    # include "eratosthene-client-cell.h"
+    # include "eratosthene-client-geodesy.h"
 
 /*
     header - preprocessor definitions
@@ -61,11 +61,6 @@
     /* Define display array types */
     # define ER_MODEL_VA GL_DOUBLE
     # define ER_MODEL_CA GL_UNSIGNED_BYTE
-
-    //# define ER_MODEL_C { 1, { ER_CELL_C } }
-
-    /* Define fundamental segmentation */
-    //# define ER_MODEL_SEG   512
 
 /*
     header - preprocessor macros
