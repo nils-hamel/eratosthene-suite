@@ -65,23 +65,15 @@
         /* Setting depth clear value */
         glClearDepth( 1.0 );
 
-        /* Setting depth configuration */
-        glEnable( GL_DEPTH_TEST );
-        glDepthFunc( GL_LEQUAL );
-        glDepthMask( GL_TRUE );
-
-        /* Shade model configuration */
-        glShadeModel( GL_SMOOTH );
-
-        /* Create model */
-        er_engine.eg_model = er_model_create( 512 );
+        /* Setting graphical configuration */
+        glEnable    ( GL_DEPTH_TEST );
+        glDepthFunc ( GL_LEQUAL     );
+        glDepthMask ( GL_TRUE       );
+        glShadeModel( GL_SMOOTH     );
 
         /* Enable vertex and color arrays */
         glEnableClientState( GL_VERTEX_ARRAY );
         glEnableClientState( GL_COLOR_ARRAY  );
-
-        /* Engine secondary loop */
-        pthread_create( & er_secondary, NULL, & er_engine_second, NULL );
 
         /* Engine primary loop */
         glutDisplayFunc      ( er_engine_render  );
@@ -92,18 +84,24 @@
         glutMotionFunc       ( er_engine_move    );
         glutPassiveMotionFunc( er_engine_move    );
 
+        /* Create model */
+        er_engine.eg_model = er_model_create( 512 );
+
+        /* Engine secondary loop */
+        pthread_create( & er_secondary, NULL, & er_engine_second, NULL );
+
         /* Engine primary loop */
         glutMainLoop();
 
         /* Engine secondary loop */
         pthread_cancel( er_secondary );
 
+        /* Delete model */
+        er_model_delete( & ( er_engine.eg_model ) );
+
         /* Disable vertex and color arrays */
         glDisableClientState( GL_COLOR_ARRAY  );
         glDisableClientState( GL_VERTEX_ARRAY );
-
-        /* Delete model */
-        er_model_delete( & ( er_engine.eg_model ) );
 
     }
 
@@ -181,8 +179,7 @@
         er_engine_range();
 
         /* Update model */
-        //er_model_update( & ( er_engine.eg_model ), er_engine.eg_time, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt * 1000 );
-        er_model_update( & ( er_engine.eg_model ), er_engine.eg_time, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
+        er_model_update( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
 
         /* Query model */
         er_model_query( & ( er_engine.eg_model ), ( le_char_t * ) er_engine.eg_ip, er_engine.eg_port );
@@ -329,8 +326,8 @@
         if ( ( er_engine.eg_button == GLUT_LEFT_BUTTON ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
 
             /* Update longitude and latitude */
-            er_engine.eg_vlon -= ER_ENGINE_MOVE * ( er_engine.eg_u - er_engine.eg_x );
-            er_engine.eg_vlat += ER_ENGINE_MOVE * ( er_engine.eg_v - er_engine.eg_y );
+            er_engine.eg_vlon -= ER_ERI * ( er_engine.eg_u - er_engine.eg_x );
+            er_engine.eg_vlat += ER_ERI * ( er_engine.eg_v - er_engine.eg_y );
 
         }
 
@@ -338,8 +335,8 @@
         if ( ( er_engine.eg_button == GLUT_MIDDLE_BUTTON ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
 
             /* Update longitude and latitude */
-            er_engine.eg_vlon += ER_ENGINE_MOVE * ( er_engine.eg_v - er_engine.eg_y ) * sin( er_engine.eg_vazm * ER_D2R );
-            er_engine.eg_vlat += ER_ENGINE_MOVE * ( er_engine.eg_v - er_engine.eg_y ) * cos( er_engine.eg_vazm * ER_D2R );
+            er_engine.eg_vlon += ER_ERI * ( er_engine.eg_v - er_engine.eg_y ) * sin( er_engine.eg_vazm * ER_D2R );
+            er_engine.eg_vlat += ER_ERI * ( er_engine.eg_v - er_engine.eg_y ) * cos( er_engine.eg_vazm * ER_D2R );
 
         }
 
@@ -347,8 +344,8 @@
         if ( ( er_engine.eg_button == GLUT_RIGHT_BUTTON ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
 
             /* Update azimuth and gamma angles */
-            er_engine.eg_vazm -= ER_ENGINE_MOVE * ( er_engine.eg_u - er_engine.eg_x );
-            er_engine.eg_vgam -= ER_ENGINE_MOVE * ( er_engine.eg_v - er_engine.eg_y ) * 2.0;
+            er_engine.eg_vazm -= ER_ERI * ( er_engine.eg_u - er_engine.eg_x );
+            er_engine.eg_vgam -= ER_ERI * ( er_engine.eg_v - er_engine.eg_y ) * 2.0;
 
         }
 

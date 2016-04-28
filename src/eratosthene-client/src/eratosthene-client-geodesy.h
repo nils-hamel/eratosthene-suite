@@ -51,15 +51,17 @@
  */
 
     /* Define earth parameters and limits */
-    //# define ER_ERA     ( LE_GEODESY_WGS84_A / 1000.0 )
-    # define ER_ERA     ( LE_GEODESY_WGS84_A )
-    # define ER_ER2     ( ER_ERA / 2.00 )
-    # define ER_ERL     ( ER_ERA * 0.75 )
-    # define ER_ERU     ( ER_ERA * 2.00 )
+    # define ER_ERA ( LE_GEODESY_WGS84_A )
+    # define ER_ER2 ( ER_ERA / 2.00 )
+    # define ER_ERL ( ER_ERA * 0.75 )
+    # define ER_ERU ( ER_ERA * 2.00 )
 
-    /* Define tiling parameters */
-    # define ER_TI      (  2 )
-    # define ER_TL      ( 13 )
+    /* Define earth motion inertia */
+    # define ER_ERI ( 0.001 )
+
+    /* Define conversion factors */
+    # define ER_D2R ( 3.1415926535 / 180.0 )
+    # define ER_R2D ( 180.0 / 3.1415926535 )
 
 /*
     header - preprocessor macros

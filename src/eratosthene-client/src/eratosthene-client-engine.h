@@ -62,6 +62,8 @@
     # define ER_ENGINE_C {\
         { 0 },\
         _LE_USE_PORT,\
+        ER_MODEL_C,\
+        1,\
         0,\
         GLUT_UP,\
         0,\
@@ -74,17 +76,8 @@
         0.0,\
         0.0,\
         1.0,\
-        950486422,\
-        ER_MODEL_C,\
-        1\
+        950486422\
     }
-
-    /* Define mouse velocity */
-    # define ER_ENGINE_MOVE ( 0.001f )
-
-    /* Define trigonometric constants */
-    # define ER_D2R         ( 3.1415926535 / 180.0 )
-    # define ER_R2D         ( 180.0 / 3.1415926535 )
 
 /*
     header - preprocessor macros
@@ -106,21 +99,24 @@
 
         char       eg_ip[256];
         int        eg_port;
+
+        er_model_t eg_model;
+        int        eg_point;
+
         int        eg_button;
         int        eg_state;
         int        eg_x;
         int        eg_y;
         int        eg_u;
         int        eg_v;
+
         float      eg_valt;
         float      eg_vlon;
         float      eg_vlat;
         float      eg_vazm;
         float      eg_vgam;
         double     eg_vscl;
-        le_time_t  eg_time;
-        er_model_t eg_model;
-        int        eg_point;
+        le_time_t  eg_vtim;
 
     } er_engine_t;
 
