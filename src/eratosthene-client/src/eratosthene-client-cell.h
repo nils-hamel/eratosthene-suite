@@ -54,14 +54,9 @@
 
     /* Define pseudo-constructor */
     # define ER_CELL_C      { { 0 }, { 0 }, 0, NULL, NULL }
-    //# define ER_CELL_C      { ER_CELL_IDLE, { 0 }, { 0 }, { 0 }, 0, NULL, NULL }
 
     /* Define cell array size */
     # define ER_CELL_ARRAY  6291456
-
-    /* Define cell states */
-    //# define ER_CELL_IDLE ( 0x00 )
-    //# define ER_CELL_LOCK ( 0x01 )
 
 /*
     header - preprocessor macros

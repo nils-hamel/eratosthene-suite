@@ -52,7 +52,7 @@
         if ( er_cell->ce_data != NULL ) free( er_cell->ce_data );
 
         /* Clear cell fields */
-        * er_cell = er_reset;
+        * ( er_cell ) = er_reset;
 
     }
 
@@ -76,7 +76,7 @@
 
     le_data_t * er_cell_get_data( er_cell_t const * const er_cell ) {
 
-        /* Return color array pointer */
+        /* Return colorimetric array pointer */
         return( er_cell->ce_data );
 
     }
@@ -100,7 +100,7 @@
 
     le_enum_t er_cell_get_update( er_cell_t const * const er_cell ) {
 
-        /* Compare address and pushed address */
+        /* Check for pushed address */
         if ( er_cell_get_push( er_cell ) == _LE_TRUE ) {
 
             /* Compare address and pushed address */
@@ -135,10 +135,10 @@
         if ( strcmp( ( char * ) er_cella->ce_push, ( char * ) er_cellb->ce_addr ) == 0 ) {
 
             /* Swap pushed addresses */
-            strcpy( ( char * ) er_cellb->ce_push, ( char * ) er_cella->ce_push );
+            strcpy( ( char * ) er_cella->ce_push, ( char * ) er_cellb->ce_push );
 
             /* Clear cell pushed address */
-            ( er_cella->ce_push )[0] = '\0';
+            ( er_cellb->ce_push )[0] = '\0';
 
             /* Return positive answer */
             return( _LE_TRUE );
@@ -163,12 +163,12 @@
         /* Socket i/o count variables */
         le_size_t er_count = 0;
 
-        /* Socket i/o buffer variables */
-        le_byte_t er_buffer[LE_NETWORK_BUFFER_SYNC] = LE_NETWORK_BUFFER_C;
-
         /* Array pointer variables */
         le_real_t * er_ptrp = NULL;
         le_data_t * er_ptrd = NULL;
+
+        /* Socket i/o buffer variables */
+        le_byte_t er_buffer[LE_NETWORK_BUFFER_SYNC] = LE_NETWORK_BUFFER_C;
 
         /* Client/server query handshake */
         if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_QMOD ) != LE_ERROR_SUCCESS ) {
@@ -189,10 +189,10 @@
 
         }
 
-        /* Query string to cell address */
+        /* Query to cell address */
         strcpy( ( char * ) er_cell->ce_addr, ( char * ) er_cell->ce_push );
 
-        /* Clear cell pushed address */
+        /* Clear pushed address */
         ( er_cell->ce_push )[0] = '\0';
 
         /* Reset cell size */
