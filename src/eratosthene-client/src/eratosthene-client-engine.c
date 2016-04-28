@@ -131,39 +131,19 @@
         glPushMatrix(); {
 
             /* Motion management - translation */
-            glTranslatef( 0.0,
-
-                + sin( er_engine.eg_vgam * ER_D2R ) * er_engine.eg_valt,
-                - cos( er_engine.eg_vgam * ER_D2R ) * er_engine.eg_valt
-
-            );
+            glTranslated( 0.0, +sin( er_engine.eg_vgam * ER_D2R ) * er_engine.eg_valt, -cos( er_engine.eg_vgam * ER_D2R ) * er_engine.eg_valt );
 
             /* Motion management - rotations */
-            glRotatef( +er_engine.eg_vgam, 1.0, 0.0, 0.0 );
-            glRotatef( +er_engine.eg_vazm, 0.0, 0.0, 1.0 );
-            glRotatef( +er_engine.eg_vlat, 1.0, 0.0, 0.0 );
-            glRotatef( -er_engine.eg_vlon, 0.0, 1.0, 0.0 );
+            glRotated( +er_engine.eg_vgam, 1.0, 0.0, 0.0 );
+            glRotated( +er_engine.eg_vazm, 0.0, 0.0, 1.0 );
+            glRotated( +er_engine.eg_vlat, 1.0, 0.0, 0.0 );
+            glRotated( -er_engine.eg_vlon, 0.0, 1.0, 0.0 );
 
-            /* Display earth model */
+            /* Display model */
             er_model_main( & ( er_engine.eg_model ) );
 
-            /* Earth frame - orientation */
-            glRotatef( 90.0, 1.0, 0.0, 0.0 );
-
-            /* Earth frame - color */
-            glColor3f( 0.3, 0.32, 0.4 );
-
-            /* Earth model variables */
-            GLUquadricObj * er_earth = gluNewQuadric();
-
-            /* Configure quadric */
-            gluQuadricDrawStyle( er_earth, GLU_LINE );
-
-            /* Draw quadric */
-            gluSphere( er_earth, ER_ERA, 360, 180 );
-
-            /* Delete quadric */
-            gluDeleteQuadric( er_earth );
+            /* Display earth */
+            er_model_earth();
 
         /* Pop matrix */
         } glPopMatrix();

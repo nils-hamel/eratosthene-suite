@@ -110,12 +110,12 @@
         int        eg_u;
         int        eg_v;
 
-        float      eg_valt;
-        float      eg_vlon;
-        float      eg_vlat;
-        float      eg_vazm;
-        float      eg_vgam;
-        double     eg_vscl;
+        le_real_t  eg_valt;
+        le_real_t  eg_vlon;
+        le_real_t  eg_vlat;
+        le_real_t  eg_vazm;
+        le_real_t  eg_vgam;
+        le_real_t  eg_vscl;
         le_time_t  eg_vtim;
 
     } er_engine_t;

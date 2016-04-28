@@ -111,6 +111,28 @@
 
     }
 
+    void er_model_earth( void ) {
+
+        /* Earth frame - orientation */
+        glRotated( 90.0, 1.0, 0.0, 0.0 );
+
+        /* Earth frame - color */
+        glColor3f( 0.3, 0.32, 0.4 );
+
+        /* Earth model variables */
+        GLUquadricObj * er_earth = gluNewQuadric();
+
+        /* Configure quadric */
+        gluQuadricDrawStyle( er_earth, GLU_LINE );
+
+        /* Draw quadric */
+        gluSphere( er_earth, ER_ERA, 360, 180 );
+
+        /* Delete quadric */
+        gluDeleteQuadric( er_earth );
+
+    }
+
 /*
     source - model update methods
  */

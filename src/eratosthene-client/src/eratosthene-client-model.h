@@ -100,6 +100,11 @@
 
     void er_model_main( er_model_t * const er_model );
 
+    /*! \brief model display methods
+     */
+
+    void er_model_earth( void );
+
     /*! \brief model update methods
      */
 
