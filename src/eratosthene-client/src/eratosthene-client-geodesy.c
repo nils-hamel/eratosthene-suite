@@ -37,7 +37,7 @@
     le_real_t er_geodesy_near( le_real_t const er_altitude ) {
 
         /* Return near plane depth */
-        return( 1.0 /  er_geodesy_scale( er_altitude ) );
+        return( 1.0 /  pow( er_geodesy_scale( er_altitude ), 0.25 ) );
 
     }
 
