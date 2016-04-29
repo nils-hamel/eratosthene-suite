@@ -41,6 +41,10 @@
         /* Assign server port */
         er_engine.eg_port = er_port;
 
+        /* Query server configuration */
+        er_model_set_sdisc( & ( er_engine.eg_model ), er_engine.eg_ip, er_engine.eg_port );
+        er_model_set_tdisc( & ( er_engine.eg_model ), er_engine.eg_ip, er_engine.eg_port );
+
         /* Setting windows parameteres */
         glutInitWindowSize( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
 

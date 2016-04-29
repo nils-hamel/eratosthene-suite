@@ -97,8 +97,8 @@
 
     typedef struct er_engine_struct {
 
-        char       eg_ip[256];
-        int        eg_port;
+        le_char_t  eg_ip[256];
+        le_sock_t  eg_port;
 
         er_model_t eg_model;
         int        eg_point;
