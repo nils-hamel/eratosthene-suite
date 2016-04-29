@@ -98,30 +98,45 @@
 
     le_void_t er_model_delete( er_model_t * const er_model );
 
+    /*! \brief accessor methods
+     */
+
+    le_size_t er_model_get_sdisc( er_model_t const * const er_model );
+
+    /*! \brief accessor methods
+     */
+
+    le_size_t er_model_get_tdisc( er_model_t const * const er_model );
+
+    /*! \brief mutator methods
+     */
+
+    le_enum_t er_model_set_sdisc( er_model_t * const er_model, le_char_t const * const er_ip, le_sock_t const er_port );
+
+    /*! \brief mutator methods
+     */
+
+    le_enum_t er_model_set_tdisc( er_model_t * const er_model, le_char_t const * const er_ip, le_sock_t const er_port );
+
+    /*! \brief mutator methods
+     */
+
+    le_void_t er_model_set_address( er_model_t * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t er_alt );
+
+    /*! \brief mutator methods
+     */
+
+    le_void_t er_model_set_cell( er_model_t * const er_model, le_char_t const * const er_ip, le_sock_t const er_port );
+
     /*! \brief model display methods
      */
 
-    le_void_t er_model_main( er_model_t * const er_model );
+    le_void_t er_model_display_cell( er_model_t * const er_model );
 
     /*! \brief model display methods
      */
 
-    le_void_t er_model_earth( le_void_t );
-
-    /*! \brief model update methods
-     */
-
-    le_void_t er_model_update( er_model_t * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
-
-    /*! \brief model query methods
-     */
-
-    le_enum_t er_model_disc( er_model_t * const er_model, le_char_t const * const er_ip, le_sock_t const er_port, le_enum_t er_disc );
-
-    /*! \brief model query methods
-     */
-
-    le_void_t er_model_query( er_model_t * const er_model, le_char_t const * const er_ip, le_sock_t const er_port );
+    le_void_t er_model_display_earth( le_void_t );
 
 /*
     header - C/C++ compatibility

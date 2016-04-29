@@ -143,10 +143,10 @@
             glRotated( -er_engine.eg_vlon, 0.0, 1.0, 0.0 );
 
             /* Display model */
-            er_model_main( & ( er_engine.eg_model ) );
+            er_model_display_cell( & ( er_engine.eg_model ) );
 
             /* Display earth */
-            er_model_earth();
+            er_model_display_earth();
 
         /* Pop matrix */
         } glPopMatrix();
@@ -162,10 +162,10 @@
         er_engine_range();
 
         /* Update model */
-        er_model_update( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
+        er_model_set_address( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
 
         /* Query model */
-        er_model_query( & ( er_engine.eg_model ), ( le_char_t * ) er_engine.eg_ip, er_engine.eg_port );
+        er_model_set_cell( & ( er_engine.eg_model ), ( le_char_t * ) er_engine.eg_ip, er_engine.eg_port );
 
     }
 
