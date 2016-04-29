@@ -79,6 +79,9 @@
         le_size_t   md_size;
         er_cell_t * md_cell;
 
+        le_size_t   md_sdis;
+        le_size_t   md_tdis;
+
     } er_model_t;
 
 /*
@@ -109,6 +112,11 @@
      */
 
     le_void_t er_model_update( er_model_t * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
+
+    /*! \brief model query methods
+     */
+
+    le_enum_t er_model_disc( er_model_t * const er_model, le_char_t const * const er_ip, le_sock_t const er_port, le_enum_t er_disc );
 
     /*! \brief model query methods
      */
