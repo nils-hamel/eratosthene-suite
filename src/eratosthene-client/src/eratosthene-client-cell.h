@@ -53,10 +53,10 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_CELL_C      { { 0 }, { 0 }, 0, NULL, NULL }
+    # define ER_CELL_C      { { 0 }, 0, NULL, NULL }
 
     /* Define cell array size */
-    # define ER_CELL_ARRAY  6291456
+    # define ER_CELL_ARRAY  786432
 
 /*
     header - preprocessor macros
@@ -73,7 +73,6 @@
     typedef struct er_cell_struct {
 
         le_char_t   ce_addr[_LE_USE_DEPTH];
-        le_char_t   ce_push[_LE_USE_DEPTH];
         le_size_t   ce_size;
         le_real_t * ce_pose;
         le_data_t * ce_data;
@@ -109,20 +108,15 @@
 
     le_data_t * er_cell_get_data( er_cell_t const * const er_cell );
 
-    /*! \brief accessor methods
+    /*! \brief mutator methods
      */
 
-    le_enum_t er_cell_get_push( er_cell_t const * const er_cell );
-
-    /*! \brief accessor methods
-     */
-
-    le_enum_t er_cell_get_update( er_cell_t const * const er_cell );
+    le_void_t er_cell_set_empty( er_cell_t * const er_cell );
 
     /*! \brief mutator methods
      */
 
-    le_enum_t er_cell_set_swap( er_cell_t * const er_cella, er_cell_t * const er_cellb );
+    le_void_t er_cell_set_addr( er_cell_t * const er_cell, le_address_t const * const er_address );
 
     /*! \brief mutator methods
      */

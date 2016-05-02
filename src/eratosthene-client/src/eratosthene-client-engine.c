@@ -35,16 +35,6 @@
         /* Thread variables */
         pthread_t er_secondary;
 
-        /* Assign server address */
-        strcpy( ( char * ) er_engine.eg_ip, ( char * ) er_ip );
-
-        /* Assign server port */
-        er_engine.eg_port = er_port;
-
-        /* Query server configuration */
-        er_model_set_sdisc( & ( er_engine.eg_model ), er_engine.eg_ip, er_engine.eg_port );
-        er_model_set_tdisc( & ( er_engine.eg_model ), er_engine.eg_ip, er_engine.eg_port );
-
         /* Setting windows parameteres */
         glutInitWindowSize( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
 
@@ -89,7 +79,15 @@
         glutPassiveMotionFunc( er_engine_move    );
 
         /* Create model */
-        er_engine.eg_model = er_model_create( 512 );
+        er_engine.eg_model = er_model_create( 8192 );
+
+        /* Assign server configuration */
+        er_model_set_ip  ( & ( er_engine.eg_model ), er_ip   );
+        er_model_set_port( & ( er_engine.eg_model ), er_port );
+
+        /* Query server configuration */
+        er_model_set_sdisc( & ( er_engine.eg_model ) );
+        er_model_set_tdisc( & ( er_engine.eg_model ) );
 
         /* Engine secondary loop */
         pthread_create( & er_secondary, NULL, & er_engine_second, NULL );
@@ -124,6 +122,9 @@
  */
 
     le_void_t er_engine_render( le_void_t ) {
+
+        /* Update ranges */
+        er_engine_range();
 
         /* Recompute near/far planes */
         er_engine_reshape( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
@@ -162,14 +163,12 @@
 
     le_void_t er_engine_update( le_void_t ) {
 
-        /* Update ranges */
-        er_engine_range();
-
         /* Update model */
-        er_model_set_address( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
+        er_model_set_model( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
+        //er_model_set_address( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
 
         /* Query model */
-        er_model_set_cell( & ( er_engine.eg_model ), ( le_char_t * ) er_engine.eg_ip, er_engine.eg_port );
+        //er_model_set_cell( & ( er_engine.eg_model ), ( le_char_t * ) er_engine.eg_ip, er_engine.eg_port );
 
     }
 

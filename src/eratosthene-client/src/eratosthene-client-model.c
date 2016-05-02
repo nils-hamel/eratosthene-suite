@@ -104,7 +104,21 @@
     source - mutator methods
  */
 
-    le_enum_t er_model_set_sdisc( er_model_t * const er_model, le_char_t const * const er_ip, le_sock_t const er_port ) {
+    le_void_t er_model_set_ip( er_model_t * const er_model, le_char_t const * const er_ip ) {
+
+        /* Assign server ip */
+        strcpy( ( char * ) er_model->md_svip, ( char * ) er_ip );
+
+    }
+
+    le_void_t er_model_set_port( er_model_t * const er_model, le_sock_t const er_port ) {
+
+        /* Assign server port */
+        er_model->md_port = er_port;
+
+    }
+
+    le_enum_t er_model_set_sdisc( er_model_t * const er_model ) {
 
         /* Socket variables */
         le_sock_t er_socket = _LE_SOCK_NULL;
@@ -113,7 +127,7 @@
         le_enum_t er_return = LE_ERROR_SUCCESS;
 
         /* Establish server connexion */
-        if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
+        if ( ( er_socket = le_client_create( er_model->md_svip, er_model->md_port ) ) != _LE_SOCK_NULL ) {
 
             /* Client/server query handshake */
             if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_SMOD ) == LE_ERROR_SUCCESS ) {
@@ -143,7 +157,7 @@
 
     }
 
-    le_enum_t er_model_set_tdisc( er_model_t * const er_model, le_char_t const * const er_ip, le_sock_t const er_port ) {
+    le_enum_t er_model_set_tdisc( er_model_t * const er_model ) {
 
         /* Socket variables */
         le_sock_t er_socket = _LE_SOCK_NULL;
@@ -152,7 +166,7 @@
         le_enum_t er_return = LE_ERROR_SUCCESS;
 
         /* Establish server connexion */
-        if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
+        if ( ( er_socket = le_client_create( er_model->md_svip, er_model->md_port ) ) != _LE_SOCK_NULL ) {
 
             /* Client/server query handshake */
             if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_TMOD ) == LE_ERROR_SUCCESS ) {
@@ -182,97 +196,182 @@
 
     }
 
-    le_void_t er_model_set_address( er_model_t * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t er_alt ) {
+    le_void_t er_model_set_push( er_model_t * const er_model ) {
 
-        /* Address variables */
-        le_address_t er_addr = LE_ADDRESS_C_SIZE( 5 );
+        /* Swapping variables */
+        er_cell_t er_cell = ER_CELL_C;
 
-        /* Position vector variables */
-        le_real_t er_pose[] = { er_lon, er_lat, er_alt };
+        /* Check zero cell state */
+        if ( er_cell_get_size( er_model->md_cell ) > 0 ) {
 
-        /* Parsing variables */
-        le_size_t er_parse = 0;
+            /* Update push value */
+            er_model->md_push ++;
 
-        /* Convert position to address */
-        le_address_set_pose( & er_addr, er_pose );
+            /* Check limitations */
+            if ( er_model->md_push < er_model->md_size ) {
 
-        /* Assign address time */
-        le_address_set_time( & er_addr, er_time );
+                /* Backup pushed cell */
+                er_cell = ( er_model->md_cell )[er_model->md_push];
 
-        /* Assign address depth */
-        le_address_set_depth( & er_addr, 8 );
+                /* Assign zero cell */
+                ( er_model->md_cell )[er_model->md_push] = ( er_model->md_cell )[0];
 
-        /* Initial address shift */
-        le_address_set_shift( & er_addr, 4, -1, -1, 0 );
-
-        /* Primary tile parser */
-        do {
-
-            /* Push address */
-            le_address_cvas( & er_addr, ( ( er_model->md_cell )[er_parse] ).ce_push );
-
-            /* Check state */
-            if ( ( er_parse % 3 ) == 2 ) {
-
-                /* Shift address */
-                le_address_set_shift( & er_addr, 4, -2, 1, 0 );
-
-            } else {
-
-                /* Shift address */
-                le_address_set_shift( & er_addr, 4, +1, 0, 0 );
-
-            }
-
-        } while ( ( er_parse ++ ) < 9 );
-
-    }
-
-    le_void_t er_model_set_cell( er_model_t * const er_model, le_char_t const * const er_ip, le_sock_t const er_port ) {
-
-        /* Parasing variables */
-        le_size_t er_parse = 0;
-        le_size_t er_find  = 0;
-
-        /* Flag variables */
-        le_enum_t er_state = _LE_FALSE;
-
-        /* Socket variables */
-        le_sock_t er_socket = _LE_SOCK_NULL;
-
-        /* Parsing cells array */
-        for ( er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
-
-            /* Check pushed address */
-            if ( er_cell_get_push( ( er_model->md_cell ) + er_parse ) == _LE_TRUE ) {
-
-                /* Parsing cells array */
-                er_find = 0; do { if ( er_find != er_parse ) {
-                    
-                    /* Comapre addresses */
-                    er_state = er_cell_set_swap( ( er_model->md_cell ) + er_parse, ( er_model->md_cell ) + er_find );
-
-                /* Ending condition */
-                } } while ( ( er_state == _LE_FALSE ) && ( ( ++ er_find ) < er_model->md_size ) );
+                /* Assign cell to zero */
+                ( er_model->md_cell )[0] = er_cell;
 
             }
 
         }
 
-        /* Parsing cells array */
-        for ( er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
+    }
 
-            /* Check update necessities */
-            if ( er_cell_get_update( ( er_model->md_cell ) + er_parse ) == _LE_TRUE ) {
+    le_void_t er_model_set_model( er_model_t * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t er_alt ) {
 
-                /* Establish server connexion */
-                if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
-                    
-                    /* Update cell through server query */
-                    er_cell_set_query( ( er_model->md_cell ) + er_parse, er_socket );
+        /* Parsing variables */
+        le_size_t er_plon = 0;
+        le_size_t er_plat = 0;
 
-                    /* Close server connexion */
-                    er_socket = le_client_delete( er_socket );
+        /* Position vector variable */
+        le_real_t er_pose[3] = { 0.0, 0.0, er_alt };
+
+        /* Scale width variables */
+        le_real_t er_scale = LE_2P / pow( 2, LE_GEODESY_ASYA - 1 );
+
+        /* Address variables */
+        le_address_t er_addr = LE_ADDRESS_C_SIZE( LE_GEODESY_ASYA - 1 );
+
+        /* Assign address depth */
+        le_address_set_depth( & er_addr, 6 );
+
+        /* Assign address time */
+        le_address_set_time( & er_addr, er_time );
+
+        /* Clear push stack */
+        er_model->md_push = 0;
+
+        /* Parsing neighbour central cells - longitude */
+        for ( er_plon = 0; er_plon < 9; er_plon ++ ) {
+
+            /* Parsing neighbour central cells - latitude */
+            for ( er_plat = 0; er_plat < 5; er_plat ++ ) {
+
+                /* Compose position vector */
+                er_pose[0] = er_lon + er_scale * ( ( le_real_t ) er_plon - 4.0 );
+                er_pose[1] = er_lat + er_scale * ( ( le_real_t ) er_plat - 2.0 );
+
+                /* Assign address size */
+                le_address_set_size( & er_addr, LE_GEODESY_ASYA - 1 );
+
+                /* Assign address position */
+                le_address_set_pose( & er_addr, er_pose );
+
+                /* Recursive address push */
+                er_model_set_addr( er_model, & er_addr, er_lon, er_lat, er_alt );
+
+            }
+
+        }
+
+        /* Clear remaining cells */
+        while ( ( ++ er_model->md_push ) < er_model->md_size ) {
+
+            /* Clear cell */
+            er_cell_set_empty( ( er_model->md_cell ) + er_model->md_push );
+
+        }
+
+    }
+
+    le_void_t er_model_set_addr( er_model_t * const er_model, le_address_t * const er_addr, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
+
+        /* Socket variables */
+        le_sock_t er_socket = _LE_SOCK_NULL;
+
+        /* Parsing variables */
+        le_size_t er_parse = 0;
+
+        /* Distance computation */
+        le_real_t er_dist = 0.0;
+        le_real_t er_curr = 0.0;
+
+        /* Position vector variables */
+        le_real_t er_pose[3] = { 0.0 };
+        le_real_t er_view[3] = { er_lon, er_lat, er_alt - ER_ERA };
+
+        /* Get cell position */
+        le_address_get_pose( er_addr, er_pose );
+
+        /* Compute cell center */
+        er_pose[0] += ( LE_GEODESY_LMAX - LE_GEODESY_LMIN ) / pow( 2, le_address_get_size( er_addr ) );
+        er_pose[1] += ( LE_GEODESY_AMAX - LE_GEODESY_AMIN ) / pow( 2, le_address_get_size( er_addr ) );
+        er_pose[2] += ( LE_GEODESY_HMAX - LE_GEODESY_HMIN ) / pow( 2, le_address_get_size( er_addr ) );
+
+        /* Convert to cartesian */
+        er_geodesy_cartesian( er_pose, 1 );
+        er_geodesy_cartesian( er_view, 1 );
+
+        /* Compute distance */
+        er_dist = sqrt( ( er_pose[0] - er_view[0] ) * ( er_pose[0] - er_view[0] ) + ( er_pose[1] - er_view[1] ) * ( er_pose[1] - er_view[1] ) + ( er_pose[2] - er_view[2] ) * ( er_pose[2] - er_view[2] ) );
+
+        /* Compute geodetic scale */
+        er_curr = er_geodesy_distance( er_dist, LE_GEODESY_ASYA - 1, er_model->md_sdis - 6 );
+
+        /* Check geodetic scale value */
+        if ( ( fabs( er_curr - le_address_get_size( er_addr ) ) < 1 ) || ( le_address_get_size( er_addr ) == 14 ) ) {
+
+            /* Set cell address */
+            er_cell_set_addr( er_model->md_cell, er_addr );
+
+            /* Establish server connexion */
+            if ( ( er_socket = le_client_create( er_model->md_svip, er_model->md_port ) ) != _LE_SOCK_NULL ) {
+                
+                /* Update cell through server query */
+                er_cell_set_query( er_model->md_cell, er_socket );
+
+                /* Push queried cell */
+                er_model_set_push( er_model );
+
+                /* Close server connexion */
+                er_socket = le_client_delete( er_socket );
+
+            }
+
+        } else {
+
+            /* Increase address size */
+            le_size_t er_addr_s = le_address_get_size( er_addr );
+
+            /* Set address depth */
+            le_address_set_depth( er_addr, 0 );
+
+            /* Establish server connexion */
+            if ( ( er_socket = le_client_create( er_model->md_svip, er_model->md_port ) ) != _LE_SOCK_NULL ) {
+                
+                /* Update cell through server query */
+                er_cell_set_query( er_model->md_cell, er_socket );
+
+                /* Close server connexion */
+                er_socket = le_client_delete( er_socket );
+
+                /* Check cell size */
+                if ( er_cell_get_size( er_model->md_cell ) > 0 ) {
+
+                    /* Set address depth */
+                    le_address_set_depth( er_addr, 6 );
+
+                    /* Parsing sub-cells */
+                    for ( er_parse = 0; er_parse < _LE_USE_BASE; er_parse ++ ) {
+
+                        /* Set address size */
+                        le_address_set_size( er_addr, er_addr_s + 1 );
+
+                        /* Set address digit */
+                        le_address_set_digit( er_addr, er_addr_s, er_parse );
+
+                        /* Recursive cell searching */
+                        er_model_set_addr( er_model, er_addr, er_lon, er_lat, er_alt );
+
+                    }
 
                 }
 
@@ -293,7 +392,7 @@
         le_size_t er_count = 0;
 
         /* Display cells content */
-        for ( ; er_parse < er_model->md_size; er_parse ++ ) {
+        for ( er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
 
             /* Check cell content */
             if ( ( er_count = er_cell_get_size( ( er_model->md_cell ) + er_parse ) ) > 0 ) {

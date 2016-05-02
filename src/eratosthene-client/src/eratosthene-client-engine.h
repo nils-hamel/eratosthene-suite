@@ -60,8 +60,6 @@
 
     /* Define pseudo-constructor */
     # define ER_ENGINE_C {\
-        { 0 },\
-        _LE_USE_PORT,\
         ER_MODEL_C,\
         1,\
         0,\
@@ -96,9 +94,6 @@
      */
 
     typedef struct er_engine_struct {
-
-        le_char_t  eg_ip[256];
-        le_sock_t  eg_port;
 
         er_model_t eg_model;
         int        eg_point;

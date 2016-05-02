@@ -81,74 +81,21 @@
 
     }
 
-    le_enum_t er_cell_get_push( er_cell_t const * const er_cell ) {
-
-        /* Check for pushed address */
-        if ( * ( er_cell->ce_push ) == '\0' ) {
-
-            /* Return negative answer */
-            return( _LE_FALSE );
-
-        } else {
-
-            /* Return positive answer */
-            return( _LE_TRUE );
-
-        }
-
-    }
-
-    le_enum_t er_cell_get_update( er_cell_t const * const er_cell ) {
-
-        /* Check for pushed address */
-        if ( er_cell_get_push( er_cell ) == _LE_TRUE ) {
-
-            /* Compare address and pushed address */
-            if ( strcmp( ( char * ) er_cell->ce_addr, ( char * ) er_cell->ce_push ) != 0 ) {
-
-                /* Return positive answer */
-                return( _LE_TRUE );
-
-            } else {
-
-                /* Return negative answer */
-                return( _LE_FALSE );
-
-            }
-
-        } else {
-
-            /* Return negative answer */
-            return( _LE_FALSE );
-
-        }
-
-    }
-
 /*
     source - mutator methods
  */
 
-    le_enum_t er_cell_set_swap( er_cell_t * const er_cella, er_cell_t * const er_cellb ) {
+    le_void_t er_cell_set_empty( er_cell_t * const er_cell ) {
 
-        /* Compare pushed addresses */
-        if ( strcmp( ( char * ) er_cella->ce_push, ( char * ) er_cellb->ce_addr ) == 0 ) {
+        /* Reset cell size */
+        er_cell->ce_size = 0;
 
-            /* Swap pushed addresses */
-            strcpy( ( char * ) er_cella->ce_push, ( char * ) er_cellb->ce_push );
+    }
 
-            /* Clear cell pushed address */
-            ( er_cellb->ce_push )[0] = '\0';
+    le_void_t er_cell_set_addr( er_cell_t * const er_cell, le_address_t const * const er_address ) {
 
-            /* Return positive answer */
-            return( _LE_TRUE );
-
-        } else {
-
-            /* Return negative answer */
-            return( _LE_FALSE );
-
-        }
+        /* Compute address string */
+        le_address_cvas( er_address, er_cell->ce_addr );
 
     }
 
@@ -179,7 +126,7 @@
         }
 
         /* Query string to socket buffer */
-        strcpy( ( char * ) er_buffer, ( char * ) er_cell->ce_push );
+        strcpy( ( char * ) er_buffer, ( char * ) er_cell->ce_addr );
 
         /* Write query address */
         if ( write( er_socket, er_buffer, LE_NETWORK_BUFFER_ADDR ) != LE_NETWORK_BUFFER_ADDR ) {
@@ -188,12 +135,6 @@
             return;
 
         }
-
-        /* Query to cell address */
-        strcpy( ( char * ) er_cell->ce_addr, ( char * ) er_cell->ce_push );
-
-        /* Clear pushed address */
-        ( er_cell->ce_push )[0] = '\0';
 
         /* Reset cell size */
         er_cell->ce_size = 0;
@@ -209,9 +150,9 @@
                 er_ptrd = ( le_data_t * ) ( er_buffer + er_parse + 32 );
 
                 /* Assign vertex */
-                er_cell->ce_pose[er_track + 2] = ( ( er_ptrp[2] * 0.001 ) + ER_ERA ) * cos( er_ptrp[1] ) * cos( er_ptrp[0] );
-                er_cell->ce_pose[er_track    ] = ( ( er_ptrp[2] * 0.001 ) + ER_ERA ) * cos( er_ptrp[1] ) * sin( er_ptrp[0] );
-                er_cell->ce_pose[er_track + 1] = ( ( er_ptrp[2] * 0.001 ) + ER_ERA ) * sin( er_ptrp[1] );
+                er_cell->ce_pose[er_track + 2] = ( er_ptrp[2] + ER_ERA ) * cos( er_ptrp[1] ) * cos( er_ptrp[0] );
+                er_cell->ce_pose[er_track    ] = ( er_ptrp[2] + ER_ERA ) * cos( er_ptrp[1] ) * sin( er_ptrp[0] );
+                er_cell->ce_pose[er_track + 1] = ( er_ptrp[2] + ER_ERA ) * sin( er_ptrp[1] );
 
                 /* Assign color */
                 er_cell->ce_data[er_track    ] = er_ptrd[0];

@@ -79,6 +79,16 @@
     header - function prototypes
  */
 
+    /*! \brief conversion functions
+     */
+
+    le_void_t er_geodesy_cartesian( le_real_t * const er_array, le_size_t const er_count );
+
+    /*! \brief scale functions
+     */
+
+    le_real_t er_geodesy_distance( le_real_t const er_distance, le_size_t const er_scale_min, le_size_t const er_scale_max );
+
     /*! \brief scale functions
      */
 

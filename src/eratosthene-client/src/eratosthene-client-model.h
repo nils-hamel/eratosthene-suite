@@ -56,7 +56,7 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_MODEL_C  { 0, NULL }
+    # define ER_MODEL_C  { { 0 }, _LE_USE_PORT, 0, 0, NULL, 0, 0 }
 
     /* Define display array types */
     # define ER_MODEL_VA GL_DOUBLE
@@ -76,6 +76,10 @@
 
     typedef struct er_model_struct {
 
+        le_char_t   md_svip[256];
+        le_sock_t   md_port;
+
+        le_size_t   md_push;
         le_size_t   md_size;
         er_cell_t * md_cell;
 
@@ -111,22 +115,37 @@
     /*! \brief mutator methods
      */
 
-    le_enum_t er_model_set_sdisc( er_model_t * const er_model, le_char_t const * const er_ip, le_sock_t const er_port );
+    le_void_t er_model_set_ip( er_model_t * const er_model, le_char_t const * const er_ip );
 
     /*! \brief mutator methods
      */
 
-    le_enum_t er_model_set_tdisc( er_model_t * const er_model, le_char_t const * const er_ip, le_sock_t const er_port );
+    le_void_t er_model_set_port( er_model_t * const er_model, le_sock_t const er_port );
 
     /*! \brief mutator methods
      */
 
-    le_void_t er_model_set_address( er_model_t * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t er_alt );
+    le_enum_t er_model_set_sdisc( er_model_t * const er_model );
 
     /*! \brief mutator methods
      */
 
-    le_void_t er_model_set_cell( er_model_t * const er_model, le_char_t const * const er_ip, le_sock_t const er_port );
+    le_enum_t er_model_set_tdisc( er_model_t * const er_model );
+
+    /*! \brief mutator methods
+     */
+
+    le_void_t er_model_set_push( er_model_t * const er_model );
+
+    /*! \brief mutator methods
+     */
+
+    le_void_t er_model_set_model( er_model_t * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t er_alt );
+
+    /*! \brief mutator methods
+     */
+
+    le_void_t er_model_set_addr( er_model_t * const er_model, le_address_t * const er_addr, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
 
     /*! \brief model display methods
      */
