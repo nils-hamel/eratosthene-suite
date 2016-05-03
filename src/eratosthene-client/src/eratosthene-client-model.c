@@ -240,9 +240,6 @@
         /* Address variables */
         le_address_t er_addr = LE_ADDRESS_C_SIZE( LE_GEODESY_ASYA - 1 );
 
-        /* Assign address depth */
-        le_address_set_depth( & er_addr, 6 );
-
         /* Assign address time */
         le_address_set_time( & er_addr, er_time );
 
@@ -258,6 +255,9 @@
                 /* Compose position vector */
                 er_pose[0] = er_lon + er_scale * ( ( le_real_t ) er_plon - 4.0 );
                 er_pose[1] = er_lat + er_scale * ( ( le_real_t ) er_plat - 2.0 );
+
+                /* Assign address depth */
+                le_address_set_depth( & er_addr, ER_MODEL_DPT );
 
                 /* Assign address size */
                 le_address_set_size( & er_addr, LE_GEODESY_ASYA - 1 );
@@ -293,6 +293,7 @@
         /* Distance computation */
         le_real_t er_dist = 0.0;
         le_real_t er_curr = 0.0;
+        le_size_t er_dept = 0.0;
 
         /* Position vector variables */
         le_real_t er_pose[3] = { 0.0 };
@@ -302,9 +303,9 @@
         le_address_get_pose( er_addr, er_pose );
 
         /* Compute cell center */
-        er_pose[0] += ( LE_GEODESY_LMAX - LE_GEODESY_LMIN ) / pow( 2, le_address_get_size( er_addr ) );
-        er_pose[1] += ( LE_GEODESY_AMAX - LE_GEODESY_AMIN ) / pow( 2, le_address_get_size( er_addr ) );
-        er_pose[2] += ( LE_GEODESY_HMAX - LE_GEODESY_HMIN ) / pow( 2, le_address_get_size( er_addr ) );
+        er_pose[0] += ( LE_GEODESY_LMAX - LE_GEODESY_LMIN ) / pow( 2, le_address_get_size( er_addr ) + 1 );
+        er_pose[1] += ( LE_GEODESY_LMAX - LE_GEODESY_LMIN ) / pow( 2, le_address_get_size( er_addr ) + 1 );
+        er_pose[2] += ( LE_GEODESY_LMAX - LE_GEODESY_LMIN ) / pow( 2, le_address_get_size( er_addr ) + 1 );
 
         /* Convert to cartesian */
         er_geodesy_cartesian( er_pose, 1 );
@@ -314,10 +315,14 @@
         er_dist = sqrt( ( er_pose[0] - er_view[0] ) * ( er_pose[0] - er_view[0] ) + ( er_pose[1] - er_view[1] ) * ( er_pose[1] - er_view[1] ) + ( er_pose[2] - er_view[2] ) * ( er_pose[2] - er_view[2] ) );
 
         /* Compute geodetic scale */
-        er_curr = er_geodesy_distance( er_dist, LE_GEODESY_ASYA - 1, er_model->md_sdis - 6 );
+        er_curr = er_geodesy_distance( er_dist, LE_GEODESY_ASYA - 1, er_model->md_sdis - 8 ); //er_model->md_sdis - 12 );
+        er_dept = er_geodesy_depth( er_dist, 6, 8 );
 
         /* Check geodetic scale value */
-        if ( ( fabs( er_curr - le_address_get_size( er_addr ) ) < 1 ) || ( le_address_get_size( er_addr ) == 14 ) ) {
+        if ( ( fabs( er_curr - le_address_get_size( er_addr ) ) < 1 ) ) {
+
+            /* Set address depth */
+            le_address_set_depth( er_addr, er_dept );
 
             /* Set cell address */
             er_cell_set_addr( er_model->md_cell, er_addr );
@@ -344,6 +349,9 @@
             /* Set address depth */
             le_address_set_depth( er_addr, 0 );
 
+            /* Set cell address */
+            er_cell_set_addr( er_model->md_cell, er_addr );
+
             /* Establish server connexion */
             if ( ( er_socket = le_client_create( er_model->md_svip, er_model->md_port ) ) != _LE_SOCK_NULL ) {
                 
@@ -357,7 +365,7 @@
                 if ( er_cell_get_size( er_model->md_cell ) > 0 ) {
 
                     /* Set address depth */
-                    le_address_set_depth( er_addr, 6 );
+                    le_address_set_depth( er_addr, ER_MODEL_DPT );
 
                     /* Parsing sub-cells */
                     for ( er_parse = 0; er_parse < _LE_USE_BASE; er_parse ++ ) {

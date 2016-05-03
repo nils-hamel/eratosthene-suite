@@ -112,10 +112,17 @@
 
         /* Array pointer variables */
         le_real_t * er_ptrp = NULL;
+        le_time_t * er_ptrt = NULL;
         le_data_t * er_ptrd = NULL;
+
+        /* Optimisation variables */
+        le_size_t er_size = 0;
 
         /* Socket i/o buffer variables */
         le_byte_t er_buffer[LE_NETWORK_BUFFER_SYNC] = LE_NETWORK_BUFFER_C;
+
+        /* Reset cell size */
+        er_cell->ce_size = 0;
 
         /* Client/server query handshake */
         if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_QMOD ) != LE_ERROR_SUCCESS ) {
@@ -125,44 +132,44 @@
 
         }
 
-        /* Query string to socket buffer */
-        strcpy( ( char * ) er_buffer, ( char * ) er_cell->ce_addr );
-
         /* Write query address */
-        if ( write( er_socket, er_buffer, LE_NETWORK_BUFFER_ADDR ) != LE_NETWORK_BUFFER_ADDR ) {
+        if ( write( er_socket, er_cell->ce_addr, LE_NETWORK_BUFFER_ADDR ) != LE_NETWORK_BUFFER_ADDR ) {
 
             /* Abort update */
             return;
 
         }
 
-        /* Reset cell size */
-        er_cell->ce_size = 0;
-
         /* Reading query elements */
         while( ( er_count = read( er_socket, er_buffer, LE_NETWORK_BUFFER_SYNC ) ) > 0 ) {
-                
-            /* Parsing received elements */
-            for ( er_parse = 0; er_parse < er_count; er_parse += LE_ARRAY_LINE, er_track += 3 ) {
 
-                /* Compute pointers */
-                er_ptrp = ( le_real_t * ) ( er_buffer + er_parse      );
-                er_ptrd = ( le_data_t * ) ( er_buffer + er_parse + 32 );
+            /* Check limitations */
+            if ( ( er_size = ( er_cell->ce_size + ( er_count / LE_ARRAY_LINE ) * 3 ) ) < ER_CELL_ARRAY ) {
 
-                /* Assign vertex */
-                er_cell->ce_pose[er_track + 2] = ( er_ptrp[2] + ER_ERA ) * cos( er_ptrp[1] ) * cos( er_ptrp[0] );
-                er_cell->ce_pose[er_track    ] = ( er_ptrp[2] + ER_ERA ) * cos( er_ptrp[1] ) * sin( er_ptrp[0] );
-                er_cell->ce_pose[er_track + 1] = ( er_ptrp[2] + ER_ERA ) * sin( er_ptrp[1] );
+                /* Parsing received elements */
+                for ( er_parse = 0; er_parse < er_count; er_parse += LE_ARRAY_LINE, er_track += 3 ) {
 
-                /* Assign color */
-                er_cell->ce_data[er_track    ] = er_ptrd[0];
-                er_cell->ce_data[er_track + 1] = er_ptrd[1];
-                er_cell->ce_data[er_track + 2] = er_ptrd[2];
+                    /* Compute pointers */
+                    er_ptrp = ( le_real_t * ) ( er_buffer + er_parse );
+                    er_ptrt = ( le_time_t * ) ( er_ptrp + 3 );
+                    er_ptrd = ( le_data_t * ) ( er_ptrt + 1 );
+
+                    /* Assign vertex */
+                    er_cell->ce_pose[er_track + 2] = ( er_ptrp[2] + ER_ERA ) * cos( er_ptrp[1] ) * cos( er_ptrp[0] );
+                    er_cell->ce_pose[er_track    ] = ( er_ptrp[2] + ER_ERA ) * cos( er_ptrp[1] ) * sin( er_ptrp[0] );
+                    er_cell->ce_pose[er_track + 1] = ( er_ptrp[2] + ER_ERA ) * sin( er_ptrp[1] );
+
+                    /* Assign color */
+                    er_cell->ce_data[er_track    ] = er_ptrd[0];
+                    er_cell->ce_data[er_track + 1] = er_ptrd[1];
+                    er_cell->ce_data[er_track + 2] = er_ptrd[2];
+
+                }
+
+                /* Update cell size */
+                er_cell->ce_size = er_size;
 
             }
-
-            /* Update cell size */
-            er_cell->ce_size += ( er_count / LE_ARRAY_LINE ) * 3;
 
         }
 

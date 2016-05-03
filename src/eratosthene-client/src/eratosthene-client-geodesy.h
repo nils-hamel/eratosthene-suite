@@ -57,7 +57,9 @@
     # define ER_ERU ( ER_ERA * 2.00 )
 
     /* Define earth motion inertia */
-    # define ER_ERI ( 0.001 )
+    # define ER_INR ( 0.0010 )
+    # define ER_INT ( 0.0001 )
+    # define ER_INA ( 0.0100 )
 
     /* Define conversion factors */
     # define ER_D2R ( 3.1415926535 / 180.0 )
@@ -88,6 +90,11 @@
      */
 
     le_real_t er_geodesy_distance( le_real_t const er_distance, le_size_t const er_scale_min, le_size_t const er_scale_max );
+
+    /*! \brief scale functions
+     */
+
+    le_real_t er_geodesy_depth( le_real_t const er_distance, le_size_t const er_depth_min, le_size_t const er_depth_max );
 
     /*! \brief scale functions
      */

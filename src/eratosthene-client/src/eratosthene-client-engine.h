@@ -62,12 +62,14 @@
     # define ER_ENGINE_C {\
         ER_MODEL_C,\
         1,\
+        _LE_TRUE,\
         0,\
         GLUT_UP,\
         0,\
         0,\
         0,\
         0,\
+        1.0,\
         1.5 * ER_ERA,\
         9,\
         46,\
@@ -97,6 +99,7 @@
 
         er_model_t eg_model;
         int        eg_point;
+        le_enum_t  eg_sflag;
 
         int        eg_button;
         int        eg_state;
@@ -104,6 +107,7 @@
         int        eg_y;
         int        eg_u;
         int        eg_v;
+        le_real_t  eg_mult;
 
         le_real_t  eg_valt;
         le_real_t  eg_vlon;

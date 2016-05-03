@@ -59,23 +59,21 @@
 
     le_real_t er_geodesy_distance( le_real_t const er_distance, le_size_t const er_scale_min, le_size_t const er_scale_max ) {
 
-        /* Scale saturation management */
-        if ( er_distance <= 1.0e0 ) {
+        /* Computation variables */
+        le_real_t er_model = er_scale_max - ( log( er_distance + 50.0 ) / log( 2.0 ) ) + log( 50.0 ) / log( 2.0 );
 
-            /* Return saturation scale */
-            return( er_scale_max );
+        /* Return scale-distance constraints */
+        return( er_model < er_scale_min ? er_scale_min : er_model );
 
-        } else if ( er_distance >= 1.0e5 ) {
+    }
 
-            /* Return saturation scale */
-            return( er_scale_min );
+    le_real_t er_geodesy_depth( le_real_t const er_distance, le_size_t const er_depth_min, le_size_t const er_depth_max ) {
 
-        } else {
+        /* Computation variables */
+        le_real_t er_normal = ( er_distance * er_distance ) * 32.0e-9;
 
-            /* Return progressive scale */
-            return( ( ( 1.0e5 - er_distance ) / 1.0e5 ) * ( le_real_t ) ( er_scale_min - er_scale_max ) );
-
-        }
+        /* Return depth-distance constraints */
+        return( er_depth_min + ( er_depth_max - er_depth_min ) * exp( - er_normal ) );
 
     }
 

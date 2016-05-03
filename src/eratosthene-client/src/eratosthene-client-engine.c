@@ -79,7 +79,7 @@
         glutPassiveMotionFunc( er_engine_move    );
 
         /* Create model */
-        er_engine.eg_model = er_model_create( 8192 );
+        er_engine.eg_model = er_model_create( 65536 );
 
         /* Assign server configuration */
         er_model_set_ip  ( & ( er_engine.eg_model ), er_ip   );
@@ -163,12 +163,16 @@
 
     le_void_t er_engine_update( le_void_t ) {
 
-        /* Update model */
-        er_model_set_model( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
-        //er_model_set_address( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
+        /* Check engine model state */
+        if ( er_engine.eg_sflag == _LE_TRUE ) {
 
-        /* Query model */
-        //er_model_set_cell( & ( er_engine.eg_model ), ( le_char_t * ) er_engine.eg_ip, er_engine.eg_port );
+            /* Update model */
+            er_model_set_model( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
+
+            /* Reset engine model state */
+            er_engine.eg_sflag = _LE_FALSE;
+
+        }
 
     }
 
@@ -256,10 +260,36 @@
                 er_engine.eg_vazm = 0.0;
                 er_engine.eg_vgam = 0.0;
 
+                /* Push motion flag */
+                er_engine.eg_sflag = _LE_TRUE;
+
             } break;
 
-            case ( 'o' ) : { er_engine.eg_vscl *= 1.10; } break;
-            case ( 'p' ) : { er_engine.eg_vscl *= 0.91; } break;
+            /* Time management */
+            case ( 'a' ) : {
+
+                /* Update time */
+                er_engine.eg_vtim -= er_model_get_tdisc( & ( er_engine.eg_model ) );
+
+                /* Push motion flag */
+                er_engine.eg_sflag = _LE_TRUE;
+
+            } break;
+
+            /* Time management */
+            case ( 's' ) : {
+
+                /* Update time */
+                er_engine.eg_vtim += er_model_get_tdisc( & ( er_engine.eg_model ) );
+
+                /* Push motion flag */
+                er_engine.eg_sflag = _LE_TRUE;
+
+            } break;
+
+            /* Temporary */
+            case ( 'v' ) : er_engine.eg_vtim = 16917 * er_model_get_tdisc( & ( er_engine.eg_model ) ) + 1; er_engine.eg_sflag = _LE_TRUE; break;
+            case ( 'b' ) : er_engine.eg_vtim = 11001 * er_model_get_tdisc( & ( er_engine.eg_model ) ) + 1; er_engine.eg_sflag = _LE_TRUE; break;
 
         };
 
@@ -279,11 +309,17 @@
         er_engine.eg_u      = er_x;
         er_engine.eg_v      = er_y;
 
+        /* Inertial multiplier */
+        er_engine.eg_mult = glutGetModifiers() == GLUT_ACTIVE_CTRL ? 10.0 : 1.0;
+
         /* Mouse event switch */
         if ( ( er_engine.eg_button == 3 ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
 
             /* Update altitude */
-            er_engine.eg_valt += ( er_engine.eg_valt - ER_ERA ) * 0.05;
+            er_engine.eg_valt += ( ER_INA * er_engine.eg_mult ) * ( er_engine.eg_valt - ER_ERA - LE_GEODESY_HMIN );
+
+            /* Push motion flag */
+            er_engine.eg_sflag = _LE_TRUE;
 
         }
 
@@ -291,7 +327,10 @@
         if ( ( er_engine.eg_button == 4 ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
 
             /* Update altitude */
-            er_engine.eg_valt -= ( er_engine.eg_valt - ER_ERA ) * 0.05;
+            er_engine.eg_valt -= ( ER_INA * er_engine.eg_mult ) * ( er_engine.eg_valt - ER_ERA - LE_GEODESY_HMIN );
+
+            /* Push motion flag */
+            er_engine.eg_sflag = _LE_TRUE;
 
         }
 
@@ -312,8 +351,11 @@
         if ( ( er_engine.eg_button == GLUT_LEFT_BUTTON ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
 
             /* Update longitude and latitude */
-            er_engine.eg_vlon -= ER_ERI * ( er_engine.eg_u - er_engine.eg_x );
-            er_engine.eg_vlat += ER_ERI * ( er_engine.eg_v - er_engine.eg_y );
+            er_engine.eg_vlon -= ( ER_INT * er_engine.eg_mult ) * ( er_engine.eg_u - er_engine.eg_x );
+            er_engine.eg_vlat += ( ER_INT * er_engine.eg_mult ) * ( er_engine.eg_v - er_engine.eg_y );
+
+            /* Push motion flag */
+            er_engine.eg_sflag = _LE_TRUE;
 
         }
 
@@ -321,8 +363,11 @@
         if ( ( er_engine.eg_button == GLUT_MIDDLE_BUTTON ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
 
             /* Update longitude and latitude */
-            er_engine.eg_vlon += ER_ERI * ( er_engine.eg_v - er_engine.eg_y ) * sin( er_engine.eg_vazm * ER_D2R );
-            er_engine.eg_vlat += ER_ERI * ( er_engine.eg_v - er_engine.eg_y ) * cos( er_engine.eg_vazm * ER_D2R );
+            er_engine.eg_vlon += ( ER_INT * er_engine.eg_mult ) * ( er_engine.eg_v - er_engine.eg_y ) * sin( er_engine.eg_vazm * ER_D2R );
+            er_engine.eg_vlat += ( ER_INT * er_engine.eg_mult ) * ( er_engine.eg_v - er_engine.eg_y ) * cos( er_engine.eg_vazm * ER_D2R );
+
+            /* Push motion flag */
+            er_engine.eg_sflag = _LE_TRUE;
 
         }
 
@@ -330,8 +375,8 @@
         if ( ( er_engine.eg_button == GLUT_RIGHT_BUTTON ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
 
             /* Update azimuth and gamma angles */
-            er_engine.eg_vazm -= ER_ERI * ( er_engine.eg_u - er_engine.eg_x );
-            er_engine.eg_vgam -= ER_ERI * ( er_engine.eg_v - er_engine.eg_y ) * 2.0;
+            er_engine.eg_vazm -= ( ER_INR * er_engine.eg_mult ) * ( er_engine.eg_u - er_engine.eg_x );
+            er_engine.eg_vgam -= ( ER_INR * er_engine.eg_mult ) * ( er_engine.eg_v - er_engine.eg_y ) * 2.0;
 
         }
 

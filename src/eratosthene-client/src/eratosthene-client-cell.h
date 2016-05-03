@@ -56,7 +56,7 @@
     # define ER_CELL_C      { { 0 }, 0, NULL, NULL }
 
     /* Define cell array size */
-    # define ER_CELL_ARRAY  786432
+    # define ER_CELL_ARRAY  196608 //786432
 
 /*
     header - preprocessor macros
@@ -72,7 +72,7 @@
 
     typedef struct er_cell_struct {
 
-        le_char_t   ce_addr[_LE_USE_DEPTH];
+        le_char_t   ce_addr[LE_NETWORK_BUFFER_SYNC];
         le_size_t   ce_size;
         le_real_t * ce_pose;
         le_data_t * ce_data;
