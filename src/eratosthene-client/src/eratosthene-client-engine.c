@@ -68,15 +68,7 @@
         glEnableClientState( GL_COLOR_ARRAY  );
 
         /* Create cell model */
-        er_engine.eg_model = er_model_create( er_stack );
-
-        /* Assign server configuration */
-        er_model_set_ip  ( & ( er_engine.eg_model ), er_ip   );
-        er_model_set_port( & ( er_engine.eg_model ), er_port );
-
-        /* Query server configuration */
-        er_model_set_sdisc( & ( er_engine.eg_model ) );
-        er_model_set_tdisc( & ( er_engine.eg_model ) );
+        er_engine.eg_model = er_model_create( er_stack, er_ip, er_port );
 
     }
 
