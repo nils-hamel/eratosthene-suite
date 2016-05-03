@@ -56,7 +56,7 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_MODEL_C   { { 0 }, _LE_USE_PORT, 0, 0, 0, 0, NULL }
+    # define ER_MODEL_C   { NULL, _LE_USE_PORT, 0, 0, 0, 0, NULL }
 
     /* Define model parameters */
     # define ER_MODEL_ASL 10
@@ -82,7 +82,7 @@
 
     typedef struct er_model_struct {
 
-        le_char_t   md_svip[256];
+        le_char_t * md_svip;
         le_sock_t   md_port;
 
         le_size_t   md_sdis;
@@ -101,7 +101,7 @@
     /*! \brief constructor/destructor methods
      */
 
-    er_model_t er_model_create( le_size_t er_cells, le_char_t const * const er_ip, le_sock_t const er_port );
+    er_model_t er_model_create( le_size_t er_cells, le_char_t * const er_ip, le_sock_t const er_port );
 
     /*! \brief constructor/destructor methods
      */

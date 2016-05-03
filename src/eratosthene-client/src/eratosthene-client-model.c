@@ -24,7 +24,7 @@
     source - constructor/destructor methods
  */
 
-    er_model_t er_model_create( le_size_t er_cells, le_char_t const * const er_ip, le_sock_t const er_port ) {
+    er_model_t er_model_create( le_size_t er_cells, le_char_t * const er_ip, le_sock_t const er_port ) {
 
         /* Model variables */
         er_model_t er_model = ER_MODEL_C;
@@ -32,14 +32,12 @@
         /* Socket variables */
         le_sock_t er_socket = _LE_SOCK_NULL;
 
-        /* Assign server ip */
-        strcpy( ( char * ) er_model.md_svip, ( char * ) er_ip );
-
-        /* Assign server port */
+        /* Assign server network configuration */
+        er_model.md_svip = er_ip;
         er_model.md_port = er_port;
 
         /* Establish server connexion */
-        if ( ( er_socket = le_client_create( er_model.md_svip, er_model.md_port ) ) != _LE_SOCK_NULL ) {
+        if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
 
             /* Client/server query handshake */
             if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_SMOD ) == LE_ERROR_SUCCESS ) {
@@ -47,14 +45,14 @@
                 /* Read parameter in socket */
                 if ( read( er_socket, & ( er_model.md_sdis ), sizeof( le_size_t ) ) != sizeof( le_size_t ) ) {
 
-                    /* Abort model creation */
+                    /* Return model */
                     return( er_model );
 
                 }
 
             } else {
 
-                /* Abort model creation */
+                /* Return model */
                 return( er_model );
 
             }
@@ -65,7 +63,7 @@
         }
 
         /* Establish server connexion */
-        if ( ( er_socket = le_client_create( er_model.md_svip, er_model.md_port ) ) != _LE_SOCK_NULL ) {
+        if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
 
             /* Client/server query handshake */
             if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_TMOD ) == LE_ERROR_SUCCESS ) {
@@ -73,14 +71,14 @@
                 /* Read parameter in socket */
                 if ( read( er_socket, & ( er_model.md_tdis ), sizeof( le_time_t ) ) != sizeof( le_time_t ) ) {
 
-                    /* Abort model creation */
+                    /* Return model */
                     return( er_model );
 
                 }
 
             } else {
 
-                /* Abort model creation */
+                /* Return model */
                 return( er_model );
 
             }
@@ -104,12 +102,12 @@
 
             }
 
-            /* Return constructed model */
+            /* Return model */
             return( er_model );
 
         } else {
 
-            /* Abort model creation */
+            /* Return model */
             return( er_model );
 
         }
@@ -172,11 +170,8 @@
         /* Check zero cell state */
         if ( er_cell_get_size( er_model->md_cell ) > 0 ) {
 
-            /* Update push value */
-            er_model->md_push ++;
-
             /* Check limitations */
-            if ( er_model->md_push < er_model->md_size ) {
+            if ( ( ++ er_model->md_push ) < er_model->md_size ) {
 
                 /* Backup pushed cell */
                 er_cell = ( er_model->md_cell )[er_model->md_push];
@@ -237,14 +232,6 @@
                 er_model_set_addr( er_model, & er_addr, er_lon, er_lat, er_alt );
 
             }
-
-        }
-
-        /* Clear remaining cells */
-        while ( ( ++ er_model->md_push ) < er_model->md_size ) {
-
-            /* Clear cell */
-            er_cell_set_empty( ( er_model->md_cell ) + er_model->md_push );
 
         }
 
@@ -363,12 +350,11 @@
 
     le_void_t er_model_display_cell( er_model_t * const er_model ) {
 
-        /* Parsing and count variables */
-        le_size_t er_parse = 0;
+        /* Count variables */
         le_size_t er_count = 0;
 
         /* Display cells content */
-        for ( er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
+        for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
 
             /* Check cell content */
             if ( ( er_count = er_cell_get_size( ( er_model->md_cell ) + er_parse ) ) > 0 ) {

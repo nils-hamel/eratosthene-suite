@@ -30,7 +30,7 @@
     source - constructor/destructor methods
  */
 
-    le_void_t er_engine_create( le_size_t const er_stack, le_char_t const * const er_ip, le_sock_t const er_port ) {
+    le_void_t er_engine_create( le_size_t const er_stack, le_char_t * const er_ip, le_sock_t const er_port ) {
 
         /* Create rendering window */
         glutCreateWindow( "eratosthene-client" );

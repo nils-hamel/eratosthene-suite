@@ -60,7 +60,7 @@
     le_real_t er_geodesy_distance( le_real_t const er_distance, le_size_t const er_scale_min, le_size_t const er_scale_max ) {
 
         /* Computation variables */
-        le_real_t er_model = er_scale_max - ( log( er_distance + 50.0 ) / log( 2.0 ) ) + log( 50.0 ) / log( 2.0 );
+        le_real_t er_model = er_scale_max - ( log( er_distance + 50.0 ) / log( 1.9 ) ) + log( 50.0 ) / log( 1.9 );
 
         /* Return scale-distance constraints */
         return( er_model < er_scale_min ? er_scale_min : er_model );
@@ -70,7 +70,7 @@
     le_real_t er_geodesy_depth( le_real_t const er_distance, le_size_t const er_depth_min, le_size_t const er_depth_max ) {
 
         /* Computation variables */
-        le_real_t er_normal = ( er_distance * er_distance ) * 32.0e-9;
+        le_real_t er_normal = ( er_distance * er_distance ) * 1.28e-7; //6.4e-8;
 
         /* Return depth-distance constraints */
         return( er_depth_min + ( er_depth_max - er_depth_min ) * exp( - er_normal ) );
