@@ -27,49 +27,34 @@
     er_engine_t er_engine = ER_ENGINE_C;
 
 /*
-    source - rendering engine
+    source - constructor/destructor methods
  */
 
-    le_void_t er_engine_main( le_char_t const * const er_ip, le_sock_t const er_port ) {
+    le_void_t er_engine_create( le_size_t const er_stack, le_char_t const * const er_ip, le_sock_t const er_port ) {
 
-        /* Thread variables */
-        pthread_t er_secondary;
-
-        /* Setting windows parameteres */
-        glutInitWindowSize( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
-
-        /* Create rendering engine window */
+        /* Create rendering window */
         glutCreateWindow( "eratosthene-client" );
 
-        /* Display rendering engine window in fullscreen */
+        /* Fullscreen rendering window */
         glutFullScreen();
 
-        /* Hide mouse cursor */
+        /* Cursor configuration */
         glutSetCursor( GLUT_CURSOR_NONE );
 
-        /* Rendering engine display configuration */
-        glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_STENCIL );
+        /* Initialise display mode */
+        glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH );
 
-        /* Setting GLUT options */
+        /* Graphical thread behavior configuration */
         glutSetOption( GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION );
 
-        /* Setting color clear value */
+        /* Buffers clear values */
         glClearColor( 0.0, 0.0, 0.0, 0.0 );
-
-        /* Setting depth clear value */
         glClearDepth( 1.0 );
 
-        /* Setting graphical configuration */
-        glEnable    ( GL_DEPTH_TEST );
-        glDepthFunc ( GL_LEQUAL     );
-        glDepthMask ( GL_TRUE       );
-        glShadeModel( GL_SMOOTH     );
+        /* Graphical thread configuration */
+        glEnable( GL_DEPTH_TEST );
 
-        /* Enable vertex and color arrays */
-        glEnableClientState( GL_VERTEX_ARRAY );
-        glEnableClientState( GL_COLOR_ARRAY  );
-
-        /* Engine primary loop */
+        /* Declare engine callback functions */
         glutDisplayFunc      ( er_engine_render  );
         glutIdleFunc         ( er_engine_render  );
         glutReshapeFunc      ( er_engine_reshape );
@@ -78,8 +63,12 @@
         glutMotionFunc       ( er_engine_move    );
         glutPassiveMotionFunc( er_engine_move    );
 
-        /* Create model */
-        er_engine.eg_model = er_model_create( 8192 );
+        /* Enable vertex and color arrays */
+        glEnableClientState( GL_VERTEX_ARRAY );
+        glEnableClientState( GL_COLOR_ARRAY  );
+
+        /* Create cell model */
+        er_engine.eg_model = er_model_create( er_stack );
 
         /* Assign server configuration */
         er_model_set_ip  ( & ( er_engine.eg_model ), er_ip   );
@@ -89,31 +78,42 @@
         er_model_set_sdisc( & ( er_engine.eg_model ) );
         er_model_set_tdisc( & ( er_engine.eg_model ) );
 
+    }
+
+    le_void_t er_engine_delete( le_void_t ) {
+
+        /* Engine variables */
+        er_engine_t er_reset = ER_ENGINE_C;
+
+        /* Delete model */
+        er_model_delete( & er_engine.eg_model );
+
+        /* Enable vertex and color arrays */
+        glEnableClientState( GL_VERTEX_ARRAY );
+        glEnableClientState( GL_COLOR_ARRAY  );
+
+        /* Clear engine structure */
+        er_engine = er_reset;
+
+    }
+
+/*
+    source - rendering engine
+ */
+
+    le_void_t er_engine_loops( le_void_t ) {
+
+        /* Thread variables */
+        pthread_t er_secondary;
+
         /* Engine secondary loop */
-        pthread_create( & er_secondary, NULL, & er_engine_second, NULL );
+        pthread_create( & er_secondary, NULL, & er_engine_update, NULL );
 
         /* Engine primary loop */
         glutMainLoop();
 
         /* Engine secondary loop */
         pthread_cancel( er_secondary );
-
-        /* Delete model */
-        er_model_delete( & ( er_engine.eg_model ) );
-
-        /* Disable vertex and color arrays */
-        glDisableClientState( GL_COLOR_ARRAY  );
-        glDisableClientState( GL_VERTEX_ARRAY );
-
-    }
-
-    le_void_t * er_engine_second( le_void_t * er_le_void_t ) {
-
-        /* Engine secondary loop */
-        for ( ; ; sleep( 0.25 ) ) er_engine_update();
-
-        /* Return null pointer */
-        return( NULL );
 
     }
 
@@ -161,18 +161,24 @@
 
     }
 
-    le_void_t er_engine_update( le_void_t ) {
+    le_void_t * er_engine_update( le_void_t * er_null ) {
 
-        /* Check engine model state */
-        if ( er_engine.eg_sflag == _LE_TRUE ) {
+        /* Engine update loop */
+        for ( ; ; sleep( 0.5 ) ) {
 
-            /* Update model */
-            er_model_set_model( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
+            /* Check engine model state */
+            if ( er_engine.eg_sflag == _LE_TRUE ) {
 
-            /* Reset engine model state */
-            er_engine.eg_sflag = _LE_FALSE;
+                /* Update model */
+                er_model_set_model( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
 
-        }
+                /* Reset engine model state */
+                er_engine.eg_sflag = _LE_FALSE;
+
+            }
+
+        /* Return null pointer */
+        } return( NULL );
 
     }
 
@@ -397,8 +403,8 @@
         if ( er_engine.eg_vazm < -360.0 ) er_engine.eg_vazm += +360.0;
 
         /* Angles ranges - clamp */
-        if ( er_engine.eg_vgam <  -90.0 ) er_engine.eg_vgam = - 90.0;
-        if ( er_engine.eg_vgam >  + 0.0 ) er_engine.eg_vgam = +  0.0;
+        if ( er_engine.eg_vgam < -120.0 ) er_engine.eg_vgam = -120.0;
+        if ( er_engine.eg_vgam > +  0.0 ) er_engine.eg_vgam = +  0.0;
 
         /* Parameter ranges - clamp */
         if ( er_engine.eg_valt < ER_ERL ) er_engine.eg_valt = ER_ERL;

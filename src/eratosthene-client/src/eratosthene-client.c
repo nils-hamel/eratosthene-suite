@@ -29,8 +29,20 @@
         /* Initialise GL/GLU/GLUT */
         glutInit( & argc, argv );
 
-        /* Engine main function */
-        er_engine_main( ( le_char_t * ) lc_read_string( argc, argv, "--ip", "-i" ), lc_read_uint( argc, argv, "--port", "-t", _LE_USE_PORT ) );
+        /* Create rendering engine */
+        er_engine_create(
+
+            ( le_size_t   ) lc_read_uint  ( argc, argv, "--stack", "-s", 8192 ),
+            ( le_char_t * ) lc_read_string( argc, argv, "--ip"   , "-i" ),
+            ( le_size_t   ) lc_read_uint  ( argc, argv, "--port" , "-t", _LE_USE_PORT )
+
+        );
+
+        /* Engine loops */
+        er_engine_loops();
+
+        /* Delete rendering engine */
+        er_engine_delete();
 
         /* Return to system */
         return( EXIT_SUCCESS );

@@ -51,7 +51,7 @@
         /* Check array state and memory unallocation */
         if ( er_cell->ce_data != NULL ) free( er_cell->ce_data );
 
-        /* Clear cell fields */
+        /* Clear cell structure */
         * ( er_cell ) = er_reset;
 
     }

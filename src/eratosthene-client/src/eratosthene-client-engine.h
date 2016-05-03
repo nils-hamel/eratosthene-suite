@@ -123,15 +123,20 @@
     header - function prototypes
  */
 
+    /*! \brief constructor/destructor methods
+     */
+
+    le_void_t er_engine_create( le_size_t const er_stack, le_char_t const * const er_ip, le_sock_t const er_port );
+
+    /*! \brief constructor/destructor methods
+     */
+
+    le_void_t er_engine_delete( le_void_t );
+
     /*! \brief rendering engine
      */
 
-    le_void_t er_engine_main( le_char_t const * const er_ip, le_sock_t const er_port );
-
-    /*! \brief rendering engine
-     */
-
-    le_void_t * er_engine_second( le_void_t * er_le_void_t );
+    le_void_t er_engine_loops( le_void_t );
 
     /*! \brief engine callbacks - primary
      */
@@ -141,7 +146,7 @@
     /*! \brief engine callbacks - primary
      */
 
-    le_void_t er_engine_update( le_void_t );
+    le_void_t * er_engine_update( le_void_t * er_null );
 
     /*! \brief engine callbacks - reshape
      */
