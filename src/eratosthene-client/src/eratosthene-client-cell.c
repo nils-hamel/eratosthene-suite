@@ -69,14 +69,14 @@
 
     le_real_t * er_cell_get_pose( er_cell_t const * const er_cell ) {
 
-        /* Return position array pointer */
+        /* Return cell array pointer */
         return( er_cell->ce_pose );
 
     }
 
     le_data_t * er_cell_get_data( er_cell_t const * const er_cell ) {
 
-        /* Return colorimetric array pointer */
+        /* Return cell array pointer */
         return( er_cell->ce_data );
 
     }
@@ -87,14 +87,17 @@
 
     le_void_t er_cell_set_empty( er_cell_t * const er_cell ) {
 
-        /* Reset cell size */
+        /* Empty cell address */
+        er_cell->ce_addr[0] = '\0';
+
+        /* Empty cell array */
         er_cell->ce_size = 0;
 
     }
 
     le_void_t er_cell_set_addr( er_cell_t * const er_cell, le_address_t const * const er_address ) {
 
-        /* Compute address string */
+        /* Compute and assign cell address */
         le_address_cvas( er_address, er_cell->ce_addr );
 
     }
@@ -154,10 +157,18 @@
                     er_ptrt = ( le_time_t * ) ( er_ptrp + 3 );
                     er_ptrd = ( le_data_t * ) ( er_ptrt + 1 );
 
-                    /* Assign vertex */
-                    er_cell->ce_pose[er_track + 2] = ( er_ptrp[2] + ER_ERA ) * cos( er_ptrp[1] ) * cos( er_ptrp[0] );
-                    er_cell->ce_pose[er_track    ] = ( er_ptrp[2] + ER_ERA ) * cos( er_ptrp[1] ) * sin( er_ptrp[0] );
-                    er_cell->ce_pose[er_track + 1] = ( er_ptrp[2] + ER_ERA ) * sin( er_ptrp[1] );
+                    /* Optimised vertex computation */
+                    er_ptrp[2] += ER_ERA;
+
+                    /* Optimised vertex computation */
+                    er_cell->ce_pose[er_track + 1] = er_ptrp[2] * sin( er_ptrp[1] );
+
+                    /* Optimised vertex computation */
+                    er_ptrp[1] = cos( er_ptrp[1] );
+
+                    /* Optimised vertex computation */
+                    er_cell->ce_pose[er_track    ] = er_ptrp[2] * er_ptrp[1] * sin( er_ptrp[0] );
+                    er_cell->ce_pose[er_track + 2] = er_ptrp[2] * er_ptrp[1] * cos( er_ptrp[0] );
 
                     /* Assign color */
                     er_cell->ce_data[er_track    ] = er_ptrd[0];

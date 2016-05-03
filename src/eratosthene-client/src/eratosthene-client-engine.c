@@ -79,7 +79,7 @@
         glutPassiveMotionFunc( er_engine_move    );
 
         /* Create model */
-        er_engine.eg_model = er_model_create( 65536 );
+        er_engine.eg_model = er_model_create( 8192 );
 
         /* Assign server configuration */
         er_model_set_ip  ( & ( er_engine.eg_model ), er_ip   );
