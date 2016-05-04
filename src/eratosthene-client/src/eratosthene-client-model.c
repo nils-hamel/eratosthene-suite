@@ -366,6 +366,9 @@
                 /* Display graphical primitives */
                 glDrawArrays( GL_POINTS, 0, er_count / 3 );
 
+                /* Devel temporary */
+                er_model_devel_display_cell( er_model->md_cell[er_parse].ce_addr );
+
             }
 
         }
@@ -391,6 +394,73 @@
 
         /* Delete quadric */
         gluDeleteQuadric( er_earth );
+
+    }
+
+/*
+    source - development functions (temporary)
+ */
+
+    le_void_t er_model_devel_display_cell( le_char_t const * const er_saddr ) {
+
+        le_address_t er_addr = LE_ADDRESS_C;
+        le_address_cvsa( & er_addr, er_saddr );
+
+        le_real_t er_pose[24] = {0.0};
+        le_address_get_pose( & er_addr, er_pose );
+
+        er_pose[ 3] = er_pose[0] + ( ( LE_GEODESY_LMAX - LE_GEODESY_LMIN ) / pow( 2, er_addr.as_size ) );
+        er_pose[ 4] = er_pose[1];
+        er_pose[ 5] = er_pose[2];
+        er_pose[ 6] = er_pose[0] + ( ( LE_GEODESY_LMAX - LE_GEODESY_LMIN ) / pow( 2, er_addr.as_size ) );
+        er_pose[ 7] = er_pose[1] + ( ( LE_GEODESY_LMAX - LE_GEODESY_LMIN ) / pow( 2, er_addr.as_size ) );
+        er_pose[ 8] = er_pose[2];
+        er_pose[ 9] = er_pose[0];
+        er_pose[10] = er_pose[1] + ( ( LE_GEODESY_LMAX - LE_GEODESY_LMIN ) / pow( 2, er_addr.as_size ) );
+        er_pose[11] = er_pose[2];
+
+        er_pose[12] = er_pose[0];
+        er_pose[13] = er_pose[1];
+        er_pose[14] = er_pose[2] + ( ( LE_2P * LE_GEODESY_WGS84_A ) / pow( 2, er_addr.as_size ) );
+        er_pose[15] = er_pose[3];
+        er_pose[16] = er_pose[4];
+        er_pose[17] = er_pose[5] + ( ( LE_2P * LE_GEODESY_WGS84_A ) / pow( 2, er_addr.as_size ) );
+        er_pose[18] = er_pose[6];
+        er_pose[19] = er_pose[7];
+        er_pose[20] = er_pose[8] + ( ( LE_2P * LE_GEODESY_WGS84_A ) / pow( 2, er_addr.as_size ) );
+        er_pose[21] = er_pose[9];
+        er_pose[22] = er_pose[10];
+        er_pose[23] = er_pose[11] + ( ( LE_2P * LE_GEODESY_WGS84_A ) / pow( 2, er_addr.as_size ) );
+
+        er_geodesy_cartesian( er_pose, 24 );
+
+        glBegin( GL_LINE_LOOP );
+        glColor3f( 1.0, 1.0, 0.0 );
+        glVertex3d( er_pose[0], er_pose[1], er_pose[2] );
+        glVertex3d( er_pose[3], er_pose[4], er_pose[5] );
+        glVertex3d( er_pose[6], er_pose[7], er_pose[8] );
+        glVertex3d( er_pose[9], er_pose[10], er_pose[11] );
+        glEnd();
+
+        glBegin( GL_LINE_LOOP );
+        glColor3f( 1.0, 1.0, 0.0 );
+        glVertex3d( er_pose[12], er_pose[13], er_pose[14] );
+        glVertex3d( er_pose[15], er_pose[16], er_pose[17] );
+        glVertex3d( er_pose[18], er_pose[19], er_pose[20] );
+        glVertex3d( er_pose[21], er_pose[22], er_pose[23] );
+        glEnd();
+
+        glBegin( GL_LINES );
+        glColor3f( 1.0, 1.0, 0.0 );
+        glVertex3d( er_pose[0], er_pose[1], er_pose[2] );
+        glVertex3d( er_pose[12], er_pose[13], er_pose[14] );
+        glVertex3d( er_pose[3], er_pose[4], er_pose[5] );
+        glVertex3d( er_pose[15], er_pose[16], er_pose[17] );
+        glVertex3d( er_pose[6], er_pose[7], er_pose[8] );
+        glVertex3d( er_pose[18], er_pose[19], er_pose[20] );
+        glVertex3d( er_pose[9], er_pose[10], er_pose[11] );
+        glVertex3d( er_pose[21], er_pose[22], er_pose[23] );
+        glEnd();
 
     }
 
