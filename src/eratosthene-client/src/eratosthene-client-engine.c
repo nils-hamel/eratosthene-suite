@@ -158,8 +158,8 @@
         /* Engine update loop */
         for ( ; ; sleep( 0.5 ) ) {
 
-            /* Check engine model state */
-            if ( er_engine.eg_sflag == _LE_TRUE ) {
+            /* Wait for unsuspended model update */
+            if ( ( er_engine.eg_sflag == _LE_TRUE ) && ( er_engine.eg_suspd == _LE_FALSE ) ) {
 
                 /* Update model */
                 er_model_set_model( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
@@ -220,6 +220,14 @@
 
                 /* Leave GLUT events management loop */
                 glutLeaveMainLoop();
+
+            } break;
+
+            /* Model update */
+            case ( 'p' ) : {
+
+                /* Switch model update mode */
+                er_engine.eg_suspd = ( er_engine.eg_suspd == _LE_FALSE ) ? _LE_TRUE : _LE_FALSE;
 
             } break;
 
