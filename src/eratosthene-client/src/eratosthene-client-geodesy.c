@@ -26,28 +26,22 @@
 
     le_void_t er_geodesy_cartesian( le_real_t * const er_array, le_size_t const er_count ) {
 
-        /* Computation variables */
-        le_real_t er_sinl = 0.0;
-        le_real_t er_cosl = 0.0;
-        le_real_t er_sina = 0.0;
-        le_real_t er_cosa = 0.0;
-
-        /* Parsing variables */
-        le_size_t er_parse = 0;
+        /* Optimisation variables */
+        le_real_t er_lon = 0.0, er_lat = 0.0;
 
         /* Parsing array */
-        for ( ; er_parse < er_count; er_parse += 3 ) {
+        for ( le_size_t er_parse = 0; er_parse < er_count; er_parse += 3 ) {
 
-            /* Compute trigonometric values */
-            er_sinl = sin( er_array[er_parse    ] );
-            er_cosl = cos( er_array[er_parse    ] );
-            er_sina = sin( er_array[er_parse + 1] );
-            er_cosa = cos( er_array[er_parse + 1] );
+            /* Push coordinates angles */
+            er_lon = er_array[er_parse  ];
+            er_lat = er_array[er_parse+1];
 
-            /* Compute and assign cartesian coordinates */
-            er_array[er_parse    ] = ( er_array[er_parse + 2] + ER_ERA ) * er_cosa * er_sinl;
-            er_array[er_parse + 1] = ( er_array[er_parse + 2] + ER_ERA ) * er_sina;
-            er_array[er_parse + 2] = ( er_array[er_parse + 2] + ER_ERA ) * er_cosa * er_cosl;
+            /* Optimised coordinates conversion */
+            er_array[er_parse+1] = er_array[er_parse+2] + ER_ERA;
+            er_array[er_parse  ] = er_array[er_parse+1] * cos( er_lat );
+            er_array[er_parse+2] = er_array[er_parse  ] * cos( er_lon );
+            er_array[er_parse  ] = er_array[er_parse  ] * sin( er_lon );
+            er_array[er_parse+1] = er_array[er_parse+1] * sin( er_lat );
 
         }
 
@@ -60,7 +54,7 @@
     le_real_t er_geodesy_distance( le_real_t const er_distance, le_size_t const er_scale_min, le_size_t const er_scale_max ) {
 
         /* Computation variables */
-        le_real_t er_model = er_scale_max - ( log( er_distance + 50.0 ) / log( 1.9 ) ) + log( 50.0 ) / log( 1.9 );
+        le_real_t er_model = er_scale_max - ( log( er_distance + 25.0 ) / log( 1.95 ) ) + log( 25.0 ) / log( 1.95 );
 
         /* Return scale-distance constraints */
         return( er_model < er_scale_min ? er_scale_min : er_model );
