@@ -143,7 +143,7 @@
 
     le_void_t er_model_display_earth( le_void_t );
 
-    /*! \brief development functions (temporary)
+    /*! \brief development functions
      */
 
     le_void_t er_model_devel_display_cell( le_char_t const * const er_saddr );
