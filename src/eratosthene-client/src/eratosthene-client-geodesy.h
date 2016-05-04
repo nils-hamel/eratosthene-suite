@@ -57,9 +57,9 @@
     # define ER_ERU ( ER_ERA * 2.00 )
 
     /* Define earth motion inertia */
-    # define ER_INR ( 0.0010 )
-    # define ER_INT ( 0.0001 )
-    # define ER_INA ( 0.0100 )
+    # define ER_INR ( 0.00100 )
+    # define ER_INT ( 0.00005 )
+    # define ER_INA ( 0.00500 )
 
     /* Define conversion factors */
     # define ER_D2R ( 3.1415926535 / 180.0 )
