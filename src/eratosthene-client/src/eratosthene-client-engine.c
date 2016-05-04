@@ -306,9 +306,13 @@
         er_engine.eg_y      = er_y;
         er_engine.eg_u      = er_x;
         er_engine.eg_v      = er_y;
+        er_engine.eg_mult   = 1.0;
 
         /* Inertial multiplier */
-        er_engine.eg_mult = glutGetModifiers() == GLUT_ACTIVE_CTRL ? 10.0 : 1.0;
+        switch ( glutGetModifiers() ) {
+            case ( GLUT_ACTIVE_CTRL  ) : { er_engine.eg_mult = 10.0; } break;
+            case ( GLUT_ACTIVE_SHIFT ) : { er_engine.eg_mult =  0.1; } break;
+        };
 
         /* Mouse event switch */
         if ( ( er_engine.eg_button == 3 ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
