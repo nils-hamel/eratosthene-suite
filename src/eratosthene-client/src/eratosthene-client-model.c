@@ -173,7 +173,7 @@
         }
 
         /* Reset push index */
-        er_model->md_push = 0;
+        er_model->md_push = 1;
 
     }
 
@@ -253,7 +253,7 @@
             le_address_set_depth( er_addr, ER_MODEL_DPT );
 
             /* Set cell address */
-            er_cell_set_addr2( er_model->md_cell + ( ++ er_model->md_push ), er_addr );
+            er_cell_set_addr2( er_model->md_cell + ( er_model->md_push ++ ), er_addr );
 
         } else {
 
@@ -315,7 +315,7 @@
         le_sock_t er_socket = _LE_SOCK_NULL;
 
         /* Parsing model cells */
-        for ( er_parse = 1; er_parse <= er_model->md_push; er_parse ++ ) {
+        for ( er_parse = 1; er_parse < er_model->md_push; er_parse ++ ) {
 
             /* Check pushed address */
             if ( er_cell_get_push( er_model->md_cell + er_parse ) == _LE_TRUE ) {
@@ -360,7 +360,7 @@
         er_found = 1;
 
         /* Parsing model cells */
-        for ( er_parse = 1; er_parse <= er_model->md_push; er_parse ++ ) {
+        for ( er_parse = 1; er_parse < er_model->md_push; er_parse ++ ) {
 
             /* Check pushed address */
             if ( er_cell_get_push( er_model->md_cell + er_parse ) == _LE_TRUE ) {
