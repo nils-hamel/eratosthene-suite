@@ -326,8 +326,8 @@
                 /* Searching allocation */
                 er_search = 1; while ( ( er_search < er_model->md_size ) && ( er_found == er_model->md_size ) ) {
 
-                    /* Compare address */
-                    if ( strcmp( ( char * ) er_model->md_cell[er_parse].ce_push, ( char * ) er_model->md_cell[er_search].ce_addr ) == 0 ) {
+                    /* Compare address and pushed address */
+                    if ( er_cell_get_already( er_model->md_cell + er_search, er_model->md_cell + er_parse ) == _LE_TRUE ) {
 
                         /* Assign found index */
                         er_found = er_search;
