@@ -48,6 +48,45 @@
     }
 
 /*
+    source - distance functions
+ */
+
+    le_real_t er_geodesy_cell( le_address_t * const er_addr, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
+
+        /* Address size variables */
+        le_size_t er_size = le_address_get_size( er_addr ) + 1;
+
+        /* Position array variables */
+        le_real_t er_pose[] = { er_lon, er_lat, er_alt, 0.0, 0.0, 0.0 };
+
+        /* Planimetric shift variables */
+        le_real_t er_shiftp = ( LE_GEODESY_LMAX - LE_GEODESY_LMIN ) / pow( 2.0, er_size );
+
+        /* Altimetric shift variables */
+        le_real_t er_shifta = ( LE_2P * LE_GEODESY_WGS84_A ) / pow( 2.0, er_size );
+
+        /* Compute cell position */
+        le_address_get_pose( er_addr, er_pose + 3 );
+
+        /* Compute cell center */
+        er_pose[3] += er_shiftp;
+        er_pose[4] += er_shiftp;
+        er_pose[5] += er_shifta;
+
+        /* Convert position to cartesian coordinates */
+        er_geodesy_cartesian( er_pose, 6 );
+
+        /* Optimisation step */
+        er_pose[0] = er_pose[0] - er_pose[3];
+        er_pose[1] = er_pose[1] - er_pose[4];
+        er_pose[2] = er_pose[2] - er_pose[5];
+
+        /* Compute and return distance to cell center */
+        return( sqrt( er_pose[0] * er_pose[0] + er_pose[1] * er_pose[1] + er_pose[2] * er_pose[2] ) );
+
+    }
+
+/*
     source - scale functions
  */
 

@@ -86,6 +86,11 @@
 
     le_void_t er_geodesy_cartesian( le_real_t * const er_array, le_size_t const er_count );
 
+    /*! \brief distance functions
+     */
+
+    le_real_t er_geodesy_cell( le_address_t * const er_addr, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
+
     /*! \brief scale functions
      */
 
