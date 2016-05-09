@@ -67,6 +67,23 @@
 
     }
 
+    le_enum_t er_cell_get_push( er_cell_t const * const er_cell ) {
+
+        /* Check pushed address */
+        if ( ( er_cell->ce_push )[0] != '\0' ) {
+
+            /* Return positive answer */
+            return( _LE_TRUE );
+
+        } else {
+
+            /* Return negative answer */
+            return( _LE_FALSE );
+
+        }
+
+    }
+
     le_size_t er_cell_get_size( er_cell_t const * const er_cell ) {
 
         /* Return cell size */

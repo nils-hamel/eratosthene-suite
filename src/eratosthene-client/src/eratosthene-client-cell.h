@@ -111,6 +111,11 @@
     /*! \brief accessor methods
      */
 
+    le_enum_t er_cell_get_push( er_cell_t const * const er_cell );
+
+    /*! \brief accessor methods
+     */
+
     le_size_t er_cell_get_size( er_cell_t const * const er_cell );
 
     /*! \brief accessor methods

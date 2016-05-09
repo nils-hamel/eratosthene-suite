@@ -306,7 +306,7 @@
         le_size_t er_parse = 0;
 
         /* Selected cell variables */
-        le_size_t er_found = 1;
+        le_size_t er_found = 0;
 
         /* Searching variables */
         le_size_t er_search = 0;
@@ -318,7 +318,7 @@
         for ( er_parse = 1; er_parse <= er_model->md_push; er_parse ++ ) {
 
             /* Check pushed address */
-            if ( er_model->md_cell[er_parse].ce_push[0] != '\0' ) {
+            if ( er_cell_get_push( er_model->md_cell + er_parse ) == _LE_TRUE ) {
 
                 /* Reset search */
                 er_found = er_model->md_size;
@@ -363,7 +363,7 @@
         for ( er_parse = 1; er_parse <= er_model->md_push; er_parse ++ ) {
 
             /* Check pushed address */
-            if ( er_model->md_cell[er_parse].ce_push[0] != '\0' ) {
+            if ( er_cell_get_push( er_model->md_cell + er_parse ) == _LE_TRUE ) {
 
                 /* Searched unactive cell */
                 while ( ( er_cell_get_flag( er_model->md_cell + er_found ) != ER_CELL_0 ) && ( er_found < er_model->md_size ) ) er_found ++;
