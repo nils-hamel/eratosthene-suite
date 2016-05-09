@@ -99,7 +99,7 @@
     /*! \brief scale functions
      */
 
-    le_real_t er_geodesy_depth( le_real_t const er_distance, le_size_t const er_depth_min, le_size_t const er_depth_max );
+    //le_real_t er_geodesy_depth( le_real_t const er_distance, le_size_t const er_depth_min, le_size_t const er_depth_max );
 
     /*! \brief scale functions
      */

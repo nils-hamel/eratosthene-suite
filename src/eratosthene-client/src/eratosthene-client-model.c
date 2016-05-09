@@ -285,9 +285,6 @@
 
         } else {
 
-            /* Increase address size */
-            //le_size_t er_addr_s = le_address_get_size( er_addr );
-
             /* Set address depth */
             le_address_set_depth( er_addr, 0 );
 
