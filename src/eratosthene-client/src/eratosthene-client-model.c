@@ -239,45 +239,32 @@
 
     le_void_t er_model_set_addr( er_model_t * const er_model, le_address_t * const er_addr, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
 
-        /* Socket variables */
-        le_sock_t er_socket = _LE_SOCK_NULL;
+        /* Distance variables */
+        le_real_t er_dist = 0.0;
+
+        /* Scale variables */
+        le_real_t er_scale = 0.0;
 
         /* Parsing variables */
         le_size_t er_parse = 0;
 
-        /* Distance computation */
-        le_real_t er_dist = 0.0;
-        le_real_t er_curr = 0.0;
-        le_size_t er_dept = 0.0;
+        /* Socket variables */
+        le_sock_t er_socket = _LE_SOCK_NULL;
 
-        /* Position vector variables */
-        le_real_t er_pose[3] = { 0.0 };
-        le_real_t er_view[3] = { er_lon, er_lat, er_alt - ER_ERA };
+        /* Address size variables */
+        le_size_t er_size = le_address_get_size( er_addr );
 
-        /* Get cell position */
-        le_address_get_pose( er_addr, er_pose );
-
-        /* Compute cell center */
-        er_pose[0] += ( LE_GEODESY_LMAX - LE_GEODESY_LMIN ) / pow( 2, le_address_get_size( er_addr ) + 1 );
-        er_pose[1] += ( LE_GEODESY_LMAX - LE_GEODESY_LMIN ) / pow( 2, le_address_get_size( er_addr ) + 1 );
-        er_pose[2] += ( LE_GEODESY_LMAX - LE_GEODESY_LMIN ) / pow( 2, le_address_get_size( er_addr ) + 1 );
-
-        /* Convert to cartesian */
-        er_geodesy_cartesian( er_pose, 1 );
-        er_geodesy_cartesian( er_view, 1 );
-
-        /* Compute distance */
-        er_dist = sqrt( ( er_pose[0] - er_view[0] ) * ( er_pose[0] - er_view[0] ) + ( er_pose[1] - er_view[1] ) * ( er_pose[1] - er_view[1] ) + ( er_pose[2] - er_view[2] ) * ( er_pose[2] - er_view[2] ) );
+        /* Compute distance to cell */
+        er_dist = er_geodesy_cell( er_addr, er_lon, er_lat, er_alt - ER_ERA );
 
         /* Compute geodetic scale */
-        er_curr = er_geodesy_distance( er_dist, LE_GEODESY_ASYA - 1, er_model->md_sdis - 8 ); //er_model->md_sdis - 12 );
-        er_dept = er_geodesy_depth( er_dist, 6, 8 );
+        er_scale = er_geodesy_distance( er_dist, LE_GEODESY_ASYA - 1, er_model->md_sdis - ER_MODEL_DPT );
 
         /* Check geodetic scale value */
-        if ( ( fabs( er_curr - le_address_get_size( er_addr ) ) < 1 ) ) {
+        if ( ( fabs( er_scale - er_size ) < 1 ) || ( er_size == ( er_model->md_sdis - ER_MODEL_DPT ) ) ) {
 
             /* Set address depth */
-            le_address_set_depth( er_addr, er_dept );
+            le_address_set_depth( er_addr, ER_MODEL_DPT );
 
             /* Set cell address */
             er_cell_set_addr( er_model->md_cell, er_addr );
@@ -299,7 +286,7 @@
         } else {
 
             /* Increase address size */
-            le_size_t er_addr_s = le_address_get_size( er_addr );
+            //le_size_t er_addr_s = le_address_get_size( er_addr );
 
             /* Set address depth */
             le_address_set_depth( er_addr, 0 );
@@ -326,13 +313,46 @@
                     for ( er_parse = 0; er_parse < _LE_USE_BASE; er_parse ++ ) {
 
                         /* Set address size */
-                        le_address_set_size( er_addr, er_addr_s + 1 );
+                        le_address_set_size( er_addr, er_size + 1 );
 
                         /* Set address digit */
-                        le_address_set_digit( er_addr, er_addr_s, er_parse );
+                        le_address_set_digit( er_addr, er_size, er_parse );
 
                         /* Recursive cell searching */
                         er_model_set_addr( er_model, er_addr, er_lon, er_lat, er_alt );
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+    le_void_t er_model_update_query( er_model_t * const er_model ) {
+
+        /* Searching flag variables */
+        le_enum_t er_sflag = _LE_FALSE;
+
+        /* Parsing pushed cell */
+        for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
+
+            /* Check pushed address */
+            if ( 1 == 1 ) {
+
+                /* Reset search flag */
+                er_sflag = _LE_FALSE;
+
+                /* Parsing queried cell */
+                le_size_t er_query = er_parse; while ( ( ( ++ er_query ) < er_model->md_size ) && ( er_sflag == _LE_TRUE ) ) {
+
+                    /* Compare pushed and queried address */
+                    if ( 1 == 1 ) {
+
+                        /* Setting search flag */
+                        er_sflag = _LE_TRUE;
 
                     }
 
