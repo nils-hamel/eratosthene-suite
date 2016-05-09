@@ -168,7 +168,7 @@
         for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
 
             /* Reset cell flag */
-            er_model->md_cell[er_parse].ce_flag = ER_CELL_DOWN;
+            er_cell_set_flag( er_model->md_cell + er_parse, ER_CELL_DOWN );
 
         }
 
@@ -327,7 +327,7 @@
                 er_search = 1; while ( ( er_search < er_model->md_size ) && ( er_found == er_model->md_size ) ) {
 
                     /* Compare address and pushed address */
-                    if ( er_cell_get_already( er_model->md_cell + er_search, er_model->md_cell + er_parse ) == _LE_TRUE ) {
+                    if ( er_cell_get_match( er_model->md_cell + er_search, er_model->md_cell + er_parse ) == _LE_TRUE ) {
 
                         /* Assign found index */
                         er_found = er_search;
@@ -345,7 +345,7 @@
                 if ( er_found != er_model->md_size ) {
 
                     /* Reset pushed address */
-                    er_model->md_cell[er_parse].ce_push[0] = '\0';
+                    er_cell_set_pop( er_model->md_cell + er_parse );
 
                     /* Update cell flag */
                     er_cell_set_flag( er_model->md_cell + er_found, ER_CELL_PUSH );
@@ -391,7 +391,7 @@
                 }
 
                 /* Reset pushed address */
-                er_model->md_cell[er_parse].ce_push[0] = '\0';
+                er_cell_set_pop( er_model->md_cell + er_parse );
 
             }
 

@@ -114,7 +114,7 @@
     /*! \brief accessor methods
      */
 
-    le_enum_t er_cell_get_already( er_cell_t const * const er_cell, er_cell_t const * const er_push );
+    le_enum_t er_cell_get_match( er_cell_t const * const er_cell, er_cell_t const * const er_push );
 
     /*! \brief accessor methods
      */
@@ -145,6 +145,11 @@
      */
 
     le_void_t er_cell_set_push( er_cell_t * const er_cell, le_address_t const * const er_address );
+
+    /*! \brief mutator methods
+     */
+
+    le_void_t er_cell_set_pop( er_cell_t * const er_cell );
 
     /*! \brief mutator methods
      */

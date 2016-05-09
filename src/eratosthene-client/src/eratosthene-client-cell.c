@@ -84,7 +84,7 @@
 
     }
 
-    le_enum_t er_cell_get_already( er_cell_t const * const er_cell, er_cell_t const * const er_push ) {
+    le_enum_t er_cell_get_match( er_cell_t const * const er_cell, er_cell_t const * const er_push ) {
 
         /* Compare address and pushed address */
         if ( strcmp( ( char * ) er_cell->ce_addr, ( char * ) er_push->ce_push ) == 0 ) {
@@ -110,14 +110,14 @@
 
     le_real_t * er_cell_get_pose( er_cell_t const * const er_cell ) {
 
-        /* Return cell array pointer */
+        /* Return cell geodetic array pointer */
         return( er_cell->ce_pose );
 
     }
 
     le_data_t * er_cell_get_data( er_cell_t const * const er_cell ) {
 
-        /* Return cell array pointer */
+        /* Return cell colorimetric array pointer */
         return( er_cell->ce_data );
 
     }
@@ -147,6 +147,13 @@
 
     }
 
+    le_void_t er_cell_set_pop( er_cell_t * const er_cell ) {
+
+        /* Clear pushed address */
+        ( er_cell->ce_push )[0] = '\0';
+
+    }
+
     le_void_t er_cell_set_swap( er_cell_t * const er_addr, er_cell_t * const er_push ) {
 
         /* Swap address and pushed address */
@@ -156,11 +163,11 @@
 
     le_void_t er_cell_set_empty( er_cell_t * const er_cell ) {
 
-        /* Empty cell address */
-        er_cell->ce_addr[0] = '\0';
-
-        /* Empty cell array */
+        /* Empty array */
         er_cell->ce_size = 0;
+
+        /* Clear address */
+        ( er_cell->ce_addr )[0] = '\0';
 
     }
 
