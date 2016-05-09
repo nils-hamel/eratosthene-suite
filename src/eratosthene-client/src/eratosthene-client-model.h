@@ -118,17 +118,27 @@
     /*! \brief mutator methods
      */
 
-    le_void_t er_model_set_push( er_model_t * const er_model );
+    le_void_t er_model_set_update_prepare( er_model_t * const er_model );
 
     /*! \brief mutator methods
      */
 
-    le_void_t er_model_set_model( er_model_t * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t er_alt );
+    le_void_t er_model_set_update_model( er_model_t * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t er_alt );
 
     /*! \brief mutator methods
      */
 
-    le_void_t er_model_set_addr( er_model_t * const er_model, le_address_t * const er_addr, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
+    le_void_t er_model_set_update_cells( er_model_t * const er_model, le_address_t * const er_addr, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
+
+    /*! \brief mutator methods
+     */
+
+    le_void_t er_model_set_update_query( er_model_t * const er_model );
+
+    /*! \brief mutator methods
+     */
+
+    le_void_t er_model_set_update_destroy( er_model_t * const er_model );
 
     /*! \brief model display methods
      */

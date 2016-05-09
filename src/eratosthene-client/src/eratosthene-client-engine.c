@@ -161,8 +161,17 @@
             /* Wait for unsuspended model update */
             if ( ( er_engine.eg_sflag == _LE_TRUE ) && ( er_engine.eg_suspd == _LE_FALSE ) ) {
 
-                /* Update model */
-                er_model_set_model( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
+                /* Prepare model update */
+                er_model_set_update_prepare( & ( er_engine.eg_model ) );
+
+                /* Update model cells */
+                er_model_set_update_model( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
+
+                /* Server queries */
+                er_model_set_update_query( & ( er_engine.eg_model ) );
+
+                /* Terminate model update */
+                er_model_set_update_destroy( & ( er_engine.eg_model ) );
 
                 /* Reset engine model state */
                 er_engine.eg_sflag = _LE_FALSE;

@@ -32,7 +32,7 @@
         /* Create rendering engine */
         er_engine_create(
 
-            ( le_size_t   ) lc_read_uint  ( argc, argv, "--stack", "-s", 8192 ),
+            ( le_size_t   ) lc_read_uint  ( argc, argv, "--stack", "-s", 4096 ),
             ( le_char_t * ) lc_read_string( argc, argv, "--ip"   , "-i" ),
             ( le_size_t   ) lc_read_uint  ( argc, argv, "--port" , "-t", _LE_USE_PORT )
 

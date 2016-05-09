@@ -162,33 +162,22 @@
     source - mutator methods
  */
 
-    le_void_t er_model_set_push( er_model_t * const er_model ) {
+    le_void_t er_model_set_update_prepare( er_model_t * const er_model ) {
 
-        /* Swapping variables */
-        er_cell_t er_cell = ER_CELL_C;
+        /* Parsing model cells */
+        for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
 
-        /* Check zero cell state */
-        if ( er_cell_get_size( er_model->md_cell ) > 0 ) {
-
-            /* Check limitations */
-            if ( ( ++ er_model->md_push ) < er_model->md_size ) {
-
-                /* Backup pushed cell */
-                er_cell = ( er_model->md_cell )[er_model->md_push];
-
-                /* Assign zero cell */
-                ( er_model->md_cell )[er_model->md_push] = ( er_model->md_cell )[0];
-
-                /* Assign cell to zero */
-                ( er_model->md_cell )[0] = er_cell;
-
-            }
+            /* Reset cell flag */
+            er_model->md_cell[er_parse].ce_flag = ER_CELL_0;
 
         }
 
+        /* Reset push index */
+        er_model->md_push = 0;
+
     }
 
-    le_void_t er_model_set_model( er_model_t * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t er_alt ) {
+    le_void_t er_model_set_update_model( er_model_t * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t er_alt ) {
 
         /* Parsing variables */
         le_size_t er_plon = 0;
@@ -205,9 +194,6 @@
 
         /* Assign address time */
         le_address_set_time( & er_addr, er_time );
-
-        /* Clear push stack */
-        er_model->md_push = 0;
 
         /* Parsing neighbour central cells - longitude */
         for ( er_plon = 0; er_plon < 9; er_plon ++ ) {
@@ -229,7 +215,7 @@
                 le_address_set_pose( & er_addr, er_pose );
 
                 /* Recursive address push */
-                er_model_set_addr( er_model, & er_addr, er_lon, er_lat, er_alt );
+                er_model_set_update_cells( er_model, & er_addr, er_lon, er_lat, er_alt );
 
             }
 
@@ -237,16 +223,16 @@
 
     }
 
-    le_void_t er_model_set_addr( er_model_t * const er_model, le_address_t * const er_addr, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
+    le_void_t er_model_set_update_cells( er_model_t * const er_model, le_address_t * const er_addr, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
+
+        /* Parsing variables */
+        le_size_t er_parse = 0;
 
         /* Distance variables */
         le_real_t er_dist = 0.0;
 
         /* Scale variables */
         le_real_t er_scale = 0.0;
-
-        /* Parsing variables */
-        le_size_t er_parse = 0;
 
         /* Socket variables */
         le_sock_t er_socket = _LE_SOCK_NULL;
@@ -267,21 +253,7 @@
             le_address_set_depth( er_addr, ER_MODEL_DPT );
 
             /* Set cell address */
-            er_cell_set_addr( er_model->md_cell, er_addr );
-
-            /* Establish server connexion */
-            if ( ( er_socket = le_client_create( er_model->md_svip, er_model->md_port ) ) != _LE_SOCK_NULL ) {
-                
-                /* Update cell through server query */
-                er_cell_set_query( er_model->md_cell, er_socket );
-
-                /* Push queried cell */
-                er_model_set_push( er_model );
-
-                /* Close server connexion */
-                er_socket = le_client_delete( er_socket );
-
-            }
+            er_cell_set_addr2( er_model->md_cell + ( ++ er_model->md_push ), er_addr );
 
         } else {
 
@@ -316,7 +288,7 @@
                         le_address_set_digit( er_addr, er_size, er_parse );
 
                         /* Recursive cell searching */
-                        er_model_set_addr( er_model, er_addr, er_lon, er_lat, er_alt );
+                        er_model_set_update_cells( er_model, er_addr, er_lon, er_lat, er_alt );
 
                     }
 
@@ -328,32 +300,109 @@
 
     }
 
-    le_void_t er_model_update_query( er_model_t * const er_model ) {
+    le_void_t er_model_set_update_query( er_model_t * const er_model ) {
 
-        /* Searching flag variables */
-        le_enum_t er_sflag = _LE_FALSE;
+        /* Socket variables */
+        le_sock_t er_socket = _LE_SOCK_NULL;
 
-        /* Parsing pushed cell */
-        for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
+        /* Parsing model cells */
+        for ( le_size_t er_parse = 1; er_parse <= er_model->md_push; er_parse ++ ) {
 
             /* Check pushed address */
-            if ( 1 == 1 ) {
+            if ( er_model->md_cell[er_parse].ce_push[0] != '\0' ) {
 
-                /* Reset search flag */
-                er_sflag = _LE_FALSE;
+                /* Reset search */
+                le_size_t er_found = er_model->md_size;
 
-                /* Parsing queried cell */
-                le_size_t er_query = er_parse; while ( ( ( ++ er_query ) < er_model->md_size ) && ( er_sflag == _LE_TRUE ) ) {
+                /* Searching allocation */
+                le_size_t er_search = 1; while ( ( er_search < er_model->md_size ) && ( er_found == er_model->md_size ) ) {
 
-                    /* Compare pushed and queried address */
-                    if ( 1 == 1 ) {
+                    /* Compare address */
+                    if ( strcmp( ( char * ) er_model->md_cell[er_parse].ce_push, ( char * ) er_model->md_cell[er_search].ce_addr ) == 0 ) {
 
-                        /* Setting search flag */
-                        er_sflag = _LE_TRUE;
+                        /* Assign found index */
+                        er_found = er_search;
+
+                    } else {
+
+                        /* Continue search */
+                        er_search ++;
 
                     }
 
                 }
+
+                /* Check search results */
+                if ( er_found != er_model->md_size ) {
+
+                    /* Reset pushed address */
+                    er_model->md_cell[er_parse].ce_push[0] = '\0';
+
+                    /* Update cell flag */
+                    er_model->md_cell[er_found].ce_flag = ER_CELL_1;
+
+                }
+
+            }
+
+        }
+
+        /* Selected cell variables */
+        le_size_t er_found = 1;
+
+        /* Parsing model cells */
+        for ( le_size_t er_parse = 1; er_parse <= er_model->md_push; er_parse ++ ) {
+
+            /* Check pushed address */
+            if ( er_model->md_cell[er_parse].ce_push[0] != '\0' ) {
+
+                /* Searched unactive cell */
+                while ( ( er_model->md_cell[er_found].ce_flag != ER_CELL_0 ) && ( er_found < er_model->md_size ) ) er_found ++;
+
+                /* Check search results */
+                if ( er_found != er_model->md_size ) {
+
+                    /* Copy address */
+                    strcpy( ( char * ) er_model->md_cell[er_found].ce_addr, ( char * ) er_model->md_cell[er_parse].ce_push );
+
+                    /* Update cell flag */
+                    er_model->md_cell[er_found].ce_flag = ER_CELL_1;
+
+                    /* Establish server connexion */
+                    if ( ( er_socket = le_client_create( er_model->md_svip, er_model->md_port ) ) != _LE_SOCK_NULL ) {
+                        
+                        /* Update cell through server query */
+                        er_cell_set_query( er_model->md_cell + er_found, er_socket );
+
+                        /* Close server connexion */
+                        er_socket = le_client_delete( er_socket );
+
+                    }
+
+                }
+
+                /* Reset pushed address */
+                er_model->md_cell[er_parse].ce_push[0] = '\0';
+
+            }
+
+        }
+
+    }
+
+    le_void_t er_model_set_update_destroy( er_model_t * const er_model ) {
+
+        /* Parsing model cells */
+        for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
+
+            /* Check cell flag */
+            if ( er_model->md_cell[er_parse].ce_flag == ER_CELL_0 ) {
+
+                /* Clear address */
+                er_model->md_cell[er_parse].ce_addr[0] = '\0';
+
+                /* Clear cell content */
+                er_model->md_cell[er_parse].ce_size = 0;
 
             }
 

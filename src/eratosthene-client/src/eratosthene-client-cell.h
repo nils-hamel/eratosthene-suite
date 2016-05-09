@@ -53,7 +53,13 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_CELL_C      { { 0 }, 0, NULL, NULL }
+    //# define ER_CELL_C      { { 0 }, 0, NULL, NULL }
+    # define ER_CELL_C      { ER_CELL_0, { 0 }, { 0 }, 0, NULL, NULL }
+
+    /* Define cell flags */
+    # define ER_CELL_0      0
+    # define ER_CELL_1      1
+    # define ER_CELL_2      2
 
     /* Define cell array size */
     # define ER_CELL_ARRAY  786432
@@ -72,7 +78,12 @@
 
     typedef struct er_cell_struct {
 
+        le_enum_t   ce_flag;
+
         le_char_t   ce_addr[LE_NETWORK_BUFFER_ADDR];
+
+        le_char_t   ce_push[LE_NETWORK_BUFFER_ADDR];
+
         le_size_t   ce_size;
         le_real_t * ce_pose;
         le_data_t * ce_data;
@@ -117,6 +128,7 @@
      */
 
     le_void_t er_cell_set_addr( er_cell_t * const er_cell, le_address_t const * const er_address );
+    le_void_t er_cell_set_addr2( er_cell_t * const er_cell, le_address_t const * const er_address );
 
     /*! \brief mutator methods
      */

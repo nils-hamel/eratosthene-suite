@@ -102,6 +102,13 @@
 
     }
 
+    le_void_t er_cell_set_addr2( er_cell_t * const er_cell, le_address_t const * const er_address ) {
+
+        /* Compute and assign cell address */
+        le_address_cvas( er_address, er_cell->ce_push );
+
+    }
+
     le_void_t er_cell_set_query( er_cell_t * const er_cell, le_sock_t const er_socket ) {
 
         /* Parsing variables */
