@@ -32,6 +32,9 @@
 
     le_void_t er_engine_create( le_size_t const er_stack, le_char_t * const er_ip, le_sock_t const er_port ) {
 
+        /* Initialise display mode */
+        glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH );
+
         /* Create rendering window */
         glutCreateWindow( "eratosthene-client" );
 
@@ -40,9 +43,6 @@
 
         /* Cursor configuration */
         glutSetCursor( GLUT_CURSOR_NONE );
-
-        /* Initialise display mode */
-        glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH );
 
         /* Graphical thread behavior configuration */
         glutSetOption( GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION );
@@ -77,12 +77,12 @@
         /* Engine variables */
         er_engine_t er_reset = ER_ENGINE_C;
 
-        /* Delete model */
+        /* Delete cell model */
         er_model_delete( & er_engine.eg_model );
 
-        /* Enable vertex and color arrays */
-        glEnableClientState( GL_VERTEX_ARRAY );
-        glEnableClientState( GL_COLOR_ARRAY  );
+        /* Disable vertex and color arrays */
+        glDisableClientState( GL_VERTEX_ARRAY );
+        glDisableClientState( GL_COLOR_ARRAY  );
 
         /* Clear engine structure */
         er_engine = er_reset;
@@ -158,25 +158,17 @@
         /* Engine update loop */
         for ( ; ; sleep( 0.5 ) ) {
 
-            /* Wait for unsuspended model update */
-            if ( ( er_engine.eg_sflag == _LE_TRUE ) && ( er_engine.eg_suspd == _LE_FALSE ) ) {
+            /* Prepare model update */
+            er_model_set_update_prepare( & ( er_engine.eg_model ) );
 
-                /* Prepare model update */
-                er_model_set_update_prepare( & ( er_engine.eg_model ) );
+            /* Update model cells */
+            er_model_set_update_model( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
 
-                /* Update model cells */
-                er_model_set_update_model( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
+            /* Server queries */
+            er_model_set_update_query( & ( er_engine.eg_model ) );
 
-                /* Server queries */
-                er_model_set_update_query( & ( er_engine.eg_model ) );
-
-                /* Terminate model update */
-                er_model_set_update_destroy( & ( er_engine.eg_model ) );
-
-                /* Reset engine model state */
-                er_engine.eg_sflag = _LE_FALSE;
-
-            }
+            /* Terminate model update */
+            er_model_set_update_destroy( & ( er_engine.eg_model ) );
 
         /* Return null pointer */
         } return( NULL );
@@ -275,9 +267,6 @@
                 er_engine.eg_vazm = 0.0;
                 er_engine.eg_vgam = 0.0;
 
-                /* Push motion flag */
-                er_engine.eg_sflag = _LE_TRUE;
-
             } break;
 
             /* Time management */
@@ -285,9 +274,6 @@
 
                 /* Update time */
                 er_engine.eg_vtim -= er_model_get_tdisc( & ( er_engine.eg_model ) );
-
-                /* Push motion flag */
-                er_engine.eg_sflag = _LE_TRUE;
 
             } break;
 
@@ -297,14 +283,11 @@
                 /* Update time */
                 er_engine.eg_vtim += er_model_get_tdisc( & ( er_engine.eg_model ) );
 
-                /* Push motion flag */
-                er_engine.eg_sflag = _LE_TRUE;
-
             } break;
 
             /* Temporary */
-            case ( 'v' ) : er_engine.eg_vtim = 16917 * er_model_get_tdisc( & ( er_engine.eg_model ) ) + 1; er_engine.eg_sflag = _LE_TRUE; break;
-            case ( 'b' ) : er_engine.eg_vtim = 11001 * er_model_get_tdisc( & ( er_engine.eg_model ) ) + 1; er_engine.eg_sflag = _LE_TRUE; break;
+            case ( 'v' ) : er_engine.eg_vtim = 16917 * er_model_get_tdisc( & ( er_engine.eg_model ) ) + 1; break;
+            case ( 'b' ) : er_engine.eg_vtim = 11001 * er_model_get_tdisc( & ( er_engine.eg_model ) ) + 1; break;
 
         };
 
@@ -327,8 +310,10 @@
 
         /* Inertial multiplier */
         switch ( glutGetModifiers() ) {
+
             case ( GLUT_ACTIVE_CTRL  ) : { er_engine.eg_mult = 10.0; } break;
             case ( GLUT_ACTIVE_SHIFT ) : { er_engine.eg_mult =  0.1; } break;
+
         };
 
         /* Mouse event switch */
@@ -337,9 +322,6 @@
             /* Update altitude */
             er_engine.eg_valt += ( ER_INA * er_engine.eg_mult ) * ( er_engine.eg_valt - ER_ERA - LE_GEODESY_HMIN );
 
-            /* Push motion flag */
-            er_engine.eg_sflag = _LE_TRUE;
-
         }
 
         /* Mouse event switch */
@@ -347,9 +329,6 @@
 
             /* Update altitude */
             er_engine.eg_valt -= ( ER_INA * er_engine.eg_mult ) * ( er_engine.eg_valt - ER_ERA - LE_GEODESY_HMIN );
-
-            /* Push motion flag */
-            er_engine.eg_sflag = _LE_TRUE;
 
         }
 
@@ -370,23 +349,10 @@
         if ( ( er_engine.eg_button == GLUT_LEFT_BUTTON ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
 
             /* Update longitude and latitude */
-            er_engine.eg_vlon -= ( ER_INT * er_engine.eg_mult ) * ( er_engine.eg_u - er_engine.eg_x );
-            er_engine.eg_vlat += ( ER_INT * er_engine.eg_mult ) * ( er_engine.eg_v - er_engine.eg_y );
-
-            /* Push motion flag */
-            er_engine.eg_sflag = _LE_TRUE;
-
-        }
-
-        /* Mouse switch event */
-        if ( ( er_engine.eg_button == GLUT_MIDDLE_BUTTON ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
-
-            /* Update longitude and latitude */
             er_engine.eg_vlon += ( ER_INT * er_engine.eg_mult ) * ( er_engine.eg_v - er_engine.eg_y ) * sin( er_engine.eg_vazm * ER_D2R );
             er_engine.eg_vlat += ( ER_INT * er_engine.eg_mult ) * ( er_engine.eg_v - er_engine.eg_y ) * cos( er_engine.eg_vazm * ER_D2R );
-
-            /* Push motion flag */
-            er_engine.eg_sflag = _LE_TRUE;
+            er_engine.eg_vlon -= ( ER_INT * er_engine.eg_mult ) * ( er_engine.eg_u - er_engine.eg_x ) * cos( er_engine.eg_vazm * ER_D2R );
+            er_engine.eg_vlat += ( ER_INT * er_engine.eg_mult ) * ( er_engine.eg_u - er_engine.eg_x ) * sin( er_engine.eg_vazm * ER_D2R );
 
         }
 

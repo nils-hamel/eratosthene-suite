@@ -62,8 +62,7 @@
     # define ER_ENGINE_C {\
         ER_MODEL_C,\
         1,\
-        _LE_TRUE,\
-        0,\
+        _LE_FALSE,\
         _LE_FALSE,\
         GLUT_UP,\
         0,\
@@ -100,7 +99,6 @@
 
         er_model_t eg_model;
         int        eg_point;
-        le_enum_t  eg_sflag;
         le_enum_t  eg_suspd;
 
         int        eg_button;
