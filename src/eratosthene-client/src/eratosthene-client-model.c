@@ -302,20 +302,29 @@
 
     le_void_t er_model_set_update_query( er_model_t * const er_model ) {
 
+        /* Parsing variables */
+        le_size_t er_parse = 0;
+
+        /* Selected cell variables */
+        le_size_t er_found = 1;
+
+        /* Searching variables */
+        le_size_t er_search = 0;
+
         /* Socket variables */
         le_sock_t er_socket = _LE_SOCK_NULL;
 
         /* Parsing model cells */
-        for ( le_size_t er_parse = 1; er_parse <= er_model->md_push; er_parse ++ ) {
+        for ( er_parse = 1; er_parse <= er_model->md_push; er_parse ++ ) {
 
             /* Check pushed address */
             if ( er_model->md_cell[er_parse].ce_push[0] != '\0' ) {
 
                 /* Reset search */
-                le_size_t er_found = er_model->md_size;
+                er_found = er_model->md_size;
 
                 /* Searching allocation */
-                le_size_t er_search = 1; while ( ( er_search < er_model->md_size ) && ( er_found == er_model->md_size ) ) {
+                er_search = 1; while ( ( er_search < er_model->md_size ) && ( er_found == er_model->md_size ) ) {
 
                     /* Compare address */
                     if ( strcmp( ( char * ) er_model->md_cell[er_parse].ce_push, ( char * ) er_model->md_cell[er_search].ce_addr ) == 0 ) {
@@ -347,11 +356,11 @@
 
         }
 
-        /* Selected cell variables */
-        le_size_t er_found = 1;
+        /* Reset selected cell */
+        er_found = 1;
 
         /* Parsing model cells */
-        for ( le_size_t er_parse = 1; er_parse <= er_model->md_push; er_parse ++ ) {
+        for ( er_parse = 1; er_parse <= er_model->md_push; er_parse ++ ) {
 
             /* Check pushed address */
             if ( er_model->md_cell[er_parse].ce_push[0] != '\0' ) {
