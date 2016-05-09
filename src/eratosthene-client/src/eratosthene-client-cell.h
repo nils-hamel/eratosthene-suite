@@ -81,7 +81,6 @@
         le_enum_t   ce_flag;
 
         le_char_t   ce_addr[LE_NETWORK_BUFFER_ADDR];
-
         le_char_t   ce_push[LE_NETWORK_BUFFER_ADDR];
 
         le_size_t   ce_size;
@@ -103,6 +102,11 @@
      */
 
     le_void_t er_cell_delete( er_cell_t * const er_cell );
+
+    /*! \brief accessor methods
+     */
+
+    le_enum_t er_cell_get_flag( er_cell_t const * const er_cell );
 
     /*! \brief accessor methods
      */

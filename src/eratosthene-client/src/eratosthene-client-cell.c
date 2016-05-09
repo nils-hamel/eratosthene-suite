@@ -60,6 +60,13 @@
     source - accessor methods
  */
 
+    le_enum_t er_cell_get_flag( er_cell_t const * const er_cell ) {
+
+        /* Return cell flag */
+        return( er_cell->ce_flag );
+
+    }
+
     le_size_t er_cell_get_size( er_cell_t const * const er_cell ) {
 
         /* Return cell size */

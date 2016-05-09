@@ -357,7 +357,7 @@
             if ( er_model->md_cell[er_parse].ce_push[0] != '\0' ) {
 
                 /* Searched unactive cell */
-                while ( ( er_model->md_cell[er_found].ce_flag != ER_CELL_0 ) && ( er_found < er_model->md_size ) ) er_found ++;
+                while ( ( er_cell_get_flag( er_model->md_cell + er_found ) != ER_CELL_0 ) && ( er_found < er_model->md_size ) ) er_found ++;
 
                 /* Check search results */
                 if ( er_found != er_model->md_size ) {
