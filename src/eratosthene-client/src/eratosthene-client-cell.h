@@ -136,6 +136,11 @@
     /*! \brief mutator methods
      */
 
+    le_void_t er_cell_set_flag( er_cell_t * const er_cell, le_enum_t const er_flag );
+
+    /*! \brief mutator methods
+     */
+
     le_void_t er_cell_set_empty( er_cell_t * const er_cell );
 
     /*! \brief mutator methods

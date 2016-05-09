@@ -348,7 +348,7 @@
                     er_model->md_cell[er_parse].ce_push[0] = '\0';
 
                     /* Update cell flag */
-                    er_model->md_cell[er_found].ce_flag = ER_CELL_1;
+                    er_cell_set_flag( er_model->md_cell + er_found, ER_CELL_1 );
 
                 }
 
@@ -375,7 +375,7 @@
                     strcpy( ( char * ) er_model->md_cell[er_found].ce_addr, ( char * ) er_model->md_cell[er_parse].ce_push );
 
                     /* Update cell flag */
-                    er_model->md_cell[er_found].ce_flag = ER_CELL_1;
+                    er_cell_set_flag( er_model->md_cell + er_found, ER_CELL_1 );
 
                     /* Establish server connexion */
                     if ( ( er_socket = le_client_create( er_model->md_svip, er_model->md_port ) ) != _LE_SOCK_NULL ) {
@@ -405,13 +405,10 @@
         for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
 
             /* Check cell flag */
-            if ( er_model->md_cell[er_parse].ce_flag == ER_CELL_0 ) {
+            if ( er_cell_get_flag( er_model->md_cell + er_parse ) == ER_CELL_0 ) {
 
-                /* Clear address */
-                er_model->md_cell[er_parse].ce_addr[0] = '\0';
-
-                /* Clear cell content */
-                er_model->md_cell[er_parse].ce_size = 0;
+                /* Empty cell */
+                er_cell_set_empty( er_model->md_cell + er_parse );
 
             }
 
