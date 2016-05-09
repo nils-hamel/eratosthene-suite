@@ -141,13 +141,22 @@
     /*! \brief mutator methods
      */
 
-    le_void_t er_cell_set_empty( er_cell_t * const er_cell );
+    le_void_t er_cell_set_addr( er_cell_t * const er_cell, le_address_t const * const er_address );
 
     /*! \brief mutator methods
      */
 
-    le_void_t er_cell_set_addr( er_cell_t * const er_cell, le_address_t const * const er_address );
-    le_void_t er_cell_set_addr2( er_cell_t * const er_cell, le_address_t const * const er_address );
+    le_void_t er_cell_set_push( er_cell_t * const er_cell, le_address_t const * const er_address );
+
+    /*! \brief mutator methods
+     */
+
+    le_void_t er_cell_set_swap( er_cell_t * const er_addr, er_cell_t * const er_push );
+
+    /*! \brief mutator methods
+     */
+
+    le_void_t er_cell_set_empty( er_cell_t * const er_cell );
 
     /*! \brief mutator methods
      */

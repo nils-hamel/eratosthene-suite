@@ -133,16 +133,6 @@
 
     }
 
-    le_void_t er_cell_set_empty( er_cell_t * const er_cell ) {
-
-        /* Empty cell address */
-        er_cell->ce_addr[0] = '\0';
-
-        /* Empty cell array */
-        er_cell->ce_size = 0;
-
-    }
-
     le_void_t er_cell_set_addr( er_cell_t * const er_cell, le_address_t const * const er_address ) {
 
         /* Compute and assign cell address */
@@ -150,10 +140,27 @@
 
     }
 
-    le_void_t er_cell_set_addr2( er_cell_t * const er_cell, le_address_t const * const er_address ) {
+    le_void_t er_cell_set_push( er_cell_t * const er_cell, le_address_t const * const er_address ) {
 
         /* Compute and assign cell address */
         le_address_cvas( er_address, er_cell->ce_push );
+
+    }
+
+    le_void_t er_cell_set_swap( er_cell_t * const er_addr, er_cell_t * const er_push ) {
+
+        /* Swap address and pushed address */
+        strcpy( ( char * ) er_addr->ce_addr, ( char * ) er_push->ce_push );
+
+    }
+
+    le_void_t er_cell_set_empty( er_cell_t * const er_cell ) {
+
+        /* Empty cell address */
+        er_cell->ce_addr[0] = '\0';
+
+        /* Empty cell array */
+        er_cell->ce_size = 0;
 
     }
 

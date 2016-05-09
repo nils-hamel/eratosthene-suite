@@ -253,7 +253,7 @@
             le_address_set_depth( er_addr, ER_MODEL_DPT );
 
             /* Set cell address */
-            er_cell_set_addr2( er_model->md_cell + ( er_model->md_push ++ ), er_addr );
+            er_cell_set_push( er_model->md_cell + ( er_model->md_push ++ ), er_addr );
 
         } else {
 
@@ -371,8 +371,8 @@
                 /* Check search results */
                 if ( er_found != er_model->md_size ) {
 
-                    /* Copy address */
-                    strcpy( ( char * ) er_model->md_cell[er_found].ce_addr, ( char * ) er_model->md_cell[er_parse].ce_push );
+                    /* Swap address and pushed address */
+                    er_cell_set_swap( er_model->md_cell + er_found, er_model->md_cell + er_parse );
 
                     /* Update cell flag */
                     er_cell_set_flag( er_model->md_cell + er_found, ER_CELL_1 );
