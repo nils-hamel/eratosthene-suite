@@ -53,13 +53,11 @@
  */
 
     /* Define pseudo-constructor */
-    //# define ER_CELL_C      { { 0 }, 0, NULL, NULL }
-    # define ER_CELL_C      { ER_CELL_0, { 0 }, { 0 }, 0, NULL, NULL }
+    # define ER_CELL_C      { ER_CELL_DOWN, { 0 }, { 0 }, 0, NULL, NULL }
 
     /* Define cell flags */
-    # define ER_CELL_0      0
-    # define ER_CELL_1      1
-    # define ER_CELL_2      2
+    # define ER_CELL_DOWN   0
+    # define ER_CELL_PUSH   1
 
     /* Define cell array size */
     # define ER_CELL_ARRAY  786432

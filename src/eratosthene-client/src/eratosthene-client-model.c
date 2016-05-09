@@ -168,7 +168,7 @@
         for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
 
             /* Reset cell flag */
-            er_model->md_cell[er_parse].ce_flag = ER_CELL_0;
+            er_model->md_cell[er_parse].ce_flag = ER_CELL_DOWN;
 
         }
 
@@ -348,7 +348,7 @@
                     er_model->md_cell[er_parse].ce_push[0] = '\0';
 
                     /* Update cell flag */
-                    er_cell_set_flag( er_model->md_cell + er_found, ER_CELL_1 );
+                    er_cell_set_flag( er_model->md_cell + er_found, ER_CELL_PUSH );
 
                 }
 
@@ -366,7 +366,7 @@
             if ( er_cell_get_push( er_model->md_cell + er_parse ) == _LE_TRUE ) {
 
                 /* Searched unactive cell */
-                while ( ( er_cell_get_flag( er_model->md_cell + er_found ) != ER_CELL_0 ) && ( er_found < er_model->md_size ) ) er_found ++;
+                while ( ( er_cell_get_flag( er_model->md_cell + er_found ) != ER_CELL_DOWN ) && ( er_found < er_model->md_size ) ) er_found ++;
 
                 /* Check search results */
                 if ( er_found != er_model->md_size ) {
@@ -375,7 +375,7 @@
                     er_cell_set_swap( er_model->md_cell + er_found, er_model->md_cell + er_parse );
 
                     /* Update cell flag */
-                    er_cell_set_flag( er_model->md_cell + er_found, ER_CELL_1 );
+                    er_cell_set_flag( er_model->md_cell + er_found, ER_CELL_PUSH );
 
                     /* Establish server connexion */
                     if ( ( er_socket = le_client_create( er_model->md_svip, er_model->md_port ) ) != _LE_SOCK_NULL ) {
@@ -405,7 +405,7 @@
         for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
 
             /* Check cell flag */
-            if ( er_cell_get_flag( er_model->md_cell + er_parse ) == ER_CELL_0 ) {
+            if ( er_cell_get_flag( er_model->md_cell + er_parse ) == ER_CELL_DOWN ) {
 
                 /* Empty cell */
                 er_cell_set_empty( er_model->md_cell + er_parse );
