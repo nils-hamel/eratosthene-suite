@@ -195,7 +195,7 @@
         le_size_t er_plat = 0;
 
         /* Position vector variable */
-        le_real_t er_pose[3] = { 0.0, 0.0, er_alt };
+        le_real_t er_pose[3] = { 0.0, 0.0, er_alt - ER_ERA };
 
         /* Scale width variables */
         le_real_t er_scale = LE_2P / pow( 2, LE_GEODESY_ASYA - 1 );

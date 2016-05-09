@@ -59,9 +59,6 @@
     # define ER_MODEL_C   { NULL, _LE_USE_PORT, 0, 0, 0, 0, NULL }
 
     /* Define model parameters */
-    # define ER_MODEL_ASL 10
-    # define ER_MODEL_ASH 20
-
     # define ER_MODEL_DPT 7
 
     /* Define display array types */
