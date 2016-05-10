@@ -235,7 +235,13 @@
         le_sock_t er_socket = _LE_SOCK_NULL;
 
         /* Address size variables */
-        le_size_t er_size = le_address_get_size( er_addr );
+        le_size_t er_size = 0; 
+
+        /* Check model limitation */
+        if ( er_model->md_push >= er_model->md_size ) return;
+
+        /* Retrieve address size */
+        er_size = le_address_get_size( er_addr );
 
         /* Compute distance to cell */
         er_dist = er_geodesy_cell( er_addr, er_lon, er_lat, er_alt - ER_ERA );
