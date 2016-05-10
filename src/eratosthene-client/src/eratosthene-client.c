@@ -30,19 +30,26 @@
         glutInit( & argc, argv );
 
         /* Create rendering engine */
-        er_engine_create(
+        if ( er_engine_create(
 
-            ( le_size_t   ) lc_read_uint  ( argc, argv, "--stack", "-s", 4096 ),
-            ( le_char_t * ) lc_read_string( argc, argv, "--ip"   , "-i" ),
-            ( le_size_t   ) lc_read_uint  ( argc, argv, "--port" , "-t", _LE_USE_PORT )
+            ( le_size_t   ) lc_read_uint  ( argc, argv, "--cell", "-s", ER_MAIN_CELL ),
+            ( le_char_t * ) lc_read_string( argc, argv, "--ip"  , "-i" ),
+            ( le_size_t   ) lc_read_uint  ( argc, argv, "--port", "-t", ER_MAIN_PORT )
 
-        );
+        ) == _LE_FALSE ) {
 
-        /* Engine loops */
-        er_engine_loops();
+            /* Display message */
+            fprintf( stderr, "eratosthene-suite : error : unable to create model\n" );
 
-        /* Delete rendering engine */
-        er_engine_delete();
+        } else {
+
+            /* Engine loops */
+            er_engine_loops();
+
+            /* Delete rendering engine */
+            er_engine_delete();
+
+        }
 
         /* Return to system */
         return( EXIT_SUCCESS );

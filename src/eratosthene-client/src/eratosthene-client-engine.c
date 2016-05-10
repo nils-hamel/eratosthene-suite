@@ -30,45 +30,58 @@
     source - constructor/destructor methods
  */
 
-    le_void_t er_engine_create( le_size_t const er_stack, le_char_t * const er_ip, le_sock_t const er_port ) {
-
-        /* Initialise display mode */
-        glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH );
-
-        /* Create rendering window */
-        glutCreateWindow( "eratosthene-client" );
-
-        /* Fullscreen rendering window */
-        glutFullScreen();
-
-        /* Cursor configuration */
-        glutSetCursor( GLUT_CURSOR_NONE );
-
-        /* Graphical thread behavior configuration */
-        glutSetOption( GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION );
-
-        /* Buffers clear values */
-        glClearColor( 0.0, 0.0, 0.0, 0.0 );
-        glClearDepth( 1.0 );
-
-        /* Graphical thread configuration */
-        glEnable( GL_DEPTH_TEST );
-
-        /* Declare engine callback functions */
-        glutDisplayFunc      ( er_engine_render  );
-        glutIdleFunc         ( er_engine_render  );
-        glutReshapeFunc      ( er_engine_reshape );
-        glutKeyboardFunc     ( er_engine_keybd   );
-        glutMouseFunc        ( er_engine_mouse   );
-        glutMotionFunc       ( er_engine_move    );
-        glutPassiveMotionFunc( er_engine_move    );
-
-        /* Enable vertex and color arrays */
-        glEnableClientState( GL_VERTEX_ARRAY );
-        glEnableClientState( GL_COLOR_ARRAY  );
+    le_enum_t er_engine_create( le_size_t const er_stack, le_char_t * const er_ip, le_sock_t const er_port ) {
 
         /* Create cell model */
         er_engine.eg_model = er_model_create( er_stack, er_ip, er_port );
+
+        /* Check model creation */
+        if ( er_model_get_sdisc( & ( er_engine.eg_model ) ) == _LE_SIZE_NULL ) {
+
+            /* Send message */
+            return( _LE_FALSE );
+
+        } else {
+
+            /* Initialise display mode */
+            glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH );
+
+            /* Create rendering window */
+            glutCreateWindow( "eratosthene-client" );
+
+            /* Fullscreen rendering window */
+            glutFullScreen();
+
+            /* Cursor configuration */
+            glutSetCursor( GLUT_CURSOR_NONE );
+
+            /* Graphical thread behavior configuration */
+            glutSetOption( GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION );
+
+            /* Buffers clear values */
+            glClearColor( 0.0, 0.0, 0.0, 0.0 );
+            glClearDepth( 1.0 );
+
+            /* Graphical thread configuration */
+            glEnable( GL_DEPTH_TEST );
+
+            /* Declare engine callback functions */
+            glutDisplayFunc      ( er_engine_render  );
+            glutIdleFunc         ( er_engine_render  );
+            glutReshapeFunc      ( er_engine_reshape );
+            glutKeyboardFunc     ( er_engine_keybd   );
+            glutMouseFunc        ( er_engine_mouse   );
+            glutMotionFunc       ( er_engine_move    );
+            glutPassiveMotionFunc( er_engine_move    );
+
+            /* Enable vertex and color arrays */
+            glEnableClientState( GL_VERTEX_ARRAY );
+            glEnableClientState( GL_COLOR_ARRAY  );
+
+            /* Send message */
+            return( _LE_TRUE );
+
+        }
 
     }
 

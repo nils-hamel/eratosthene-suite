@@ -65,6 +65,10 @@
     header - preprocessor definitions
  */
 
+    /* Define default parameters */
+    # define ER_MAIN_CELL  4096
+    # define ER_MAIN_PORT  _LE_USE_PORT
+
 /*
     header - preprocessor macros
  */

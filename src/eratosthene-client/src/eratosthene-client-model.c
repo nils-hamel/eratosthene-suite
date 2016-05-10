@@ -40,20 +40,10 @@
         if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
 
             /* Client/server query handshake */
-            if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_SMOD ) == LE_ERROR_SUCCESS ) {
+            if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_TMOD ) == LE_ERROR_SUCCESS ) {
 
-                /* Read parameter in socket */
-                if ( read( er_socket, & ( er_model.md_sdis ), sizeof( le_size_t ) ) != sizeof( le_size_t ) ) {
-
-                    /* Return model */
-                    return( er_model );
-
-                }
-
-            } else {
-
-                /* Return model */
-                return( er_model );
+                /* Retrieve server configuration */
+                er_model.md_tdis = le_client_system_tdisc( er_socket );
 
             }
 
@@ -62,29 +52,35 @@
 
         }
 
+        /* Check consistency */
+        if ( er_model.md_tdis == _LE_TIME_NULL ) {
+
+            /* Abort model creation */
+            return( er_model );
+
+        }
+
         /* Establish server connexion */
         if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
 
             /* Client/server query handshake */
-            if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_TMOD ) == LE_ERROR_SUCCESS ) {
+            if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_SMOD ) == LE_ERROR_SUCCESS ) {
 
-                /* Read parameter in socket */
-                if ( read( er_socket, & ( er_model.md_tdis ), sizeof( le_time_t ) ) != sizeof( le_time_t ) ) {
-
-                    /* Return model */
-                    return( er_model );
-
-                }
-
-            } else {
-
-                /* Return model */
-                return( er_model );
+                /* Retrieve server configuration */
+                er_model.md_sdis = le_client_system_sdisc( er_socket );
 
             }
 
             /* Close server connexion */
             er_socket = le_client_delete( er_socket );
+
+        }
+
+        /* Check consistency */
+        if ( er_model.md_sdis == _LE_SIZE_NULL ) {
+
+            /* Abort model creation */
+            return( er_model );
 
         }
 
@@ -102,15 +98,16 @@
 
             }
 
-            /* Return model */
-            return( er_model );
-
         } else {
 
-            /* Return model */
-            return( er_model );
+            /* Invalidate model structure */
+            er_model.md_sdis = _LE_SIZE_NULL;
+            er_model.md_tdis = _LE_TIME_NULL;
 
         }
+
+        /* Return created model */
+        return( er_model );
 
     }
 

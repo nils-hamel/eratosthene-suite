@@ -126,7 +126,7 @@
     /*! \brief constructor/destructor methods
      */
 
-    le_void_t er_engine_create( le_size_t const er_stack, le_char_t * const er_ip, le_sock_t const er_port );
+    le_enum_t er_engine_create( le_size_t const er_stack, le_char_t * const er_ip, le_sock_t const er_port );
 
     /*! \brief constructor/destructor methods
      */

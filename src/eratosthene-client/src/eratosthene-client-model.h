@@ -56,7 +56,7 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_MODEL_C   { NULL, _LE_USE_PORT, 0, 0, 0, 0, NULL }
+    # define ER_MODEL_C   { NULL, _LE_USE_PORT, _LE_SIZE_NULL, _LE_TIME_NULL, 0, 0, NULL }
 
     /* Define model parameters */
     # define ER_MODEL_DPT 7
