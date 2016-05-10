@@ -93,7 +93,7 @@
     le_real_t er_geodesy_distance( le_real_t const er_distance, le_size_t const er_scale_min, le_size_t const er_scale_max ) {
 
         /* Computation variables */
-        le_real_t er_model = er_scale_max - ( log( er_distance + 4.0 ) / log( 2.0 ) ) + log( 4.0 ) / log( 2.0 );
+        le_real_t er_model = er_scale_max - ( log( er_distance + 5.0 ) / log( 2.0 ) ) + log( 5.0 ) / log( 2.0 );
 
         /* Return scale-distance constraints */
         return( er_model < er_scale_min ? er_scale_min : er_model );
