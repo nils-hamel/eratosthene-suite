@@ -54,7 +54,7 @@
     le_real_t er_geodesy_cell( le_address_t * const er_addr, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
 
         /* Address size variables */
-        le_size_t er_size = le_address_get_size( er_addr );
+        le_size_t er_size = le_address_get_size( er_addr ) + 1;
 
         /* Position array variables */
         le_real_t er_pose[] = { er_lon, er_lat, er_alt, 0.0, 0.0, 0.0 };
@@ -93,7 +93,7 @@
     le_real_t er_geodesy_distance( le_real_t const er_distance, le_size_t const er_scale_min, le_size_t const er_scale_max ) {
 
         /* Computation variables */
-        le_real_t er_model = er_scale_max - ( log( er_distance + 25.0 ) / log( 1.82 ) ) + log( 25.0 ) / log( 1.82 );
+        le_real_t er_model = er_scale_max - ( log( er_distance + 4.0 ) / log( 2.0 ) ) + log( 4.0 ) / log( 2.0 );
 
         /* Return scale-distance constraints */
         return( er_model < er_scale_min ? er_scale_min : er_model );
