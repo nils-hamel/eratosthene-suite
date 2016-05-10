@@ -7,7 +7,7 @@
     MAKE_DOCENT:=doc
     MAKE_LIBRAR:=lib
     MAKE_SOURCE:=src
-    MAKE_INPATH:=/media/dhlabv/bin/eratosthene-suite/bin
+    MAKE_INPATH:=/media/dhlab-linux/bin/eratosthene-suite/bin
     MAKE_CMCOPY:=cp
     MAKE_CMRMFL:=rm -f
     MAKE_CMMKDR:=mkdir -p
