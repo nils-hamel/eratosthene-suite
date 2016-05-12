@@ -98,15 +98,15 @@
     typedef struct er_engine_struct {
 
         er_model_t eg_model;
-        int        eg_point;
+        le_size_t  eg_point;
         le_enum_t  eg_suspd;
 
-        int        eg_button;
-        int        eg_state;
-        int        eg_x;
-        int        eg_y;
-        int        eg_u;
-        int        eg_v;
+        le_enum_t  eg_button;
+        le_enum_t  eg_state;
+        le_diff_t  eg_x;
+        le_diff_t  eg_y;
+        le_diff_t  eg_u;
+        le_diff_t  eg_v;
         le_real_t  eg_mult;
 
         le_real_t  eg_valt;
@@ -115,6 +115,7 @@
         le_real_t  eg_vazm;
         le_real_t  eg_vgam;
         le_real_t  eg_vscl;
+
         le_time_t  eg_vtim;
 
     } er_engine_t;

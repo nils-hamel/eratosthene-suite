@@ -169,7 +169,7 @@
     le_void_t * er_engine_update( le_void_t * er_null ) {
 
         /* Engine update loop */
-        for ( ; ; sleep( 0.5 ) ) {
+        for ( ; ; sleep( 0.25 ) ) {
 
             /* Prepare model update */
             er_model_set_update_prepare( & ( er_engine.eg_model ) );
