@@ -56,7 +56,19 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_MODEL_C   { NULL, _LE_USE_PORT, _LE_SIZE_NULL, _LE_TIME_NULL, 0, 0, NULL }
+    # define ER_MODEL_C {\
+        NULL,\
+        _LE_USE_PORT,\
+        _LE_SIZE_NULL,\
+        _LE_TIME_NULL,\
+        0.0,\
+        0.0,\
+        0.0,\
+        0.0,\
+        0,\
+        0,\
+        NULL\
+    }
 
     /* Define model parameters */
     # define ER_MODEL_DPT 7
@@ -84,6 +96,11 @@
 
         le_size_t   md_sdis;
         le_time_t   md_tdis;
+
+        le_time_t   md_mtim;
+        le_real_t   md_mlon;
+        le_real_t   md_mlat;
+        le_real_t   md_malt;
 
         le_size_t   md_push;
         le_size_t   md_size;
@@ -114,6 +131,11 @@
      */
 
     le_size_t er_model_get_tdisc( er_model_t const * const er_model );
+
+    /*! \brief accessor methods
+     */
+
+    le_enum_t er_model_get_update( er_model_t const * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
 
     /*! \brief mutator methods
      */

@@ -152,13 +152,28 @@
             glRotated( +er_engine.eg_vlat, 1.0, 0.0, 0.0 );
             glRotated( -er_engine.eg_vlon, 0.0, 1.0, 0.0 );
 
-            /* Display model */
-            er_model_display_cell( & ( er_engine.eg_model ) );
-
             /* Display earth */
             er_model_display_earth();
 
         /* Pop matrix */
+        } glPopMatrix();
+
+        /* NEW */
+        glPushMatrix(); {
+
+            /* Motion management - translation */
+            glTranslated( 0.0, +sin( er_engine.eg_vgam * ER_D2R ) * er_engine.eg_valt, -cos( er_engine.eg_vgam * ER_D2R ) * er_engine.eg_valt );
+
+            /* Motion management - rotations */
+            glRotated( +er_engine.eg_vgam, 1.0, 0.0, 0.0 );
+            glRotated( +er_engine.eg_vazm, 0.0, 0.0, 1.0 );
+            glRotated( +er_engine.eg_vlat, 1.0, 0.0, 0.0 );
+            glRotated( -er_engine.eg_vlon, 0.0, 1.0, 0.0 );
+
+            /* Display model */
+            er_model_display_cell( & ( er_engine.eg_model ) );
+
+        /* NEW */
         } glPopMatrix();
 
         /* Swap buffers */
@@ -171,17 +186,22 @@
         /* Engine update loop */
         for ( ; ; sleep( 0.25 ) ) {
 
-            /* Prepare model update */
-            er_model_set_update_prepare( & ( er_engine.eg_model ) );
+            /* Check model update necessities */
+            if ( er_model_get_update( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt ) == _LE_TRUE ) {
 
-            /* Update model cells */
-            er_model_set_update_model( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
+                /* Prepare model update */
+                er_model_set_update_prepare( & ( er_engine.eg_model ) );
 
-            /* Server queries */
-            er_model_set_update_query( & ( er_engine.eg_model ) );
+                /* Update model cells */
+                er_model_set_update_model( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
 
-            /* Terminate model update */
-            er_model_set_update_destroy( & ( er_engine.eg_model ) );
+                /* Server queries */
+                er_model_set_update_query( & ( er_engine.eg_model ) );
+
+                /* Terminate model update */
+                er_model_set_update_destroy( & ( er_engine.eg_model ) );
+
+            }
 
         /* Return null pointer */
         } return( NULL );

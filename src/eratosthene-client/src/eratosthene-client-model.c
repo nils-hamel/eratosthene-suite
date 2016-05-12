@@ -155,6 +155,23 @@
 
     }
 
+    le_enum_t er_model_get_update( er_model_t const * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
+
+        /* Check model update necessities */
+        if ( ( er_model->md_mtim == er_time ) && ( er_model->md_mlon == er_lon ) && ( er_model->md_mlat == er_lat ) && ( er_model->md_malt == er_alt ) ) {
+
+            /* Return negative answer */
+            return( _LE_FALSE );
+
+        } else {
+
+            /* Return positive answer */
+            return( _LE_TRUE );
+
+        }
+
+    }
+
 /*
     source - mutator methods
  */
@@ -217,6 +234,12 @@
             }
 
         }
+
+        /* Push current space-time position */
+        er_model->md_mtim = er_time;
+        er_model->md_mlon = er_lon;
+        er_model->md_mlat = er_lat;
+        er_model->md_malt = er_alt;
 
     }
 
