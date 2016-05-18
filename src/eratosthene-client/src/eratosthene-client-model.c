@@ -293,7 +293,7 @@
             if ( ( er_socket = le_client_create( er_model->md_svip, er_model->md_port ) ) != _LE_SOCK_NULL ) {
                 
                 /* Update cell through server query */
-                er_cell_set_query( er_model->md_cell, er_socket );
+                er_cell_set_query( er_model->md_cell, er_socket, 0.0, 0.0, 0.0 );
 
                 /* Close server connexion */
                 er_socket = le_client_delete( er_socket );
@@ -407,7 +407,7 @@
                     if ( ( er_socket = le_client_create( er_model->md_svip, er_model->md_port ) ) != _LE_SOCK_NULL ) {
                         
                         /* Update cell through server query */
-                        er_cell_set_query( er_model->md_cell + er_found, er_socket );
+                        er_cell_set_query( er_model->md_cell + er_found, er_socket, er_model->md_mlon, er_model->md_mlat, er_model->md_malt );
 
                         /* Close server connexion */
                         er_socket = le_client_delete( er_socket );

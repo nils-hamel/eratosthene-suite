@@ -171,7 +171,7 @@
 
     }
 
-    le_void_t er_cell_set_query( er_cell_t * const er_cell, le_sock_t const er_socket ) {
+    le_void_t er_cell_set_query( er_cell_t * const er_cell, le_sock_t const er_socket, le_real_t er_lon, le_real_t er_lat, le_real_t er_alt ) {
 
         /* Parsing variables */
         le_size_t er_parse = 0;
