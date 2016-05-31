@@ -227,8 +227,7 @@
         glLoadIdentity();
 
         /* Compute projectio matrix */
-        //gluPerspective( 45.0, ( double ) er_width / er_height, er_geodesy_near( er_engine.eg_valt ), er_geodesy_far( er_engine.eg_valt ) );
-        gluPerspective( 45.0, ( double ) er_width / er_height, 1, 10000000 );
+        gluPerspective( 45.0, ( double ) er_width / er_height, er_geodesy_near( er_engine.eg_valt ), er_geodesy_far( er_engine.eg_valt ) );
 
         /* Matrix mode to modelview */
         glMatrixMode( GL_MODELVIEW );
