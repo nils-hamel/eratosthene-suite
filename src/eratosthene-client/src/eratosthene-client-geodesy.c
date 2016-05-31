@@ -103,7 +103,7 @@
     le_real_t er_geodesy_scale( le_real_t const er_altitude ) {
 
         /* Computation variables */
-        le_real_t er_normal = ( er_altitude - LE_GEODESY_WGS84_A ) / LE_GEODESY_WGS84_A;
+        le_real_t er_normal = ( er_altitude - ER_ERA ) / ER_ERA;
 
         /* Return scale factor */
         return( exp( - 3.14 * er_normal * er_normal ) );
@@ -113,10 +113,10 @@
     le_real_t er_geodesy_near( le_real_t const er_altitude ) {
 
         /* Computation variables */
-        le_real_t er_eval = 1.0 + 9999.0 * pow( 1.0 - er_geodesy_scale( er_altitude ), LE_P2 );
+        le_real_t er_eval = pow( 1.0 - er_geodesy_scale( er_altitude ), 1.57 );
 
         /* Return near plane depth */
-        return( er_eval * er_geodesy_scale( er_altitude ) );
+        return( 1.0 + ER_ER2 * er_eval );
 
     }
 
