@@ -211,8 +211,8 @@
         er_cell->ce_edge[2] = er_cell->ce_edge[1];
 
         /* Optimised edge computation */
-        er_cell->ce_edge[0] = ER_ERA * cos( er_cell->ce_edge[2] ) * cos( er_cell->ce_edge[0] );
         er_cell->ce_edge[1] = ER_ERA * cos( er_cell->ce_edge[2] ) * sin( er_cell->ce_edge[0] );
+        er_cell->ce_edge[0] = ER_ERA * cos( er_cell->ce_edge[2] ) * cos( er_cell->ce_edge[0] );
 
         /* Optimised edge computation */
         er_cell->ce_edge[2] = ER_ERA * sin( er_cell->ce_edge[2] );

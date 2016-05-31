@@ -87,7 +87,7 @@
         le_real_t *  ce_pose;
         le_data_t *  ce_data;
 
-        le_real_t    ce_edge[5];
+        le_real_t    ce_edge[3];
         
     } er_cell_t;
 
