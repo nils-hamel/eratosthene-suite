@@ -446,10 +446,35 @@
     source - model display methods
  */
 
-    le_void_t er_model_display_cell( er_model_t * const er_model ) {
+    le_void_t er_model_display_cell( er_model_t * const er_model, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt, le_real_t const er_azm, le_real_t const er_gam ) {
 
         /* Count variables */
         le_size_t er_count = 0;
+
+        /* Rotation vector variables */
+        le_real_t * er_vcell = NULL;
+
+        /* Optimisation variables */
+        le_real_t er_cosl = cos( - er_lon * ER_D2R );
+        le_real_t er_sinl = sin( - er_lon * ER_D2R );
+        le_real_t er_cosa = cos( + er_lat * ER_D2R );
+        le_real_t er_sina = sin( + er_lat * ER_D2R );
+
+        /* Rotation matrix variables */
+        le_real_t er_rcell[3][3] = {
+
+            { + er_cosa * er_cosl, - er_cosa * er_sinl, + er_sina },
+            { + er_sinl          , + er_cosl          , 0.0       },
+            { - er_sina * er_cosl, + er_sina * er_sinl, + er_cosa }
+
+        };
+
+        /* Motion management - altimetric translation */
+        glTranslated( 0.0, 0.0, - er_alt + ER_ERA );
+
+        /* Motion management - tilt rotation */
+        glRotated( er_gam, 1.0, 0.0, 0.0 );
+        glRotated( er_azm, 0.0, 0.0, 1.0 );
 
         /* Display cells content */
         for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
@@ -461,11 +486,30 @@
                 glVertexPointer( 3, ER_MODEL_VA, 0, er_cell_get_pose( ( er_model->md_cell ) + er_parse ) );
                 glColorPointer ( 3, ER_MODEL_CA, 0, er_cell_get_data( ( er_model->md_cell ) + er_parse ) );
 
-                /* Display graphical primitives */
-                glDrawArrays( GL_POINTS, 0, er_count / 3 );
+                /* Cell matrix */
+                glPushMatrix(); {
 
-                /* Devel temporary */
-                er_model_devel_display_cell( er_model->md_cell[er_parse].ce_addr );
+                    /* Assign cell edge array */
+                    er_vcell = ( ( er_model->md_cell ) + er_parse )->ce_edge;
+
+                    /* Motion management - cell edge translation */
+                    glTranslated( 
+
+                        er_rcell[1][0] * er_vcell[0] + er_rcell[1][1] * er_vcell[1] + er_rcell[1][2] * er_vcell[2],
+                        er_rcell[2][0] * er_vcell[0] + er_rcell[2][1] * er_vcell[1] + er_rcell[2][2] * er_vcell[2],
+                        er_rcell[0][0] * er_vcell[0] + er_rcell[0][1] * er_vcell[1] + er_rcell[0][2] * er_vcell[2] - ER_ERA
+
+                    );
+
+                    /* Motion management - planimetric rotation */
+                    glRotated( + er_lat, 1.0, 0.0, 0.0 );
+                    glRotated( - er_lon, 0.0, 1.0, 0.0 );
+
+                    /* Display graphical primitives */
+                    glDrawArrays( GL_POINTS, 0, er_count / 3 );
+
+                /* Cell matrix */
+                } glPopMatrix();
 
             }
 
@@ -473,9 +517,23 @@
 
     }
 
-    le_void_t er_model_display_earth( le_void_t ) {
+    le_void_t er_model_display_earth( le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt, le_real_t const er_azm, le_real_t const er_gam ) {
 
-        /* Earth frame - orientation */
+        /* Motion management - altimetric translation */
+        glTranslated( 0.0, 0.0, - er_alt + ER_ERA );
+
+        /* Motion management - tilt rotation */
+        glRotated( er_gam, 1.0, 0.0, 0.0 );
+        glRotated( er_azm, 0.0, 0.0, 1.0 );
+
+        /* Earth wireframe - centering */
+        glTranslated( 0.0, 0.0, - ER_ERA );
+
+        /* Motion management - planimetric rotation */
+        glRotated( + er_lat, 1.0, 0.0, 0.0 );
+        glRotated( - er_lon, 0.0, 1.0, 0.0 );
+
+        /* Earth wireframe - orientation */
         glRotated( 90.0, 1.0, 0.0, 0.0 );
 
         /* Earth frame - color */

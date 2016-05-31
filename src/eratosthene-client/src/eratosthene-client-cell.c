@@ -159,6 +159,11 @@
         /* Swap address and pushed address */
         strcpy( ( char * ) er_addr->ce_addr, ( char * ) er_push->ce_push );
 
+        /* Swap position array */
+        ( er_addr->ce_edge )[0] = ( er_push->ce_edge )[0];
+        ( er_addr->ce_edge )[1] = ( er_push->ce_edge )[1];
+        ( er_addr->ce_edge )[2] = ( er_push->ce_edge )[2];
+
     }
 
     le_void_t er_cell_set_empty( er_cell_t * const er_cell ) {
@@ -182,19 +187,35 @@
         /* Socket i/o count variables */
         le_size_t er_count = 0;
 
+        /* Optimisation variables */
+        le_size_t er_size = 0;
+
         /* Array pointer variables */
         le_real_t * er_ptrp = NULL;
         le_time_t * er_ptrt = NULL;
         le_data_t * er_ptrd = NULL;
-
-        /* Optimisation variables */
-        le_size_t er_size = 0;
 
         /* Socket i/o buffer variables */
         le_byte_t er_buffer[LE_NETWORK_BUFFER_SYNC] = LE_NETWORK_BUFFER_C;
 
         /* Reset cell size */
         er_cell->ce_size = 0;
+
+        /* Convert query string */
+        le_address_cvsa( & er_cell->ce_cell, er_cell->ce_addr );
+
+        /* Retrieve cell position */
+        le_address_get_pose( & er_cell->ce_cell, er_cell->ce_edge );
+
+        /* Optimised edge computation */
+        er_cell->ce_edge[2] = er_cell->ce_edge[1];
+
+        /* Optimised edge computation */
+        er_cell->ce_edge[0] = ER_ERA * cos( er_cell->ce_edge[2] ) * cos( er_cell->ce_edge[0] );
+        er_cell->ce_edge[1] = ER_ERA * cos( er_cell->ce_edge[2] ) * sin( er_cell->ce_edge[0] );
+
+        /* Optimised edge computation */
+        er_cell->ce_edge[2] = ER_ERA * sin( er_cell->ce_edge[2] );
 
         /* Client/server query handshake */
         if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_QMOD ) != LE_ERROR_SUCCESS ) {
@@ -230,14 +251,14 @@
                     er_ptrp[2] += ER_ERA;
 
                     /* Optimised vertex computation */
-                    er_cell->ce_pose[er_track + 1] = er_ptrp[2] * sin( er_ptrp[1] );
+                    er_cell->ce_pose[er_track + 1] = er_ptrp[2] * sin( er_ptrp[1] ) - er_cell->ce_edge[2];
 
                     /* Optimised vertex computation */
                     er_ptrp[1] = cos( er_ptrp[1] );
 
                     /* Optimised vertex computation */
-                    er_cell->ce_pose[er_track    ] = er_ptrp[2] * er_ptrp[1] * sin( er_ptrp[0] );
-                    er_cell->ce_pose[er_track + 2] = er_ptrp[2] * er_ptrp[1] * cos( er_ptrp[0] );
+                    er_cell->ce_pose[er_track    ] = er_ptrp[2] * er_ptrp[1] * sin( er_ptrp[0] ) - er_cell->ce_edge[1];
+                    er_cell->ce_pose[er_track + 2] = er_ptrp[2] * er_ptrp[1] * cos( er_ptrp[0] ) - er_cell->ce_edge[0];
 
                     /* Assign color */
                     er_cell->ce_data[er_track    ] = er_ptrd[0];

@@ -141,39 +141,39 @@
         glPointSize( er_engine.eg_point );
 
         /* Push matrix */
-        glPushMatrix(); {
+        //glPushMatrix(); {
 
             /* Motion management - translation */
-            glTranslated( 0.0, +sin( er_engine.eg_vgam * ER_D2R ) * er_engine.eg_valt, -cos( er_engine.eg_vgam * ER_D2R ) * er_engine.eg_valt );
+            //glTranslated( 0.0, +sin( er_engine.eg_vgam * ER_D2R ) * er_engine.eg_valt, -cos( er_engine.eg_vgam * ER_D2R ) * er_engine.eg_valt );
 
             /* Motion management - rotations */
-            glRotated( +er_engine.eg_vgam, 1.0, 0.0, 0.0 );
-            glRotated( +er_engine.eg_vazm, 0.0, 0.0, 1.0 );
-            glRotated( +er_engine.eg_vlat, 1.0, 0.0, 0.0 );
-            glRotated( -er_engine.eg_vlon, 0.0, 1.0, 0.0 );
+            //glRotated( +er_engine.eg_vgam, 1.0, 0.0, 0.0 );
+            //glRotated( +er_engine.eg_vazm, 0.0, 0.0, 1.0 );
+            //glRotated( +er_engine.eg_vlat, 1.0, 0.0, 0.0 );
+            //glRotated( -er_engine.eg_vlon, 0.0, 1.0, 0.0 );
 
             /* Display earth */
-            er_model_display_earth();
+            //er_model_display_earth();
 
         /* Pop matrix */
-        } glPopMatrix();
+        //} glPopMatrix();
 
-        /* NEW */
+        /* Earth wireframe matrix */
         glPushMatrix(); {
 
-            /* Motion management - translation */
-            glTranslated( 0.0, +sin( er_engine.eg_vgam * ER_D2R ) * er_engine.eg_valt, -cos( er_engine.eg_vgam * ER_D2R ) * er_engine.eg_valt );
+            /* Display earth */
+            er_model_display_earth( er_engine.eg_vlon, er_engine.eg_vlat, er_engine.eg_valt, er_engine.eg_vazm, er_engine.eg_vgam );
 
-            /* Motion management - rotations */
-            glRotated( +er_engine.eg_vgam, 1.0, 0.0, 0.0 );
-            glRotated( +er_engine.eg_vazm, 0.0, 0.0, 1.0 );
-            glRotated( +er_engine.eg_vlat, 1.0, 0.0, 0.0 );
-            glRotated( -er_engine.eg_vlon, 0.0, 1.0, 0.0 );
+        /* Earth wireframe matrix */
+        } glPopMatrix();
+
+        /* Server cells matrix */
+        glPushMatrix(); {
 
             /* Display model */
-            er_model_display_cell( & ( er_engine.eg_model ) );
+            er_model_display_cell( & ( er_engine.eg_model ), er_engine.eg_vlon, er_engine.eg_vlat, er_engine.eg_valt, er_engine.eg_vazm, er_engine.eg_vgam );
 
-        /* NEW */
+        /* Server cells matrix */
         } glPopMatrix();
 
         /* Swap buffers */
@@ -227,7 +227,8 @@
         glLoadIdentity();
 
         /* Compute projectio matrix */
-        gluPerspective( 45.0, ( double ) er_width / er_height, er_geodesy_near( er_engine.eg_valt ), er_geodesy_far( er_engine.eg_valt ) );
+        //gluPerspective( 45.0, ( double ) er_width / er_height, er_geodesy_near( er_engine.eg_valt ), er_geodesy_far( er_engine.eg_valt ) );
+        gluPerspective( 45.0, ( double ) er_width / er_height, 1, 10000000 );
 
         /* Matrix mode to modelview */
         glMatrixMode( GL_MODELVIEW );

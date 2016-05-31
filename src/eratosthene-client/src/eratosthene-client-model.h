@@ -165,12 +165,12 @@
     /*! \brief model display methods
      */
 
-    le_void_t er_model_display_cell( er_model_t * const er_model );
+    le_void_t er_model_display_cell( er_model_t * const er_model, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt, le_real_t const er_azm, le_real_t const er_gam );
 
     /*! \brief model display methods
      */
 
-    le_void_t er_model_display_earth( le_void_t );
+    le_void_t er_model_display_earth( le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt, le_real_t const er_azm, le_real_t const er_gam );
 
     /*! \brief development functions
      */
