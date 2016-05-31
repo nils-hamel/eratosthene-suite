@@ -41,47 +41,45 @@
             /* Send message */
             return( _LE_FALSE );
 
-        } else {
-
-            /* Initialise display mode */
-            glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH );
-
-            /* Create rendering window */
-            glutCreateWindow( "eratosthene-client" );
-
-            /* Fullscreen rendering window */
-            glutFullScreen();
-
-            /* Cursor configuration */
-            glutSetCursor( GLUT_CURSOR_NONE );
-
-            /* Graphical thread behavior configuration */
-            glutSetOption( GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION );
-
-            /* Buffers clear values */
-            glClearColor( 0.0, 0.0, 0.0, 0.0 );
-            glClearDepth( 1.0 );
-
-            /* Graphical thread configuration */
-            glEnable( GL_DEPTH_TEST );
-
-            /* Declare engine callback functions */
-            glutDisplayFunc      ( er_engine_render  );
-            glutIdleFunc         ( er_engine_render  );
-            glutReshapeFunc      ( er_engine_reshape );
-            glutKeyboardFunc     ( er_engine_keybd   );
-            glutMouseFunc        ( er_engine_mouse   );
-            glutMotionFunc       ( er_engine_move    );
-            glutPassiveMotionFunc( er_engine_move    );
-
-            /* Enable vertex and color arrays */
-            glEnableClientState( GL_VERTEX_ARRAY );
-            glEnableClientState( GL_COLOR_ARRAY  );
-
-            /* Send message */
-            return( _LE_TRUE );
-
         }
+
+        /* Initialise display mode */
+        glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH );
+
+        /* Create rendering window */
+        glutCreateWindow( "eratosthene-client" );
+
+        /* Fullscreen rendering window */
+        glutFullScreen();
+
+        /* Cursor configuration */
+        glutSetCursor( GLUT_CURSOR_NONE );
+
+        /* Graphical thread behavior configuration */
+        glutSetOption( GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION );
+
+        /* Buffers clear values */
+        glClearColor( 0.0, 0.0, 0.0, 0.0 );
+        glClearDepth( 1.0 );
+
+        /* Graphical thread configuration */
+        glEnable( GL_DEPTH_TEST );
+
+        /* Declare engine callback functions */
+        glutDisplayFunc      ( er_engine_render  );
+        glutIdleFunc         ( er_engine_render  );
+        glutReshapeFunc      ( er_engine_reshape );
+        glutKeyboardFunc     ( er_engine_keybd   );
+        glutMouseFunc        ( er_engine_mouse   );
+        glutMotionFunc       ( er_engine_move    );
+        glutPassiveMotionFunc( er_engine_move    );
+
+        /* Enable vertex and color arrays */
+        glEnableClientState( GL_VERTEX_ARRAY );
+        glEnableClientState( GL_COLOR_ARRAY  );
+
+        /* Send message */
+        return( _LE_TRUE );
 
     }
 
@@ -134,29 +132,11 @@
         /* Recompute near/far planes */
         er_engine_reshape( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
 
-        /* Clear color and depth buffers */
-        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
         /* Configure points display */
         glPointSize( er_engine.eg_point );
 
-        /* Push matrix */
-        //glPushMatrix(); {
-
-            /* Motion management - translation */
-            //glTranslated( 0.0, +sin( er_engine.eg_vgam * ER_D2R ) * er_engine.eg_valt, -cos( er_engine.eg_vgam * ER_D2R ) * er_engine.eg_valt );
-
-            /* Motion management - rotations */
-            //glRotated( +er_engine.eg_vgam, 1.0, 0.0, 0.0 );
-            //glRotated( +er_engine.eg_vazm, 0.0, 0.0, 1.0 );
-            //glRotated( +er_engine.eg_vlat, 1.0, 0.0, 0.0 );
-            //glRotated( -er_engine.eg_vlon, 0.0, 1.0, 0.0 );
-
-            /* Display earth */
-            //er_model_display_earth();
-
-        /* Pop matrix */
-        //} glPopMatrix();
+        /* Clear color and depth buffers */
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
         /* Earth wireframe matrix */
         glPushMatrix(); {
@@ -184,7 +164,7 @@
     le_void_t * er_engine_update( le_void_t * er_null ) {
 
         /* Engine update loop */
-        for ( ; ; sleep( 0.25 ) ) {
+        for ( ; ; sleep( 0.1 ) ) {
 
             /* Check model update necessities */
             if ( er_model_get_update( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt ) == _LE_TRUE ) {
@@ -193,10 +173,10 @@
                 er_model_set_update_prepare( & ( er_engine.eg_model ) );
 
                 /* Update model cells */
-                er_model_set_update_model( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
+                er_model_set_update_model  ( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
 
                 /* Server queries */
-                er_model_set_update_query( & ( er_engine.eg_model ) );
+                er_model_set_update_query  ( & ( er_engine.eg_model ) );
 
                 /* Terminate model update */
                 er_model_set_update_destroy( & ( er_engine.eg_model ) );
@@ -317,10 +297,6 @@
                 er_engine.eg_vtim += er_model_get_tdisc( & ( er_engine.eg_model ) );
 
             } break;
-
-            /* Temporary */
-            case ( 'v' ) : er_engine.eg_vtim = 16917 * er_model_get_tdisc( & ( er_engine.eg_model ) ) + 1; break;
-            case ( 'b' ) : er_engine.eg_vtim = 11001 * er_model_get_tdisc( & ( er_engine.eg_model ) ) + 1; break;
 
         };
 
