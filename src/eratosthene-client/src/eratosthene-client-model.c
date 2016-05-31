@@ -463,9 +463,9 @@
         /* Rotation matrix variables */
         le_real_t er_rcell[3][3] = {
 
-            { + er_cosa * er_cosl, - er_cosa * er_sinl, + er_sina },
-            { + er_sinl          , + er_cosl          , 0.0       },
-            { - er_sina * er_cosl, + er_sina * er_sinl, + er_cosa }
+            { + er_cosl          , +     0.0, + er_sinl           },
+            { + er_sina * er_sinl, + er_cosa, - er_sina * er_cosl },
+            { - er_cosa * er_sinl, + er_sina, + er_cosa * er_cosl }
 
         };
 
@@ -495,9 +495,10 @@
                     /* Motion management - cell edge translation */
                     glTranslated( 
 
+                        er_rcell[0][0] * er_vcell[0] + er_rcell[0][1] * er_vcell[1] + er_rcell[0][2] * er_vcell[2],
                         er_rcell[1][0] * er_vcell[0] + er_rcell[1][1] * er_vcell[1] + er_rcell[1][2] * er_vcell[2],
-                        er_rcell[2][0] * er_vcell[0] + er_rcell[2][1] * er_vcell[1] + er_rcell[2][2] * er_vcell[2],
-                        er_rcell[0][0] * er_vcell[0] + er_rcell[0][1] * er_vcell[1] + er_rcell[0][2] * er_vcell[2] - ER_ERA
+                        er_rcell[2][0] * er_vcell[0] + er_rcell[2][1] * er_vcell[1] + er_rcell[2][2] * er_vcell[2] - ER_ERA
+
 
                     );
 

@@ -27,7 +27,8 @@
     le_void_t er_geodesy_cartesian( le_real_t * const er_array, le_size_t const er_count ) {
 
         /* Optimisation variables */
-        le_real_t er_lon = 0.0, er_lat = 0.0;
+        le_real_t er_lon = 0.0;
+        le_real_t er_lat = 0.0;
 
         /* Parsing array */
         for ( le_size_t er_parse = 0; er_parse < er_count; er_parse += 3 ) {

@@ -167,6 +167,9 @@
 
     /*! \brief mutator methods
      *  Frame : x_geo -> z_ogl, y_geo -> x_ogl, z_geo -> y_ogl
+     *  2->1
+     *  1->0
+     *  0->2
      */
 
     le_void_t er_cell_set_query( er_cell_t * const er_cell, le_sock_t const er_socket, le_real_t er_lon, le_real_t er_lat, le_real_t er_alt );

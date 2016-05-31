@@ -208,14 +208,14 @@
         le_address_get_pose( & er_cell->ce_cell, er_cell->ce_edge );
 
         /* Optimised edge computation */
-        er_cell->ce_edge[2] = er_cell->ce_edge[1];
+        er_cell->ce_edge[1] = er_cell->ce_edge[1];
 
         /* Optimised edge computation */
-        er_cell->ce_edge[1] = ER_ERA * cos( er_cell->ce_edge[2] ) * sin( er_cell->ce_edge[0] );
-        er_cell->ce_edge[0] = ER_ERA * cos( er_cell->ce_edge[2] ) * cos( er_cell->ce_edge[0] );
+        er_cell->ce_edge[0] = ER_ERA * cos( er_cell->ce_edge[2] ) * sin( er_cell->ce_edge[0] );
+        er_cell->ce_edge[2] = ER_ERA * cos( er_cell->ce_edge[2] ) * cos( er_cell->ce_edge[0] );
 
         /* Optimised edge computation */
-        er_cell->ce_edge[2] = ER_ERA * sin( er_cell->ce_edge[2] );
+        er_cell->ce_edge[1] = ER_ERA * sin( er_cell->ce_edge[2] );
 
         /* Client/server query handshake */
         if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_QMOD ) != LE_ERROR_SUCCESS ) {
@@ -251,14 +251,14 @@
                     er_ptrp[2] += ER_ERA;
 
                     /* Optimised vertex computation */
-                    er_cell->ce_pose[er_track + 1] = er_ptrp[2] * sin( er_ptrp[1] ) - er_cell->ce_edge[2];
+                    er_cell->ce_pose[er_track + 1] = er_ptrp[2] * sin( er_ptrp[1] ) - er_cell->ce_edge[1];
 
                     /* Optimised vertex computation */
                     er_ptrp[1] = cos( er_ptrp[1] );
 
                     /* Optimised vertex computation */
-                    er_cell->ce_pose[er_track    ] = er_ptrp[2] * er_ptrp[1] * sin( er_ptrp[0] ) - er_cell->ce_edge[1];
-                    er_cell->ce_pose[er_track + 2] = er_ptrp[2] * er_ptrp[1] * cos( er_ptrp[0] ) - er_cell->ce_edge[0];
+                    er_cell->ce_pose[er_track    ] = er_ptrp[2] * er_ptrp[1] * sin( er_ptrp[0] ) - er_cell->ce_edge[0];
+                    er_cell->ce_pose[er_track + 2] = er_ptrp[2] * er_ptrp[1] * cos( er_ptrp[0] ) - er_cell->ce_edge[2];
 
                     /* Assign color */
                     er_cell->ce_data[er_track    ] = er_ptrd[0];
