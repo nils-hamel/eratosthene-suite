@@ -392,7 +392,7 @@
 
         /* Angles ranges - clamp */
         if ( er_engine.eg_vgam < -120.0 ) er_engine.eg_vgam = -120.0;
-        if ( er_engine.eg_vgam > +  0.0 ) er_engine.eg_vgam = +  0.0;
+        if ( er_engine.eg_vgam > +120.0 ) er_engine.eg_vgam = +120.0;
 
         /* Parameter ranges - clamp */
         if ( er_engine.eg_valt < ER_ERL ) er_engine.eg_valt = ER_ERL;

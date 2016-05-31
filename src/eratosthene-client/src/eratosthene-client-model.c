@@ -473,8 +473,8 @@
         glTranslated( 0.0, 0.0, - er_alt + ER_ERA );
 
         /* Motion management - tilt rotation */
-        glRotated( er_gam, 1.0, 0.0, 0.0 );
-        glRotated( er_azm, 0.0, 0.0, 1.0 );
+        glRotated( - er_gam, 1.0, 0.0, 0.0 );
+        glRotated( + er_azm, 0.0, 0.0, 1.0 );
 
         /* Display cells content */
         for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
@@ -524,8 +524,8 @@
         glTranslated( 0.0, 0.0, - er_alt + ER_ERA );
 
         /* Motion management - tilt rotation */
-        glRotated( er_gam, 1.0, 0.0, 0.0 );
-        glRotated( er_azm, 0.0, 0.0, 1.0 );
+        glRotated( - er_gam, 1.0, 0.0, 0.0 );
+        glRotated( + er_azm, 0.0, 0.0, 1.0 );
 
         /* Earth wireframe - centering */
         glTranslated( 0.0, 0.0, - ER_ERA );
