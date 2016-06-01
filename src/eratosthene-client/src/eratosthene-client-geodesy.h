@@ -54,7 +54,7 @@
     # define ER_ERA ( LE_GEODESY_WGS84_A )
     # define ER_ER2 ( ER_ERA / 2.00 )
     # define ER_ERL ( ER_ERA * 0.75 )
-    # define ER_ERU ( ER_ERA * 2.00 )
+    # define ER_ERU ( ER_ERA * 3.00 )
 
     /* Define earth motion inertia */
     # define ER_INR ( 0.00100 )

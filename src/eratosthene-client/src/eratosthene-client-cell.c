@@ -159,11 +159,6 @@
         /* Swap address and pushed address */
         strcpy( ( char * ) er_addr->ce_addr, ( char * ) er_push->ce_push );
 
-        /* Swap position array */
-        ( er_addr->ce_edge )[0] = ( er_push->ce_edge )[0];
-        ( er_addr->ce_edge )[1] = ( er_push->ce_edge )[1];
-        ( er_addr->ce_edge )[2] = ( er_push->ce_edge )[2];
-
     }
 
     le_void_t er_cell_set_empty( er_cell_t * const er_cell ) {
