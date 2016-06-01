@@ -66,7 +66,6 @@
         glEnable( GL_DEPTH_TEST );
 
         /* Declare engine callback functions */
-        glutDisplayFunc      ( er_engine_render  );
         glutIdleFunc         ( er_engine_render  );
         glutReshapeFunc      ( er_engine_reshape );
         glutKeyboardFunc     ( er_engine_keybd   );
