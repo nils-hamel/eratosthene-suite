@@ -67,7 +67,6 @@
 
         /* Declare engine callback functions */
         glutIdleFunc         ( er_engine_render  );
-        glutReshapeFunc      ( er_engine_reshape );
         glutKeyboardFunc     ( er_engine_keybd   );
         glutMouseFunc        ( er_engine_mouse   );
         glutMotionFunc       ( er_engine_move    );
