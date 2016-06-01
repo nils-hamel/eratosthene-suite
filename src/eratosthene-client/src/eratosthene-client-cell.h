@@ -44,7 +44,6 @@
  */
 
     # include "eratosthene-client-geodesy.h"
-    # include <GL/gl.h>
     # include <math.h>
     # include <eratosthene-include.h>
 
