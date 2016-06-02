@@ -1,5 +1,5 @@
 /*
- *  eratosthene-suite - geodetic system
+ *  eratosthene-suite - eratosthene indexation server front-end
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016 EPFL CDH DHLAB

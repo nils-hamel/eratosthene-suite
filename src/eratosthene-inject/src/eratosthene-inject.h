@@ -1,5 +1,5 @@
 /*
- *  eratosthene-suite - geodetic system
+ *  eratosthene-suite - eratosthene indexation server front-end
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016 EPFL CDH DHLAB
@@ -21,7 +21,7 @@
     /*! \file   eratosthene-inject.h
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Eratosthene injection software
+     *  Eratosthene injection
      */
 
     /*! \mainpage eratosthene-suite
