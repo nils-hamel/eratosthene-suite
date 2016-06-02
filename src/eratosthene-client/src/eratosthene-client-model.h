@@ -95,10 +95,9 @@
      *  This structure holds the earth model descriptor. It contains the needed
      *  information for client/server communication and server configuration.
      *
-     *  It also holds the earth model through the cells that contains the cells
-     *  provided by the server through queries. To detect model updates
-     *  requirements according to the point of view, it holds fields that store
-     *  the position of the point of view at each model update.
+     *  It also holds fields necessary for the earth modelisation through a
+     *  simple cells array. In addition, it also stores the point of view
+     *  position at model update to detect model update necessity.
      *
      *  \var er_model_struct::md_svip
      *  Server ip address
@@ -150,7 +149,7 @@
     /*! \brief constructor/destructor methods
      *
      *  This function creates and returns a model descriptor. It initialise
-     *  descriptor fields with default value and initialise network fields
+     *  descriptor fields with default values and initialise network fields
      *  according to parameters.
      *
      *  In addition, it also ask the remote server for the spatial and time
@@ -159,9 +158,9 @@
      *  If the \b md_sdis or \b md_tdis parameters are respectively set to
      *  _LE_SIZE_NULL or _LE_TIME_NULL, the descriptor creation failed.
      *
-     *  \param er_cell Cells array size
-     *  \param er_ip   Server ip address
-     *  \param er_port Server service port
+     *  \param er_cells Cells array size
+     *  \param er_ip    Server ip address
+     *  \param er_port  Server service port
      *
      *  \return Created model structure
      */
@@ -208,10 +207,10 @@
      *  be updated.
      *
      *  \param er_model Model structure
-     *  \param er_time  Model last update time
-     *  \param er_lon   Model last update longitude
-     *  \param er_lat   Model last update latitude
-     *  \param er_alt   Model last update altitude  
+     *  \param er_time  Point of view time
+     *  \param er_lon   Point of view longitude
+     *  \param er_lat   Point of view latitude
+     *  \param er_alt   Point of view altitude  
      *
      *  \return Returns _LE_TRUE on necessary update, _LE_FALSE otherwise
      */
@@ -222,8 +221,8 @@
      *
      *  This function is part of the model update procedure.
      *
-     *  Its role is to prepare the cells array to the incoming cells. It simply
-     *  sets the cell flags to ER_CELL_DOWN.
+     *  Its role is to prepare the cells array to the incoming cells gathered
+     *  during update.
      *
      *  \param er_model Model structure
      */
@@ -235,7 +234,7 @@
      *  This function is part of the model update procedure.
      *
      *  Its role is to determine the largest cell to consider near the point of
-     *  view. These cell are then decomposed along their daughter in function
+     *  view. These cells are then decomposed along their daughters in function
      *  of the position of the point of view.
      *
      *  \param er_model Model structure
@@ -257,7 +256,6 @@
      *
      *  \param er_model Model structure
      *  \param er_addr  Selected cell address structure
-     *  \param er_time  Point of view time
      *  \param er_lon   Point of view longitude
      *  \param er_lat   Point of view latitude
      *  \param er_alt   Point of view altitude
@@ -271,8 +269,8 @@
      *
      *  This function is responsible of detecting which cells selected by the
      *  functions \b er_model_set_update_model and \b er_model_set_update_cells
-     *  are already in the model cell array in order to only perform server
-     *  query for pure new cells.
+     *  are already in the model cells array in order to only perform server
+     *  query for true new cells.
      *
      *  \param er_model Model structure
      */
@@ -285,7 +283,7 @@
      *
      *  This function is respsonsible of emptying the unused cells remaining
      *  after the model update procedure. It is then the last function called
-     *  during model update.
+     *  during model update procedure.
      *
      *  \param er_model Model structure
      */

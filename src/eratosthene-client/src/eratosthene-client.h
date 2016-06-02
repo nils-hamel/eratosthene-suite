@@ -87,11 +87,11 @@
 
     /*! \brief main function
      *
-     *  The main function simply reads the arguments and parameters and create
+     *  The main function simply reads the arguments and parameters and creates
      *  the client rendering engine descriptor. It then calls the rendering
-     *  engine main loop function to starts rendering. As the engine exits its
-     *  main loop, the main function deletes the rendering engine descriptor
-     *  and the execution stops.
+     *  engine main loop function to starts the graphical rendering. As the
+     *  engine exits its main loop, the main function deletes the rendering
+     *  engine descriptor and the execution stops.
      *
      *  \param argc Standard parameter
      *  \param argv Standard parameter

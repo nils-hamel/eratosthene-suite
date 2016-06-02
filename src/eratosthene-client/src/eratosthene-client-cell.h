@@ -76,7 +76,7 @@
     /*! \struct er_cell_struct
      *  \brief cell structure
      *
-     *  The structure holds the description and the data of a space-time cell
+     *  This structure holds the description and the data of a space-time cell
      *  associated to an equivalence class defined by the eratosthene indexation
      *  server. It also contains fields used by the rendering engine model
      *  update procedure to decrease as much as possible the network traffic.
@@ -89,7 +89,7 @@
      *  \var er_cell_struct::ce_addr
      *  Standard address of the cell
      *  \var er_cell_struct::ce_push
-     *  Pushed standard address
+     *  Pushed standard address of the cell
      *  \var er_cell_struct::ce_cell
      *  Address structure of the cell
      *  \var er_cell_struct::ce_size
@@ -126,7 +126,7 @@
     /*! \brief constructor/destructor methods
      *
      *  This function creates and returns a cell structure. The cell is created
-     *  using default value and the function allocates the cell array memory.
+     *  using default values and the function allocates the cell array memory.
      *
      *  \return Created cell structure
      */
@@ -135,7 +135,8 @@
 
     /*! \brief constructor/destructor methods
      *
-     *  This function deletes a cell created by the \b er_cell_create function.
+     *  This function deletes a cell structure created by the \b er_cell_create
+     *  function.
      *
      *  \param er_cell Cell structure
      */
@@ -144,16 +145,18 @@
 
     /*! \brief accessor methods
      *
-     *  Returns cell flag.
+     *  Returns cell state flag.
      *
      *  \param er_cell Cell structure
+     *
+     *  \return Cell state flag
      */
 
     le_enum_t er_cell_get_flag( er_cell_t const * const er_cell );
 
     /*! \brief accessor methods
      *
-     *  This function returns true value if the cell contains a pushed address.
+     *  This function returns true if the cell contains a pushed address.
      *
      *  \param er_cell Cell structure
      *
@@ -177,11 +180,11 @@
 
     /*! \brief accessor methods
      *
-     *  Returns the cell size, i. e. the element count it contains.
+     *  Returns the cell size, i. e. the elements count it contains.
      *
      *  \param er_cell Cell structure
      *
-     *  \return Cell element count
+     *  \return Cell elements count
      */
 
     le_size_t er_cell_get_size( er_cell_t const * const er_cell );
@@ -210,10 +213,10 @@
 
     /*! \brief mutator methods
      *
-     *  Sets the cell flags.
+     *  Sets the cell state flags.
      *
      *  \param er_cell Cell structure
-     *  \param er_flag Flag value
+     *  \param er_flag State flag
      */
 
     le_void_t er_cell_set_flag( er_cell_t * const er_cell, le_enum_t const er_flag );
@@ -243,7 +246,7 @@
     /*! \brief mutator methods
      *
      *  This function pops the pushed address of the provided cell. It simply   
-     *  empty the string containing the standard address.
+     *  empty the string containing the pushed standard address.
      *
      *  \param er_cell Cell structure
      */
@@ -252,8 +255,8 @@
 
     /*! \brief mutator methods
      *
-     *  This function swaps the pushed address of the \b er_push cell with the
-     *  address of the \b er_addr cell.
+     *  This function swaps the pushed standard address of the \b er_push cell
+     *  with the standard address of the \b er_addr cell.
      *
      *  \param er_addr Cell structure
      *  \param er_push Cell structure
@@ -264,7 +267,7 @@
     /*! \brief mutator methods
      *
      *  This function empty the provided cell. It clears the cell size and
-     *  address, but memory allocation is left unchanged.
+     *  standard address, but memory allocation is left unchanged.
      *
      *  \param er_cell Cell structure
      */
@@ -273,17 +276,17 @@
 
     /*! \brief mutator methods
      *
-     *  This function performs the query to the server based on the provided
-     *  query address of the cell and a socket descriptor. It sends the query
+     *  This function performs the queries to the server based on the provided
+     *  query standard address of the cell and a socket descriptor. It sends the
      *  handshake and query to the server and waits the answers.
      *
      *  In addition to receiving the server data in the cell arrays, it also
-     *  compute the cell edge position that is used by the rendering engine
+     *  computes the cell edge position that is used by the rendering engine
      *  for precision range management.
      *
-     *  The server answering with element expressed in space-time coordinates,
+     *  The server answering with elements expressed in space-time coordinates,
      *  that are longitude, latitude and radial distance, this function also
-     *  is in charge of inverting this order for graphical purpose :
+     *  is in charge of inverting this order for display purpose :
      *
      *      x_geo -> z_opengl (0->2)
      *      y_geo -> x_opengl (1->0)

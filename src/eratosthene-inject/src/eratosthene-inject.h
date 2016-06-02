@@ -85,9 +85,9 @@
     /*! \brief injection procedure
      *
      *  This function reads the content of the file described by the stream
-     *  parameter and sends then to the server using the provided socket
+     *  parameter and sends it to the server using the provided socket 
      *  descriptor. Both socket and stream descriptors have to be already
-     *  created. The file stream expects a binary read mode.
+     *  created. The file stream is expected in binary read mode.
      *
      *  \param er_client Client socket descriptor
      *  \param er_stream Stream to file

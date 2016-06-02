@@ -18,7 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   eratosthene-client-render.h
+    /*! \file   eratosthene-client-engine.h
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
      *  Eratosthene client - rendering engine module
@@ -93,10 +93,10 @@
     /*! \struct er_engine_struct
      *  \brief Rendering engine handle
      *
-     *  This function holds the rendering engine descriptor. It contains fields
+     *  This structure holds the rendering engine descriptor. It contains fields
      *  for rendering configuration, client events and motions control. It also
      *  contains the model descriptor that contains the information needed to
-     *  render the earth model.
+     *  render the earth modelisation.
      *
      *  \var er_engine_struct::eg_model
      *  Engine model descriptor
@@ -115,21 +115,21 @@
      *  \var er_engine_struct::eg_v
      *  Event mouse pushed position
      *  \var er_engine_struct::eg_mult
-     *  Motion intertial factor
+     *  Point of view intertial factor
      *  \var er_engine_struct::eg_valt
-     *  Motion point of view altitude (radial components)
+     *  Point of view altitude (radial components)
      *  \var er_engine_struct::eg_vlon
-     *  Motion point of view longitude
+     *  Point of view longitude
      *  \var er_engine_struct::eg_vlat
-     *  Motion point of view latitude
+     *  Point of view latitude
      *  \var er_engine_struct::eg_vazm
-     *  Motion point of view azimuthal angle
+     *  Point of view azimuthal angle
      *  \var er_engine_struct::eg_vgam
-     *  Motion point of view tilt angle
+     *  Point of view tilt angle
      *  \var er_engine_struct::eg_vscl
-     *  Engine point of view scale factor 
+     *  Point of view scale factor 
      *  \var er_engine_struct::eg_vtim
-     *  Motion point of view time
+     *  Point of view time
      */
 
     typedef struct er_engine_struct {
@@ -164,10 +164,10 @@
      *
      *  This function creates and returns the rendering engine descriptor. In
      *  addition to the initialisation of the fields, it also initialise the
-     *  graphical context and setup callbacks function. It is also responsible
+     *  graphical context and setup callbacks functions. It is also responsible
      *  of the model descriptor creation.
      *
-     *  \param er_stack Size of the model cell array
+     *  \param er_stack Size of the model cells array
      *  \param er_ip    Server ip address
      *  \param er_port  Server service port
      *
@@ -180,7 +180,7 @@
      *
      *  This function deletes a rendering engine descriptor created by the
      *  \b er_engine_create function. In addition to model deletion, it also
-     *  uninitialise the graphical context.
+     *  uninitialise the graphical context and model descriptor.
      *
      *  Note that, because of event management through callback functions, the
      *  instance of the rendering engine descriptor is global :(
@@ -207,7 +207,7 @@
     /*! \brief engine loop
      *
      *  This function implements an infinit loop that contains the procedure
-     *  needed to model update.
+     *  needed to update the model.
      *
      *  \param er_null Null pointer
      *
@@ -218,8 +218,11 @@
 
     /*! \brief engine callbacks - reshape
      *
-     *  This function implements the reshape callbacks called on rendering
+     *  This function implements the reshape callback called on rendering
      *  buffer reshape.
+     *
+     *  This project requiering dynamic near and far planes, this function is
+     *  called each time a model rendering starts.
      *
      *  \param er_width  Width, in pixel, of the rendering buffer
      *  \param er_height Height, in pixels, of the rendering buffer
@@ -229,19 +232,19 @@
 
     /*! \brief engine callbacks - keyboard
      *
-     *  This function implements the keyboard callbacks function called on
+     *  This function implements the keyboard callback function called on
      *  keyboard events.
      *
      *  \param er_keycode Keyboard key code
-     *  \param er_x       Mouse position at key
-     *  \param er_y       Mouse position at key
+     *  \param er_x       Mouse position at key press
+     *  \param er_y       Mouse position at key press
      */
 
     le_void_t er_engine_keybd( unsigned char er_keycode, int er_x, int er_y );
 
     /*! \brief engine callbacks - mouse
      *
-     *  This function implements the mouse click callbacks function called on
+     *  This function implements the mouse click callback function called on
      *  mouse click events.
      *
      *  \param er_button Mouse button code
