@@ -161,51 +161,113 @@
  */
 
     /*! \brief constructor/destructor methods
+     *
+     *  This function creates and returns the rendering engine descriptor. In
+     *  addition to the initialisation of the fields, it also initialise the
+     *  graphical context and setup callbacks function. It is also responsible
+     *  of the model descriptor creation.
+     *
+     *  \param er_stack Size of the model cell array
+     *  \param er_ip    Server ip address
+     *  \param er_port  Server service port
+     *
+     *  \return Returns _LE_TRUE on success, _LE_FALSE otherwise
      */
 
     le_enum_t er_engine_create( le_size_t const er_stack, le_char_t * const er_ip, le_sock_t const er_port );
 
     /*! \brief constructor/destructor methods
+     *
+     *  This function deletes a rendering engine descriptor created by the
+     *  \b er_engine_create function. In addition to model deletion, it also
+     *  uninitialise the graphical context.
+     *
+     *  Note that, because of event management through callback functions, the
+     *  instance of the rendering engine descriptor is global :(
      */
 
     le_void_t er_engine_delete( le_void_t );
 
     /*! \brief rendering engine
+     *
+     *  This function manage the rendering engine main loops. It creates two
+     *  threads, one responsible of rendering and events, the other being
+     *  responsible of model update and client/server communication.
      */
 
     le_void_t er_engine_loops( le_void_t );
 
-    /*! \brief engine callbacks - primary
+    /*! \brief engine loop
+     *
+     *  This function holds the callback procedure for the model rendering.
      */
 
     le_void_t er_engine_render( le_void_t );
 
-    /*! \brief engine callbacks - primary
+    /*! \brief engine loop
+     *
+     *  This function implements an infinit loop that contains the procedure
+     *  needed to model update.
+     *
+     *  \param er_null Null pointer
+     *
+     *  \return Null pointer
      */
 
     le_void_t * er_engine_update( le_void_t * er_null );
 
     /*! \brief engine callbacks - reshape
+     *
+     *  This function implements the reshape callbacks called on rendering
+     *  buffer reshape.
+     *
+     *  \param er_width  Width, in pixel, of the rendering buffer
+     *  \param er_height Height, in pixels, of the rendering buffer
      */
 
     le_void_t er_engine_reshape( int er_width, int er_height );
 
     /*! \brief engine callbacks - keyboard
+     *
+     *  This function implements the keyboard callbacks function called on
+     *  keyboard events.
+     *
+     *  \param er_keycode Keyboard key code
+     *  \param er_x       Mouse position at key
+     *  \param er_y       Mouse position at key
      */
 
     le_void_t er_engine_keybd( unsigned char er_keycode, int er_x, int er_y );
 
     /*! \brief engine callbacks - mouse
+     *
+     *  This function implements the mouse click callbacks function called on
+     *  mouse click events.
+     *
+     *  \param er_button Mouse button code
+     *  \param er_state  Mouse button state
+     *  \param er_x      Mouse position at click
+     *  \param er_y      Mouse position at click
      */
 
     le_void_t er_engine_mouse( int er_button, int er_state, int er_x, int er_y );
 
     /*! \brief engine callbacks - mouse
+     *
+     *  This function implements the mouse motion callback function called on
+     *  mouse motion events.
+     *
+     *  \param er_x Mouse position
+     *  \param er_y Mouse position
      */
 
     le_void_t er_engine_move( int er_x, int er_y );    
 
     /*! \brief engine callbacks - ranges
+     *
+     *  This function implements the range verification callback function. It
+     *  is typically called each time a model rendering starts. It verify that
+     *  point of view angle and distance remains in the determined ranges.
      */
 
     le_void_t er_engine_range();

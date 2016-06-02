@@ -119,7 +119,7 @@
     }
 
 /*
-    source - engine callbacks - primary
+    source - engine loop - primary
  */
 
     le_void_t er_engine_render( le_void_t ) {
