@@ -85,7 +85,7 @@
     /*! \brief main function
      *
      *  The main function simply implements the liberatosthene server main
-     *  function. After argument and parameter reading, it creates the server
+     *  function. After arguments and parameters reading, it creates the server
      *  instance that waits for clients queries. The server system is then
      *  deleted and the execution ends.
      *

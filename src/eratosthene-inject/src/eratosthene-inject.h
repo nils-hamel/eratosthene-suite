@@ -83,11 +83,29 @@
  */
 
     /*! \brief injection procedure
+     *
+     *  This function reads the content of the file described by the stream
+     *  parameter and sends then to the server using the provided socket
+     *  descriptor. Both socket and stream descriptors have to be already
+     *  created. The file stream expects a binary read mode.
+     *
+     *  \param er_client Client socket descriptor
+     *  \param er_stream Stream to file
      */
 
     void er_injection( le_sock_t const er_client, FILE * const er_stream );
 
-    /*! \brief Main function
+    /*! \brief main function
+     *
+     *  The main function starts by reading the arguments and parameters and
+     *  opens the provided file containing the elements to inject in the
+     *  provided server. It then reads and sends the content of the file to the
+     *  server.
+     *
+     *  \param argc Standard parameter
+     *  \param argv Standard parameter
+     *
+     *  \return Standard exit code
      */
 
     int main( int argc, char ** argv );
