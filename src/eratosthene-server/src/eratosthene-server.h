@@ -1,5 +1,5 @@
 /*
- *  eratosthene-suite - geodetic system
+ *  eratosthene-suite - eratosthene indexation server front-end
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016 EPFL CDH DHLAB
@@ -21,7 +21,7 @@
     /*! \file   eratosthene-server.h
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Eratosthene server software
+     *  Eratosthene server
      */
 
     /*! \mainpage eratosthene-suite
@@ -82,7 +82,17 @@
     header - function prototypes
  */
 
-    /*! \brief Main function
+    /*! \brief main function
+     *
+     *  The main function simply implements the liberatosthene server main
+     *  function. After argument and parameter reading, it creates the server
+     *  instance that waits for clients queries. The server system is then
+     *  deleted and the execution ends.
+     *
+     *  \param argc Standard parameter
+     *  \param argv Standard parameter
+     *
+     *  \return Standard exit code
      */
 
     int main( int argc, char ** argv );
