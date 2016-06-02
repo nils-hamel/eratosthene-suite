@@ -62,15 +62,14 @@
     # define ER_ENGINE_C {\
         ER_MODEL_C,\
         1,\
-        _LE_FALSE,\
-        _LE_FALSE,\
+        0,\
         GLUT_UP,\
         0,\
         0,\
         0,\
         0,\
         1.0,\
-        1.5 * ER_ERA,\
+        2.0 * ER_ERA,\
         9,\
         46,\
         0.0,\
@@ -93,13 +92,50 @@
 
     /*! \struct er_engine_struct
      *  \brief Rendering engine handle
+     *
+     *  This function holds the rendering engine descriptor. It contains fields
+     *  for rendering configuration, client events and motions control. It also
+     *  contains the model descriptor that contains the information needed to
+     *  render the earth model.
+     *
+     *  \var er_engine_struct::eg_model
+     *  Engine model descriptor
+     *  \var er_engine_struct::eg_point
+     *  Engine rendering point size
+     *  \var er_engine_struct::eg_button
+     *  Event mouse button
+     *  \var er_engine_struct::eg_state
+     *  Event mouse state
+     *  \var er_engine_struct::eg_x
+     *  Event mouse position
+     *  \var er_engine_struct::eg_y
+     *  Event mouse position
+     *  \var er_engine_struct::eg_u
+     *  Event mouse pushed position
+     *  \var er_engine_struct::eg_v
+     *  Event mouse pushed position
+     *  \var er_engine_struct::eg_mult
+     *  Motion intertial factor
+     *  \var er_engine_struct::eg_valt
+     *  Motion point of view altitude (radial components)
+     *  \var er_engine_struct::eg_vlon
+     *  Motion point of view longitude
+     *  \var er_engine_struct::eg_vlat
+     *  Motion point of view latitude
+     *  \var er_engine_struct::eg_vazm
+     *  Motion point of view azimuthal angle
+     *  \var er_engine_struct::eg_vgam
+     *  Motion point of view tilt angle
+     *  \var er_engine_struct::eg_vscl
+     *  Engine point of view scale factor 
+     *  \var er_engine_struct::eg_vtim
+     *  Motion point of view time
      */
 
     typedef struct er_engine_struct {
 
         er_model_t eg_model;
         le_size_t  eg_point;
-        le_enum_t  eg_suspd;
 
         le_enum_t  eg_button;
         le_enum_t  eg_state;

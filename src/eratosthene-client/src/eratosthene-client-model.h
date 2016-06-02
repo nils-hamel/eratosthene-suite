@@ -89,6 +89,41 @@
     header - structures
  */
 
+    /*! \struct er_model_struct
+     *  \brief model structure
+     *
+     *  This structure holds the earth model descriptor. It contains the needed
+     *  information for client/server communication and server configuration.
+     *
+     *  It also holds the earth model through the cells that contains the cells
+     *  provided by the server through queries. To detect model updates
+     *  requirements according to the point of view, it holds fields that store
+     *  the position of the point of view at each model update.
+     *
+     *  \var er_model_struct::md_svip
+     *  Server ip address
+     *  \var er_model_struct::md_port
+     *  Server service port
+     *  \var er_model_struct::md_sdis
+     *  Server spatial indexation parameter
+     *  \var er_model_struct::md_tdis
+     *  Server time indexation parameter
+     *  \var er_model_struct::md_mtim
+     *  Model update time
+     *  \var er_model_struct::md_mlon
+     *  Model update longitude
+     *  \var er_model_struct::md_mlat
+     *  Model update latitude
+     *  \var er_model_struct::md_malt
+     *  Model update altitude
+     *  \var er_model_struct::md_push
+     *  Model update pushed cell
+     *  \var er_model_struct::md_size
+     *  Model active cells count
+     *  \var er_model_struct::md_cell
+     *  Model cells descriptors array
+     */
+
     typedef struct er_model_struct {
 
         le_char_t * md_svip;

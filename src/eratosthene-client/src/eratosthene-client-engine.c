@@ -235,14 +235,6 @@
 
             } break;
 
-            /* Model update */
-            case ( 'p' ) : {
-
-                /* Switch model update mode */
-                er_engine.eg_suspd = ( er_engine.eg_suspd == _LE_FALSE ) ? _LE_TRUE : _LE_FALSE;
-
-            } break;
-
             /* Point size control */
             case ( 'w' ) : {
 

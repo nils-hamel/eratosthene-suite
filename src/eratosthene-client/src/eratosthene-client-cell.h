@@ -73,6 +73,35 @@
     header - structures
  */
 
+    /*! \struct er_cell_struct
+     *  \brief cell structure
+     *
+     *  The structure holds the description and the data of a space-time cell
+     *  associated to an equivalence class defined by the eratosthene indexation
+     *  server. It also contains fields used by the rendering engine model
+     *  update procedure to decrease as much as possible the network traffic.
+     *
+     *  More documentation on frames and coordinates system can be found in the
+     *  documentation of the liberatosthene documentation.
+     *
+     *  \var er_cell_struct::ce_flag
+     *  State of cell allocation
+     *  \var er_cell_struct::ce_addr
+     *  Standard address of the cell
+     *  \var er_cell_struct::ce_push
+     *  Pushed standard address
+     *  \var er_cell_struct::ce_cell
+     *  Address structure of the cell
+     *  \var er_cell_struct::ce_size
+     *  Element count contained in the cell arrays
+     *  \var er_cell_struct::ce_pose
+     *  Cell elements position array
+     *  \var er_cell_struct::ce_data
+     *  Cell elements color array
+     *  \var er_cell_struct::ce_edge
+     *  Cell edge position
+     */
+
     typedef struct er_cell_struct {
 
         le_enum_t    ce_flag;
