@@ -49,7 +49,7 @@
     }
 
 /*
-    source - distance functions
+    source - cell functions
  */
 
     le_real_t er_geodesy_cell( le_address_t * const er_addr, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
@@ -88,7 +88,7 @@
     }
 
 /*
-    source - scale functions
+    source - model functions
  */
 
     le_real_t er_geodesy_distance( le_real_t const er_distance, le_size_t const er_scale_min, le_size_t const er_scale_max ) {

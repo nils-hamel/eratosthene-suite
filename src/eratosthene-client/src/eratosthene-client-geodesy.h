@@ -82,31 +82,86 @@
  */
 
     /*! \brief conversion functions
+     *
+     *  This function converts spherical coordinates into cartesian coordinates
+     *  of the element contained in the array \b er_array. The \b er_count
+     *  parameter has to give the number of element of the array, being of
+     *  dimension one, rather than the number of points.
+     *
+     *  The results of the conversion are place in the array, replacing the
+     *  spherical components.
+     *
+     *  The spherical coordinates expects the direct frame defined by the
+     *  longitude, latitude and radial vector, in this order.
+     *
+     *  \param er_array Array structure
+     *  \param er_count Number of components in the array
      */
 
     le_void_t er_geodesy_cartesian( le_real_t * const er_array, le_size_t const er_count );
 
-    /*! \brief distance functions
+    /*! \brief cell functions
+     *
+     *  This function computes the cartesian distance between the center of the
+     *  class represented by the address structure to the position provided as
+     *  parameter.
+     *
+     *  \param er_addr Cell address structure
+     *  \param er_lon  Longitude
+     *  \param er_lat  Latitude
+     *  \param er_alt  Altitude (radial distance)
+     *
+     *  \return Distance between cell center and the position
      */
 
     le_real_t er_geodesy_cell( le_address_t * const er_addr, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
 
-    /*! \brief scale functions
+    /*! \brief model functions
+     *
+     *  This function gives the scale depth of the address used by the model
+     *  update procedure to query class in function of their proximity to the
+     *  point of view.
+     *
+     *  The distance is interpreted as the scale depth at which class gathering
+     *  needs to start.
+     *
+     *  \param er_distance  Distance between cell center and point of view
+     *  \param er_scale_min Minimum authorised scale
+     *  \param er_scale_max Maximum authorised scale
+     *
+     *  \return Gathering initial scale
      */
 
     le_real_t er_geodesy_distance( le_real_t const er_distance, le_size_t const er_scale_min, le_size_t const er_scale_max );
 
-    /*! \brief scale functions
+    /*! \brief model functions
+     *
+     *  This function computes the scale factor applied to the model in function
+     *  of the distance of the point of view. The altitude, here the radial
+     *  distance to the center of earth, is considered as the only parameter
+     *  that drive the scale factor.
+     *
+     *  \param er_altitude Radial position of the point of view
+     *
+     *  \return Scale factor
      */
 
     le_real_t er_geodesy_scale( le_real_t const er_altitude );
 
-    /*! \brief scale functions
+    /*! \brief model functions
+     *
+     *  This function computes the position of the near plane used by OpenGL.
+     *
+     *  \param er_altitude Radial position of the point of view
      */
 
     le_real_t er_geodesy_near( le_real_t const er_altitude );
 
-    /*! \brief scale functions
+    /*! \brief model functions
+     *
+     *  This function computes the position of the far plane used by OpenGL.
+     *
+     *  \param er_altitude Radial position of the point of view
      */
 
     le_real_t er_geodesy_far( le_real_t const er_altitude );
