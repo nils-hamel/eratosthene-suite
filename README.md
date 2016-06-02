@@ -10,9 +10,9 @@ The _eratosthene-suite_ comes with the following package dependencies (Ubuntu 14
 * mesa-common-dev
 * freeglut3-dev
 
-and the following external dependencies :
+and the following external dependencies provided as sub-modules :
 
-* liberatosthene beta 0.1
+* liberatosthene 0.1
 
 The code documentation is built using Doxygen.
 
