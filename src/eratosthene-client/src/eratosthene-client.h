@@ -86,6 +86,17 @@
  */
 
     /*! \brief main function
+     *
+     *  The main function simply reads the arguments and parameters and create
+     *  the client rendering engine descriptor. It then calls the rendering
+     *  engine main loop function to starts rendering. As the engine exits its
+     *  main loop, the main function deletes the rendering engine descriptor
+     *  and the execution stops.
+     *
+     *  \param argc Standard parameter
+     *  \param argv Standard parameter
+     *
+     *  \return Standard exit code
      */
 
     int main( int argc, char ** argv );
