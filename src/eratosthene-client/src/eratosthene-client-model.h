@@ -148,69 +148,178 @@
  */
 
     /*! \brief constructor/destructor methods
+     *
+     *  This function creates and returns a model descriptor. It initialise
+     *  descriptor fields with default value and initialise network fields
+     *  according to parameters.
+     *
+     *  In addition, it also ask the remote server for the spatial and time
+     *  indexation parameters and allocate the cells array memory.
+     *
+     *  If the \b md_sdis or \b md_tdis parameters are respectively set to
+     *  _LE_SIZE_NULL or _LE_TIME_NULL, the descriptor creation failed.
+     *
+     *  \param er_cell Cells array size
+     *  \param er_ip   Server ip address
+     *  \param er_port Server service port
+     *
+     *  \return Created model structure
      */
 
     er_model_t er_model_create( le_size_t er_cells, le_char_t * const er_ip, le_sock_t const er_port );
 
     /*! \brief constructor/destructor methods
+     *
+     *  This function deletes a model descriptor created by the function
+     *  \b er_model_create. In addition to structure fields uninitisalisation,
+     *  it also unallocate cells array memory.
+     *
+     *  \param er_model Model structure
      */
 
     le_void_t er_model_delete( er_model_t * const er_model );
 
     /*! \brief accessor methods
+     *
+     *  Returns model spatial indexation parameter.
+     *
+     *  \param er_model Model structure
+     *
+     *  \return Spatial indexation parameter
      */
 
     le_size_t er_model_get_sdisc( er_model_t const * const er_model );
 
     /*! \brief accessor methods
+     *
+     *  Returns model time indexation parameter.
+     *
+     *  \param er_model Model structure
+     *
+     *  \return Time indexation parameter
      */
 
     le_size_t er_model_get_tdisc( er_model_t const * const er_model );
 
     /*! \brief accessor methods
+     *
+     *  This function checks the model update requirements. It checks the motion
+     *  of the point of view provided as parameter to determine if model has to
+     *  be updated.
+     *
+     *  \param er_model Model structure
+     *  \param er_time  Model last update time
+     *  \param er_lon   Model last update longitude
+     *  \param er_lat   Model last update latitude
+     *  \param er_alt   Model last update altitude  
+     *
+     *  \return Returns _LE_TRUE on necessary update, _LE_FALSE otherwise
      */
 
     le_enum_t er_model_get_update( er_model_t const * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
 
     /*! \brief mutator methods
+     *
+     *  This function is part of the model update procedure.
+     *
+     *  Its role is to prepare the cells array to the incoming cells. It simply
+     *  sets the cell flags to ER_CELL_DOWN.
+     *
+     *  \param er_model Model structure
      */
 
     le_void_t er_model_set_update_prepare( er_model_t * const er_model );
 
     /*! \brief mutator methods
+     *
+     *  This function is part of the model update procedure.
+     *
+     *  Its role is to determine the largest cell to consider near the point of
+     *  view. These cell are then decomposed along their daughter in function
+     *  of the position of the point of view.
+     *
+     *  \param er_model Model structure
+     *  \param er_time  Point of view time
+     *  \param er_lon   Point of view longitude
+     *  \param er_lat   Point of view latitude
+     *  \param er_alt   Point of view altitude
      */
 
     le_void_t er_model_set_update_model( er_model_t * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t er_alt );
 
     /*! \brief mutator methods
+     *
+     *  This function is part of the model update procedure.
+     *
+     *  Its role is to decompose the cells selected by the function
+     *  \b er_model_set_update_model. According to the distance to the point
+     *  of view, cells or their daughters are recursively considered for query.
+     *
+     *  \param er_model Model structure
+     *  \param er_addr  Selected cell address structure
+     *  \param er_time  Point of view time
+     *  \param er_lon   Point of view longitude
+     *  \param er_lat   Point of view latitude
+     *  \param er_alt   Point of view altitude
      */
 
     le_void_t er_model_set_update_cells( er_model_t * const er_model, le_address_t * const er_addr, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
 
     /*! \brief mutator methods
+     *
+     *  This function is part of the model update procedure.
+     *
+     *  This function is responsible of detecting which cells selected by the
+     *  functions \b er_model_set_update_model and \b er_model_set_update_cells
+     *  are already in the model cell array in order to only perform server
+     *  query for pure new cells.
+     *
+     *  \param er_model Model structure
      */
 
     le_void_t er_model_set_update_query( er_model_t * const er_model );
 
     /*! \brief mutator methods
+     *
+     *  This function is part of the model update procedure.
+     *
+     *  This function is respsonsible of emptying the unused cells remaining
+     *  after the model update procedure. It is then the last function called
+     *  during model update.
+     *
+     *  \param er_model Model structure
      */
 
     le_void_t er_model_set_update_destroy( er_model_t * const er_model );
 
     /*! \brief model display methods
+     *
+     *  This function is responsible of the display of the active cells in the
+     *  model cells array.
+     *
+     *  \param er_model Model structure
+     *  \param er_lon   Point of view longitude
+     *  \param er_lat   Point of view latitude
+     *  \param er_alt   Point of view altitude
+     *  \param er_azm   Point of view azimuth
+     *  \param er_gam   Point of view tilt
      */
 
     le_void_t er_model_display_cell( er_model_t * const er_model, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt, le_real_t const er_azm, le_real_t const er_gam );
 
     /*! \brief model display methods
+     *
+     *  This function is responsible for the display of the five degree of arc
+     *  wireframe model of the earth.
+     *
+     *  \param er_lon   Point of view longitude
+     *  \param er_lat   Point of view latitude
+     *  \param er_alt   Point of view altitude
+     *  \param er_azm   Point of view azimuth
+     *  \param er_gam   Point of view tilt  
      */
 
     le_void_t er_model_display_earth( le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt, le_real_t const er_azm, le_real_t const er_gam );
-
-    /*! \brief development functions
-     */
-
-    le_void_t er_model_devel_display_cell( le_char_t const * const er_saddr );
 
 /*
     header - C/C++ compatibility
