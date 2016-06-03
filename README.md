@@ -1,6 +1,8 @@
 ## eratosthene-suite
 
-The _eratosthene_ suite offers front-end solution to the _liberatosthene_ library. It contains an data injection front-end, a data server front-end and a client software able to demonstrate the methodology of data storage and query through a simple 3D interface.
+The _eratosthene-suite_ offers a front-end to the eratosthene indexation server implemented in the _liberatosthene_ library. It consists in a software suite implementing front-ends to the functionality of the indexation server.
+
+The main software implements the server itself allowing to simply create instance of it. The suite also offers a front-end software for the data injection in the servers storage structure. Finally, it also offers a graphical client allowing to browse the data contained in the servers storage structure through a 4 dimensional representation of earth.
 
 ## Dependencies
 
