@@ -100,6 +100,24 @@
 
     unsigned int lc_read_uint( int const argc, char ** argv, char const * const er_long, char const * const er_short, unsigned int er_default );
 
+    /*! \brief Arguments and parameters parsers
+     *
+     *  This function searches in the provided argument list if the specified
+     *  argument is present. As it is, the function converts into double the
+     *  value of the parameter corresponding to the found argument.
+     *
+     *  When the argument is not found in the list, the function simply returns
+     *  the provided default value.
+     *
+     *  \param argc       Standard parameter
+     *  \param argv       Standard parameter
+     *  \param er_long    Long form argument
+     *  \param er_short   Short form argument
+     *  \param er_default Default value
+     */
+
+    double lc_read_double( int const argc, char ** argv, char const * const er_long, char const * const er_short, double er_default );
+
 /*
     header - C/C++ compatibility
  */

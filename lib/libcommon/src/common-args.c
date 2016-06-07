@@ -90,3 +90,36 @@
 
     }
 
+    double lc_read_double( int const argc, char ** argv, char const * const er_long, char const * const er_short, double er_default ) {
+
+        /* Parsing variables */
+        int er_parse = 0;
+
+        /* Parses arguments and parameters */
+        for( ; er_parse < argc; er_parse ++ ) {
+
+            /* Check argument */
+            if ( ( strcmp( argv[er_parse], er_long ) == 0 ) || ( strcmp( argv[er_parse], er_short ) == 0 ) ) {
+
+                /* Check consistency */
+                if ( ( ++ er_parse ) < argc ) {
+
+                    /* Return read value */
+                    return( atof( argv[er_parse] ) );
+
+                } else {
+
+                    /* Return default value */
+                    return( er_default );
+
+                }
+
+            }
+
+        }
+
+        /* Return default value */
+        return( er_default );
+
+    }
+
