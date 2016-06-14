@@ -18,41 +18,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   eratosthene-isometric.h
+    /*! \file   eratosthene-isometric-render.h
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Eratosthene isometric
-     */
-
-    /*! \mainpage eratosthene-suite
-     *
-     *  \section eratosthene-suite
-     *
-     *  The _eratosthene-suite_ offers a front-end to the eratosthene indexation
-     *  server implemented in the _liberatosthene_ library. It consists in a
-     *  software suite implementing front-ends to the functionality of the 
-     *  indexation server.
-     *
-     *  The main software implements the server itself allowing to simply create
-     *  instance of it. The suite also offers a front-end software for the data
-     *  injection in the servers storage structure. Finally, it also offers a 
-     *  graphical client allowing to browse the data contained in the servers
-     *  storage structure through a 4 dimensional representation of earth.
-     * 
-     *  \section Copyright and License
-     *
-     *  **eratosthene-suite** - Nils Hamel <br >
-     *  Copyright (c) 2016 EPFL CDH DHLAB
-     *
-     *  This program is licensed under the terms of the GNU GPLv3.
+     *  Eratosthene query - rendering module
      */
 
 /*
     header - inclusion guard
  */
 
-    # ifndef __ER_ISOMETRIC__
-    # define __ER_ISOMETRIC__
+    # ifndef __ER_ISOMETRIC_RENDER__
+    # define __ER_ISOMETRIC_RENDER__
 
 /*
     header - C/C++ compatibility
@@ -68,14 +45,19 @@
 
     # include <stdio.h>
     # include <stdlib.h>
-    # include <common-args.h>
+    # include <math.h>
+    # include <GL/gl.h>
+    # include <GL/glu.h>
+    # include <GL/freeglut.h>
     # include <eratosthene-include.h>
-    # include "eratosthene-isometric-query.h"
-    # include "eratosthene-isometric-render.h"
+    # include "eratosthene-isometric-png.h"
 
 /*
     header - preprocessor definitions
  */
+
+    /* Define pseudo-constructor */
+    # define ER_RENDER_C { NULL, NULL, 0, 0, NULL, LE_ADDRESS_C, { 0.0 }, 0.0 }
 
 /*
     header - preprocessor macros
@@ -89,19 +71,64 @@
     header - structures
  */
 
+    typedef struct er_render_struct {
+
+        le_char_t  * re_path;
+        le_array_t * re_array;
+        le_size_t    re_width;
+        le_size_t    re_height;
+        le_char_t  * re_query;
+        le_address_t re_addr;
+        le_real_t    re_edge[3];
+        le_real_t    re_size;
+
+    } er_render_t;
+
 /*
     header - function prototypes
  */
 
-    /*! \brief main function
+    /*! \brief
      *
-     *  \param argc Standard parameter
-     *  \param argv Standard parameter
-     *
-     *  \return Standard exit code
      */
 
-    int main( int argc, char ** argv );
+    void er_render_isometry( le_char_t * const er_path, le_char_t * const er_query, le_array_t * const er_array, le_size_t const er_width );
+
+    /*! \brief
+     *
+     */
+
+    void er_render_isometry_init( void );
+
+    /*! \brief
+     *
+     */
+
+    void er_render_isometry_cell( void );
+
+    /*! \brief
+     *
+     */
+
+    void er_render_isometry_disp( void );
+
+    /*! \brief
+     *
+     */
+
+    void er_render_isometry_disp_elem( void );
+
+    /*! \brief
+     *
+     */
+
+    void er_render_isometry_disp_edge( void );
+
+    /*! \brief
+     *
+     */
+
+    void er_render_isometry_disp_save( void );
 
 /*
     header - C/C++ compatibility

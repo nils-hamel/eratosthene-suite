@@ -21,75 +21,15 @@
     # include "eratosthene-isometric.h"
 
 /*
-    source - server query
- */
-
-    void er_query( le_sock_t const er_socket, le_char_t const * const er_query ) {
-
-        /* Parsing variables */
-        le_size_t er_parse = 0;
-
-        /* Socket i/o count variables */
-        le_size_t er_count = 0;
-
-        /* Array pointer variables */
-        le_real_t * er_ptrp = NULL;
-        le_time_t * er_ptrt = NULL;
-        le_data_t * er_ptrd = NULL;
-
-        /* Socket i/o buffer variables */
-        le_byte_t er_buffer[LE_NETWORK_BUFFER_SYNC] = LE_NETWORK_BUFFER_C;
-
-        /* Check socket */
-        if ( er_socket == _LE_SOCK_NULL ) {
-
-            /* Display message */
-            fprintf( stderr, "eratosthene-suite : error : invalid socket\n" );
-
-            /* Abort query */
-            return;
-
-        }
-
-        /* Query string to socket buffer */
-        strcpy( ( char * ) er_buffer, ( char * ) er_query );
-
-        /* Write query address */
-        if ( write( er_socket, er_buffer, LE_NETWORK_BUFFER_ADDR ) != LE_NETWORK_BUFFER_ADDR ) {
-
-            /* Display message */
-            fprintf( stderr, "eratosthene-suite : error : unable to send query address\n" );
-
-            /* Abort query */
-            return;
-
-        }
-
-        /* Reading query elements */
-        while( ( er_count = read( er_socket, er_buffer, LE_NETWORK_BUFFER_SYNC ) ) > 0 ) {
-
-            /* Parsing received elements */
-            for ( er_parse = 0; er_parse < er_count; er_parse += LE_ARRAY_LINE ) {
-
-                /* Compute pointers */
-                er_ptrp = ( le_real_t * ) ( er_buffer + er_parse );
-                er_ptrt = ( le_time_t * ) ( er_ptrp + 3 );
-                er_ptrd = ( le_data_t * ) ( er_ptrt + 1 );
-
-                /* Display read element */
-                fprintf( stderr, ER_FORMAT, er_ptrp[0], er_ptrp[1], er_ptrp[2], er_ptrt[0], er_ptrd[0], er_ptrd[1], er_ptrd[2] );
-
-            }
-
-        }
-
-    }
-
-/*
     source - main function
  */
 
     int main( int argc, char ** argv ) {
+
+        glutInit( & argc, argv );
+
+        /* Query array variables */
+        le_array_t er_array = LE_ARRAY_C;
 
         /* Socket variables */
         le_sock_t er_socket = _LE_SOCK_NULL;
@@ -102,18 +42,35 @@
 
         } else {
 
-                /* Query handshake */
-                if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_QMOD ) != LE_ERROR_SUCCESS ) {
+            /* Query handshake */
+            if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_QMOD ) != LE_ERROR_SUCCESS ) {
+
+                /* Display message */
+                fprintf( stderr, "eratosthene-suite : error : unable to obtain server authorisation\n" );
+
+            } else {
+
+                /* Query on server */
+                if ( er_query( er_socket, ( le_char_t * ) lc_read_string( argc, argv, "--query", "-q" ), & er_array ) ) {
 
                     /* Display message */
-                    fprintf( stderr, "eratosthene-suite : error : unable to obtain server authorisation\n" );
+                    fprintf( stderr, "eratosthene-suite : error : unable to perform query on server\n" );
 
                 } else {
 
-                    /* Injection process */
-                    er_query( er_socket, ( le_char_t * ) lc_read_string( argc, argv, "--query", "-q" ) );
+                    /* Render isometric tile */
+                    er_render_isometry( 
 
-                }            
+                        ( le_char_t * ) lc_read_string( argc, argv, "--output", "-o" ), 
+                        ( le_char_t * ) lc_read_string( argc, argv, "--query" , "-q" ), 
+                        & er_array, 
+                        lc_read_uint( argc, argv, "--width" , "-w", 1024 )
+
+                    );
+
+                }
+
+            }            
 
             /* Close connection */
             le_client_delete( er_socket );
