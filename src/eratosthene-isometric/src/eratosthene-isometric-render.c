@@ -32,11 +32,18 @@
 
     void er_render_isometry( le_char_t * const er_path, le_char_t * const er_query, le_array_t * const er_array, le_size_t const er_width ) {
 
+        /* Projection edge variables */
+        le_real_t er_angle = atan( 1.0 / sqrt( 2.0 ) );
+        le_real_t er_unity = sqrt( 2.0 ) / cos( er_angle );
+
         /* Create render structure */
+        er_render.re_azma   = +45.0+90;
+        er_render.re_inca   = -45.0;
+        er_render.re_prop   = cos( - er_angle - er_render.re_inca * ER_D2R ) * er_unity;
         er_render.re_path   = er_path;
         er_render.re_array  = er_array;
         er_render.re_width  = er_width;
-        er_render.re_height = er_width * ( 2.0 / sqrt( 3.0 ) );
+        er_render.re_height = er_width * ( er_render.re_prop / sqrt( 2.0 ) );
         er_render.re_query  = er_query;
 
         /* Initialise rendering */
@@ -69,7 +76,7 @@
         glutSetOption( GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION );
 
         /* Initialise buffers clear values */
-        glClearColor( 0.0, 0.0, 0.2, 0.0 );
+        glClearColor( 0.0, 0.0, 0.2, 1.0 );
         glClearDepth( 1.0 );
 
         /* Enable depth management */
@@ -108,8 +115,8 @@
         glOrtho( 
 
             - ( er_render.re_size / 2.0 ) * sqrt( 2.0 ), ( er_render.re_size / 2.0 ) * sqrt( 2.0 ),
-            - ( er_render.re_size / 2.0 ) * sqrt( 2.0 ) * ( 2.0 / sqrt( 3.0 ) ), ( er_render.re_size / 2.0 ) * sqrt( 2.0 ) * ( 2.0 / sqrt( 3.0 ) ),
-            - ( er_render.re_size / 2.0 ) * sqrt( 2.0 ) * ( 2.0 / sqrt( 3.0 ) ), ( er_render.re_size / 2.0 ) * sqrt( 2.0 ) * ( 2.0 / sqrt( 3.0 ) )
+            - ( er_render.re_size / 2.0 ) * er_render.re_prop, ( er_render.re_size / 2.0 ) * er_render.re_prop,
+            - ( er_render.re_size / 2.0 ) * er_render.re_prop, ( er_render.re_size / 2.0 ) * er_render.re_prop
 
         );
 
@@ -126,8 +133,8 @@
         glPointSize( 1.0 );
 
         /* Apply isometric rotation */
-        glRotatef( - 55.0, 1.0, 0.0, 0.0 );
-        glRotatef( +135.0, 0.0, 0.0, 1.0 );
+        glRotatef( er_render.re_inca, 1.0, 0.0, 0.0 );
+        glRotatef( er_render.re_azma, 0.0, 0.0, 1.0 );
 
         /* Display cell elements */
         er_render_isometry_disp_elem();

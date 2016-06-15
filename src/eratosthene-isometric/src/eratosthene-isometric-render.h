@@ -57,7 +57,11 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_RENDER_C { NULL, NULL, 0, 0, NULL, LE_ADDRESS_C, { 0.0 }, 0.0 }
+    # define ER_RENDER_C { NULL, NULL, 0, 0, NULL, LE_ADDRESS_C, { 0.0 }, 0.0, 0.0, 0.0, 0.0 }
+
+    /* Trigonometric conversion */
+    # define ER_D2R ( LE_PI / 180.0 )
+    # define ER_R2D ( 180.0 / LE_PI )
 
 /*
     header - preprocessor macros
@@ -81,6 +85,9 @@
         le_address_t re_addr;
         le_real_t    re_edge[3];
         le_real_t    re_size;
+        le_real_t    re_azma;
+        le_real_t    re_inca;
+        le_real_t    re_prop;
 
     } er_render_t;
 
