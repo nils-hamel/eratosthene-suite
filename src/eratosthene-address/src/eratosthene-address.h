@@ -21,7 +21,7 @@
     /*! \file   eratosthene-address.h
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Eratosthene address tool
+     *  Eratosthene address - main module
      */
 
     /*! \mainpage eratosthene-suite
@@ -77,6 +77,13 @@
     header - preprocessor definitions
  */
 
+    /* Trigonometric conversion factors */
+    # define ER_ADDRESS_D2R ( ( le_real_t ) LE_PI / 180.0 )
+    # define ER_ADDRESS_R2D ( 180.0 / ( le_real_t ) LE_PI )
+
+    /* Display format specifier */
+    # define ER_ADDRESS_PFS "%" _LE_REAL_P ", %" _LE_REAL_P ", %" _LE_REAL_P "\n"
+
 /*
     header - preprocessor macros
  */
@@ -94,6 +101,15 @@
  */
 
     /*! \brief main function
+     *
+     *  The main function simply reads the provided parameters, that are a scale
+     *  value and a geographic position, and converts it into indexation server
+     *  index. It then converts back the index into geographic coordinates to
+     *  show the effect of scale on the position precision.
+     *
+     *  Position have to be provided in decimal degrees and contained in the
+     *  ]-180,180] range for longitude and ]-90,90] for the latitude. Altitude
+     *  are always given in metres.
      *
      *  \param argc Standard parameter
      *  \param argv Standard parameter

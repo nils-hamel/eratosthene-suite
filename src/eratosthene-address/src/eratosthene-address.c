@@ -26,23 +26,23 @@
 
     int main( int argc, char ** argv ) {
 
-        /* Conversion variables */
-        le_real_t er_d2r = ( LE_PI / 180.0 );
-        le_real_t er_r2d = ( 180.0 / LE_PI );
-
-        /* Geodetic coordinates variables */
+        /* Geodetic coordinates array variables */
         le_real_t er_pose[3] = { 0.0 };
 
         /* Address structure variables */
         le_address_t er_addr = LE_ADDRESS_C_SIZE( lc_read_uint( argc, argv, "--scale", "-s", LE_GEODESY_ASYA ) );
 
         /* Read position parameters */
-        er_pose[0] = lc_read_double( argc, argv, "--longitude", "-l", 0.0 ) * er_d2r;
-        er_pose[1] = lc_read_double( argc, argv, "--latitude" , "-a", 0.0 ) * er_d2r;
+        er_pose[0] = lc_read_double( argc, argv, "--longitude", "-l", 0.0 );
+        er_pose[1] = lc_read_double( argc, argv, "--latitude" , "-a", 0.0 );
         er_pose[2] = lc_read_double( argc, argv, "--altitude" , "-h", 0.0 );
 
         /* Display original coordinates */
-        fprintf( stdout, "%" _LE_REAL_P ", %" _LE_REAL_P ", %" _LE_REAL_P "\n", er_pose[0] * er_r2d, er_pose[1] * er_r2d, er_pose[2] );
+        fprintf( stdout, ER_ADDRESS_PFS, er_pose[0], er_pose[1], er_pose[2] );
+
+        /* Convert to radians */
+        er_pose[0] *= ER_ADDRESS_D2R;
+        er_pose[1] *= ER_ADDRESS_D2R;
 
         /* Convert position into index */
         le_address_set_pose( & er_addr, er_pose );
@@ -50,8 +50,12 @@
         /* Convert index into position */
         le_address_get_pose( & er_addr, er_pose );
 
+        /* Convert to degrees */
+        er_pose[0] *= ER_ADDRESS_R2D;
+        er_pose[1] *= ER_ADDRESS_R2D;
+
         /* Display original coordinates */
-        fprintf( stdout, "%" _LE_REAL_P ", %" _LE_REAL_P ", %" _LE_REAL_P "\n", er_pose[0] * er_r2d, er_pose[1] * er_r2d, er_pose[2] );
+        fprintf( stdout, ER_ADDRESS_PFS, er_pose[0], er_pose[1], er_pose[2] );
 
         /* Display address */
         for ( le_size_t er_parse = 0; er_parse < le_address_get_size( & er_addr ); er_parse ++ ) {
