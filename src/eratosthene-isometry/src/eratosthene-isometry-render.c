@@ -113,7 +113,7 @@
     source - display methods
  */
 
-    int er_render_display_prepare( er_render_t * const er_render ) {
+    int er_render_prepare( er_render_t * const er_render ) {
 
         /* Windows attribute variables */
         XSetWindowAttributes er_wattrib = { 0 };
@@ -127,72 +127,52 @@
             /* Send message */
             return( _LE_FALSE );
 
-        } else {
+        } 
 
-            /* Retrieve root window */
-            er_render->re_wroot = DefaultRootWindow( er_render->re_display );
+        /* Retrieve root window */
+        er_render->re_wroot = DefaultRootWindow( er_render->re_display );
 
-            /* Choose visual */
-            if ( ( er_render->re_visual = glXChooseVisual( er_render->re_display, 0, er_vattrib ) ) == NULL ) {
+        /* Choose visual */
+        if ( ( er_render->re_visual = glXChooseVisual( er_render->re_display, 0, er_vattrib ) ) == NULL ) {
 
-                /* Send message */
-                return( _LE_FALSE );
+            /* Close display */
+            XCloseDisplay( er_render->re_display );
 
-            } else {
-
-                /* Assign window colormap */
-                er_wattrib.colormap = XCreateColormap( er_render->re_display, er_render->re_wroot, er_render->re_visual->visual, AllocNone );;
-
-                /* Create hidden windows */
-                er_render->re_wdisp = XCreateWindow( er_render->re_display, er_render->re_wroot, 0, 0, 64, 64, 0, er_render->re_visual->depth, InputOutput, er_render->re_visual->visual, CWColormap | CWEventMask, & er_wattrib );
-
-                /* Create graphical context */
-                er_render->re_context = glXCreateContext( er_render->re_display, er_render->re_visual, NULL, GL_TRUE );
-
-                /* Enable graphical context */
-                glXMakeCurrent( er_render->re_display, er_render->re_wdisp, er_render->re_context );
-
-                /* Create framebuffer */
-                glGenFramebuffers( 1, & ( er_render->re_fb ) );
-                glBindFramebuffer( GL_FRAMEBUFFER, er_render->re_fb );
-
-                /* Create color buffer - texture */
-                glGenTextures( 1, & ( er_render->re_fbcolor ) );
-                glBindTexture( GL_TEXTURE_2D, er_render->re_fbcolor );
-                glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, er_render->re_width, er_render->re_height, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL );
-                glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, er_render->re_fbcolor, 0);
-
-                /* Create depth buffer - render buffer */
-                glGenRenderbuffers( 1, & ( er_render->re_fbdepth ) );
-                glBindRenderbuffer( GL_RENDERBUFFER, er_render->re_fbdepth );
-                glRenderbufferStorage( GL_RENDERBUFFER, GL_DEPTH_COMPONENT, er_render->re_width, er_render->re_height );
-                glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, er_render->re_fbdepth );
-                
-                /* Check framebuffer state and send message */
-                return( glCheckFramebufferStatus( GL_FRAMEBUFFER ) == GL_FRAMEBUFFER_COMPLETE ? _LE_TRUE : _LE_FALSE );
-
-            }
+            /* Send message */
+            return( _LE_FALSE );
 
         }
 
-    }
+        /* Assign window colormap */
+        er_wattrib.colormap = XCreateColormap( er_render->re_display, er_render->re_wroot, er_render->re_visual->visual, AllocNone );;
 
-    void er_render_display_terminate( er_render_t * const er_render ) {
+        /* Create hidden windows */
+        er_render->re_wdisp = XCreateWindow( er_render->re_display, er_render->re_wroot, 0, 0, 64, 64, 0, er_render->re_visual->depth, InputOutput, er_render->re_visual->visual, CWColormap | CWEventMask, & er_wattrib );
 
-        /* Check display state */
-        if ( er_render->re_display != NULL ) {
+        /* Create graphical context */
+        er_render->re_context = glXCreateContext( er_render->re_display, er_render->re_visual, NULL, GL_TRUE );
 
-            /* Delete depth buffer - render buffer */
-            glBindRenderbuffer( GL_RENDERBUFFER, 0 );
-            glDeleteRenderbuffers( 1, & ( er_render->re_fbdepth ) );
+        /* Enable graphical context */
+        glXMakeCurrent( er_render->re_display, er_render->re_wdisp, er_render->re_context );
 
-            /* Delete color buffer - texture */
-            glBindTexture( GL_TEXTURE_2D, 0 );
-            glDeleteTextures( 1, & ( er_render->re_fbcolor ) );
+        /* Create framebuffer */
+        glGenFramebuffers( 1, & ( er_render->re_fb ) );
+        glBindFramebuffer( GL_FRAMEBUFFER, er_render->re_fb );
 
-            /* Delete frame buffer */
-            glBindFramebuffer( GL_FRAMEBUFFER, 0 );
-            glDeleteFramebuffers( 1, & ( er_render->re_fb ) );
+        /* Create color buffer - texture */
+        glGenTextures( 1, & ( er_render->re_fbcolor ) );
+        glBindTexture( GL_TEXTURE_2D, er_render->re_fbcolor );
+        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, er_render->re_width, er_render->re_height, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL );
+        glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, er_render->re_fbcolor, 0);
+
+        /* Create depth buffer - render buffer */
+        glGenRenderbuffers( 1, & ( er_render->re_fbdepth ) );
+        glBindRenderbuffer( GL_RENDERBUFFER, er_render->re_fbdepth );
+        glRenderbufferStorage( GL_RENDERBUFFER, GL_DEPTH_COMPONENT, er_render->re_width, er_render->re_height );
+        glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, er_render->re_fbdepth );
+                
+        /* Check framebuffer state */
+        if ( glCheckFramebufferStatus( GL_FRAMEBUFFER ) != GL_FRAMEBUFFER_COMPLETE ) {
 
             /* Destroy context */
      		glXDestroyContext( er_render->re_display, er_render->re_context );
@@ -203,11 +183,50 @@
             /* Close display */
             XCloseDisplay( er_render->re_display );
 
+            /* Send message */
+            return( _LE_FALSE );
+
         }
+
+        /* Send message */
+        return( _LE_TRUE );
 
     }
 
-    void er_render_display_projection( er_render_t * const er_render ) {
+    void er_render_terminate( er_render_t * const er_render ) {
+
+        /* Check display state */
+        if ( er_render->re_display == NULL ) {
+
+            /* Abort termination */
+            return;
+
+        }
+
+        /* Delete depth buffer - render buffer */
+        glBindRenderbuffer( GL_RENDERBUFFER, 0 );
+        glDeleteRenderbuffers( 1, & ( er_render->re_fbdepth ) );
+
+        /* Delete color buffer - texture */
+        glBindTexture( GL_TEXTURE_2D, 0 );
+        glDeleteTextures( 1, & ( er_render->re_fbcolor ) );
+
+        /* Delete frame buffer */
+        glBindFramebuffer( GL_FRAMEBUFFER, 0 );
+        glDeleteFramebuffers( 1, & ( er_render->re_fb ) );
+
+        /* Destroy context */
+ 		glXDestroyContext( er_render->re_display, er_render->re_context );
+
+        /* Destroy hidden window */
+ 		XDestroyWindow( er_render->re_display, er_render->re_wdisp );
+
+        /* Close display */
+        XCloseDisplay( er_render->re_display );
+
+    }
+
+    void er_render_projection( er_render_t * const er_render ) {
 
         /* Projection edge variables */
         le_real_t er_fbound = ( er_render->re_size / 2.0 ) * sqrt( 2.0 );
@@ -251,7 +270,7 @@
 
     }
 
-    void er_render_display_cell( er_render_t * const er_render, le_array_t const * const er_array ) {
+    void er_render_cell( er_render_t * const er_render, le_array_t const * const er_array ) {
 
         /* Cell dimension variables */
         le_real_t er_cmid = er_render->re_size / 2.0;
@@ -291,7 +310,7 @@
 
     }
 
-    void er_render_display_bound( er_render_t * const er_render ) {
+    void er_render_bound( er_render_t * const er_render ) {
 
         /* Cell dimension variables */
         le_real_t er_cmid = er_render->re_size / 2.0;
@@ -337,7 +356,7 @@
 
     }
 
-    le_enum_t er_render_display_save( er_render_t * const er_render ) {
+    le_enum_t er_render_save( er_render_t * const er_render ) {
 
         /* Buffer variables */
         le_byte_t * er_buffer = NULL;

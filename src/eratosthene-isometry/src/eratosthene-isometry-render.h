@@ -126,37 +126,37 @@
      *
      */
 
-    int er_render_display_prepare( er_render_t * const er_render );
+    int er_render_prepare( er_render_t * const er_render );
 
     /*! \brief
      *
      */
 
-    void er_render_display_terminate( er_render_t * const er_render );
+    void er_render_terminate( er_render_t * const er_render );
 
     /*! \brief
      *
      */
 
-    void er_render_display_projection( er_render_t * const er_render );
+    void er_render_projection( er_render_t * const er_render );
 
     /*! \brief
      *
      */
 
-    void er_render_display_cell( er_render_t * const er_render, le_array_t const * const er_array );
+    void er_render_cell( er_render_t * const er_render, le_array_t const * const er_array );
 
     /*! \brief
      *
      */
 
-    void er_render_display_bound( er_render_t * const er_render );
+    void er_render_bound( er_render_t * const er_render );
 
     /*! \brief
      *
      */
 
-    le_enum_t er_render_display_save( er_render_t * const er_render );
+    le_enum_t er_render_save( er_render_t * const er_render );
 
     /* Don't ask why ... any help welcome ... */
     extern void     glGenFramebuffers           (GLsizei n, GLuint *framebuffers);

@@ -72,7 +72,7 @@
                     );
 
                     /* Prepare rendering */
-                    if ( er_render_display_prepare( & er_render ) == _LE_FALSE ) {
+                    if ( er_render_prepare( & er_render ) == _LE_FALSE ) {
 
                         /* Display message */
                         fprintf( stderr, "eratosthene-suite : error : unable to create graphical context\n" );
@@ -80,26 +80,26 @@
                     } else {
 
                         /* Rendering projection configuration */
-                        er_render_display_projection( & er_render );
+                        er_render_projection( & er_render );
 
                         /* Rendering cell points */
-                        er_render_display_cell( & er_render, & er_array );
+                        er_render_cell( & er_render, & er_array );
 
                         /* Rendering cell bounds */
-                        er_render_display_bound( & er_render );
+                        er_render_bound( & er_render );
 
                         /* Rendering exportation */
-                        if ( er_render_display_save( & er_render ) == _LE_FALSE ) {
+                        if ( er_render_save( & er_render ) == _LE_FALSE ) {
 
                             /* Display message */
                             fprintf( stderr, "erathosthene-suite : error : unable to export graphical buffer\n" );
 
                         }
 
-                    }
+                        /* Terminate rendering */
+                        er_render_terminate( & er_render );
 
-                    /* Terminate rendering */
-                    er_render_display_terminate( & er_render );
+                    }
 
                     /* Delete rendering structure */
                     er_render = er_render_delete( & er_render );
