@@ -24,7 +24,7 @@
     source - constructor/destructor methods
  */
 
-    er_render_t er_render_create( le_char_t * const er_path, le_char_t * const er_query, le_char_t * const er_view, le_real_t const er_tilt, le_size_t const er_thick, le_size_t const er_width ) {
+    er_render_t er_render_create( le_char_t * const er_path, le_char_t * const er_query, le_char_t * const er_view, le_real_t const er_tilt, le_size_t const er_thick, le_size_t const er_width, le_array_t * const er_array ) {
 
         /* Projection variables */
         le_real_t er_angle = atan( 1.0 / sqrt( 2.0 ) );
@@ -40,6 +40,9 @@
         er_render.re_path  = er_path;
         er_render.re_query = er_query;
         er_render.re_view  = er_view;
+
+         /* Assign data array */
+        er_render.re_array = er_array;
 
         /* Analyse and assign tilt */
         er_render.re_tilt = er_tilt > 0.0 ? ( er_tilt < 90.0 ? -er_tilt : -45.0 ) : -45.0;
@@ -79,7 +82,9 @@
         le_address_get_pose( & er_addr, er_render.re_edge );
 
         /* Compute bounding box proportion factor */
-        er_render.re_fact = cos( - er_angle - ( er_render.re_tilt * ER_D2R ) ) * er_unity;
+        er_render.re_xfac = sqrt( 2.0 );
+        er_render.re_yfac = cos( - er_angle - ( er_render.re_tilt * ER_D2R ) ) * er_unity;
+        er_render.re_zfac = cos( - er_angle - ( er_render.re_tilt * ER_D2R ) ) * er_unity * 2.0;
 
         /* Compute cell egde size */
         er_render.re_size = ( LE_2P * LE_GEODESY_WGS84_A ) / pow( 2.0, le_address_get_size( & er_addr ) );
@@ -89,7 +94,7 @@
 
         /* Compute projection image size */
         er_render.re_width  = er_width;
-        er_render.re_height = er_width * ( er_render.re_fact / sqrt( 2.0 ) );
+        er_render.re_height = er_width * ( er_render.re_yfac / er_render.re_xfac );
 
         /* Return constructed structure */
         return( er_render );
@@ -229,8 +234,9 @@
     void er_render_projection( er_render_t * const er_render ) {
 
         /* Projection edge variables */
-        le_real_t er_fbound = ( er_render->re_size / 2.0 ) * sqrt( 2.0 );
-        le_real_t er_sbound = ( er_render->re_size / 2.0 ) * er_render->re_fact;
+        le_real_t er_xbound = ( er_render->re_size / 2.0 ) * er_render->re_xfac;
+        le_real_t er_ybound = ( er_render->re_size / 2.0 ) * er_render->re_yfac;
+        le_real_t er_zbound = ( er_render->re_size / 2.0 ) * er_render->re_zfac;
 
         /* Initialise buffer clear values */
         glClearColor( 0.0, 0.0, 0.0, 0.0 );
@@ -238,7 +244,7 @@
 
         /* Thickness specification */
         glPointSize( er_render->re_thick );
-        glLineWidth( er_render->re_thick );
+        glLineWidth( er_render->re_thick + 1 );
 
         /* Enable depth test */
         glEnable( GL_DEPTH_TEST );
@@ -253,7 +259,7 @@
         glLoadIdentity();
 
         /* Compute porjection matrix */
-        glOrtho( -er_fbound, +er_fbound, -er_sbound, +er_sbound, -er_sbound, +er_sbound );
+        glOrtho( -er_xbound, +er_xbound, -er_ybound, +er_ybound, -er_zbound, +er_zbound );
 
         /* Matrix mode to modelview */
         glMatrixMode( GL_MODELVIEW );
@@ -270,7 +276,7 @@
 
     }
 
-    void er_render_cell( er_render_t * const er_render, le_array_t const * const er_array ) {
+    void er_render_cell( er_render_t * const er_render ) {
 
         /* Cell dimension variables */
         le_real_t er_cmid = er_render->re_size / 2.0;
@@ -280,13 +286,13 @@
         le_data_t * er_data = NULL;
 
         /* Array pointer variables */
-        le_byte_t * er_byte = le_array_get_byte( er_array );
+        le_byte_t * er_byte = le_array_get_byte( er_render->re_array );
 
         /* Primitive bloc */
         glBegin( GL_POINTS );
 
         /* Display points */
-        for ( le_size_t er_parse = 0; er_parse < le_array_get_size( er_array ); er_parse += LE_ARRAY_LINE ) {
+        for ( le_size_t er_parse = 0; er_parse < le_array_get_size( er_render->re_array ); er_parse += LE_ARRAY_LINE ) {
 
             /* Compute line pointers */
             er_pose = ( le_real_t * ) ( er_byte + er_parse );

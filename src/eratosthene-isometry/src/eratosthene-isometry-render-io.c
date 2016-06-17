@@ -21,7 +21,7 @@
     # include "eratosthene-isometry-render-io.h"
 
 /*
-    source - portable network graphics i/o
+    source - portable network graphics i/o methods
  */
 
     le_enum_t er_png_write( le_char_t const * const er_path, le_size_t const er_width, le_size_t const er_height, le_byte_t * const er_bytes ) {

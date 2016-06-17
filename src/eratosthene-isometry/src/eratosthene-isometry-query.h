@@ -68,8 +68,20 @@
     header - function prototypes
  */
 
-    /*! \brief
+    /*! \brief indexation server query
      *
+     *  This function performs the provided query to the server. It sends the
+     *  query strings and waits for the incoming data. It fills the provided
+     *  array with the data coming from the server.
+     *
+     *  This function expects an already opened socket toward the server and
+     *  the server mode authorisation is assumed already obtained.
+     *
+     *  \param  er_socket Server socket
+     *  \param  er_query  Query string
+     *  \param  er_array  Query answer array
+     *
+     *  \return Returns _LE_TRUE on success, _LE_FALSE otherwise
      */
 
     le_enum_t er_query( le_sock_t const er_socket, le_char_t const * const er_query, le_array_t * const er_array );

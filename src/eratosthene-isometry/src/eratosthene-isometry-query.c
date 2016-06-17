@@ -21,7 +21,7 @@
     # include "eratosthene-isometry-query.h"
 
 /*
-    source - server query
+    source - indexation server query
  */
 
     le_enum_t er_query( le_sock_t const er_socket, le_char_t const * const er_query, le_array_t * const er_array ) {

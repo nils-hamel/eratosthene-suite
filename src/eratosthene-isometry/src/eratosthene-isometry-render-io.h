@@ -18,10 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   eratosthene-isometry-render_io.h
+    /*! \file   eratosthene-isometry-render-io.h
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Eratosthene isometry - portable network graphics module
+     *  Eratosthene isometry - rendering module - portable network graphics
      */
 
 /*
@@ -68,8 +68,18 @@
     header - function prototypes
  */
 
-    /*! \brief
+    /*! \brief portable network graphics i/o methods
      *
+     *  This function exports the provided image in a portable network graphics
+     *  file. The function expects an byte array containing the red, green, blue
+     *  and alpha components coded on eight bits each.
+     *
+     *  \param  er_path   Portable network graphics file location
+     *  \param  er_width  Image width, in pixels
+     *  \param  er_height Image height, in pixels
+     *  \param  er_bytes  Byte array containing image pixels
+     *
+     *  \return Returns _LE_TRUE on success, _LE_FALSE otherwise
      */
 
     le_enum_t er_png_write( le_char_t const * const er_path, le_size_t const er_width, le_size_t const er_height, le_byte_t * const er_bytes );

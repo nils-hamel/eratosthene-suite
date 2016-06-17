@@ -95,6 +95,11 @@
 
     /*! \brief main function
      *
+     *  The main function reads the arguments and parameters and opens a socket
+     *  toward the provided server address. It the performs the provided query
+     *  and stores the answer in order to compute a isometric projection of the
+     *  data contained in the query answer.
+     *
      *  \param argc Standard parameter
      *  \param argv Standard parameter
      *
