@@ -45,25 +45,25 @@
         er_render.re_tilt = er_tilt > 0.0 ? ( er_tilt < 90.0 ? -er_tilt : -45.0 ) : -45.0;
 
         /* Analyse view parameter */
-        if ( strcmp( ( char * ) er_view, "ne" ) == 1 ) {
+        if ( strcmp( ( char * ) er_view, "ne" ) == 0 ) {
 
             /* Assign provided view */
             er_render.re_azim = +45.0;
 
-        } else if ( strcmp( ( char * ) er_view, "nw" ) == 1 ) {
+        } else if ( strcmp( ( char * ) er_view, "nw" ) == 0 ) {
 
             /* Assign provided view */
-            er_render.re_azim = +135.0;
+            er_render.re_azim = -45.0;
 
-        } else if ( strcmp( ( char * ) er_view, "se" ) == 1 ) {
+        } else if ( strcmp( ( char * ) er_view, "se" ) == 0 ) {
 
             /* Assign provided view */
             er_render.re_azim = -135.0;
 
-        } else if ( strcmp( ( char * ) er_view, "sw" ) == 1 ) {
+        } else if ( strcmp( ( char * ) er_view, "sw" ) == 0 ) {
 
             /* Assign provided view */
-            er_render.re_azim = -45.0;
+            er_render.re_azim = +135.0;
 
         } else {
 
