@@ -18,18 +18,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   eratosthene-isometric-png.h
+    /*! \file   eratosthene-isometry-query.h
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Eratosthene query - portable network graphics module
+     *  Eratosthene isometry - query module
      */
 
 /*
     header - inclusion guard
  */
 
-    # ifndef __ER_ISOMETRIC_PNG__
-    # define __ER_ISOMETRIC_PNG__
+    # ifndef __ER_ISOMETRIC_QUERY__
+    # define __ER_ISOMETRIC_QUERY__
 
 /*
     header - C/C++ compatibility
@@ -45,7 +45,8 @@
 
     # include <stdio.h>
     # include <stdlib.h>
-    # include <png.h>
+    # include <string.h>
+    # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions
@@ -71,7 +72,7 @@
      *
      */
 
-    int er_png_write( char const * const er_path, int const er_width, int const er_height, unsigned char * const er_bytes );
+    le_enum_t er_query( le_sock_t const er_socket, le_char_t const * const er_query, le_array_t * const er_array );
 
 /*
     header - C/C++ compatibility

@@ -18,7 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    # include "eratosthene-isometric-query.h"
+    # include "eratosthene-isometry-query.h"
 
 /*
     source - server query
@@ -44,7 +44,7 @@
         if ( er_socket == _LE_SOCK_NULL ) {
 
             /* Send message */
-            return( 1 );
+            return( _LE_FALSE );
 
         }
 
@@ -55,7 +55,7 @@
         if ( write( er_socket, er_buffer, LE_NETWORK_BUFFER_ADDR ) != LE_NETWORK_BUFFER_ADDR ) {
 
             /* Send message */
-            return( 1 );
+            return( _LE_FALSE );
 
         }
 
@@ -78,7 +78,7 @@
         }
 
         /* Send message */
-        return( 0 );
+        return( _LE_TRUE );
 
     }
 

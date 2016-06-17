@@ -18,10 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   eratosthene-isometric.h
+    /*! \file   eratosthene-isometry.h
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Eratosthene isometric
+     *  Eratosthene isometry
      */
 
     /*! \mainpage eratosthene-suite
@@ -51,8 +51,8 @@
     header - inclusion guard
  */
 
-    # ifndef __ER_ISOMETRIC__
-    # define __ER_ISOMETRIC__
+    # ifndef __ER_ISOMETRY__
+    # define __ER_ISOMETRY__
 
 /*
     header - C/C++ compatibility
@@ -70,8 +70,8 @@
     # include <stdlib.h>
     # include <common-args.h>
     # include <eratosthene-include.h>
-    # include "eratosthene-isometric-query.h"
-    # include "eratosthene-isometric-render.h"
+    # include "eratosthene-isometry-query.h"
+    # include "eratosthene-isometry-render.h"
 
 /*
     header - preprocessor definitions

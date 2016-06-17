@@ -5,7 +5,7 @@
 #   make - Configuration
 #
 
-    CONFIG_NAME:=eratosthene-isometric
+    CONFIG_NAME:=eratosthene-isometry
     CONFIG_CODE:=c
     CONFIG_TYPE:=suite
 
@@ -27,7 +27,7 @@
     MAKE_DOCBLD:=doxygen
 
     BUILD_FLAGS:=-Wall -funsigned-char -O3
-    BUILD_LINKD:=-lm -lGL -lGLU -lglut -lpng
+    BUILD_LINKD:=-lm -lGL -lGLU -lX11 -lpng
     BUILD_SUBMD:=$(MAKE_LIBRAR)/liberatosthene $(MAKE_LIBRAR)/libcommon
 
 #

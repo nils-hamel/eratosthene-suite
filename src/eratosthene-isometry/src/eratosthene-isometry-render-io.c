@@ -18,13 +18,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    # include "eratosthene-isometric-png.h"
+    # include "eratosthene-isometry-render-io.h"
 
 /*
     source - portable network graphics i/o
  */
 
-    int er_png_write( char const * const er_path, int const er_width, int const er_height, unsigned char * const er_bytes ) {
+    le_enum_t er_png_write( le_char_t const * const er_path, le_size_t const er_width, le_size_t const er_height, le_byte_t * const er_bytes ) {
 
         /* Stream variables */
         FILE * er_stream = NULL;
@@ -34,24 +34,24 @@
         png_infop   er_info = NULL;
 
         /* Buffer variables */
-        unsigned char * er_rbuf = NULL;
+        le_byte_t * er_rbuf = NULL;
 
         /* Create buffer */
         if ( ( er_rbuf = malloc( er_width * 4 * sizeof( png_byte ) ) ) == NULL ) {
 
             /* Send message */
-            return( 1 );
+            return( _LE_FALSE );
 
         }
 
         /* Create output stream */
-        if ( ( er_stream = fopen( er_path, "wb" ) ) == NULL ) {
+        if ( ( er_stream = fopen( ( char * ) er_path, "wb" ) ) == NULL ) {
 
             /* Delete buffer */
             free( er_rbuf );
 
             /* Send message */
-            return( 1 );
+            return( _LE_FALSE );
 
         }
 
@@ -65,7 +65,7 @@
             free( er_rbuf );
 
             /* Send message */
-            return( 1 );
+            return( _LE_FALSE );
 
         }
 
@@ -82,7 +82,7 @@
             free( er_rbuf );
 
             /* Send message */
-            return( 1 );
+            return( _LE_FALSE );
 
         }
 
@@ -102,7 +102,7 @@
             free( er_rbuf );
 
             /* Send message */
-            return( 1 );
+            return( _LE_FALSE );
 
         }
 
@@ -134,7 +134,7 @@
         free( er_rbuf );
 
         /* Send message */
-        return( 0 );
+        return( _LE_TRUE );
 
     }
 
