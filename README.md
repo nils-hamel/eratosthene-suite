@@ -11,6 +11,7 @@ The _eratosthene-suite_ comes with the following package dependencies (Ubuntu 14
 * build-essential
 * mesa-common-dev
 * freeglut3-dev
+* libpng12-dev
 
 and the following external dependencies provided as sub-modules :
 
