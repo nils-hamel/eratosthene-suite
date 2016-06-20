@@ -107,14 +107,26 @@
         /* Thread variables */
         pthread_t er_secondary;
 
-        /* Engine secondary loop */
+        # if defined __ER_CLIENT_CINEMA__
+        pthread_t er_tertiary;
+        # endif
+
+        /* Engine secondary loops */
         pthread_create( & er_secondary, NULL, & er_engine_update, NULL );
+
+        # if defined __ER_CLIENT_CINEMA__
+        pthread_create( & er_tertiary, NULL, & er_cinema, NULL );
+        # endif
 
         /* Engine primary loop */
         glutMainLoop();
 
         /* Engine secondary loop */
         pthread_cancel( er_secondary );
+
+        # if defined __ER_CLIENT_CINEMA__
+        pthread_cancel( er_tertiary );
+        # endif
 
     }
 
@@ -162,7 +174,7 @@
     le_void_t * er_engine_update( le_void_t * er_null ) {
 
         /* Engine update loop */
-        for ( ; ; sleep( 0.1 ) ) {
+        for ( ; ; usleep( 100 ) ) {
 
             /* Check model update necessities */
             if ( er_model_get_update( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt ) == _LE_TRUE ) {

@@ -43,8 +43,6 @@
     header - includes
  */
 
-    # include "eratosthene-client-model.h"
-    # include "eratosthene-client-geodesy.h"
     # include <math.h>
     # include <string.h>
     # include <unistd.h>
@@ -53,6 +51,10 @@
     # include <GL/glu.h>
     # include <GL/freeglut.h>
     # include <eratosthene-include.h>
+    # include "eratosthene-client-model.h"
+    # include "eratosthene-client-geodesy.h"
+
+    # include "eratosthene-client-cinema.h"
 
 /*
     header - preprocessor definitions
