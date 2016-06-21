@@ -107,26 +107,14 @@
         /* Thread variables */
         pthread_t er_secondary;
 
-        # if defined __ER_CLIENT_CINEMA__
-        pthread_t er_tertiary;
-        # endif
-
         /* Engine secondary loops */
         pthread_create( & er_secondary, NULL, & er_engine_update, NULL );
-
-        # if defined __ER_CLIENT_CINEMA__
-        pthread_create( & er_tertiary, NULL, & er_cinema, NULL );
-        # endif
 
         /* Engine primary loop */
         glutMainLoop();
 
         /* Engine secondary loop */
         pthread_cancel( er_secondary );
-
-        # if defined __ER_CLIENT_CINEMA__
-        pthread_cancel( er_tertiary );
-        # endif
 
     }
 

@@ -54,8 +54,6 @@
     # include "eratosthene-client-model.h"
     # include "eratosthene-client-geodesy.h"
 
-    # include "eratosthene-client-cinema.h"
-
 /*
     header - preprocessor definitions
  */
