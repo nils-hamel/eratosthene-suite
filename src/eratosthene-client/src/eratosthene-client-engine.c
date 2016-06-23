@@ -313,8 +313,8 @@
         /* Inertial multiplier */
         switch ( glutGetModifiers() ) {
 
-            case ( GLUT_ACTIVE_CTRL  ) : { er_engine.eg_mult = 10.0; } break;
-            case ( GLUT_ACTIVE_SHIFT ) : { er_engine.eg_mult =  0.01 * ( 1.0 / er_engine.eg_vscl ); } break;
+            case ( GLUT_ACTIVE_CTRL  ) : { er_engine.eg_mult *= ( 10.000 ); } break;
+            case ( GLUT_ACTIVE_SHIFT ) : { er_engine.eg_mult *= (  0.001 ); } break;
 
         };
 
