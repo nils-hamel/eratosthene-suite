@@ -288,6 +288,18 @@
 
             } break;
 
+            /* Display position */
+            case ( 'p' ) : {
+
+                /* Display position and orientation */
+                printf( "%" _LE_REAL_P "\n", er_engine.eg_vlon );
+                printf( "%" _LE_REAL_P "\n", er_engine.eg_vlat );
+                printf( "%" _LE_REAL_P "\n", er_engine.eg_valt );
+                printf( "%" _LE_REAL_P "\n", er_engine.eg_vazm );
+                printf( "%" _LE_REAL_P "\n", er_engine.eg_vgam );
+
+            } break;
+
         };
 
     }
