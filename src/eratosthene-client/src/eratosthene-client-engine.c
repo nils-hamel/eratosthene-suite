@@ -251,15 +251,6 @@
 
             } break;
 
-            /* Reset azimuth and gamma */
-            case ( 'e' ) : {
-
-                /* Reset variables */
-                er_engine.eg_vazm = 0.0;
-                er_engine.eg_vgam = 0.0;
-
-            } break;
-
             /* Reset point of view */
             case ( 'r' ) : {
 
@@ -272,19 +263,19 @@
 
             } break;
 
-            /* Time management */
+            /* Reset azimuth angle */
             case ( 'a' ) : {
 
-                /* Update time */
-                er_engine.eg_vtim -= er_model_get_tdisc( & ( er_engine.eg_model ) );
+                /* Reset variables */
+                er_engine.eg_vazm = 0.0;
 
             } break;
 
-            /* Time management */
-            case ( 's' ) : {
+            /* Reset gamma angle */
+            case ( 'g' ) : {
 
-                /* Update time */
-                er_engine.eg_vtim += er_model_get_tdisc( & ( er_engine.eg_model ) );
+                /* Reset variables */
+                er_engine.eg_vgam = 0.0;
 
             } break;
 
