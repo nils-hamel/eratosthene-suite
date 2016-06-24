@@ -66,7 +66,7 @@
 
                         /* Numeric parameters */
                         lc_read_double( argc, argv, "--tilt" , "-t", 45.0 ),
-                        lc_read_uint  ( argc, argv, "--thick", "-k", 1024 ),
+                        lc_read_uint  ( argc, argv, "--thick", "-k",    2 ),
                         lc_read_uint  ( argc, argv, "--width", "-w", 1024 ),
 
                         /* Indexation server array */

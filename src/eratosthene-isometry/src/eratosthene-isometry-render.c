@@ -48,32 +48,41 @@
         er_render.re_tilt = er_tilt > 0.0 ? ( er_tilt < 90.0 ? -er_tilt : -45.0 ) : -45.0;
 
         /* Analyse view parameter */
-        if ( strcmp( ( char * ) er_view, "ne" ) == 0 ) {
+        if ( er_view != NULL ) {
 
-            /* Assign provided view */
-            er_render.re_azim = +45.0;
+            if ( strcmp( ( char * ) er_view, "ne" ) == 0 ) {
 
-        } else if ( strcmp( ( char * ) er_view, "nw" ) == 0 ) {
+                /* Assign provided view */
+                er_render.re_azim = +45.0;
 
-            /* Assign provided view */
-            er_render.re_azim = -45.0;
+            } else if ( strcmp( ( char * ) er_view, "nw" ) == 0 ) {
 
-        } else if ( strcmp( ( char * ) er_view, "se" ) == 0 ) {
+                /* Assign provided view */
+                er_render.re_azim = -45.0;
 
-            /* Assign provided view */
-            er_render.re_azim = -135.0;
+            } else if ( strcmp( ( char * ) er_view, "se" ) == 0 ) {
 
-        } else if ( strcmp( ( char * ) er_view, "sw" ) == 0 ) {
+                /* Assign provided view */
+                er_render.re_azim = -135.0;
 
-            /* Assign provided view */
-            er_render.re_azim = +135.0;
+            } else if ( strcmp( ( char * ) er_view, "sw" ) == 0 ) {
+
+                /* Assign provided view */
+                er_render.re_azim = +135.0;
+
+            } else {
+
+                /* Assign default parameter */
+                er_render.re_azim = +45.0;
+
+            }
 
         } else {
 
             /* Assign default parameter */
             er_render.re_azim = +45.0;
 
-        };
+        }
 
         /* Convert query into address structure */
         le_address_cvsa( & er_addr, er_render.re_query );
@@ -382,7 +391,7 @@
         glGetTexImage( GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, er_buffer );
 
         /* Export buffer */
-        if ( er_png_write( er_render->re_path, er_render->re_width, er_render->re_height, er_buffer ) == _LE_FALSE ) {
+        if ( lc_image_png_write( ( char * ) er_render->re_path, er_render->re_width, er_render->re_height, LC_IMAGE_RGBA, er_buffer ) == LC_FALSE ) {
 
             /* Unallocate buffer memory */
             free( er_buffer );

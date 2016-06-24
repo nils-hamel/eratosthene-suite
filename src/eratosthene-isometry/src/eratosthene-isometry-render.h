@@ -50,9 +50,8 @@
     # include <GL/gl.h>
     # include <GL/glx.h>
     # include <GL/glext.h>
-    # include <png.h>
+    # include <common-include.h>
     # include <eratosthene-include.h>
-    # include "eratosthene-isometry-render-io.h"
 
 /*
     header - preprocessor definitions

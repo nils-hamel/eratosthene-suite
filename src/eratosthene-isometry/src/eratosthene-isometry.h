@@ -68,7 +68,7 @@
 
     # include <stdio.h>
     # include <stdlib.h>
-    # include <common-args.h>
+    # include <common-include.h>
     # include <eratosthene-include.h>
     # include "eratosthene-isometry-query.h"
     # include "eratosthene-isometry-render.h"
