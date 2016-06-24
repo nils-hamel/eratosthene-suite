@@ -28,14 +28,14 @@
 
         /* Socket i/o count variables */
         le_size_t er_count = 0;
-        le_size_t er_fread = 0;
-        le_size_t er_write = 0;
+        le_size_t er_fread = 1;
+        le_size_t er_write = 1;
 
-        /* Socket i/o buffer */
+        /* Socket i/o buffer variables */
         le_byte_t er_buffer[LE_NETWORK_BUFFER_SYNC] = LE_NETWORK_BUFFER_C;
 
         /* Stream data injection */
-        do {
+        while ( ( er_fread > 0 ) && ( er_fread == er_write ) ) {
 
             /* Read stream elements */
             if ( ( er_fread = fread( ( le_void_t * ) er_buffer, sizeof( le_byte_t ), LE_NETWORK_BUFFER_SYNC, er_stream ) ) > 0 ) {
@@ -55,7 +55,7 @@
 
             }
 
-        } while ( ( er_fread > 0 ) && ( er_fread == er_write ) );
+        }
 
         /* Display message */
         fprintf( stderr, "eratosthene-inject : injected %" _LE_SIZE_P " element(s)\n", er_count );
@@ -67,9 +67,6 @@
  */
 
     int main( int argc, char ** argv ) {
-
-        /* Server port variables */
-        unsigned int er_port = lc_read_uint( argc, argv, "--port", "-t", _LE_USE_PORT );
 
         /* Stream handle variables */
         FILE * er_stream = NULL;
@@ -86,7 +83,7 @@
         } else {
 
             /* Create client handle */
-            if ( ( er_client = le_client_create( ( le_char_t * ) lc_read_string( argc, argv, "--ip", "-i" ), er_port ) ) == _LE_SOCK_NULL ) {
+            if ( ( er_client = le_client_create( ( le_char_t * ) lc_read_string( argc, argv, "--ip", "-i" ), lc_read_uint( argc, argv, "--port", "-t", _LE_USE_PORT ) ) ) == _LE_SOCK_NULL ) {
 
                 /* Display message */
                 fprintf( stderr, "eratosthene-inject : error : unable to connect to server\n" );
