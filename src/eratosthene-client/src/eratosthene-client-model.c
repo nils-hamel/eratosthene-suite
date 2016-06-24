@@ -469,11 +469,13 @@
 
         };
 
+        /* Motion management - tilt rotation */
+        glRotated( - er_gam, 1.0, 0.0, 0.0 );
+
         /* Motion management - altimetric translation */
         glTranslated( 0.0, 0.0, - er_alt + ER_ERA );
 
-        /* Motion management - tilt rotation */
-        glRotated( - er_gam, 1.0, 0.0, 0.0 );
+        /* Motion management - azimuth rotation */
         glRotated( + er_azm, 0.0, 0.0, 1.0 );
 
         /* Display cells content */
@@ -520,11 +522,13 @@
 
     le_void_t er_model_display_earth( le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt, le_real_t const er_azm, le_real_t const er_gam ) {
 
+        /* Motion management - tilt rotation */
+        glRotated( - er_gam, 1.0, 0.0, 0.0 );
+
         /* Motion management - altimetric translation */
         glTranslated( 0.0, 0.0, - er_alt + ER_ERA );
 
-        /* Motion management - tilt rotation */
-        glRotated( - er_gam, 1.0, 0.0, 0.0 );
+        /* Motion management - azimuth rotation */
         glRotated( + er_azm, 0.0, 0.0, 1.0 );
 
         /* Earth wireframe - centering */
