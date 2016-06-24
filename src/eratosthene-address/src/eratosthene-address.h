@@ -70,7 +70,7 @@
     # include <stdlib.h>
     # include <stdint.h>
     # include <string.h>
-    # include <common-args.h>
+    # include <common-include.h>
     # include <eratosthene-include.h>
 
 /*

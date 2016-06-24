@@ -26,9 +26,6 @@
 
     int main( int argc, char ** argv ) {
 
-        /* Server port variables */
-        unsigned int er_port = lc_read_uint( argc, argv, "--port", "-t", _LE_USE_PORT );
-
         /* Socket handle variables */
         le_sock_t er_server = _LE_SOCK_NULL;
 
@@ -44,7 +41,7 @@
         } else {
 
             /* Create server handle */
-            if ( ( er_server = le_server_create( er_port ) ) == _LE_SOCK_NULL ) {
+            if ( ( er_server = le_server_create( lc_read_uint( argc, argv, "--port", "-t", _LE_USE_PORT ) ) ) == _LE_SOCK_NULL ) {
 
                 /* Display message */
                 fprintf( stderr, "eratosthene-server : error : unable to create server handle\n" );
@@ -52,7 +49,7 @@
             } else {
 
                 /* Display message */
-                fprintf( stderr, "eratosthene-server : server listening on TCP/IP port %u\n", er_port );
+                fprintf( stderr, "eratosthene-server : server listening on TCP/IP\n" );
 
                 /* Server handle and idle */
                 le_server( er_server, & er_system );

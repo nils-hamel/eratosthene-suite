@@ -43,9 +43,9 @@
     header - includes
  */
 
-    # include "eratosthene-client-geodesy.h"
     # include <math.h>
     # include <eratosthene-include.h>
+    # include "eratosthene-client-geodesy.h"
 
 /*
     header - preprocessor definitions
