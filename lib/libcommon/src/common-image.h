@@ -18,18 +18,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   common-include.h
+    /*! \file   common-image.h
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Inclusion header
+     *  Image management
      */
 
 /*
     header - inclusion guard
  */
 
-    # ifndef __LC_INCLUDE__
-    # define __LC_INCLUDE__
+    # ifndef __LC_IMAGE__
+    # define __LC_IMAGE__
 
 /*
     header - C/C++ compatibility
@@ -43,12 +43,17 @@
     header - includes
  */
 
-    # include "common-args.h"
-    # include "common-image.h"
+    # include <stdio.h>
+    # include <png.h>
+    # include "common.h"
 
 /*
     header - preprocessor definitions
  */
+
+    /* Define image depth variables */
+    # define LC_IMAGE_RGB  0
+    # define LC_IMAGE_RGBA 1
 
 /*
     header - preprocessor macros
@@ -65,6 +70,8 @@
 /*
     header - function prototypes
  */
+
+    int lc_image_png_write( char const * const lc_path, int const lc_width, int const lc_height, int const lc_depth, unsigned char * const lc_bytes );
 
 /*
     header - C/C++ compatibility

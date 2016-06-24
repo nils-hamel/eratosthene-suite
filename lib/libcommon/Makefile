@@ -27,7 +27,7 @@
     MAKE_DOCBLD:=doxygen
 
     BUILD_FLAGS:=-Wall -funsigned-char -O3
-    BUILD_LINKD:=-lm
+    BUILD_LINKD:=
     BUILD_SUBMD:=
 
 #
