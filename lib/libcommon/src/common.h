@@ -70,6 +70,10 @@
     header - preprocessor definitions
  */
 
+    /* Define boolean values */
+    # define LC_TRUE  1
+    # define LC_FALSE 0
+
 /*
     header - preprocessor macros
  */

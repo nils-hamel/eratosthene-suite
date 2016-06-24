@@ -46,6 +46,7 @@
     # include <stdio.h>
     # include <stdlib.h>
     # include <string.h>
+    # include "common.h"
 
 /*
     header - preprocessor definitions
@@ -54,6 +55,12 @@
 /*
     header - preprocessor macros
  */
+
+    /* String to unsigned int */
+    # define LC_ATOUI( p ) strtoul( p, NULL, 10 )
+
+    /* String to double precision */
+    # define LC_ATODP( p ) atof( p )
 
 /*
     header - type definition
@@ -67,22 +74,39 @@
     header - function prototypes
  */
 
-    /*! \brief Arguments and parameters parsers
+    /*! \brief switches parsers
+     *
+     *  This function searches in the provided arguments list if the specified
+     *  switch is present.
+     *
+     *  \param  argc     Main function parameters
+     *  \param  argv     Main function parameters
+     *  \param  er_long  Argument string - long form
+     *  \param  er_short Argument string - short form
+     *
+     *  \return Returns LC_TRUE if switch is found, LC_FALSE otherwise
+     */
+
+    int lc_read_flag( int const argc, char ** argv, char const * const er_long, char const * const er_short );
+
+    /*! \brief arguments and parameters parsers
      *
      *  This function searches in the provided arguments list if the specified
      *  argument is present. When it is, the function returns the pointer to
      *  the string containing the parameter of the found argument, NULL is
      *  returned otherwise.
      *
-     *  \param argc     Standard parameter
-     *  \param argv     Standard parameter
-     *  \param er_long  Long form argument
-     *  \param er_short Short form argument
+     *  \param  argc     Main function parameters
+     *  \param  argv     Main function parameters
+     *  \param  er_long  Argument string - long form
+     *  \param  er_short Argument string - short form
+     *
+     *  \return Pointer to parameter string on success, NULL otherwise
      */
 
     char * lc_read_string( int const argc, char ** argv, char const * const er_long, char const * const er_short );
 
-    /*! \brief Arguments and parameters parsers
+    /*! \brief arguments and parameters parsers
      *
      *  This function searches in the provided argument list if the specified
      *  argument is present. As it is, the function converts into unsigned int
@@ -91,16 +115,18 @@
      *  When the argument is not found in the list, the function simply returns
      *  the provided default value.
      *
-     *  \param argc       Standard parameter
-     *  \param argv       Standard parameter
-     *  \param er_long    Long form argument
-     *  \param er_short   Short form argument
-     *  \param er_default Default value
+     *  \param  argc       Main function parameters
+     *  \param  argv       Main function parameters
+     *  \param  er_long    Argument string - long form
+     *  \param  er_short   Argument string - short form
+     *  \param  er_default Parameter default value
+     *
+     *  \return Parameter value on success, the default value otherwise
      */
 
     unsigned int lc_read_uint( int const argc, char ** argv, char const * const er_long, char const * const er_short, unsigned int er_default );
 
-    /*! \brief Arguments and parameters parsers
+    /*! \brief arguments and parameters parsers
      *
      *  This function searches in the provided argument list if the specified
      *  argument is present. As it is, the function converts into double the
@@ -109,11 +135,13 @@
      *  When the argument is not found in the list, the function simply returns
      *  the provided default value.
      *
-     *  \param argc       Standard parameter
-     *  \param argv       Standard parameter
-     *  \param er_long    Long form argument
-     *  \param er_short   Short form argument
-     *  \param er_default Default value
+     *  \param  argc       Main function parameters
+     *  \param  argv       Main function parameters
+     *  \param  er_long    Argument string - long form
+     *  \param  er_short   Argument string - short form
+     *  \param  er_default Parameter default value
+     *
+     *  \return Parameter value on success, the default value otherwise
      */
 
     double lc_read_double( int const argc, char ** argv, char const * const er_long, char const * const er_short, double er_default );
