@@ -99,13 +99,8 @@
         /* Display attribute variables */
         GLint er_vattrib[] = { GLX_RGBA, GLX_DEPTH_SIZE, 32, GLX_DOUBLEBUFFER, None };
 
-        /* Open display */
-        if ( ( er_render->re_display = XOpenDisplay( NULL ) ) == NULL ) {
-
-            /* Send message */
-            return( _LE_FALSE );
-
-        } 
+        /* Create display handle */
+        if ( ( er_render->re_display = XOpenDisplay( NULL ) ) == NULL ) return( _LE_FALSE );
 
         /* Retrieve root window */
         er_render->re_wroot = DefaultRootWindow( er_render->re_display );
@@ -121,45 +116,41 @@
 
         }
 
-        /* Assign window colormap */
-        er_wattrib.colormap = XCreateColormap( er_render->re_display, er_render->re_wroot, er_render->re_visual->visual, AllocNone );;
-
-        /* Create hidden windows */
-        er_render->re_wdisp = XCreateWindow( er_render->re_display, er_render->re_wroot, 0, 0, 64, 64, 0, er_render->re_visual->depth, InputOutput, er_render->re_visual->visual, CWColormap | CWEventMask, & er_wattrib );
-
-        /* Create graphical context */
+        /* Configure graphical context */
+        er_wattrib.colormap   = XCreateColormap ( er_render->re_display, er_render->re_wroot, er_render->re_visual->visual, AllocNone );;
+        er_render->re_wdisp   = XCreateWindow   ( er_render->re_display, er_render->re_wroot, 0, 0, 64, 64, 0, er_render->re_visual->depth, InputOutput, er_render->re_visual->visual, CWColormap | CWEventMask, & er_wattrib );
         er_render->re_context = glXCreateContext( er_render->re_display, er_render->re_visual, NULL, GL_TRUE );
 
-        /* Enable graphical context */
+        /* Activate graphical context */
         glXMakeCurrent( er_render->re_display, er_render->re_wdisp, er_render->re_context );
 
-        /* Create framebuffer */
-        glGenFramebuffers( 1, & ( er_render->re_fb ) );
-        glBindFramebuffer( GL_FRAMEBUFFER, er_render->re_fb );
+        /* Create render buffers */
+        glGenFramebuffers ( 1, & er_render->re_fb      );
+        glGenTextures     ( 1, & er_render->re_fbcolor );
+        glGenRenderbuffers( 1, & er_render->re_fbdepth );
 
-        /* Create color buffer - texture */
-        glGenTextures( 1, & ( er_render->re_fbcolor ) );
-        glBindTexture( GL_TEXTURE_2D, er_render->re_fbcolor );
-        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, er_render->re_width, er_render->re_height, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL );
-        glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, er_render->re_fbcolor, 0);
-
-        /* Create depth buffer - render buffer */
-        glGenRenderbuffers( 1, & ( er_render->re_fbdepth ) );
+        /* Bind render buffers */
+        glBindFramebuffer ( GL_FRAMEBUFFER , er_render->re_fb      );
+        glBindTexture     ( GL_TEXTURE_2D  , er_render->re_fbcolor );
         glBindRenderbuffer( GL_RENDERBUFFER, er_render->re_fbdepth );
+
+        /* Format render buffers - color */
+        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, er_render->re_width, er_render->re_height, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL );
+
+        /* Format render buffers - depth */
         glRenderbufferStorage( GL_RENDERBUFFER, GL_DEPTH_COMPONENT, er_render->re_width, er_render->re_height );
-        glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, er_render->re_fbdepth );
+
+        /* Activate render buffers */
+        glFramebufferTexture2D   ( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D  , er_render->re_fbcolor, 0);
+        glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT , GL_RENDERBUFFER, er_render->re_fbdepth );
                 
-        /* Check framebuffer state */
+        /* Check render buffers state */
         if ( glCheckFramebufferStatus( GL_FRAMEBUFFER ) != GL_FRAMEBUFFER_COMPLETE ) {
 
-            /* Destroy context */
+            /* Destroy display handle */
      		glXDestroyContext( er_render->re_display, er_render->re_context );
-
-            /* Destroy hidden window */
-     		XDestroyWindow( er_render->re_display, er_render->re_wdisp );
-
-            /* Close display */
-            XCloseDisplay( er_render->re_display );
+     		XDestroyWindow   ( er_render->re_display, er_render->re_wdisp   );
+            XCloseDisplay    ( er_render->re_display );
 
             /* Send message */
             return( _LE_FALSE );
@@ -174,33 +165,22 @@
     void er_render_terminate( er_render_t * const er_render ) {
 
         /* Check display state */
-        if ( er_render->re_display == NULL ) {
+        if ( er_render->re_display == NULL ) return;
 
-            /* Abort termination */
-            return;
+        /* Unselect rendering buffers */
+        glBindRenderbuffer( GL_RENDERBUFFER, 0 );        
+        glBindTexture     ( GL_TEXTURE_2D  , 0 );
+        glBindFramebuffer ( GL_FRAMEBUFFER , 0 );
 
-        }
+        /* Delete rendering buffers */
+        glDeleteRenderbuffers( 1, & er_render->re_fbdepth );
+        glDeleteTextures     ( 1, & er_render->re_fbcolor );
+        glDeleteFramebuffers ( 1, & er_render->re_fb      );
 
-        /* Delete depth buffer - render buffer */
-        glBindRenderbuffer( GL_RENDERBUFFER, 0 );
-        glDeleteRenderbuffers( 1, & ( er_render->re_fbdepth ) );
-
-        /* Delete color buffer - texture */
-        glBindTexture( GL_TEXTURE_2D, 0 );
-        glDeleteTextures( 1, & ( er_render->re_fbcolor ) );
-
-        /* Delete frame buffer */
-        glBindFramebuffer( GL_FRAMEBUFFER, 0 );
-        glDeleteFramebuffers( 1, & ( er_render->re_fb ) );
-
-        /* Destroy context */
+        /* Destroy display handle */
  		glXDestroyContext( er_render->re_display, er_render->re_context );
-
-        /* Destroy hidden window */
- 		XDestroyWindow( er_render->re_display, er_render->re_wdisp );
-
-        /* Close display */
-        XCloseDisplay( er_render->re_display );
+ 		XDestroyWindow   ( er_render->re_display, er_render->re_wdisp   );
+        XCloseDisplay    ( er_render->re_display );
 
     }
 
@@ -262,30 +242,30 @@
         le_byte_t * er_byte = le_array_get_byte( er_render->re_array );
 
         /* Primitive bloc */
-        glBegin( GL_POINTS ); {
+        glBegin( GL_POINTS );
 
-            /* Display points */
-            for ( le_size_t er_parse = 0; er_parse < le_array_get_size( er_render->re_array ); er_parse += LE_ARRAY_LINE ) {
+        /* Display points */
+        for ( le_size_t er_parse = 0; er_parse < le_array_get_size( er_render->re_array ); er_parse += LE_ARRAY_LINE ) {
 
-                /* Compute line pointers */
-                er_pose = ( le_real_t * ) ( er_byte + er_parse );
-                er_data = ( le_data_t * ) ( er_byte + er_parse + sizeof( le_time_t ) + sizeof( le_real_t ) * 3 ); 
+            /* Compute line pointers */
+            er_pose = ( le_real_t * ) ( er_byte + er_parse );
+            er_data = ( le_data_t * ) ( er_byte + er_parse + sizeof( le_time_t ) + sizeof( le_real_t ) * 3 ); 
 
-                /* Push element color */
-                glColor4f( er_data[0] / 255.0, er_data[1] / 255.0, er_data[2] / 255.0, 1.0 );
+            /* Push element color */
+            glColor4f( er_data[0] / 255.0, er_data[1] / 255.0, er_data[2] / 255.0, 1.0 );
 
-                /* Convert geographical coordinates to projection coordinates */
-                er_pose[0] = - er_cmid + ( er_pose[0] - er_render->re_edge[0] ) * LE_GEODESY_WGS84_A;
-                er_pose[1] = - er_cmid + ( er_pose[1] - er_render->re_edge[1] ) * LE_GEODESY_WGS84_A;
-                er_pose[2] = - er_cmid + ( er_pose[2] - er_render->re_edge[2] );
+            /* Convert geographical coordinates to projection coordinates */
+            er_pose[0] = - er_cmid + ( er_pose[0] - er_render->re_edge[0] ) * LE_GEODESY_WGS84_A;
+            er_pose[1] = - er_cmid + ( er_pose[1] - er_render->re_edge[1] ) * LE_GEODESY_WGS84_A;
+            er_pose[2] = - er_cmid + ( er_pose[2] - er_render->re_edge[2] );
 
-                /* Push element vertex */
-                glVertex3f( er_pose[0], er_pose[1], er_pose[2] );
+            /* Push element vertex */
+            glVertex3f( er_pose[0], er_pose[1], er_pose[2] );
 
-            }
+        }
 
         /* Primitive bloc */
-        } glEnd();   
+        glEnd();   
 
     }
 
