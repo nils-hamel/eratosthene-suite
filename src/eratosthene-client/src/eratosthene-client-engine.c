@@ -363,7 +363,7 @@
 
             /* Update azimuth and gamma angles */
             er_engine.eg_vazm -= ( ER_INR * er_engine.eg_mult ) * ( er_engine.eg_u - er_engine.eg_x );
-            er_engine.eg_vgam -= ( ER_INR * er_engine.eg_mult ) * ( er_engine.eg_v - er_engine.eg_y ) * 2.0;
+            er_engine.eg_vgam += ( ER_INR * er_engine.eg_mult ) * ( er_engine.eg_v - er_engine.eg_y ) * 2.0;
 
         }
 
