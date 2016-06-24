@@ -66,6 +66,8 @@
     header - includes
  */
 
+    # include <string.h>
+
 /*
     header - preprocessor definitions
  */
@@ -77,6 +79,9 @@
 /*
     header - preprocessor macros
  */
+
+    /* String comparison */
+    # define LC_STRC( a, b ) ( strcmp( ( char * ) a, ( char * ) b ) == 0 ? LC_TRUE : LC_FALSE )
 
 /*
     header - type definition

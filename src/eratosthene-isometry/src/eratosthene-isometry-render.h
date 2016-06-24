@@ -286,7 +286,17 @@
 
     le_enum_t er_render_save( er_render_t * const er_render );
 
-    /* Ubuntu 14.04, gcc 4.8.4, std=gnu99 : unable to locate prototypes */
+    /*! \brief auxiliary functions
+     *
+     */
+
+    le_real_t er_render_get_view( le_char_t const * const er_view );
+
+/*
+    header - external prototypes
+ */
+
+    /* Unable to locate prototypes : ubuntu 14.04, gcc 4.8.4, std=gnu99 */
     extern void     glGenFramebuffers           (GLsizei n, GLuint *framebuffers);
     extern void     glBindFramebuffer           (GLenum target, GLuint framebuffer);
     extern void     glFramebufferTexture2D      (GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);

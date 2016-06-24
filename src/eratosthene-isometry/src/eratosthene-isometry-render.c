@@ -26,63 +26,39 @@
 
     er_render_t er_render_create( le_char_t * const er_path, le_char_t * const er_query, le_char_t * const er_view, le_real_t const er_tilt, le_size_t const er_thick, le_size_t const er_width, le_array_t * const er_array ) {
 
-        /* Projection variables */
-        le_real_t er_angle = atan( 1.0 / sqrt( 2.0 ) );
-        le_real_t er_unity = sqrt( 2.0 ) / cos( er_angle );
-
         /* Address variables */
         le_address_t er_addr = LE_ADDRESS_C;
 
         /* Returned value variables */
         er_render_t er_render = ER_RENDER_C;
 
-        /* Assign rendering strings */
+        /* Projection variables */
+        le_real_t er_angle = atan( 1.0 / sqrt( 2.0 ) );
+        le_real_t er_unity = sqrt( 2.0 ) / cos( er_angle );
+
+        /* Assign rendering parameters */
         er_render.re_path  = er_path;
         er_render.re_query = er_query;
         er_render.re_view  = er_view;
-
-         /* Assign data array */
         er_render.re_array = er_array;
 
-        /* Analyse and assign tilt */
-        er_render.re_tilt = er_tilt > 0.0 ? ( er_tilt < 90.0 ? -er_tilt : -45.0 ) : -45.0;
+        /* Check and assign tilt angle */
+        er_render.re_tilt  = er_tilt  > 0.0 ? ( er_tilt  < 90.0 ? -er_tilt : -45.0 ) : -45.0;
 
-        /* Analyse view parameter */
-        if ( er_view != NULL ) {
+        /* Check and assign thickness */
+        er_render.re_thick = er_thick > 1 ? ( er_thick < 32 ? er_thick : 32 ) : 1;
 
-            if ( strcmp( ( char * ) er_view, "ne" ) == 0 ) {
+        /* Check and assign azimuth angle */
+        er_render.re_azim  = er_render_get_view( er_view );
 
-                /* Assign provided view */
-                er_render.re_azim = +45.0;
+        /* Compute projection domain */
+        er_render.re_xfac = sqrt( 2.0 );
+        er_render.re_yfac = cos( - er_angle - ( er_render.re_tilt * ER_D2R ) ) * er_unity;
+        er_render.re_zfac = cos( - er_angle - ( er_render.re_tilt * ER_D2R ) ) * er_unity * 2.0;
 
-            } else if ( strcmp( ( char * ) er_view, "nw" ) == 0 ) {
-
-                /* Assign provided view */
-                er_render.re_azim = -45.0;
-
-            } else if ( strcmp( ( char * ) er_view, "se" ) == 0 ) {
-
-                /* Assign provided view */
-                er_render.re_azim = -135.0;
-
-            } else if ( strcmp( ( char * ) er_view, "sw" ) == 0 ) {
-
-                /* Assign provided view */
-                er_render.re_azim = +135.0;
-
-            } else {
-
-                /* Assign default parameter */
-                er_render.re_azim = +45.0;
-
-            }
-
-        } else {
-
-            /* Assign default parameter */
-            er_render.re_azim = +45.0;
-
-        }
+        /* Compute projection size */
+        er_render.re_width  = er_width;
+        er_render.re_height = er_width * ( er_render.re_yfac / er_render.re_xfac );
 
         /* Convert query into address structure */
         le_address_cvsa( & er_addr, er_render.re_query );
@@ -90,20 +66,8 @@
         /* Compute cell edge */
         le_address_get_pose( & er_addr, er_render.re_edge );
 
-        /* Compute bounding box proportion factor */
-        er_render.re_xfac = sqrt( 2.0 );
-        er_render.re_yfac = cos( - er_angle - ( er_render.re_tilt * ER_D2R ) ) * er_unity;
-        er_render.re_zfac = cos( - er_angle - ( er_render.re_tilt * ER_D2R ) ) * er_unity * 2.0;
-
         /* Compute cell egde size */
         er_render.re_size = ( LE_2P * LE_GEODESY_WGS84_A ) / pow( 2.0, le_address_get_size( & er_addr ) );
-
-        /* Analyse and assign thickness */
-        er_render.re_thick = er_thick > 1 ? ( er_thick < 32 ? er_thick : 32 ) : 1;
-
-        /* Compute projection image size */
-        er_render.re_width  = er_width;
-        er_render.re_height = er_width * ( er_render.re_yfac / er_render.re_xfac );
 
         /* Return constructed structure */
         return( er_render );
@@ -298,30 +262,30 @@
         le_byte_t * er_byte = le_array_get_byte( er_render->re_array );
 
         /* Primitive bloc */
-        glBegin( GL_POINTS );
+        glBegin( GL_POINTS ); {
 
-        /* Display points */
-        for ( le_size_t er_parse = 0; er_parse < le_array_get_size( er_render->re_array ); er_parse += LE_ARRAY_LINE ) {
+            /* Display points */
+            for ( le_size_t er_parse = 0; er_parse < le_array_get_size( er_render->re_array ); er_parse += LE_ARRAY_LINE ) {
 
-            /* Compute line pointers */
-            er_pose = ( le_real_t * ) ( er_byte + er_parse );
-            er_data = ( le_data_t * ) ( er_byte + er_parse + sizeof( le_time_t ) + sizeof( le_real_t ) * 3 ); 
+                /* Compute line pointers */
+                er_pose = ( le_real_t * ) ( er_byte + er_parse );
+                er_data = ( le_data_t * ) ( er_byte + er_parse + sizeof( le_time_t ) + sizeof( le_real_t ) * 3 ); 
 
-            /* Push element color */
-            glColor4f( er_data[0] / 255.0, er_data[1] / 255.0, er_data[2] / 255.0, 1.0 );
+                /* Push element color */
+                glColor4f( er_data[0] / 255.0, er_data[1] / 255.0, er_data[2] / 255.0, 1.0 );
 
-            /* Convert geographical coordinates to projection coordinates */
-            er_pose[0] = - er_cmid + ( er_pose[0] - er_render->re_edge[0] ) * LE_GEODESY_WGS84_A;
-            er_pose[1] = - er_cmid + ( er_pose[1] - er_render->re_edge[1] ) * LE_GEODESY_WGS84_A;
-            er_pose[2] = - er_cmid + ( er_pose[2] - er_render->re_edge[2] );
+                /* Convert geographical coordinates to projection coordinates */
+                er_pose[0] = - er_cmid + ( er_pose[0] - er_render->re_edge[0] ) * LE_GEODESY_WGS84_A;
+                er_pose[1] = - er_cmid + ( er_pose[1] - er_render->re_edge[1] ) * LE_GEODESY_WGS84_A;
+                er_pose[2] = - er_cmid + ( er_pose[2] - er_render->re_edge[2] );
 
-            /* Push element vertex */
-            glVertex3f( er_pose[0], er_pose[1], er_pose[2] );
+                /* Push element vertex */
+                glVertex3f( er_pose[0], er_pose[1], er_pose[2] );
 
-        }
+            }
 
         /* Primitive bloc */
-        glEnd();   
+        } glEnd();   
 
     }
 
@@ -406,6 +370,50 @@
 
         /* Send message */
         return( _LE_TRUE );
+
+    }
+
+/*
+    source - auxiliary functions
+ */
+
+    le_real_t er_render_get_view( le_char_t const * const er_view ) {
+
+        /* Check pointer validity */
+        if ( er_view == NULL ) {
+
+            /* Return default value */
+            return( - 45.0 );
+
+        }
+
+        /* Check view parameter */
+        if ( LC_STRC( er_view, "ne" ) == LC_TRUE ) {
+
+            /* Return parameter value */
+            return( + 45.0 );
+
+        } else if ( LC_STRC( er_view, "nw" ) == LC_TRUE ) {
+
+            /* Return parameter value */
+            return( - 45.0 );
+
+        } else if ( LC_STRC( er_view, "sw" ) == LC_TRUE ) {
+
+            /* Return parameter value */
+            return( +135.0 );
+
+        } else if ( LC_STRC( er_view, "se" ) == LC_TRUE ) {
+
+            /* Return parameter value */
+            return( -135.0 );
+
+        } else {
+
+            /* Return default value */
+            return( - 45.0 );
+    
+        }
 
     }
 

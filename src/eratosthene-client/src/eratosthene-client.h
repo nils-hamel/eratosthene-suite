@@ -104,8 +104,8 @@
      *  engine exits its main loop, the main function deletes the rendering
      *  engine descriptor and the execution stops.
      *
-     *  \param argc Standard parameter
-     *  \param argv Standard parameter
+     *  \param argc Main function parameters
+     *  \param argv Main function parameters
      *
      *  \return Standard exit code
      */

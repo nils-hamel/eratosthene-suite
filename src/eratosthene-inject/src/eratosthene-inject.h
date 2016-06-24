@@ -113,8 +113,8 @@
      *  provided server. It then reads and sends the content of the file to the
      *  server.
      *
-     *  \param argc Standard parameter
-     *  \param argv Standard parameter
+     *  \param argc Main function parameters
+     *  \param argv Main function parameters
      *
      *  \return Standard exit code
      */

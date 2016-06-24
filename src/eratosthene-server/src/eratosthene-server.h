@@ -100,8 +100,8 @@
      *  instance that waits for clients queries. The server system is then
      *  deleted and the execution ends.
      *
-     *  \param argc Standard parameter
-     *  \param argv Standard parameter
+     *  \param argc Main function parameters
+     *  \param argv Main function parameters
      *
      *  \return Standard exit code
      */

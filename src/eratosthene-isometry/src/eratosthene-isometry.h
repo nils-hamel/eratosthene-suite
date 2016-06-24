@@ -100,8 +100,8 @@
      *  and stores the answer in order to compute a isometric projection of the
      *  data contained in the query answer.
      *
-     *  \param argc Standard parameter
-     *  \param argv Standard parameter
+     *  \param argc Main function parameters
+     *  \param argv Main function parameters
      *
      *  \return Standard exit code
      */
