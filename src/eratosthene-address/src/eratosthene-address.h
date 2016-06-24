@@ -111,8 +111,8 @@
      *  ]-180,180] range for longitude and ]-90,90] for the latitude. Altitude
      *  are always given in metres.
      *
-     *  \param argc Standard parameter
-     *  \param argv Standard parameter
+     *  \param argc Main function parameters
+     *  \param argv Main function parameters
      *
      *  \return Standard exit code
      */

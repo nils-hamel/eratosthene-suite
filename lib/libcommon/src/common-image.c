@@ -21,10 +21,10 @@
     # include "common-image.h"
 
 /*
-    source - i/o function
+    source - portable network graphics i/o function
  */
 
-    int lc_image_png_write( char const * const lc_path, int const lc_width, int const lc_height, int const lc_depth, unsigned char * const lc_bytes ) {
+    int lc_image_png_write( char const * const lc_path, int const lc_width, int const lc_height, int const lc_format, unsigned char * const lc_bytes ) {
 
         /* Stream variables */
         FILE * lc_stream = NULL;
@@ -38,13 +38,13 @@
         png_infop   lc_info = NULL;
 
         /* Check image depth */
-        if ( lc_depth == LC_IMAGE_RGB ) {
+        if ( lc_format == LC_IMAGE_RGB ) {
 
             /* Assign png color type */
             lc_component = 3;
             lc_colortype = PNG_COLOR_TYPE_RGB;
 
-        } else if ( lc_depth == LC_IMAGE_RGBA ) {
+        } else if ( lc_format == LC_IMAGE_RGBA ) {
 
             /* Assign png color type */
             lc_component = 4;
@@ -116,8 +116,13 @@
         /* Write portable network graphics header */
         png_write_info( lc_pngs, lc_info );
 
-        /* Export portable network graphics rows */
-        for ( int lc_parse = 0; lc_parse < lc_height; lc_parse ++ ) png_write_row( lc_pngs, lc_bytes + ( lc_height - lc_parse - 1 ) * ( lc_width * lc_component ) );
+        /* Export portable network graphics pixels rows */
+        for ( int lc_parse = 0; lc_parse < lc_height; lc_parse ++ ) {
+
+            /* Export current pixels row */
+            png_write_row( lc_pngs, lc_bytes + ( lc_height - lc_parse - 1 ) * ( lc_width * lc_component ) );
+
+        }
 
         /* Write portable network graphics footer */
         png_write_end( lc_pngs, NULL );

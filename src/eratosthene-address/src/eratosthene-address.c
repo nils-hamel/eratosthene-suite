@@ -26,7 +26,7 @@
 
     int main( int argc, char ** argv ) {
 
-        /* Geodetic coordinates array variables */
+        /* Geodetic array variables */
         le_real_t er_pose[3] = { 0.0 };
 
         /* Address structure variables */
@@ -54,7 +54,7 @@
         er_pose[0] *= ER_ADDRESS_R2D;
         er_pose[1] *= ER_ADDRESS_R2D;
 
-        /* Display original coordinates */
+        /* Display reconverted coordinates */
         fprintf( stdout, ER_ADDRESS_PFS, er_pose[0], er_pose[1], er_pose[2] );
 
         /* Display address */
@@ -63,7 +63,7 @@
             /* Display address digit */
             fprintf( stdout, "%c", le_address_get_digit( & er_addr, er_parse ) + 48 ); 
 
-        /* Outout format */
+        /* Output format */
         } fprintf( stdout, ", %" _LE_SIZE_P "\n", le_address_get_size( & er_addr ) );
 
         /* Return to system */
