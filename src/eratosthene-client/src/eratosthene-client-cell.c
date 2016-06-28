@@ -185,13 +185,18 @@
         /* Optimisation variables */
         le_size_t er_size = 0;
 
+        /* Socket i/o variables */
+        le_size_t er_read = 0;
+        le_size_t er_bridge = 0;
+
         /* Array pointer variables */
         le_real_t * er_ptrp = NULL;
         le_time_t * er_ptrt = NULL;
         le_data_t * er_ptrd = NULL;
 
         /* Socket i/o buffer variables */
-        le_byte_t er_buffer[LE_NETWORK_BUFFER_SYNC] = LE_NETWORK_BUFFER_C;
+        //le_byte_t er_buffer[LE_NETWORK_BUFFER_SYNC] = LE_NETWORK_BUFFER_C;
+        le_byte_t er_buffer[2560] = LE_NETWORK_BUFFER_C;
 
         /* Reset cell size */
         er_cell->ce_size = 0;
@@ -229,44 +234,58 @@
         }
 
         /* Reading query elements */
-        while( ( er_count = read( er_socket, er_buffer, LE_NETWORK_BUFFER_SYNC ) ) > 0 ) {
+        while ( er_read < 5 ) {
 
-            /* Check limitations */
-            if ( ( er_size = ( er_cell->ce_size + ( er_count / LE_ARRAY_LINE ) * 3 ) ) < ER_CELL_ARRAY ) {
+            /* Read bloc from socket */
+            if ( ( er_count = read( er_socket, er_buffer + er_bridge, 1280 ) + er_bridge ) >= LE_ARRAY_64S_LEN ) {
 
-                /* Parsing received elements */
-                for ( er_parse = 0; er_parse < er_count; er_parse += LE_ARRAY_LINE, er_track += 3 ) {
+                /* Check cell limitation */
+                if ( ( er_size = er_cell->ce_size + ( er_count / LE_ARRAY_64S_LEN ) * 3 ) < ER_CELL_ARRAY ) {
 
-                    /* Compute pointers */
-                    er_ptrp = ( le_real_t * ) ( er_buffer + er_parse );
-                    er_ptrt = ( le_time_t * ) ( er_ptrp + 3 );
-                    er_ptrd = ( le_data_t * ) ( er_ptrt + 1 );
+                    /* Parsing received bloc */
+                    for ( er_parse = 0; er_parse < (er_count/LE_ARRAY_64S_LEN)*LE_ARRAY_64S_LEN; er_parse += LE_ARRAY_64S_LEN, er_track += 3 ) {
 
-                    /* Optimised vertex computation */
-                    er_ptrp[2] += ER_ERA;
+                        /* Compute pointers */
+                        er_ptrp = ( le_real_t * ) ( er_buffer + er_parse );
+                        er_ptrt = ( le_time_t * ) ( er_ptrp + 3 );
+                        er_ptrd = ( le_data_t * ) ( er_ptrt + 1 );
 
-                    /* Optimised vertex computation */
-                    er_cell->ce_pose[er_track + 1] = er_ptrp[2] * sin( er_ptrp[1] ) - er_cell->ce_edge[1];
+                        /* Optimised vertex computation */
+                        er_ptrp[2] += ER_ERA;
 
-                    /* Optimised vertex computation */
-                    er_ptrp[1] = cos( er_ptrp[1] );
+                        /* Optimised vertex computation */
+                        er_cell->ce_pose[er_track + 1] = er_ptrp[2] * sin( er_ptrp[1] ) - er_cell->ce_edge[1];
 
-                    /* Optimised vertex computation */
-                    er_cell->ce_pose[er_track    ] = er_ptrp[2] * er_ptrp[1] * sin( er_ptrp[0] ) - er_cell->ce_edge[0];
-                    er_cell->ce_pose[er_track + 2] = er_ptrp[2] * er_ptrp[1] * cos( er_ptrp[0] ) - er_cell->ce_edge[2];
+                        /* Optimised vertex computation */
+                        er_ptrp[1] = cos( er_ptrp[1] );
 
-                    /* Assign color */
-                    er_cell->ce_data[er_track    ] = er_ptrd[0];
-                    er_cell->ce_data[er_track + 1] = er_ptrd[1];
-                    er_cell->ce_data[er_track + 2] = er_ptrd[2];
+                        /* Optimised vertex computation */
+                        er_cell->ce_pose[er_track    ] = er_ptrp[2] * er_ptrp[1] * sin( er_ptrp[0] ) - er_cell->ce_edge[0];
+                        er_cell->ce_pose[er_track + 2] = er_ptrp[2] * er_ptrp[1] * cos( er_ptrp[0] ) - er_cell->ce_edge[2];
+
+                        /* Assign color */
+                        er_cell->ce_data[er_track    ] = er_ptrd[0];
+                        er_cell->ce_data[er_track + 1] = er_ptrd[1];
+                        er_cell->ce_data[er_track + 2] = er_ptrd[2];
+
+                    }
+
+                    /* Cell size management */
+                    er_cell->ce_size = er_size;
 
                 }
 
-                /* Update cell size */
-                er_cell->ce_size = er_size;
+                /* Bridge management */
+                if ( ( er_bridge = ( er_count % LE_ARRAY_64S_LEN ) ) != 0 ) {
 
-            }
+                    /* Displace bridge data */
+                    memcpy( er_buffer, er_buffer + ( er_count - er_bridge ), er_bridge );
 
+                }
+                
+            /* Update reading value */
+            er_read = 0; } else { er_read ++; }
+            
         }
 
     }
