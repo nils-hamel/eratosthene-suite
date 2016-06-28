@@ -195,8 +195,7 @@
         le_data_t * er_ptrd = NULL;
 
         /* Socket i/o buffer variables */
-        //le_byte_t er_buffer[LE_NETWORK_BUFFER_SYNC] = LE_NETWORK_BUFFER_C;
-        le_byte_t er_buffer[2560] = LE_NETWORK_BUFFER_C;
+        le_byte_t er_buffer[LE_NETWORK_SB_STRM] = LE_NETWORK_C;
 
         /* Reset cell size */
         er_cell->ce_size = 0;
@@ -226,7 +225,7 @@
         }
 
         /* Write query address */
-        if ( write( er_socket, er_cell->ce_addr, LE_NETWORK_BUFFER_ADDR ) != LE_NETWORK_BUFFER_ADDR ) {
+        if ( write( er_socket, er_cell->ce_addr, LE_NETWORK_SB_ADDR ) != LE_NETWORK_SB_ADDR ) {
 
             /* Abort update */
             return;
@@ -237,7 +236,7 @@
         while ( er_read < 5 ) {
 
             /* Read bloc from socket */
-            if ( ( er_count = read( er_socket, er_buffer + er_bridge, 1280 ) + er_bridge ) >= LE_ARRAY_64S_LEN ) {
+            if ( ( er_count = read( er_socket, er_buffer + er_bridge, _LE_USE_MTU ) + er_bridge ) >= LE_ARRAY_64S_LEN ) {
 
                 /* Check cell limitation */
                 if ( ( er_size = er_cell->ce_size + ( er_count / LE_ARRAY_64S_LEN ) * 3 ) < ER_CELL_ARRAY ) {

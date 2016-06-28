@@ -106,8 +106,8 @@
 
         le_enum_t    ce_flag;
 
-        le_char_t    ce_addr[LE_NETWORK_BUFFER_ADDR];
-        le_char_t    ce_push[LE_NETWORK_BUFFER_ADDR];
+        le_char_t    ce_addr[LE_NETWORK_SB_ADDR];
+        le_char_t    ce_push[LE_NETWORK_SB_ADDR];
 
         le_address_t ce_cell;
 

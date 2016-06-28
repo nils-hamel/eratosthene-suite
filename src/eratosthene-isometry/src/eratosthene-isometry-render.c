@@ -245,11 +245,11 @@
         glBegin( GL_POINTS );
 
         /* Display points */
-        for ( le_size_t er_parse = 0; er_parse < le_array_get_size( er_render->re_array ); er_parse += LE_ARRAY_LINE ) {
+        for ( le_size_t er_parse = 0; er_parse < le_array_get_size( er_render->re_array ); er_parse += LE_ARRAY_64S_LEN ) {
 
             /* Compute line pointers */
             er_pose = ( le_real_t * ) ( er_byte + er_parse );
-            er_data = ( le_data_t * ) ( er_byte + er_parse + sizeof( le_time_t ) + sizeof( le_real_t ) * 3 ); 
+            er_data = ( le_data_t * ) ( er_pose + sizeof( le_time_t ) ); 
 
             /* Push element color */
             glColor4f( er_data[0] / 255.0, er_data[1] / 255.0, er_data[2] / 255.0, 1.0 );
