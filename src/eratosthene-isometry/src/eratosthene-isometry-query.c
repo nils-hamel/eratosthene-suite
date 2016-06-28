@@ -59,6 +59,16 @@
 
         }
 
+        if ( le_array_io_read( er_array, er_socket ) == LE_ERROR_SUCCESS ) {
+
+            return( _LE_TRUE );
+
+        } else {
+
+            return( _LE_FALSE );
+
+        }
+
         /* Reading query elements */
         while( ( er_count = read( er_socket, er_buffer, LE_NETWORK_BUFFER_SYNC ) ) > 0 ) {
 
@@ -71,7 +81,7 @@
                 er_ptrd = ( le_data_t * ) ( er_ptrt + 1 );
 
                 /* Push element */
-                le_array_set_push( er_array, er_ptrp, * er_ptrt, er_ptrd );
+                le_array_set_push( er_array, LE_ARRAY_64S, er_ptrp, * er_ptrt, er_ptrd );
 
             }
 

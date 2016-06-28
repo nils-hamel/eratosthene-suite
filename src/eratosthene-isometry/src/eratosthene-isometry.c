@@ -49,7 +49,7 @@
             } else {
 
                 /* Query on server */
-                if ( er_query( er_socket, ( le_char_t * ) lc_read_string( argc, argv, "--query", "-q" ), & er_array ) == _LE_FALSE ) {
+                if ( le_client_system_array( er_socket, & er_array, ( le_char_t * ) lc_read_string( argc, argv, "--query", "-q" ) ) != LE_ERROR_SUCCESS ) {
 
                     /* Display message */
                     fprintf( stderr, "eratosthene-suite : error : unable to perform query on server\n" );
