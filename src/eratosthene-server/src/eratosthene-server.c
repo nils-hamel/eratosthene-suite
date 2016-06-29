@@ -33,7 +33,7 @@
         le_system_t er_system = LE_SYSTEM_C;
 
         /* Create system handle */
-        if ( le_system_create( & er_system, ( le_char_t * ) lc_read_string( argc, argv, "--path", "-p" ) ) != LE_ERROR_SUCCESS ) {
+        if ( ( er_system = le_system_create( ( le_char_t * ) lc_read_string( argc, argv, "--path", "-p" ) ) )._status != LE_ERROR_SUCCESS ) {
 
             /* Display message */
             fprintf( stderr, "eratosthene-server : error : unable to create system handle\n" );
@@ -60,7 +60,7 @@
             }
 
             /* Delete system handle */
-            le_system_delete( & er_system );
+            er_system = le_system_delete( & er_system );
 
         }
 
