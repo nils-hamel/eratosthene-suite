@@ -235,7 +235,7 @@
         while ( er_read < _LE_USE_RETRY ) {
 
             /* Read bloc from socket */
-            if ( ( er_count = read( er_socket, er_buffer + er_bridge, _LE_USE_MTU ) + er_bridge ) >= LE_ARRAY_64S_LEN ) {
+            if ( ( er_count = read( er_socket, er_buffer + er_bridge, _LE_USE_MTU ) + er_bridge ) >= LE_ARRAY_64R_LEN ) {
 
                 /* Check cell limitation */
                 if ( ( er_size = er_cell->ce_size + ( er_count / LE_ARRAY_64R_LEN ) * 3 ) < ER_CELL_ARRAY ) {
