@@ -40,10 +40,10 @@
         if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
 
             /* Client/server query handshake */
-            if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_TMOD ) == LE_ERROR_SUCCESS ) {
+            if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_TMOD, LE_ARRAY_NULL ) == LE_ERROR_SUCCESS ) {
 
                 /* Retrieve server configuration */
-                er_model.md_tdis = le_client_system_tdisc( er_socket );
+                er_model.md_tdis = le_client_system_tparam( er_socket );
 
             }
 
@@ -64,10 +64,10 @@
         if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
 
             /* Client/server query handshake */
-            if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_SMOD ) == LE_ERROR_SUCCESS ) {
+            if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_SMOD, LE_ARRAY_NULL ) == LE_ERROR_SUCCESS ) {
 
                 /* Retrieve server configuration */
-                er_model.md_sdis = le_client_system_sdisc( er_socket );
+                er_model.md_sdis = le_client_system_sparam( er_socket );
 
             }
 

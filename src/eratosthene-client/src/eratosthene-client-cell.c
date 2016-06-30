@@ -191,7 +191,6 @@
 
         /* Array pointer variables */
         le_real_t * er_ptrp = NULL;
-        le_time_t * er_ptrt = NULL;
         le_data_t * er_ptrd = NULL;
 
         /* Socket i/o buffer variables */
@@ -217,7 +216,7 @@
         er_cell->ce_edge[1] = ER_ERA * sin( er_cell->ce_edge[1] );
 
         /* Client/server query handshake */
-        if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_QMOD ) != LE_ERROR_SUCCESS ) {
+        if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_QMOD, LE_ARRAY_64R ) != LE_ERROR_SUCCESS ) {
 
             /* Abort update */
             return;
@@ -233,21 +232,20 @@
         }
 
         /* Reading query elements */
-        while ( er_read < 5 ) {
+        while ( er_read < _LE_USE_RETRY ) {
 
             /* Read bloc from socket */
             if ( ( er_count = read( er_socket, er_buffer + er_bridge, _LE_USE_MTU ) + er_bridge ) >= LE_ARRAY_64S_LEN ) {
 
                 /* Check cell limitation */
-                if ( ( er_size = er_cell->ce_size + ( er_count / LE_ARRAY_64S_LEN ) * 3 ) < ER_CELL_ARRAY ) {
+                if ( ( er_size = er_cell->ce_size + ( er_count / LE_ARRAY_64R_LEN ) * 3 ) < ER_CELL_ARRAY ) {
 
                     /* Parsing received bloc */
-                    for ( er_parse = 0; er_parse < (er_count/LE_ARRAY_64S_LEN)*LE_ARRAY_64S_LEN; er_parse += LE_ARRAY_64S_LEN, er_track += 3 ) {
+                    for ( er_parse = 0; er_parse < (er_count/LE_ARRAY_64R_LEN)*LE_ARRAY_64R_LEN; er_parse += LE_ARRAY_64R_LEN, er_track += 3 ) {
 
                         /* Compute pointers */
                         er_ptrp = ( le_real_t * ) ( er_buffer + er_parse );
-                        er_ptrt = ( le_time_t * ) ( er_ptrp + 3 );
-                        er_ptrd = ( le_data_t * ) ( er_ptrt + 1 );
+                        er_ptrd = ( le_data_t * ) ( er_ptrp + 3 );
 
                         /* Optimised vertex computation */
                         er_ptrp[2] += ER_ERA;
@@ -275,7 +273,7 @@
                 }
 
                 /* Bridge management */
-                if ( ( er_bridge = ( er_count % LE_ARRAY_64S_LEN ) ) != 0 ) {
+                if ( ( er_bridge = ( er_count % LE_ARRAY_64R_LEN ) ) != 0 ) {
 
                     /* Displace bridge data */
                     memcpy( er_buffer, er_buffer + ( er_count - er_bridge ), er_bridge );

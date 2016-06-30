@@ -41,7 +41,7 @@
         } else {
 
             /* Query handshake */
-            if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_QMOD ) != LE_ERROR_SUCCESS ) {
+            if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_QMOD, LE_ARRAY_64S ) != LE_ERROR_SUCCESS ) {
 
                 /* Display message */
                 fprintf( stderr, "eratosthene-suite : error : unable to obtain server authorisation\n" );
@@ -49,7 +49,7 @@
             } else {
 
                 /* Query on server */
-                if ( le_client_system_array( er_socket, & er_array, ( le_char_t * ) lc_read_string( argc, argv, "--query", "-q" ) ) != LE_ERROR_SUCCESS ) {
+                if ( le_client_system_query_array( er_socket, & er_array, ( le_char_t * ) lc_read_string( argc, argv, "--query", "-q" ) ) != LE_ERROR_SUCCESS ) {
 
                     /* Display message */
                     fprintf( stderr, "eratosthene-suite : error : unable to perform query on server\n" );
