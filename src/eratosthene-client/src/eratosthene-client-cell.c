@@ -200,7 +200,7 @@
         er_cell->ce_size = 0;
 
         /* Convert query string */
-        le_address_ct_string( & er_cell->ce_cell, er_cell->ce_addr );
+        le_address_cf_string( & er_cell->ce_cell, er_cell->ce_addr );
 
         /* Retrieve cell position */
         le_address_get_pose( & er_cell->ce_cell, er_cell->ce_edge );
