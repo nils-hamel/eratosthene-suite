@@ -41,7 +41,7 @@
         } else {
 
             /* Query handshake */
-            if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_QMOD, LE_ARRAY_64S ) != LE_ERROR_SUCCESS ) {
+            if ( le_client_handshake( er_socket, LE_NETWORK_MODE_QMOD, LE_ARRAY_64S ) != LE_ERROR_SUCCESS ) {
 
                 /* Display message */
                 fprintf( stderr, "eratosthene-suite : error : unable to obtain server authorisation\n" );

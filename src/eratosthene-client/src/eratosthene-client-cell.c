@@ -216,7 +216,7 @@
         er_cell->ce_edge[1] = ER_ERA * sin( er_cell->ce_edge[1] );
 
         /* Client/server query handshake */
-        if ( le_client_handshake_mode( er_socket, LE_NETWORK_MODE_QMOD, LE_ARRAY_64R ) != LE_ERROR_SUCCESS ) {
+        if ( le_client_handshake( er_socket, LE_NETWORK_MODE_QMOD, LE_ARRAY_64R ) != LE_ERROR_SUCCESS ) {
 
             /* Abort update */
             return;
