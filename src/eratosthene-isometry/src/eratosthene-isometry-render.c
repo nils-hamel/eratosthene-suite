@@ -61,7 +61,7 @@
         er_render.re_height = er_width * ( er_render.re_yfac / er_render.re_xfac );
 
         /* Convert query into address structure */
-        le_address_cvsa( & er_addr, er_render.re_query );
+        le_address_cf_string( & er_addr, er_render.re_query );
 
         /* Compute cell edge */
         le_address_get_pose( & er_addr, er_render.re_edge );

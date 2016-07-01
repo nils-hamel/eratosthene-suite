@@ -136,14 +136,14 @@
     le_void_t er_cell_set_addr( er_cell_t * const er_cell, le_address_t const * const er_address ) {
 
         /* Compute and assign cell address */
-        le_address_cvas( er_address, er_cell->ce_addr );
+        le_address_ct_string( er_address, er_cell->ce_addr );
 
     }
 
     le_void_t er_cell_set_push( er_cell_t * const er_cell, le_address_t const * const er_address ) {
 
         /* Compute and assign cell address */
-        le_address_cvas( er_address, er_cell->ce_push );
+        le_address_ct_string( er_address, er_cell->ce_push );
 
     }
 
@@ -200,7 +200,7 @@
         er_cell->ce_size = 0;
 
         /* Convert query string */
-        le_address_cvsa( & er_cell->ce_cell, er_cell->ce_addr );
+        le_address_ct_string( & er_cell->ce_cell, er_cell->ce_addr );
 
         /* Retrieve cell position */
         le_address_get_pose( & er_cell->ce_cell, er_cell->ce_edge );
