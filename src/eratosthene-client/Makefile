@@ -26,7 +26,7 @@
     MAKE_STABLD:=ar
     MAKE_DOCBLD:=doxygen
 
-    BUILD_FLAGS:=-Wall -funsigned-char -O3
+    BUILD_FLAGS:=-Wall -funsigned-char -O3 -D_BSD_SOURCE
     BUILD_LINKD:=-lm -lGL -lGLU -lglut -lpthread
     BUILD_SUBMD:=$(MAKE_LIBRAR)/libcommon $(MAKE_LIBRAR)/liberatosthene
 
@@ -79,7 +79,7 @@ endif
 endif
     MAKE_HEADEX:=h
     MAKE_COMPIL:=$(MAKE_CC_BLD)
-    MAKE_OPTION:=$(MAKE_OPTION) -std=gnu99
+    MAKE_OPTION:=$(MAKE_OPTION) -std=c99
 else
 ifeq ($(CONFIG_CODE),cpp)
 ifeq ($(CONFIG_TYPE),libstatic)

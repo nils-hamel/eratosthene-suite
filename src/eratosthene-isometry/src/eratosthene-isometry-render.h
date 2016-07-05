@@ -47,9 +47,8 @@
     # include <stdlib.h>
     # include <math.h>
     # include <string.h>
-    # include <GL/gl.h>
+    # include <GL/glew.h>
     # include <GL/glx.h>
-    # include <GL/glext.h>
     # include <common-include.h>
     # include <eratosthene-include.h>
 
@@ -273,22 +272,6 @@
     le_real_t er_render_get_view( le_char_t const * const er_view );
 
     le_size_t er_render_get_edge( le_char_t const * const er_query, le_real_t * const er_pose );
-
-/*
-    header - external prototypes
- */
-
-    /* Unable to locate prototypes : ubuntu 14.04, gcc 4.8.4, std=gnu99 */
-    extern void     glGenFramebuffers           ( GLsizei n, GLuint *framebuffers );
-    extern void     glBindFramebuffer           ( GLenum target, GLuint framebuffer );
-    extern void     glFramebufferTexture2D      ( GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level );
-    extern void     glGenRenderbuffers          ( GLsizei n, GLuint *renderbuffers );
-    extern void     glBindRenderbuffer          ( GLenum target, GLuint renderbuffer );
-    extern void     glRenderbufferStorage       ( GLenum target, GLenum internalformat, GLsizei width, GLsizei height );
-    extern void     glFramebufferRenderbuffer   ( GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer );
-    extern GLenum   glCheckFramebufferStatus    ( GLenum target );
-    extern void     glDeleteRenderbuffers       ( GLsizei n, const GLuint *renderbuffers );
-    extern void     glDeleteFramebuffers        ( GLsizei n, const GLuint *framebuffers );
 
 /*
     header - C/C++ compatibility
