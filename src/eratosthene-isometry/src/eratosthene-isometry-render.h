@@ -59,10 +59,6 @@
 
     /* Define pseudo-constructor */
     # define ER_RENDER_C { \
-        NULL, \
-        NULL, \
-        NULL, \
-        NULL, \
         0.0, \
         0.0, \
         0.0, \
@@ -76,16 +72,19 @@
         NULL, \
         0, \
         0, \
-        NULL, \
-        0, \
         0, \
         0, \
         0  \
     }
 
-    /* Trigonometric conversion */
-    # define ER_D2R      ( LE_PI / 180.0 )
-    # define ER_R2D      ( 180.0 / LE_PI )
+    /* Define trigonometric factors */
+    # define ER_ISOMETRY_D2R        ( LE_PI / 180.0 )
+
+    /* Define default view */
+    # define ER_ISOMETRY_VIEW_NE    ( + 45.0 )
+    # define ER_ISOMETRY_VIEW_NW    ( - 45.0 )
+    # define ER_ISOMETRY_VIEW_SW    ( +135.0 )
+    # define ER_ISOMETRY_VIEW_SE    ( -135.0 )
 
 /*
     header - preprocessor macros
@@ -111,8 +110,6 @@
      *  Indexation server query
      *  \var er_render_struct::re_view
      *  Isometric projection orientation
-     *  \var er_render_struct::re_array
-     *  Indexation server cell data
      *  \var er_render_struct::re_azim
      *  Orientation angle, deduced from re_view field
      *  \var er_render_struct::re_azim
@@ -143,21 +140,15 @@
      *  Graphical context handle
      *  \var er_render_struct::re_context
      *  Graphical context handle
-     *  \var er_render_struct::re_fb
+     *  \var er_render_struct::re_buffer
      *  Framebuffer handle
-     *  \var er_render_struct::re_fbcolor
+     *  \var er_render_struct::re_bcolor
      *  Renderbuffer handle
-     *  \var er_render_struct::re_fbdepth
+     *  \var er_render_struct::re_bdepth
      *  Renderbuffer handle
      */
 
     typedef struct er_render_struct {
-
-        le_char_t   * re_path;
-        le_char_t   * re_query;
-        le_char_t   * re_view;
-
-        le_array_t  * re_array;
 
         le_real_t     re_azim;
         le_real_t     re_tilt;
@@ -165,6 +156,7 @@
         le_real_t     re_xfac;
         le_real_t     re_yfac;
         le_real_t     re_zfac;
+
         le_real_t     re_size;
         le_real_t     re_edge[3];
 
@@ -173,14 +165,12 @@
         le_size_t     re_height;
 
         Display     * re_display;
-        Window        re_wroot;
         Window        re_wdisp;
-        XVisualInfo * re_visual;
         GLXContext    re_context;
 
-        GLuint        re_fb;
-        GLuint        re_fbcolor;
-        GLuint        re_fbdepth;
+        GLuint        re_buffer;
+        GLuint        re_bcolor;
+        GLuint        re_bdepth;
         
     } er_render_t;
 
@@ -206,7 +196,7 @@
      *  \return Returns created rendering structure
      */
 
-    er_render_t er_render_create( le_char_t * const er_path, le_char_t * const er_query, le_char_t * const er_view, le_real_t const er_tilt, le_size_t const er_thick, le_size_t const er_width, le_array_t * const er_array );
+    er_render_t er_render_create( le_char_t * const er_query, le_char_t * const er_view, le_real_t const er_tilt, le_size_t const er_thick, le_size_t const er_width );
 
     /*! \brief constructor/destructor methods
      *
@@ -230,7 +220,7 @@
      *  \return Returns _LE_TRUE on success, _LE_FALSE otherwise
      */
 
-    int er_render_prepare( er_render_t * const er_render );
+    le_enum_t er_render_prepare( er_render_t * const er_render );
 
     /*! \brief display methods
      *
@@ -241,7 +231,7 @@
      *  \param er_render Rendering structure
      */
 
-    void er_render_terminate( er_render_t * const er_render );
+    le_void_t er_render_terminate( er_render_t * const er_render );
 
     /*! \brief display methods
      *
@@ -251,7 +241,7 @@
      *  \param er_render Rendering structure
      */
 
-    void er_render_projection( er_render_t * const er_render );
+    le_void_t er_render_projection( er_render_t * const er_render );
 
     /*! \brief display methods
      *
@@ -262,17 +252,7 @@
      *  \param er_render Rendering structure
      */
 
-    void er_render_cell( er_render_t * const er_render );
-
-    /*! \brief display methods
-     *
-     *  This function draws the indexation server cell boundaries on the
-     *  isometric projection.
-     *
-     *  \param er_render Rendering structure
-     */
-
-    void er_render_bound( er_render_t * const er_render );
+    le_void_t er_render_primivites( er_render_t * const er_render, le_array_t * const er_array );
 
     /*! \brief display methods
      *
@@ -284,7 +264,7 @@
      *  \return Returns _LE_TRUE on success, _LE_FALSE otherwise
      */
 
-    le_enum_t er_render_save( er_render_t * const er_render );
+    le_enum_t er_render_save( er_render_t * const er_render, char const * const er_path );
 
     /*! \brief auxiliary functions
      *
@@ -292,21 +272,23 @@
 
     le_real_t er_render_get_view( le_char_t const * const er_view );
 
+    le_size_t er_render_get_edge( le_char_t const * const er_query, le_real_t * const er_pose );
+
 /*
     header - external prototypes
  */
 
     /* Unable to locate prototypes : ubuntu 14.04, gcc 4.8.4, std=gnu99 */
-    extern void     glGenFramebuffers           (GLsizei n, GLuint *framebuffers);
-    extern void     glBindFramebuffer           (GLenum target, GLuint framebuffer);
-    extern void     glFramebufferTexture2D      (GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
-    extern void     glGenRenderbuffers          (GLsizei n, GLuint *renderbuffers);
-    extern void     glBindRenderbuffer          (GLenum target, GLuint renderbuffer);
-    extern void     glRenderbufferStorage       (GLenum target, GLenum internalformat, GLsizei width, GLsizei height);
-    extern void     glFramebufferRenderbuffer   (GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer);
-    extern GLenum   glCheckFramebufferStatus    (GLenum target);
-    extern void     glDeleteRenderbuffers       (GLsizei n, const GLuint *renderbuffers);
-    extern void     glDeleteFramebuffers        (GLsizei n, const GLuint *framebuffers);
+    extern void     glGenFramebuffers           ( GLsizei n, GLuint *framebuffers );
+    extern void     glBindFramebuffer           ( GLenum target, GLuint framebuffer );
+    extern void     glFramebufferTexture2D      ( GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level );
+    extern void     glGenRenderbuffers          ( GLsizei n, GLuint *renderbuffers );
+    extern void     glBindRenderbuffer          ( GLenum target, GLuint renderbuffer );
+    extern void     glRenderbufferStorage       ( GLenum target, GLenum internalformat, GLsizei width, GLsizei height );
+    extern void     glFramebufferRenderbuffer   ( GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer );
+    extern GLenum   glCheckFramebufferStatus    ( GLenum target );
+    extern void     glDeleteRenderbuffers       ( GLsizei n, const GLuint *renderbuffers );
+    extern void     glDeleteFramebuffers        ( GLsizei n, const GLuint *framebuffers );
 
 /*
     header - C/C++ compatibility

@@ -21,6 +21,54 @@
     # include "eratosthene-isometry.h"
 
 /*
+    source - isometry function
+ */
+
+    le_enum_t er_isometry( int argc, char ** argv, le_array_t * const er_array ) {
+
+        /* Message variables */
+        le_enum_t er_message = _LE_TRUE;
+
+        /* Render structure variables */
+        er_render_t er_render = er_render_create(
+
+            /* String parameters */
+            ( le_char_t * ) lc_read_string( argc, argv, "--query" , "-q" ),
+            ( le_char_t * ) lc_read_string( argc, argv, "--view"  , "-v" ),
+
+            /* Numeric parameters */
+            lc_read_double( argc, argv, "--tilt" , "-t", 45.0 ),
+            lc_read_uint  ( argc, argv, "--thick", "-k",    2 ),
+            lc_read_uint  ( argc, argv, "--width", "-w", 1024 )
+
+        );
+
+        /* Perepare isometry rendering */
+        if ( ( er_message = er_render_prepare( & er_render ) ) == _LE_TRUE ) {
+
+            /* Rendering projection configuration */
+            er_render_projection( & er_render );
+
+            /* Rendering cell points */
+            er_render_primivites( & er_render, er_array );
+
+            /* Rendering exportation */
+            er_message = er_render_save( & er_render, lc_read_string( argc, argv, "--output", "-o" ) );
+
+            /* Terminate rendering */
+            er_render_terminate( & er_render );
+
+        }
+
+        /* Delete rendering structure */
+        er_render = er_render_delete( & er_render );
+
+        /* Send message */
+        return( er_message );
+
+    }
+
+/*
     source - main function
  */
 
@@ -41,7 +89,7 @@
         } else {
 
             /* Query handshake */
-            if ( le_client_handshake( er_socket, LE_NETWORK_MODE_QMOD, LE_ARRAY_64S ) != LE_ERROR_SUCCESS ) {
+            if ( le_client_handshake( er_socket, LE_NETWORK_MODE_QMOD, LE_ARRAY_64R ) != LE_ERROR_SUCCESS ) {
 
                 /* Display message */
                 fprintf( stderr, "eratosthene-suite : error : unable to obtain server authorisation\n" );
@@ -56,56 +104,13 @@
 
                 } else {
 
-                    /* Render structure variables */
-                    er_render_t er_render = er_render_create(
-
-                        /* String parameters */
-                        ( le_char_t * ) lc_read_string( argc, argv, "--output", "-o" ),
-                        ( le_char_t * ) lc_read_string( argc, argv, "--query" , "-q" ),
-                        ( le_char_t * ) lc_read_string( argc, argv, "--view"  , "-v" ),
-
-                        /* Numeric parameters */
-                        lc_read_double( argc, argv, "--tilt" , "-t", 45.0 ),
-                        lc_read_uint  ( argc, argv, "--thick", "-k",    2 ),
-                        lc_read_uint  ( argc, argv, "--width", "-w", 1024 ),
-
-                        /* Indexation server array */
-                        & er_array
-
-                    );
-
-                    /* Prepare rendering */
-                    if ( er_render_prepare( & er_render ) == _LE_FALSE ) {
+                    /* Render function */
+                    if ( er_isometry( argc, argv, & er_array ) != _LE_TRUE ) {
 
                         /* Display message */
-                        fprintf( stderr, "eratosthene-suite : error : unable to create graphical context\n" );
-
-                    } else {
-
-                        /* Rendering projection configuration */
-                        er_render_projection( & er_render );
-
-                        /* Rendering cell points */
-                        er_render_cell( & er_render );
-
-                        /* Rendering cell bounds */
-                        er_render_bound( & er_render );
-
-                        /* Rendering exportation */
-                        if ( er_render_save( & er_render ) == _LE_FALSE ) {
-
-                            /* Display message */
-                            fprintf( stderr, "erathosthene-suite : error : unable to export graphical buffer\n" );
-
-                        }
-
-                        /* Terminate rendering */
-                        er_render_terminate( & er_render );
+                        fprintf( stderr, "eratosthene-suite : error : unable to render isometry\n" );
 
                     }
-
-                    /* Delete rendering structure */
-                    er_render = er_render_delete( & er_render );
 
                 }
 

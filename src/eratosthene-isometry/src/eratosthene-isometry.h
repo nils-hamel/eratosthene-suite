@@ -92,6 +92,12 @@
     header - function prototypes
  */
 
+    /*! \brief isometry function
+     *
+     */
+
+    le_enum_t er_isometry( int argc, char ** argv, le_array_t * const er_array );
+
     /*! \brief main function
      *
      *  The main function reads the arguments and parameters and opens a socket
