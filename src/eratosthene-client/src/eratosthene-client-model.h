@@ -43,9 +43,8 @@
     header - includes
  */
 
-    # include <GL/gl.h>
+    # include <GL/freeglut.h>
     # include <GL/glu.h>
-    # include <GL/glut.h>
     # include <math.h>
     # include <eratosthene-include.h>
     # include "eratosthene-client-cell.h"

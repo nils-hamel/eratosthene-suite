@@ -43,13 +43,10 @@
     header - includes
  */
 
-    # include <math.h>
-    # include <string.h>
     # include <unistd.h>
     # include <pthread.h>
-    # include <GL/gl.h>
-    # include <GL/glu.h>
     # include <GL/freeglut.h>
+    # include <GL/glu.h>
     # include <eratosthene-include.h>
     # include "eratosthene-client-model.h"
     # include "eratosthene-client-geodesy.h"
