@@ -254,9 +254,6 @@
         /* Scale variables */
         le_real_t er_scale = 0.0;
 
-        /* Socket variables */
-        le_sock_t er_socket = _LE_SOCK_NULL;
-
         /* Address size variables */
         le_size_t er_size = 0; 
 
@@ -289,34 +286,23 @@
             /* Set cell address */
             er_cell_set_addr( er_model->md_cell, er_addr );
 
-            /* Establish server connexion */
-            if ( ( er_socket = le_client_create( er_model->md_svip, er_model->md_port ) ) != _LE_SOCK_NULL ) {
-                
-                /* Update cell through server query */
-                er_cell_set_query( er_model->md_cell, er_socket );
+            /* Check cell emptyness */
+            if ( er_cell_io_query( er_model->md_cell, er_model->md_svip, er_model->md_port ) > 0 ) {
 
-                /* Close server connexion */
-                er_socket = le_client_delete( er_socket );
+                /* Set address depth */
+                le_address_set_depth( er_addr, ER_MODEL_DPT );
 
-                /* Check cell size */
-                if ( er_cell_get_size( er_model->md_cell ) > 0 ) {
+                /* Parsing sub-cells */
+                for ( er_parse = 0; er_parse < _LE_USE_BASE; er_parse ++ ) {
 
-                    /* Set address depth */
-                    le_address_set_depth( er_addr, ER_MODEL_DPT );
+                    /* Set address size */
+                    le_address_set_size( er_addr, er_size + 1 );
 
-                    /* Parsing sub-cells */
-                    for ( er_parse = 0; er_parse < _LE_USE_BASE; er_parse ++ ) {
+                    /* Set address digit */
+                    le_address_set_digit( er_addr, er_size, er_parse );
 
-                        /* Set address size */
-                        le_address_set_size( er_addr, er_size + 1 );
-
-                        /* Set address digit */
-                        le_address_set_digit( er_addr, er_size, er_parse );
-
-                        /* Recursive cell searching */
-                        er_model_set_update_cells( er_model, er_addr, er_lon, er_lat, er_alt );
-
-                    }
+                    /* Recursive cell searching */
+                    er_model_set_update_cells( er_model, er_addr, er_lon, er_lat, er_alt );
 
                 }
 
@@ -336,9 +322,6 @@
 
         /* Searching variables */
         le_size_t er_search = 0;
-
-        /* Socket variables */
-        le_sock_t er_socket = _LE_SOCK_NULL;
 
         /* Parsing model cells */
         for ( er_parse = 1; er_parse < er_model->md_push; er_parse ++ ) {
@@ -403,16 +386,8 @@
                     /* Update cell flag */
                     er_cell_set_flag( er_model->md_cell + er_found, ER_CELL_PUSH );
 
-                    /* Establish server connexion */
-                    if ( ( er_socket = le_client_create( er_model->md_svip, er_model->md_port ) ) != _LE_SOCK_NULL ) {
-                        
-                        /* Update cell through server query */
-                        er_cell_set_query( er_model->md_cell + er_found, er_socket );
-
-                        /* Close server connexion */
-                        er_socket = le_client_delete( er_socket );
-
-                    }
+                    /* Update cell */
+                    er_cell_io_query( er_model->md_cell + er_found, er_model->md_svip, er_model->md_port );
 
                 }
 

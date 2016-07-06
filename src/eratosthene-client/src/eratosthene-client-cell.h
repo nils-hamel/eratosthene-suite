@@ -141,7 +141,7 @@
      *  \param er_cell Cell structure
      */
 
-    le_void_t er_cell_delete( er_cell_t * const er_cell );
+    er_cell_t er_cell_delete( er_cell_t * const er_cell );
 
     /*! \brief accessor methods
      *
@@ -274,6 +274,10 @@
 
     le_void_t er_cell_set_empty( er_cell_t * const er_cell );
 
+    le_size_t er_cell_io_query( er_cell_t * const er_cell, le_char_t const * const er_ip, le_sock_t const er_port );
+
+    le_size_t er_cell_io_read( er_cell_t * const er_cell, le_sock_t const er_socket );
+
     /*! \brief mutator methods
      *
      *  This function performs the queries to the server based on the provided
@@ -298,8 +302,6 @@
      *  \param er_cell   Cell structure
      *  \param er_socket Socket descriptor
      */
-
-    le_void_t er_cell_set_query( er_cell_t * const er_cell, le_sock_t const er_socket );
 
 /*
     header - C/C++ compatibility

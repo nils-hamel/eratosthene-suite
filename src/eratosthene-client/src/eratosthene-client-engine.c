@@ -30,10 +30,10 @@
     source - constructor/destructor methods
  */
 
-    le_enum_t er_engine_create( le_size_t const er_stack, le_char_t * const er_ip, le_sock_t const er_port ) {
+    le_enum_t er_engine_create( le_char_t * const er_ip, le_sock_t const er_port ) {
 
         /* Create cell model */
-        er_engine.eg_model = er_model_create( er_stack, er_ip, er_port );
+        er_engine.eg_model = er_model_create( ER_ENGINE_STACK, er_ip, er_port );
 
         /* Check model creation */
         if ( er_model_get_sdisc( & ( er_engine.eg_model ) ) == _LE_SIZE_NULL ) {

@@ -26,17 +26,17 @@
 
     int main( int argc, char ** argv ) {
 
+        /* Server address variables */
+        le_char_t * le_addr = ( le_char_t * ) lc_read_string( argc, argv, "--ip"  , "-i" );
+
+        /* Server port variables */
+        le_size_t le_port = ( le_size_t   ) lc_read_uint( argc, argv, "--port", "-t", _LE_USE_PORT );
+
         /* Initialise GL/GLU/GLUT */
         glutInit( & argc, argv );
 
         /* Create rendering engine */
-        if ( er_engine_create(
-
-            ( le_size_t   ) lc_read_uint  ( argc, argv, "--cell", "-s", ER_MAIN_CELL ),
-            ( le_char_t * ) lc_read_string( argc, argv, "--ip"  , "-i" ),
-            ( le_size_t   ) lc_read_uint  ( argc, argv, "--port", "-t", ER_MAIN_PORT )
-
-        ) == _LE_FALSE ) {
+        if ( er_engine_create( le_addr, le_port ) == _LE_FALSE ) {
 
             /* Display message */
             fprintf( stderr, "eratosthene-suite : error : unable to create model\n" );

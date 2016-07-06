@@ -68,6 +68,8 @@
 
     # include <stdio.h>
     # include <stdlib.h>
+    # include <GL/freeglut.h>
+    # include <GL/glu.h>
     # include <common-include.h>
     # include <eratosthene-include.h>
     # include "eratosthene-client-engine.h"
@@ -75,10 +77,6 @@
 /*
     header - preprocessor definitions
  */
-
-    /* Define default parameters */
-    # define ER_MAIN_CELL  4096
-    # define ER_MAIN_PORT  _LE_USE_PORT
 
 /*
     header - preprocessor macros

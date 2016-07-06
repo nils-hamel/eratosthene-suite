@@ -67,13 +67,16 @@
         0,\
         1.0,\
         2.0 * ER_ERA,\
-        13.180248,\
-        37.850539,\
+        12.335911,\
+        45.438064,\
         0.0,\
         0.0,\
         1.0,\
         950486422\
     }
+
+    /* Define cell stack size */
+    # define ER_ENGINE_STACK 4096
 
 /*
     header - preprocessor macros
@@ -171,7 +174,7 @@
      *  \return Returns _LE_TRUE on success, _LE_FALSE otherwise
      */
 
-    le_enum_t er_engine_create( le_size_t const er_stack, le_char_t * const er_ip, le_sock_t const er_port );
+    le_enum_t er_engine_create( le_char_t * const er_ip, le_sock_t const er_port );
 
     /*! \brief constructor/destructor methods
      *
