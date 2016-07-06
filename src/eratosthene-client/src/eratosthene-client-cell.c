@@ -40,7 +40,7 @@
 
     }
 
-    er_cell_t er_cell_delete( er_cell_t * const er_cell ) {
+    le_void_t er_cell_delete( er_cell_t * const er_cell ) {
 
         /* Cell variables */
         er_cell_t er_reset = ER_CELL_C;
@@ -52,7 +52,7 @@
         if ( er_cell->ce_data != NULL ) free( er_cell->ce_data );
 
         /* Return deleted structure */
-        return( * ( er_cell ) = er_reset );
+        * ( er_cell ) = er_reset;
 
     }
 

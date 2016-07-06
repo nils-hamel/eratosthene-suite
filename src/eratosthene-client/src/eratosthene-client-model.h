@@ -49,6 +49,7 @@
     # include <eratosthene-include.h>
     # include "eratosthene-client-cell.h"
     # include "eratosthene-client-geodesy.h"
+    # include "eratosthene-client-server.h"
 
 /*
     header - preprocessor definitions
@@ -66,7 +67,8 @@
         0.0,\
         0,\
         0,\
-        NULL\
+        NULL,\
+        _LE_TRUE\
     }
 
     /* Define model parameters */
@@ -136,10 +138,11 @@
         le_real_t   md_malt;
 
         le_size_t   md_push;
+
         le_size_t   md_size;
         er_cell_t * md_cell;
 
-    } er_model_t;
+    le_enum_t _status; } er_model_t;
 
 /*
     header - function prototypes

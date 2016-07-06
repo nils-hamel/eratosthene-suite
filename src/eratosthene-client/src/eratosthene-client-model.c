@@ -26,83 +26,42 @@
 
     er_model_t er_model_create( le_size_t er_cells, le_char_t * const er_ip, le_sock_t const er_port ) {
 
-        /* Model variables */
+        /* Returned structure variables */
         er_model_t er_model = ER_MODEL_C;
-
-        /* Socket variables */
-        le_sock_t er_socket = _LE_SOCK_NULL;
 
         /* Assign server network configuration */
         er_model.md_svip = er_ip;
         er_model.md_port = er_port;
 
-        /* Establish server connexion */
-        if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
+        /* Retrieve server configuration */
+        if ( ( er_model.md_sdis = er_client_server_sparam( er_ip, er_port ) ) == _LE_SIZE_NULL ) {
 
-            /* Client/server query handshake */
-            if ( le_client_handshake( er_socket, LE_NETWORK_MODE_TMOD, LE_ARRAY_NULL ) == LE_ERROR_SUCCESS ) {
-
-                /* Retrieve server configuration */
-                er_model.md_tdis = le_client_system_tparam( er_socket );
-
-            }
-
-            /* Close server connexion */
-            er_socket = le_client_delete( er_socket );
+            /* Send message */
+            er_model._status = _LE_FALSE; return( er_model );
 
         }
 
-        /* Check consistency */
-        if ( er_model.md_tdis == _LE_TIME_NULL ) {
+        /* Retrieve server configuration */
+        if ( ( er_model.md_tdis = er_client_server_tparam( er_ip, er_port ) ) == _LE_TIME_NULL ) {
 
-            /* Abort model creation */
-            return( er_model );
-
-        }
-
-        /* Establish server connexion */
-        if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
-
-            /* Client/server query handshake */
-            if ( le_client_handshake( er_socket, LE_NETWORK_MODE_SMOD, LE_ARRAY_NULL ) == LE_ERROR_SUCCESS ) {
-
-                /* Retrieve server configuration */
-                er_model.md_sdis = le_client_system_sparam( er_socket );
-
-            }
-
-            /* Close server connexion */
-            er_socket = le_client_delete( er_socket );
+            /* Send message */
+            er_model._status = _LE_FALSE; return( er_model );
 
         }
 
-        /* Check consistency */
-        if ( er_model.md_sdis == _LE_SIZE_NULL ) {
+        /* Allocate cells stack memory */
+        if ( ( er_model.md_cell = ( er_cell_t * ) malloc( ( er_model.md_size = er_cells ) * sizeof( er_cell_t ) ) ) == NULL ) {
 
-            /* Abort model creation */
-            return( er_model );
+            /* Send message */
+            er_model._status = _LE_FALSE; return( er_model );
 
         }
 
-        /* Allocate cell array memory */
-        if ( ( er_model.md_cell = ( er_cell_t * ) malloc( er_cells * sizeof( er_cell_t ) ) ) != NULL ) {
+        /* Initialise model cells */
+        for ( le_size_t er_parse = 0; er_parse < er_model.md_size; er_parse ++ ) {
 
-            /* Assign cell array size */
-            er_model.md_size = er_cells;
-
-            /* Parsing cells array */
-            for ( le_size_t er_parse = 0; er_parse < er_model.md_size; er_parse ++ ) {
-
-                /* Initialise cell */
-                ( er_model.md_cell )[er_parse] = er_cell_create();
-
-            }
-
-        } else {
-
-            /* Invalidate model structure */
-            er_model.md_sdis = _LE_SIZE_NULL;
-            er_model.md_tdis = _LE_TIME_NULL;
+            /* Initialise cell */
+            er_model.md_cell[er_parse] = er_cell_create();
 
         }
 
@@ -115,19 +74,19 @@
 
         /* Model variables */
         er_model_t er_reset = ER_MODEL_C;
-        
-        /* Check cells array state */
+
+        /* Check cells stack state */
         if ( er_model->md_size > 0 ) {
 
-            /* Parsing cells array */
+            /* Delete model cells */
             for ( le_size_t er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
 
                 /* Delete cell */
-                er_cell_delete( ( er_model->md_cell ) + er_parse );
+                er_cell_delete( er_model->md_cell + er_parse );
 
             }
 
-            /* Unallocate cells array memory */
+            /* Unallocate cells stack memory */
             free( er_model->md_cell );
 
         }

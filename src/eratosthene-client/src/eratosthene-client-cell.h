@@ -143,7 +143,7 @@
      *  \param er_cell Cell structure
      */
 
-    er_cell_t er_cell_delete( er_cell_t * const er_cell );
+    le_void_t er_cell_delete( er_cell_t * const er_cell );
 
     /*! \brief accessor methods
      *

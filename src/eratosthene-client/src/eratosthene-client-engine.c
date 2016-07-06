@@ -33,10 +33,7 @@
     le_enum_t er_engine_create( le_char_t * const er_ip, le_sock_t const er_port ) {
 
         /* Create cell model */
-        er_engine.eg_model = er_model_create( ER_ENGINE_STACK, er_ip, er_port );
-
-        /* Check model creation - send message */
-        if ( er_model_get_sdisc( & er_engine.eg_model ) == _LE_SIZE_NULL ) return( _LE_FALSE );
+        if ( ( er_engine.eg_model = er_model_create( ER_ENGINE_STACK, er_ip, er_port ) )._status == _LE_FALSE ) return( _LE_FALSE );
 
         /* Initialise display mode */
         glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH );
