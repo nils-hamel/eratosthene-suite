@@ -59,7 +59,11 @@
     # define ER_CELL_PUSH   1
 
     /* Define cell array size */
-    # define ER_CELL_ARRAY  786432
+    # define ER_CELL_ARRAY  884736
+
+    /* Define cell transfert protocol */
+    # define ER_CELL_TFMT   LE_ARRAY_64R
+    # define ER_CELL_TLEN   LE_ARRAY_64R_LEN
 
 /*
     header - preprocessor macros
