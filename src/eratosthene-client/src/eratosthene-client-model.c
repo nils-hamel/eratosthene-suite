@@ -65,6 +65,8 @@
 
         }
 
+        //le_array_t er_array = er_client_server_times( er_ip, er_port );
+
         /* Return created model */
         return( er_model );
 
@@ -116,18 +118,14 @@
 
     le_enum_t er_model_get_update( er_model_t const * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
 
-        /* Check model update necessities */
-        if ( ( er_model->md_mtim == er_time ) && ( er_model->md_mlon == er_lon ) && ( er_model->md_mlat == er_lat ) && ( er_model->md_malt == er_alt ) ) {
+        /* Check update necessities - send answer */
+        if ( er_model->md_mtim != er_time ) return( _LE_TRUE );
+        if ( er_model->md_mlon != er_lon  ) return( _LE_TRUE );
+        if ( er_model->md_mlat != er_lat  ) return( _LE_TRUE );
+        if ( er_model->md_malt != er_alt  ) return( _LE_TRUE );
 
-            /* Return negative answer */
-            return( _LE_FALSE );
-
-        } else {
-
-            /* Return positive answer */
-            return( _LE_TRUE );
-
-        }
+        /* Send answer */
+        return( _LE_FALSE );
 
     }
 
@@ -396,11 +394,9 @@
 
         /* Rotation matrix variables */
         le_real_t er_rcell[3][3] = {
-
-            { + er_cosl          , +     0.0, + er_sinl           },
-            { + er_sina * er_sinl, + er_cosa, - er_sina * er_cosl },
-            { - er_cosa * er_sinl, + er_sina, + er_cosa * er_cosl }
-
+        { + er_cosl          , +     0.0, + er_sinl           },
+        { + er_sina * er_sinl, + er_cosa, - er_sina * er_cosl },
+        { - er_cosa * er_sinl, + er_sina, + er_cosa * er_cosl }
         };
 
         /* Motion management - tilt rotation */
@@ -430,12 +426,9 @@
 
                     /* Motion management - cell edge translation */
                     glTranslated( 
-
-                        er_rcell[0][0] * er_vcell[0] + er_rcell[0][1] * er_vcell[1] + er_rcell[0][2] * er_vcell[2],
-                        er_rcell[1][0] * er_vcell[0] + er_rcell[1][1] * er_vcell[1] + er_rcell[1][2] * er_vcell[2],
-                        er_rcell[2][0] * er_vcell[0] + er_rcell[2][1] * er_vcell[1] + er_rcell[2][2] * er_vcell[2] - ER_ERA
-
-
+                    er_rcell[0][0] * er_vcell[0] + er_rcell[0][1] * er_vcell[1] + er_rcell[0][2] * er_vcell[2],
+                    er_rcell[1][0] * er_vcell[0] + er_rcell[1][1] * er_vcell[1] + er_rcell[1][2] * er_vcell[2],
+                    er_rcell[2][0] * er_vcell[0] + er_rcell[2][1] * er_vcell[1] + er_rcell[2][2] * er_vcell[2] - ER_ERA
                     );
 
                     /* Motion management - planimetric rotation */

@@ -228,7 +228,7 @@
         switch( er_keycode ) {
 
             /* Interrupt engine loops */
-            case ( 27 ) : { glutLeaveMainLoop(), er_engine.eg_loops = _LE_FALSE; } break;
+            case (  27 ) : { glutLeaveMainLoop(), er_engine.eg_loops = _LE_FALSE; } break;
 
             /* Update point size */
             case ( 'w' ) : { er_engine.eg_point ++; } break;
