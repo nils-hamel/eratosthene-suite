@@ -44,9 +44,13 @@
  */
 
     # include <unistd.h>
-    # include <pthread.h>
     # include <GL/freeglut.h>
     # include <GL/glu.h>
+    # ifdef __OPENMP__
+    # include <omp.h>
+    # else
+    # include <pthread.h>
+    # endif
     # include <eratosthene-include.h>
     # include "eratosthene-client-model.h"
     # include "eratosthene-client-geodesy.h"
@@ -57,6 +61,7 @@
 
     /* Define pseudo-constructor */
     # define ER_ENGINE_C {\
+        _LE_TRUE,\
         ER_MODEL_C,\
         1,\
         0,\
@@ -134,6 +139,8 @@
 
     typedef struct er_engine_struct {
 
+        le_enum_t  eg_loops;
+
         er_model_t eg_model;
         le_size_t  eg_point;
 
@@ -202,7 +209,7 @@
      *  This function holds the callback procedure for the model rendering.
      */
 
-    le_void_t er_engine_render( le_void_t );
+    le_void_t er_engine_loops_render( le_void_t );
 
     /*! \brief engine loop
      *
@@ -214,7 +221,7 @@
      *  \return Null pointer
      */
 
-    le_void_t * er_engine_update( le_void_t * er_null );
+    le_void_t * er_engine_loops_update( le_void_t * er_null );
 
     /*! \brief engine callbacks - reshape
      *
@@ -228,7 +235,7 @@
      *  \param er_height Height, in pixels, of the rendering buffer
      */
 
-    le_void_t er_engine_reshape( int er_width, int er_height );
+    le_void_t er_engine_calls_reshape( int er_width, int er_height );
 
     /*! \brief engine callbacks - keyboard
      *
@@ -240,7 +247,7 @@
      *  \param er_y       Mouse position at key press
      */
 
-    le_void_t er_engine_keybd( unsigned char er_keycode, int er_x, int er_y );
+    le_void_t er_engine_calls_keybd( unsigned char er_keycode, int er_x, int er_y );
 
     /*! \brief engine callbacks - mouse
      *
@@ -253,7 +260,7 @@
      *  \param er_y      Mouse position at click
      */
 
-    le_void_t er_engine_mouse( int er_button, int er_state, int er_x, int er_y );
+    le_void_t er_engine_calls_mouse( int er_button, int er_state, int er_x, int er_y );
 
     /*! \brief engine callbacks - mouse
      *
@@ -264,7 +271,7 @@
      *  \param er_y Mouse position
      */
 
-    le_void_t er_engine_move( int er_x, int er_y );    
+    le_void_t er_engine_calls_move( int er_x, int er_y );    
 
     /*! \brief engine callbacks - ranges
      *
@@ -273,7 +280,7 @@
      *  point of view angle and distance remains in the determined ranges.
      */
 
-    le_void_t er_engine_range();
+    le_void_t er_engine_calls_range();
 
 /*
     header - C/C++ compatibility

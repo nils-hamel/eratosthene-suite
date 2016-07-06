@@ -35,13 +35,8 @@
         /* Create cell model */
         er_engine.eg_model = er_model_create( ER_ENGINE_STACK, er_ip, er_port );
 
-        /* Check model creation */
-        if ( er_model_get_sdisc( & ( er_engine.eg_model ) ) == _LE_SIZE_NULL ) {
-
-            /* Send message */
-            return( _LE_FALSE );
-
-        }
+        /* Check model creation - send message */
+        if ( er_model_get_sdisc( & ( er_engine.eg_model ) ) == _LE_SIZE_NULL ) return( _LE_FALSE );
 
         /* Initialise display mode */
         glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH );
@@ -66,11 +61,11 @@
         glEnable( GL_DEPTH_TEST );
 
         /* Declare engine callback functions */
-        glutIdleFunc         ( er_engine_render  );
-        glutKeyboardFunc     ( er_engine_keybd   );
-        glutMouseFunc        ( er_engine_mouse   );
-        glutMotionFunc       ( er_engine_move    );
-        glutPassiveMotionFunc( er_engine_move    );
+        glutIdleFunc         ( er_engine_loops_render );
+        glutKeyboardFunc     ( er_engine_calls_keybd  );
+        glutMouseFunc        ( er_engine_calls_mouse  );
+        glutMotionFunc       ( er_engine_calls_move   );
+        glutPassiveMotionFunc( er_engine_calls_move   );
 
         /* Enable vertex and color arrays */
         glEnableClientState( GL_VERTEX_ARRAY );
@@ -89,46 +84,56 @@
         /* Delete cell model */
         er_model_delete( & er_engine.eg_model );
 
-        /* Disable vertex and color arrays */
-        glDisableClientState( GL_VERTEX_ARRAY );
-        glDisableClientState( GL_COLOR_ARRAY  );
-
         /* Clear engine structure */
         er_engine = er_reset;
 
     }
 
 /*
-    source - rendering engine
+    source - engine loops - primary
  */
 
     le_void_t er_engine_loops( le_void_t ) {
+
+    # ifdef __OPENMP__
+
+        # pragma omp parallel sections
+        {
+
+        # pragma omp section
+        glutMainLoop();
+
+        # pragma omp section
+        er_engine_loops_update( NULL );
+
+        }
+
+    # else
 
         /* Thread variables */
         pthread_t er_secondary;
 
         /* Engine secondary loops */
-        pthread_create( & er_secondary, NULL, & er_engine_update, NULL );
+        pthread_create( & er_secondary, NULL, & er_engine_loops_update, NULL );
 
         /* Engine primary loop */
         glutMainLoop();
 
-        /* Engine secondary loop */
-        pthread_cancel( er_secondary );
+    # endif
 
     }
 
 /*
-    source - engine loop - primary
+    source - engine loops - secondary
  */
 
-    le_void_t er_engine_render( le_void_t ) {
+    le_void_t er_engine_loops_render( le_void_t ) {
 
         /* Update ranges */
-        er_engine_range();
+        er_engine_calls_range();
 
         /* Recompute near/far planes */
-        er_engine_reshape( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
+        er_engine_calls_reshape( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
 
         /* Configure points display */
         glPointSize( er_engine.eg_point );
@@ -159,10 +164,10 @@
 
     }
 
-    le_void_t * er_engine_update( le_void_t * er_null ) {
+    le_void_t * er_engine_loops_update( le_void_t * er_null ) {
 
-        /* Engine update loop */
-        for ( ; ; usleep( 100 ) ) {
+        /* Model update loop */
+        while ( usleep( 500 ), er_engine.eg_loops == _LE_TRUE ) {
 
             /* Check model update necessities */
             if ( er_model_get_update( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt ) == _LE_TRUE ) {
@@ -190,7 +195,7 @@
     source - engine callbacks - reshape
  */
 
-    le_void_t er_engine_reshape( int er_width, int er_height ) {
+    le_void_t er_engine_calls_reshape( int er_width, int er_height ) {
 
         /* Compute scale factor */
         er_engine.eg_vscl = er_geodesy_scale( er_engine.eg_valt );
@@ -222,7 +227,7 @@
     source - engine callbacks - keyboard
  */
 
-    le_void_t er_engine_keybd( unsigned char er_keycode, int er_x, int er_y ) {
+    le_void_t er_engine_calls_keybd( unsigned char er_keycode, int er_x, int er_y ) {
 
         /* Switch on keycode */
         switch( er_keycode ) {
@@ -232,6 +237,9 @@
 
                 /* Leave GLUT events management loop */
                 glutLeaveMainLoop();
+
+                /* Interrupt engine loops */
+                er_engine.eg_loops = _LE_FALSE;
 
             } break;
 
@@ -299,7 +307,7 @@
     source - engine callbacks - mouse
  */
 
-    le_void_t er_engine_mouse( int er_button, int er_state, int er_x, int er_y ) {
+    le_void_t er_engine_calls_mouse( int er_button, int er_state, int er_x, int er_y ) {
 
         /* Update engine handle */
         er_engine.eg_button = er_button;
@@ -336,7 +344,7 @@
 
     }
 
-    le_void_t er_engine_move( int er_x, int er_y ) {
+    le_void_t er_engine_calls_move( int er_x, int er_y ) {
 
         /* Check mouse state */
         if ( er_engine.eg_state == GLUT_DOWN ) {
@@ -373,7 +381,7 @@
     source - engine callbacks - ranges
  */
 
-    le_void_t er_engine_range() {
+    le_void_t er_engine_calls_range() {
 
         /* Angle ranges - cyclic */
         if ( er_engine.eg_vlon > +180.0 ) er_engine.eg_vlon -= +360.0;
