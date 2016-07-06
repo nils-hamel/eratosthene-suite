@@ -269,7 +269,10 @@
         er_engine.eg_state  = er_state;
         er_engine.eg_x      = er_x;
         er_engine.eg_y      = er_y;
-        er_engine.eg_mult   = ER_INB * ( er_engine.eg_valt - ER_ERA );
+        er_engine.eg_mult   = ER_INB * fabs( er_engine.eg_valt - ER_ERA );
+
+        /* Clamp inertial value */
+        if ( er_engine.eg_mult < 5.0 ) er_engine.eg_mult = 5.0;
 
         /* Inertial multiplier */
         if ( glutGetModifiers() == GLUT_ACTIVE_CTRL  ) er_engine.eg_mult *= ER_IMU;

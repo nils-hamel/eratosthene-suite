@@ -107,7 +107,7 @@
         le_real_t er_normal = ( er_altitude - ER_ERA ) / ER_ERA;
 
         /* Return scale factor */
-        return( exp( - 3.14 * er_normal * er_normal ) );
+        return( exp( - LE_PI * er_normal * er_normal ) );
 
     }
 
@@ -129,7 +129,7 @@
  //(( h - (w/2) ) - ( (w/3) * sn.^8 ) )
 
         /* Return far plane depth */
-        return( ( er_altitude - ER_ER2 - ( ER_ERA / 3.0 ) * pow( er_normal, 8 ) ) * er_normal );
+        return( ( er_altitude - ER_ER2 - ( ER_ERA / 3.0 ) * pow( er_normal, 20 ) ) * er_normal );
 
     }
 
