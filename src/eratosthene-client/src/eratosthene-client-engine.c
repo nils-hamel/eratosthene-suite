@@ -36,7 +36,7 @@
         er_engine.eg_model = er_model_create( ER_ENGINE_STACK, er_ip, er_port );
 
         /* Check model creation - send message */
-        if ( er_model_get_sdisc( & ( er_engine.eg_model ) ) == _LE_SIZE_NULL ) return( _LE_FALSE );
+        if ( er_model_get_sdisc( & er_engine.eg_model ) == _LE_SIZE_NULL ) return( _LE_FALSE );
 
         /* Initialise display mode */
         glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH );
@@ -94,20 +94,19 @@
  */
 
     le_void_t er_engine_loops( le_void_t ) {
-
     # ifdef __OPENMP__
+    # pragma omp parallel sections
+    {
 
-        # pragma omp parallel sections
-        {
-
+        /* Engine secondary loop - rendering and callbacks */
         # pragma omp section
         glutMainLoop();
 
+        /* Engine secondary loop - model update */
         # pragma omp section
         er_engine_loops_update( NULL );
 
-        }
-
+    }
     # else
 
         /* Thread variables */
@@ -120,7 +119,6 @@
         glutMainLoop();
 
     # endif
-
     }
 
 /*
@@ -170,19 +168,19 @@
         while ( usleep( 500 ), er_engine.eg_loops == _LE_TRUE ) {
 
             /* Check model update necessities */
-            if ( er_model_get_update( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt ) == _LE_TRUE ) {
+            if ( er_model_get_update( & er_engine.eg_model, er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt ) == _LE_TRUE ) {
 
                 /* Prepare model update */
-                er_model_set_update_prepare( & ( er_engine.eg_model ) );
+                er_model_set_update_prepare( & er_engine.eg_model );
 
                 /* Update model cells */
-                er_model_set_update_model  ( & ( er_engine.eg_model ), er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
+                er_model_set_update_model  ( & er_engine.eg_model, er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
 
                 /* Server queries */
-                er_model_set_update_query  ( & ( er_engine.eg_model ) );
+                er_model_set_update_query  ( & er_engine.eg_model );
 
                 /* Terminate model update */
-                er_model_set_update_destroy( & ( er_engine.eg_model ) );
+                er_model_set_update_destroy( & er_engine.eg_model );
 
             }
 
@@ -232,60 +230,17 @@
         /* Switch on keycode */
         switch( er_keycode ) {
 
-            /* Escape */
-            case ( 27 ) : {
+            /* Interrupt engine loops */
+            case ( 27 ) : { glutLeaveMainLoop(), er_engine.eg_loops = _LE_FALSE; } break;
 
-                /* Leave GLUT events management loop */
-                glutLeaveMainLoop();
+            /* Update point size */
+            case ( 'w' ) : { er_engine.eg_point ++; } break;
+            case ( 'q' ) : { er_engine.eg_point --; } break;
 
-                /* Interrupt engine loops */
-                er_engine.eg_loops = _LE_FALSE;
-
-            } break;
-
-            /* Point size control */
-            case ( 'w' ) : {
-
-                /* Update point size */
-                er_engine.eg_point = ( er_engine.eg_point < 8 ) ? er_engine.eg_point + 1 : 8;
-
-            } break;
-
-            /* Point size control */
-            case ( 'q' ) : {
-
-                /* Update point size */
-                er_engine.eg_point = ( er_engine.eg_point > 1 ) ? er_engine.eg_point - 1 : 1;
-
-            } break;
-
-            /* Reset point of view */
-            case ( 'r' ) : {
-
-                /* Reset variables */
-                er_engine.eg_vlon = 0.0;
-                er_engine.eg_vlat = 0.0;
-                er_engine.eg_valt = 1.5 * ER_ERA;
-                er_engine.eg_vazm = 0.0;
-                er_engine.eg_vgam = 0.0;
-
-            } break;
-
-            /* Reset azimuth angle */
-            case ( 'a' ) : {
-
-                /* Reset variables */
-                er_engine.eg_vazm = 0.0;
-
-            } break;
-
-            /* Reset gamma angle */
-            case ( 'g' ) : {
-
-                /* Reset variables */
-                er_engine.eg_vgam = 0.0;
-
-            } break;
+            /* Update point of view */
+            case ( 'r' ) : { er_engine.eg_valt = 1.5 * ER_ERA; }
+            case ( 'a' ) : { er_engine.eg_vazm = 0.0; }
+            case ( 'g' ) : { er_engine.eg_vgam = 0.0; } break;
 
             /* Display position */
             case ( 'p' ) : {
@@ -314,64 +269,41 @@
         er_engine.eg_state  = er_state;
         er_engine.eg_x      = er_x;
         er_engine.eg_y      = er_y;
-        er_engine.eg_u      = er_x;
-        er_engine.eg_v      = er_y;
-        er_engine.eg_mult   = 1.0;
+        er_engine.eg_mult   = ER_INB * ( er_engine.eg_valt - ER_ERA );
 
         /* Inertial multiplier */
-        switch ( glutGetModifiers() ) {
+        if ( glutGetModifiers() == GLUT_ACTIVE_CTRL  ) er_engine.eg_mult *= ER_IMU;
+        if ( glutGetModifiers() == GLUT_ACTIVE_SHIFT ) er_engine.eg_mult *= ER_IML;
 
-            case ( GLUT_ACTIVE_CTRL  ) : { er_engine.eg_mult *= ( 10.000 ); } break;
-            case ( GLUT_ACTIVE_SHIFT ) : { er_engine.eg_mult *= (  0.001 ); } break;
+        /* Check mouse state */
+        if ( er_engine.eg_state != GLUT_DOWN ) return;
 
-        };
-
-        /* Mouse event switch */
-        if ( ( er_engine.eg_button == 3 ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
-
-            /* Update altitude */
-            er_engine.eg_valt += ( ER_INA * er_engine.eg_mult ) * ( er_engine.eg_valt - ER_ERA - LE_GEODESY_HMIN );
-
-        }
-
-        /* Mouse event switch */
-        if ( ( er_engine.eg_button == 4 ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
-
-            /* Update altitude */
-            er_engine.eg_valt -= ( ER_INA * er_engine.eg_mult ) * ( er_engine.eg_valt - ER_ERA - LE_GEODESY_HMIN );
-
-        }
+        /* Mouse event switch - update altitude */
+        if ( er_engine.eg_button == 3 ) er_engine.eg_valt += er_engine.eg_mult;
+        if ( er_engine.eg_button == 4 ) er_engine.eg_valt -= er_engine.eg_mult;
 
     }
 
     le_void_t er_engine_calls_move( int er_x, int er_y ) {
 
         /* Check mouse state */
-        if ( er_engine.eg_state == GLUT_DOWN ) {
-
-            /* Update engine handle */
-            er_engine.eg_u = er_x;
-            er_engine.eg_v = er_y;
-
-        }
+        if ( er_engine.eg_state != GLUT_DOWN ) return;
 
         /* Mouse event switch */
-        if ( ( er_engine.eg_button == GLUT_LEFT_BUTTON ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
+        if ( er_engine.eg_button == GLUT_LEFT_BUTTON ) {
 
             /* Update longitude and latitude */
-            er_engine.eg_vlon += ( ER_INT * er_engine.eg_mult ) * ( er_engine.eg_v - er_engine.eg_y ) * sin( er_engine.eg_vazm * ER_D2R );
-            er_engine.eg_vlat += ( ER_INT * er_engine.eg_mult ) * ( er_engine.eg_v - er_engine.eg_y ) * cos( er_engine.eg_vazm * ER_D2R );
-            er_engine.eg_vlon -= ( ER_INT * er_engine.eg_mult ) * ( er_engine.eg_u - er_engine.eg_x ) * cos( er_engine.eg_vazm * ER_D2R );
-            er_engine.eg_vlat += ( ER_INT * er_engine.eg_mult ) * ( er_engine.eg_u - er_engine.eg_x ) * sin( er_engine.eg_vazm * ER_D2R );
+            er_engine.eg_vlon += ( er_y - er_engine.eg_y ) * ( ER_INT * er_engine.eg_mult ) * sin( er_engine.eg_vazm * ER_D2R );
+            er_engine.eg_vlat += ( er_y - er_engine.eg_y ) * ( ER_INT * er_engine.eg_mult ) * cos( er_engine.eg_vazm * ER_D2R );
+            er_engine.eg_vlon -= ( er_x - er_engine.eg_x ) * ( ER_INT * er_engine.eg_mult ) * cos( er_engine.eg_vazm * ER_D2R );
+            er_engine.eg_vlat += ( er_x - er_engine.eg_x ) * ( ER_INT * er_engine.eg_mult ) * sin( er_engine.eg_vazm * ER_D2R );
 
-        }
+        } else 
+        if ( er_engine.eg_button == GLUT_RIGHT_BUTTON ) {
 
-        /* Mouse event switch */
-        if ( ( er_engine.eg_button == GLUT_RIGHT_BUTTON ) && ( er_engine.eg_state == GLUT_DOWN ) ) {
-
-            /* Update azimuth and gamma angles */
-            er_engine.eg_vazm -= ( ER_INR * er_engine.eg_mult ) * ( er_engine.eg_u - er_engine.eg_x );
-            er_engine.eg_vgam += ( ER_INR * er_engine.eg_mult ) * ( er_engine.eg_v - er_engine.eg_y ) * 2.0;
+            /* Update azimuth and gamma */
+            er_engine.eg_vazm -= ( er_x - er_engine.eg_x ) * ER_INR;
+            er_engine.eg_vgam += ( er_y - er_engine.eg_y ) * ER_INR;
 
         }
 
@@ -395,9 +327,13 @@
         if ( er_engine.eg_vgam < -120.0 ) er_engine.eg_vgam = -120.0;
         if ( er_engine.eg_vgam > +120.0 ) er_engine.eg_vgam = +120.0;
 
-        /* Parameter ranges - clamp */
+        /* Radius ranges - clamp */
         if ( er_engine.eg_valt < ER_ERL ) er_engine.eg_valt = ER_ERL;
         if ( er_engine.eg_valt > ER_ERU ) er_engine.eg_valt = ER_ERU;
+
+        /* Point size ranges - clamp */
+        if ( er_engine.eg_point < 1 ) er_engine.eg_point = 1;
+        if ( er_engine.eg_point > 8 ) er_engine.eg_point = 8;
 
     }
 

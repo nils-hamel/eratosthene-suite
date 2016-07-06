@@ -50,16 +50,20 @@
     header - preprocessor definitions
  */
 
-    /* Define earth parameters and limits */
+    /* Define geodetic parameters */
     # define ER_ERA ( LE_GEODESY_WGS84_A )
     # define ER_ER2 ( ER_ERA / 2.00 )
     # define ER_ERL ( ER_ERA * 0.75 )
     # define ER_ERU ( ER_ERA * 3.00 )
 
-    /* Define earth motion inertia */
-    # define ER_INR ( 0.00100 )
-    # define ER_INT ( 0.00005 )
-    # define ER_INA ( 0.00500 )
+    /* Define motion inertia */
+    # define ER_INB ( 5.0 / 1000.0 )
+    # define ER_INR ( 1.0 / 1000.0 )
+    # define ER_INT ( LE_PI / ( LE_GEODESY_WGS84_A * 180.0 ) )
+
+    /* Define motion inertia multipliers */
+    # define ER_IML (  0.1 )
+    # define ER_IMU ( 10.0 )
 
     /* Define conversion factors */
     # define ER_D2R ( 3.1415926535 / 180.0 )

@@ -68,8 +68,6 @@
         GLUT_UP,\
         0,\
         0,\
-        0,\
-        0,\
         1.0,\
         2.0 * ER_ERA,\
         12.335911,\
@@ -148,8 +146,6 @@
         le_enum_t  eg_state;
         le_diff_t  eg_x;
         le_diff_t  eg_y;
-        le_diff_t  eg_u;
-        le_diff_t  eg_v;
         le_real_t  eg_mult;
 
         le_real_t  eg_valt;
