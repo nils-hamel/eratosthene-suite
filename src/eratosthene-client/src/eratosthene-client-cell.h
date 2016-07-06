@@ -52,7 +52,7 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_CELL_C      { ER_CELL_DOWN, { 0 }, { 0 }, LE_ADDRESS_C, 0, NULL, NULL, { 0.0 } }
+    # define ER_CELL_C      { ER_CELL_DOWN, { 0 }, { 0 }, 0, NULL, NULL, { 0.0 } }
 
     /* Define cell flags */
     # define ER_CELL_DOWN   0
@@ -112,8 +112,6 @@
 
         le_char_t    ce_addr[LE_NETWORK_SB_ADDR];
         le_char_t    ce_push[LE_NETWORK_SB_ADDR];
-
-        le_address_t ce_cell;
 
         le_size_t    ce_size;
         le_real_t *  ce_pose;
