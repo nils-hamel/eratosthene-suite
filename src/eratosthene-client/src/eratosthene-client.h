@@ -69,7 +69,6 @@
     # include <stdio.h>
     # include <stdlib.h>
     # include <GL/freeglut.h>
-    # include <GL/glu.h>
     # include <common-include.h>
     # include <eratosthene-include.h>
     # include "eratosthene-client-engine.h"

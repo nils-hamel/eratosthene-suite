@@ -43,6 +43,9 @@
     header - includes
  */
 
+    # include <time.h>
+    # include <GL/freeglut.h>
+    # include <GL/glext.h>
     # include <eratosthene-include.h>
     # include "eratosthene-client-server.h"
 
@@ -51,7 +54,15 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_TIMES_C { NULL, _LE_USE_PORT, LE_ARRAY_C, LE_ARRAY_C, _LE_TRUE }
+    # define ER_TIMES_C         { NULL, _LE_USE_PORT, _LE_TIME_NULL, LE_ARRAY_C, LE_ARRAY_C, _LE_TRUE }
+
+    /* Define SRTM time */
+    # define ER_TIMES_SRTM(t)   ( ( 950486422 / t ) * t )
+
+    /* Define control dimensions */
+    # define ER_TIMES_CW        ( 512 )
+    # define ER_TIMES_CH        ( 64 )
+    # define ER_TIMES_CP        ( ER_TIMES_CH + 32 )
 
 /*
     header - preprocessor macros
@@ -70,6 +81,8 @@
         le_char_t * tm_svip;
         le_sock_t   tm_port;
 
+        le_time_t   tm_tdis;
+
         le_array_t  tm_times;
         le_array_t  tm_stack;
 
@@ -86,6 +99,14 @@
     le_void_t er_times_set_enable( er_times_t * const er_times, le_size_t const er_index );
 
     le_void_t er_times_set_disable( er_times_t * const er_times, le_size_t const er_index );
+
+    le_void_t er_times_set_default( er_times_t * const er_times );
+
+    le_void_t er_times_display( er_times_t const * const er_times );
+
+    le_void_t er_times_buffer( er_times_t const * const er_times );
+
+    void glWindowPos2i ( GLint x, GLint y );
 
 /*
     header - C/C++ compatibility

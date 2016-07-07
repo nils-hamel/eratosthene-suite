@@ -160,6 +160,9 @@
         /* Server cells matrix */
         } glPopMatrix();
 
+        /* Display time manager */
+        er_times_display( & er_engine.eg_times );
+
         /* Swap buffers */
         glutSwapBuffers();
 
