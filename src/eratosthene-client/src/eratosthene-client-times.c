@@ -37,7 +37,20 @@
         er_times.tm_times = er_client_server_times( er_ip, er_port );
 
         /* Check array size */
-        if ( le_array_get_size( & er_times.tm_times ) <= 0 ) er_times._status = _LE_FALSE;
+        if ( le_array_get_size( & er_times.tm_times ) <= 0 ) {
+
+            /* Send message */
+            er_times._status = _LE_FALSE; return( er_times );
+
+        }
+
+        /* Parsing times array */
+        for ( le_size_t er_parse = 0; er_parse < le_array_get_size( & er_times.tm_times ); er_parse += LE_ARRAY_64T_LEN ) {
+
+            /* Push selection allocation */
+            le_array_set_push( & er_times.tm_stack, LE_ARRAY_64T, NULL, _LE_TIME_NULL, NULL );
+
+        }
 
         /* Return constructed structure */
         return( er_times );
@@ -54,6 +67,17 @@
 
         /* Delete structure */
         * er_times = er_delete;
+
+    }
+
+/*
+    source - mutator methods
+ */
+
+    le_void_t er_times_set_enable( er_times_t * const er_times, le_size_t const er_index ) {
+
+        /* Enable times */
+        * ( ( ( le_time_t * ) er_times->tm_stack ) + er_index ) = * ( ( ( le_time_t * ) er_times->tm_times ) + er_index );
 
     }
 

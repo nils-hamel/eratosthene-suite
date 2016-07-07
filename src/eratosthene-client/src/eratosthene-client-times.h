@@ -51,7 +51,7 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_TIMES_C { NULL, _LE_USE_PORT, LE_ARRAY_C, _LE_TRUE }
+    # define ER_TIMES_C { NULL, _LE_USE_PORT, LE_ARRAY_C, LE_ARRAY_C, _LE_TRUE }
 
 /*
     header - preprocessor macros
@@ -71,6 +71,7 @@
         le_sock_t   tm_port;
 
         le_array_t  tm_times;
+        le_array_t  tm_stack;
 
     le_enum_t _status; } er_times_t;
 
@@ -81,6 +82,8 @@
     er_times_t er_times_create( le_char_t * const er_ip, le_sock_t const er_port );
 
     le_void_t er_times_delete( er_times_t * const er_times );
+
+    le_void_t er_times_set_enable( er_times_t * const er_times, le_size_t const er_index );
 
 /*
     header - C/C++ compatibility
