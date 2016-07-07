@@ -85,6 +85,8 @@
 
     le_void_t er_times_set_enable( er_times_t * const er_times, le_size_t const er_index );
 
+    le_void_t er_times_set_disable( er_times_t * const er_times, le_size_t const er_index );
+
 /*
     header - C/C++ compatibility
  */

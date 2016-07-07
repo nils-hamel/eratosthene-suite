@@ -62,6 +62,9 @@
         /* Deleted structure variables */
         er_times_t er_delete = ER_TIMES_C;
 
+        /* Unallocate stack array */
+        le_array_delete( & er_times->tm_stack );
+
         /* Unallocate times array */
         le_array_delete( & er_times->tm_times );
 
@@ -76,8 +79,22 @@
 
     le_void_t er_times_set_enable( er_times_t * const er_times, le_size_t const er_index ) {
 
-        /* Enable times */
-        * ( ( ( le_time_t * ) er_times->tm_stack ) + er_index ) = * ( ( ( le_time_t * ) er_times->tm_times ) + er_index );
+        /* Array base pointers variables */
+        le_time_t * er_ref = ( le_time_t * ) le_array_get_byte( & er_times->tm_times );
+        le_time_t * er_sel = ( le_time_t * ) le_array_get_byte( & er_times->tm_stack );
+
+        /* Enable time at index */
+        er_ref[er_index] = er_sel[er_index];
+
+    }
+
+    le_void_t er_times_set_disable( er_times_t * const er_times, le_size_t const er_index ) {
+
+        /* Array base pointers variables */
+        le_time_t * er_sel = ( le_time_t * ) le_array_get_byte( & er_times->tm_stack );
+
+        /* Enable time at index */
+        er_sel[er_index] = _LE_TIME_NULL;
 
     }
 
