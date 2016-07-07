@@ -53,6 +53,7 @@
     # endif
     # include <eratosthene-include.h>
     # include "eratosthene-client-model.h"
+    # include "eratosthene-client-times.h"
     # include "eratosthene-client-geodesy.h"
 
 /*
@@ -63,6 +64,7 @@
     # define ER_ENGINE_C {\
         _LE_TRUE,\
         ER_MODEL_C,\
+        ER_TIMES_C,\
         1,\
         0,\
         GLUT_UP,\
@@ -140,6 +142,7 @@
         le_enum_t  eg_loops;
 
         er_model_t eg_model;
+        er_times_t eg_times;
         le_size_t  eg_point;
 
         le_enum_t  eg_button;

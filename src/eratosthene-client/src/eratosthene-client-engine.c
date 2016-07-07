@@ -32,8 +32,11 @@
 
     le_enum_t er_engine_create( le_char_t * const er_ip, le_sock_t const er_port ) {
 
-        /* Create cell model */
+        /* Create engine model */
         if ( ( er_engine.eg_model = er_model_create( ER_ENGINE_STACK, er_ip, er_port ) )._status == _LE_FALSE ) return( _LE_FALSE );
+
+        /* Create engine times */
+        if ( ( er_engine.eg_times = er_times_create( er_ip, er_port ) )._status == _LE_FALSE ) return( _LE_FALSE );
 
         /* Initialise display mode */
         glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH );
@@ -78,7 +81,10 @@
         /* Engine variables */
         er_engine_t er_reset = ER_ENGINE_C;
 
-        /* Delete cell model */
+        /* Delete engine times */
+        er_times_delete( & er_engine.eg_times );
+
+        /* Delete engine model */
         er_model_delete( & er_engine.eg_model );
 
         /* Clear engine structure */
@@ -130,11 +136,11 @@
         /* Recompute near/far planes */
         er_engine_calls_reshape( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
 
-        /* Configure points display */
-        glPointSize( er_engine.eg_point );
-
         /* Clear color and depth buffers */
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+        /* Configure points display */
+        glPointSize( er_engine.eg_point );
 
         /* Earth wireframe matrix */
         glPushMatrix(); {

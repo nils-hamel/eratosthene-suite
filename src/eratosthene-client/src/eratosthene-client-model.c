@@ -65,8 +65,6 @@
 
         }
 
-        //le_array_t er_array = er_client_server_times( er_ip, er_port );
-
         /* Return created model */
         return( er_model );
 
