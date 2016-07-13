@@ -50,7 +50,6 @@
  */
 
     # include <time.h>
-    # include <GL/glew.h>
     # include <GL/freeglut.h>
     # include <eratosthene-include.h>
 
