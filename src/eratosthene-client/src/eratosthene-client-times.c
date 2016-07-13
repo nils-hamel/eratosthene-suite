@@ -85,6 +85,40 @@
     }
 
 /*
+    source - accessor methods
+ */
+
+    le_time_t er_times_get( er_times_t const * const er_times ) {
+
+        /* Array base pointers variables */
+        le_time_t * er_sel = ( le_time_t * ) le_array_get_byte( & er_times->tm_stack );
+
+        /* Static parser variables */
+        static le_size_t er_parse = 0;
+
+        /* Enumeration of selection array */
+        while ( er_parse < le_array_get_record( & er_times->tm_stack, LE_ARRAY_64T_LEN ) ) {
+
+            /* Check array element */
+            if ( er_sel[er_parse] != _LE_TIME_NULL ) {
+
+                /* Return selected time */
+                return( er_sel[er_parse ++] );
+
+            /* Update enumeration parser */
+            } else { ++ er_parse; }
+
+        }
+
+        /* Reset enumeration parser */
+        er_parse = 0;
+
+        /* Send enumeration end */
+        return( _LE_TIME_NULL );
+
+    }
+
+/*
     source - mutator methods
  */
 

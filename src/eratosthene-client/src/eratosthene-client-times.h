@@ -100,6 +100,8 @@
 
     le_void_t er_times_delete( er_times_t * const er_times );
 
+    le_time_t er_times_get( er_times_t const * const er_times );
+
     le_void_t er_times_set_enable( er_times_t * const er_times, le_size_t const er_index );
 
     le_void_t er_times_set_disable( er_times_t * const er_times, le_size_t const er_index );

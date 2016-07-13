@@ -143,29 +143,34 @@
         /* Configure points display */
         glPointSize( er_engine.eg_point );
 
-        /* Earth wireframe matrix */
+        /* Push matrix - model */
         glPushMatrix(); {
 
             /* Display earth */
             er_model_display_earth( er_engine.eg_vlon, er_engine.eg_vlat, er_engine.eg_valt, er_engine.eg_vazm, er_engine.eg_vgam );
 
-        /* Earth wireframe matrix */
+        /* Pop matrix - model */
         } glPopMatrix();
 
-        /* Server cells matrix */
+        /* Push matrix - model */
         glPushMatrix(); {
 
             /* Display model */
             er_model_display_cell( & ( er_engine.eg_model ), er_engine.eg_vlon, er_engine.eg_vlat, er_engine.eg_valt, er_engine.eg_vazm, er_engine.eg_vgam );
 
-        /* Server cells matrix */
+        /* Pop matrix - model */
         } glPopMatrix();
 
         /* Projection : interface */
         er_engine_proj_interface( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
 
-        /* Display time manager */
-        er_times_display( & er_engine.eg_times );
+        /* Push matrix - interface */
+        glPushMatrix(); {
+
+            /* Display time manager */
+            er_times_display( & er_engine.eg_times );
+
+        } glPopMatrix();
 
         /* Swap buffers */
         glutSwapBuffers();
