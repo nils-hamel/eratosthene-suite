@@ -40,7 +40,15 @@
     # endif
 
 /*
-    header - includes
+    header - internal includes
+ */
+
+    # include "eratosthene-client-times.h"
+    # include "eratosthene-client-model.h"
+    # include "eratosthene-client-geodesy.h"
+
+/*
+    header - external includes
  */
 
     # include <unistd.h>
@@ -52,9 +60,6 @@
     # include <pthread.h>
     # endif
     # include <eratosthene-include.h>
-    # include "eratosthene-client-model.h"
-    # include "eratosthene-client-times.h"
-    # include "eratosthene-client-geodesy.h"
 
 /*
     header - preprocessor definitions
@@ -233,6 +238,11 @@
      *  \param er_width  Width, in pixel, of the rendering buffer
      *  \param er_height Height, in pixels, of the rendering buffer
      */
+
+    //le_void_t er_engine_calls_reshape( int er_width, int er_height );
+    le_void_t er_engine_proj_model( int er_width, int er_height );
+
+    le_void_t er_engine_proj_interface( int er_width, int er_height );
 
     le_void_t er_engine_calls_reshape( int er_width, int er_height );
 

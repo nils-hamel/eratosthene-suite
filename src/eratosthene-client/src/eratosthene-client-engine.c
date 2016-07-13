@@ -61,11 +61,12 @@
         glEnable( GL_DEPTH_TEST );
 
         /* Declare engine callback functions */
-        glutIdleFunc         ( er_engine_loops_render );
-        glutKeyboardFunc     ( er_engine_calls_keybd  );
-        glutMouseFunc        ( er_engine_calls_mouse  );
-        glutMotionFunc       ( er_engine_calls_move   );
-        glutPassiveMotionFunc( er_engine_calls_move   );
+        glutIdleFunc         ( er_engine_loops_render  );
+        glutKeyboardFunc     ( er_engine_calls_keybd   );
+        glutReshapeFunc      ( er_engine_calls_reshape );
+        glutMouseFunc        ( er_engine_calls_mouse   );
+        glutMotionFunc       ( er_engine_calls_move    );
+        glutPassiveMotionFunc( er_engine_calls_move    );
 
         /* Enable vertex and color arrays */
         glEnableClientState( GL_VERTEX_ARRAY );
@@ -93,7 +94,7 @@
     }
 
 /*
-    source - engine loops - primary
+    source - engine loops - primary methods
  */
 
     le_void_t er_engine_loops( le_void_t ) {
@@ -125,7 +126,7 @@
     }
 
 /*
-    source - engine loops - secondary
+    source - engine loops - secondary methods
  */
 
     le_void_t er_engine_loops_render( le_void_t ) {
@@ -133,8 +134,8 @@
         /* Update ranges */
         er_engine_calls_range();
 
-        /* Recompute near/far planes */
-        er_engine_calls_reshape( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
+        /* Projection : model */
+        er_engine_proj_model( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
 
         /* Clear color and depth buffers */
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -159,6 +160,9 @@
 
         /* Server cells matrix */
         } glPopMatrix();
+
+        /* Projection : interface */
+        er_engine_proj_interface( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
 
         /* Display time manager */
         er_times_display( & er_engine.eg_times );
@@ -196,16 +200,10 @@
     }
 
 /*
-    source - engine callbacks - reshape
+    source - projection methods
  */
 
-    le_void_t er_engine_calls_reshape( int er_width, int er_height ) {
-
-        /* Compute scale factor */
-        er_engine.eg_vscl = er_geodesy_scale( er_engine.eg_valt );
-
-        /* Reset viewport */
-        glViewport( 0, 0, er_width, er_height );
+    le_void_t er_engine_proj_model( int er_width, int er_height ) {
 
         /* Matrix mode to projection */
         glMatrixMode( GL_PROJECTION );
@@ -222,13 +220,46 @@
         /* Set model view matrix to identity */
         glLoadIdentity();
 
+        /* Compute scale factor */
+        er_engine.eg_vscl = er_geodesy_scale( er_engine.eg_valt );
+
         /* Apply scale factor to projection matrix */
         glScaled( er_engine.eg_vscl, er_engine.eg_vscl, er_engine.eg_vscl );
 
     }
 
+    le_void_t er_engine_proj_interface( int er_width, int er_height ) {
+
+        /* Matrix mode to projection */
+        glMatrixMode( GL_PROJECTION );
+
+        /* Set projection matrix to identity */
+        glLoadIdentity();
+
+        /* Compute projectio matrix */
+        glOrtho( 0, glutGet( GLUT_SCREEN_WIDTH ), 0, glutGet( GLUT_SCREEN_HEIGHT ), -1.0, 1.0 );
+
+        /* Matrix mode to modelview */
+        glMatrixMode( GL_MODELVIEW );
+
+        /* Set model view matrix to identity */
+        glLoadIdentity();
+
+    }
+
 /*
-    source - engine callbacks - keyboard
+    source - engine callbacks - reshape methods
+ */
+
+    le_void_t er_engine_calls_reshape( int er_width, int er_height ) {
+
+        /* Reset viewport */
+        glViewport( 0, 0, er_width, er_height );
+
+    }
+
+/*
+    source - engine callbacks - keyboard methods
  */
 
     le_void_t er_engine_calls_keybd( unsigned char er_keycode, int er_x, int er_y ) {
@@ -265,7 +296,7 @@
     }
 
 /*
-    source - engine callbacks - mouse
+    source - engine callbacks - mouse methods
  */
 
     le_void_t er_engine_calls_mouse( int er_button, int er_state, int er_x, int er_y ) {
@@ -319,7 +350,7 @@
     }
 
 /*
-    source - engine callbacks - ranges
+    source - engine callbacks - ranges methods
  */
 
     le_void_t er_engine_calls_range() {

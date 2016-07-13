@@ -40,12 +40,17 @@
     # endif
 
 /*
-    header - includes
+    header - internal includes
+ */
+
+    # include "eratosthene-client-geodesy.h"
+
+/*
+    header - external includes
  */
 
     # include <math.h>
     # include <eratosthene-include.h>
-    # include "eratosthene-client-geodesy.h"
 
 /*
     header - preprocessor definitions

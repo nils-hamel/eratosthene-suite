@@ -160,7 +160,8 @@
             sprintf( ( char * ) er_value, "%" _LE_TIME_P, er_ref[er_parse] / 31536000 + 1970 );
 
             /* Position */
-            glWindowPos2i( er_x, er_y ); er_y += 10;
+            //glWindowPos2i( er_x, er_y ); er_y += 10;
+            glRasterPos2i( er_x, er_y ); er_y += 10;
 
             /* Display time */
             glutBitmapString( GLUT_BITMAP_HELVETICA_10, er_value );
@@ -189,7 +190,8 @@
         }
 
         glEnable( GL_BLEND );
-        glWindowPos2i( ( glutGet( GLUT_SCREEN_WIDTH  ) - ER_TIMES_CW ) / 2, ER_TIMES_CP );
+        //glWindowPos2i( ( glutGet( GLUT_SCREEN_WIDTH  ) - ER_TIMES_CW ) / 2, ER_TIMES_CP );
+        glRasterPos2i( ( glutGet( GLUT_SCREEN_WIDTH  ) - ER_TIMES_CW ) / 2, ER_TIMES_CP );
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glDrawPixels( ER_TIMES_CW, ER_TIMES_CH, GL_RGBA, GL_UNSIGNED_BYTE, er_buffer );
 

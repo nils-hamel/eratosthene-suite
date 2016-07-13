@@ -40,14 +40,19 @@
     # endif
 
 /*
-    header - includes
+    header - internal includes
+ */
+
+    # include "eratosthene-client-server.h"
+
+/*
+    header - external includes
  */
 
     # include <time.h>
+    # include <GL/glew.h>
     # include <GL/freeglut.h>
-    # include <GL/glext.h>
     # include <eratosthene-include.h>
-    # include "eratosthene-client-server.h"
 
 /*
     header - preprocessor definitions
@@ -105,8 +110,6 @@
     le_void_t er_times_display( er_times_t const * const er_times );
 
     le_void_t er_times_buffer( er_times_t const * const er_times );
-
-    void glWindowPos2i ( GLint x, GLint y );
 
 /*
     header - C/C++ compatibility

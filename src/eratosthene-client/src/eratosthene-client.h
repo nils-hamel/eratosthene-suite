@@ -63,7 +63,13 @@
     # endif
 
 /*
-    header - includes
+    header - internal includes
+ */
+
+    # include "eratosthene-client-engine.h"
+
+/*
+    header - external includes
  */
 
     # include <stdio.h>
@@ -71,7 +77,6 @@
     # include <GL/freeglut.h>
     # include <common-include.h>
     # include <eratosthene-include.h>
-    # include "eratosthene-client-engine.h"
 
 /*
     header - preprocessor definitions

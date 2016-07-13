@@ -40,16 +40,21 @@
     # endif
 
 /*
-    header - includes
+    header - internal includes
+ */
+
+    # include "eratosthene-client-cell.h"
+    # include "eratosthene-client-geodesy.h"
+    # include "eratosthene-client-server.h"
+
+/*
+    header - external includes
  */
 
     # include <GL/freeglut.h>
     # include <GL/glu.h>
     # include <math.h>
     # include <eratosthene-include.h>
-    # include "eratosthene-client-cell.h"
-    # include "eratosthene-client-geodesy.h"
-    # include "eratosthene-client-server.h"
 
 /*
     header - preprocessor definitions

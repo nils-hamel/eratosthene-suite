@@ -40,7 +40,7 @@
     # endif
 
 /*
-    header - includes
+    header - external includes
  */
 
     # include <math.h>
