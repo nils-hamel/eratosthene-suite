@@ -118,6 +118,19 @@
 
     }
 
+    le_enum_t er_times_get_update( er_times_t * const er_times ) {
+
+        /* Returned value variables */
+        le_enum_t er_return = er_times->tm_mtim;
+
+        /* Update modification flag */
+        er_times->tm_mtim = _LE_FALSE;
+
+        /* Return modification flag */
+        return( er_return );
+
+    }
+
 /*
     source - mutator methods
  */

@@ -69,7 +69,6 @@
         0.0,\
         0.0,\
         0.0,\
-        0.0,\
         0,\
         0,\
         NULL,\
@@ -137,7 +136,6 @@
         le_size_t   md_sdis;
         le_time_t   md_tdis;
 
-        le_time_t   md_mtim;
         le_real_t   md_mlon;
         le_real_t   md_mlat;
         le_real_t   md_malt;
@@ -222,7 +220,7 @@
      *  \return Returns _LE_TRUE on necessary update, _LE_FALSE otherwise
      */
 
-    le_enum_t er_model_get_update( er_model_t const * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
+    le_enum_t er_model_get_update( er_model_t * const er_model, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
 
     /*! \brief mutator methods
      *

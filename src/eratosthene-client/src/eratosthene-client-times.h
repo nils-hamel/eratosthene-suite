@@ -58,7 +58,7 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_TIMES_C         { NULL, _LE_USE_PORT, _LE_TIME_NULL, LE_ARRAY_C, LE_ARRAY_C, _LE_TRUE }
+    # define ER_TIMES_C         { NULL, _LE_USE_PORT, _LE_TIME_NULL, _LE_TRUE, LE_ARRAY_C, LE_ARRAY_C, _LE_TRUE }
 
     /* Define SRTM time */
     # define ER_TIMES_SRTM(t)   ( ( 950486422 / t ) * t )
@@ -87,6 +87,8 @@
 
         le_time_t   tm_tdis;
 
+        le_enum_t   tm_mtim;
+
         le_array_t  tm_times;
         le_array_t  tm_stack;
 
@@ -101,6 +103,8 @@
     le_void_t er_times_delete( er_times_t * const er_times );
 
     le_time_t er_times_get( er_times_t const * const er_times );
+
+    le_enum_t er_times_get_update( er_times_t * const er_times );
 
     le_void_t er_times_set_enable( er_times_t * const er_times, le_size_t const er_index );
 

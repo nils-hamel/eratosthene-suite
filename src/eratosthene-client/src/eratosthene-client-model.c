@@ -114,16 +114,27 @@
 
     }
 
-    le_enum_t er_model_get_update( er_model_t const * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
+    le_enum_t er_model_get_update( er_model_t * const er_model, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
 
-        /* Check update necessities - send answer */
-        if ( er_model->md_mtim != er_time ) return( _LE_TRUE );
-        if ( er_model->md_mlon != er_lon  ) return( _LE_TRUE );
-        if ( er_model->md_mlat != er_lat  ) return( _LE_TRUE );
-        if ( er_model->md_malt != er_alt  ) return( _LE_TRUE );
+        /* Returned value variables */
+        le_enum_t er_return = _LE_FALSE;
+
+        /* Check update necessities - update return */
+        if ( er_model->md_mlon != er_lon ) er_return = _LE_TRUE;
+
+        /* Check update necessities - update return */
+        if ( er_model->md_mlat != er_lat ) er_return = _LE_TRUE;
+
+        /* Check update necessities - update return */
+        if ( er_model->md_malt != er_alt ) er_return = _LE_TRUE;
+
+        /* Push update position */
+        er_model->md_mlon = er_lon;
+        er_model->md_mlat = er_lat;
+        er_model->md_malt = er_alt;
 
         /* Send answer */
-        return( _LE_FALSE );
+        return( er_return );
 
     }
 
@@ -189,12 +200,6 @@
             }
 
         }
-
-        /* Push current space-time position */
-        er_model->md_mtim = er_time;
-        er_model->md_mlon = er_lon;
-        er_model->md_mlat = er_lat;
-        er_model->md_malt = er_alt;
 
     }
 

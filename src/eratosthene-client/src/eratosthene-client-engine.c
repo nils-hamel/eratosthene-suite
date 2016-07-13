@@ -179,11 +179,21 @@
 
     le_void_t * er_engine_loops_update( le_void_t * er_null ) {
 
+        /* Update variables */
+        le_enum_t er_model_flag = _LE_FALSE;
+        le_enum_t er_times_flag = _LE_FALSE;
+
         /* Model update loop */
         while ( usleep( 500 ), er_engine.eg_loops == _LE_TRUE ) {
 
+            /* Query model update necessities */
+            er_model_flag = er_model_get_update( & er_engine.eg_model, er_engine.eg_vlon, er_engine.eg_vlat, er_engine.eg_valt );
+
+            /* Query times update necessities */
+            er_times_flag = er_times_get_update( & er_engine.eg_times );
+
             /* Check model update necessities */
-            if ( er_model_get_update( & er_engine.eg_model, er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt ) == _LE_TRUE ) {
+            if ( ( er_model_flag == _LE_TRUE ) || ( er_times_flag == _LE_TRUE ) ) {
 
                 /* Prepare model update */
                 er_model_set_update_prepare( & er_engine.eg_model );
