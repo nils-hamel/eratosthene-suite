@@ -149,6 +149,9 @@
         le_time_t * er_ref = ( le_time_t * ) le_array_get_byte( & er_times->tm_times );
         le_time_t * er_sel = ( le_time_t * ) le_array_get_byte( & er_times->tm_stack );
 
+        /* Flag variables */
+        le_enum_t er_flag = _LE_FALSE;
+
         /* Parsing times array */
         for ( le_size_t er_index = 0; er_index < le_array_get_record( & er_times->tm_times, LE_ARRAY_64T_LEN ); er_index ++ ) {
 
@@ -158,9 +161,15 @@
                 /* Enable time at index */
                 er_sel[er_index] = er_ref[er_index];
 
+                /* Update flag */
+                er_flag = _LE_TRUE;
+
             }
 
         }
+
+        /* Check default specification state - enable default time */
+        if ( er_flag == _LE_FALSE ) er_sel[0] = er_ref[0];
 
     }
 
