@@ -81,8 +81,7 @@
         45.438064,\
         0.0,\
         0.0,\
-        1.0,\
-        950486422\
+        1.0\
     }
 
     /* Define cell stack size */
@@ -162,8 +161,6 @@
         le_real_t  eg_vazm;
         le_real_t  eg_vgam;
         le_real_t  eg_vscl;
-
-        le_time_t  eg_vtim;
 
     } er_engine_t;
 

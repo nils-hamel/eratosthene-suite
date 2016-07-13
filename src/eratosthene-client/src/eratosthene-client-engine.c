@@ -179,6 +179,9 @@
 
     le_void_t * er_engine_loops_update( le_void_t * er_null ) {
 
+        /* Time variables */
+        le_time_t er_etime = _LE_TIME_NULL;
+
         /* Update variables */
         le_enum_t er_model_flag = _LE_FALSE;
         le_enum_t er_times_flag = _LE_FALSE;
@@ -198,11 +201,16 @@
                 /* Prepare model update */
                 er_model_set_update_prepare( & er_engine.eg_model );
 
-                /* Update model cells */
-                er_model_set_update_model  ( & er_engine.eg_model, er_engine.eg_vtim, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
+                /* Enable times enumeration */
+                while ( ( er_etime = er_times_get( & er_engine.eg_times ) ) != _LE_TIME_NULL ) {
+
+                    /* Update model cells */
+                    er_model_set_update_model( & er_engine.eg_model, er_etime, er_engine.eg_vlon * ER_D2R, er_engine.eg_vlat * ER_D2R, er_engine.eg_valt );
+
+                }
 
                 /* Server queries */
-                er_model_set_update_query  ( & er_engine.eg_model );
+                er_model_set_update_query( & er_engine.eg_model );
 
                 /* Terminate model update */
                 er_model_set_update_destroy( & er_engine.eg_model );
