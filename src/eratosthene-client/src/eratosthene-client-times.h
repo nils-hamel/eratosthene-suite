@@ -139,10 +139,6 @@
 
     le_void_t er_times_set( er_times_t * const er_times );
 
-    le_void_t er_times_set_enable( er_times_t * const er_times, le_size_t const er_index );
-
-    le_void_t er_times_set_disable( er_times_t * const er_times, le_size_t const er_index );
-
     le_void_t er_times_set_default( er_times_t * const er_times );
 
     le_void_t er_times_set_zoom( er_times_t * const er_times, le_size_t const er_mode );

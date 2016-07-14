@@ -162,27 +162,6 @@
 
     }
 
-    le_void_t er_times_set_enable( er_times_t * const er_times, le_size_t const er_index ) {
-
-        /* Array base pointers variables */
-        le_time_t * er_ref = ( le_time_t * ) le_array_get_byte( & er_times->tm_times );
-        le_time_t * er_sel = ( le_time_t * ) le_array_get_byte( & er_times->tm_stack );
-
-        /* Enable time at index */
-        er_ref[er_index] = er_sel[er_index];
-
-    }
-
-    le_void_t er_times_set_disable( er_times_t * const er_times, le_size_t const er_index ) {
-
-        /* Array base pointers variables */
-        le_time_t * er_sel = ( le_time_t * ) le_array_get_byte( & er_times->tm_stack );
-
-        /* Enable time at index */
-        er_sel[er_index] = _LE_TIME_NULL;
-
-    }
-
     le_void_t er_times_set_default( er_times_t * const er_times ) {
 
         /* Array base pointers variables */
@@ -310,7 +289,6 @@
         /* String buffer variables */
         le_char_t er_string[256] = { 0 };
 
-        le_size_t er_count = 0;
         le_size_t er_point = 0;
 
         /* Boundaries variables */
