@@ -57,8 +57,12 @@
         glClearColor( 0.0, 0.0, 0.0, 0.0 );
         glClearDepth( 1.0 );
 
-        /* Graphical thread configuration */
+        /* OpenGL features configuration */
         glEnable( GL_DEPTH_TEST );
+        glEnable( GL_BLEND );
+
+        /* Blending function configuration */
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         /* Declare engine callback functions */
         glutIdleFunc         ( er_engine_loops_render  );
@@ -302,6 +306,13 @@
             case ( 'a' ) : { er_engine.eg_vazm = 0.0; }
             case ( 'g' ) : { er_engine.eg_vgam = 0.0; } break;
 
+            /* Update times */
+            case ( 't' ) : { er_times_set( & er_engine.eg_times ); } break;
+
+            /* Update times */
+            case ( 'n' ) : { er_times_set_time( & er_engine.eg_times, ER_TIMES_DTIME ); } break;
+            case ( 'm' ) : { er_times_set_time( & er_engine.eg_times, ER_TIMES_ITIME ); } break;
+
             /* Display position */
             case ( 'p' ) : {
 
@@ -341,9 +352,27 @@
         /* Check mouse state */
         if ( er_engine.eg_state != GLUT_DOWN ) return;
 
-        /* Mouse event switch - update altitude */
-        if ( er_engine.eg_button == 3 ) er_engine.eg_valt += er_engine.eg_mult;
-        if ( er_engine.eg_button == 4 ) er_engine.eg_valt -= er_engine.eg_mult;
+        /* Interface switch */
+        if ( glutGetModifiers() == GLUT_ACTIVE_ALT ) {
+
+            /* Mouse event switch - update time zoom */
+            if ( er_engine.eg_button == 3 ) er_times_set_zoom( & er_engine.eg_times, ER_TIMES_IZOOM );
+            if ( er_engine.eg_button == 4 ) er_times_set_zoom( & er_engine.eg_times, ER_TIMES_DZOOM );
+
+        } else
+        if ( glutGetModifiers() == ( GLUT_ACTIVE_CTRL | GLUT_ACTIVE_ALT ) ) {
+
+            /* Mouse event switch - update time position */
+            if ( er_engine.eg_button == 3 ) er_times_set_pose( & er_engine.eg_times, ER_TIMES_IPOSE );
+            if ( er_engine.eg_button == 4 ) er_times_set_pose( & er_engine.eg_times, ER_TIMES_DPOSE );
+
+        } else {
+
+            /* Mouse event switch - update altitude */
+            if ( er_engine.eg_button == 3 ) er_engine.eg_valt += er_engine.eg_mult;
+            if ( er_engine.eg_button == 4 ) er_engine.eg_valt -= er_engine.eg_mult;
+
+        }
 
     }
 

@@ -120,18 +120,13 @@
         le_enum_t er_return = _LE_FALSE;
 
         /* Check update necessities - update return */
-        if ( er_model->md_mlon != er_lon ) er_return = _LE_TRUE;
+        if ( er_model->md_mlon != er_lon ) er_model->md_mlon = er_lon, er_return = _LE_TRUE;
 
         /* Check update necessities - update return */
-        if ( er_model->md_mlat != er_lat ) er_return = _LE_TRUE;
+        if ( er_model->md_mlat != er_lat ) er_model->md_mlat = er_lat, er_return = _LE_TRUE;
 
         /* Check update necessities - update return */
-        if ( er_model->md_malt != er_alt ) er_return = _LE_TRUE;
-
-        /* Push update position */
-        er_model->md_mlon = er_lon;
-        er_model->md_mlat = er_lat;
-        er_model->md_malt = er_alt;
+        if ( er_model->md_malt != er_alt ) er_model->md_malt = er_alt, er_return = _LE_TRUE;
 
         /* Send answer */
         return( er_return );

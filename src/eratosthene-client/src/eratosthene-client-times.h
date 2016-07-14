@@ -58,15 +58,42 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_TIMES_C         { NULL, _LE_USE_PORT, _LE_TIME_NULL, _LE_TRUE, LE_ARRAY_C, LE_ARRAY_C, _LE_TRUE }
+    # define ER_TIMES_C         { \
+                                NULL, \
+                                _LE_USE_PORT, \
+                                _LE_TIME_NULL, \
+                                2592000, \
+                                0, \
+                                _LE_TIME_NULL, \
+                                _LE_TRUE, \
+                                0, \
+                                LE_ARRAY_C, \
+                                LE_ARRAY_C, \
+                                _LE_TRUE \
+                                }
+
+    /* Define control modes */
+    # define ER_TIMES_DZOOM     ( 0 )
+    # define ER_TIMES_IZOOM     ( 1 )
+    # define ER_TIMES_DPOSE     ( 0 )
+    # define ER_TIMES_IPOSE     ( 1 )
+    # define ER_TIMES_DTIME     ( 0 )
+    # define ER_TIMES_ITIME     ( 1 )
+
+    /* Define time ranges */
+    # define ER_TIMES_DAY       ( 86400 )
+    # define ER_TIMES_MONTH     ( ER_TIMES_DAY * 30 )
+    # define ER_TIMES_YEAR      ( ER_TIMES_MONTH * 12 )
 
     /* Define SRTM time */
     # define ER_TIMES_SRTM(t)   ( ( 950486422 / t ) * t )
 
     /* Define control dimensions */
-    # define ER_TIMES_CW        ( 512 )
-    # define ER_TIMES_CH        ( 64 )
-    # define ER_TIMES_CP        ( ER_TIMES_CH + 32 )
+
+    # define ER_TIMES_CW        ( 1920 )
+    # define ER_TIMES_CH        ( 64+32 )
+    # define ER_TIMES_CL        ( 32 )
+    # define ER_TIMES_CP        ( ER_TIMES_CL )
 
 /*
     header - preprocessor macros
@@ -85,10 +112,14 @@
         le_char_t * tm_svip;
         le_sock_t   tm_port;
 
-        le_time_t   tm_tdis;
+        le_time_t   tm_pose;
+        le_time_t   tm_zoom;
+        le_size_t   tm_curr;
 
+        le_time_t   tm_tdis;
         le_enum_t   tm_mtim;
 
+        le_size_t   tm_count;
         le_array_t  tm_times;
         le_array_t  tm_stack;
 
@@ -106,15 +137,23 @@
 
     le_enum_t er_times_get_update( er_times_t * const er_times );
 
+    le_void_t er_times_set( er_times_t * const er_times );
+
     le_void_t er_times_set_enable( er_times_t * const er_times, le_size_t const er_index );
 
     le_void_t er_times_set_disable( er_times_t * const er_times, le_size_t const er_index );
 
     le_void_t er_times_set_default( er_times_t * const er_times );
 
-    le_void_t er_times_display( er_times_t const * const er_times );
+    le_void_t er_times_set_zoom( er_times_t * const er_times, le_size_t const er_mode );
 
-    le_void_t er_times_buffer( er_times_t const * const er_times );
+    le_void_t er_times_set_pose( er_times_t * const er_times, le_size_t const er_mode );
+
+    le_void_t er_times_set_time( er_times_t * const er_times, le_size_t const er_mode );
+
+    le_void_t er_times_set_nearest( er_times_t * const er_times );
+
+    le_void_t er_times_display( er_times_t const * const er_times );
 
 /*
     header - C/C++ compatibility
