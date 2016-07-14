@@ -81,19 +81,12 @@
     # define ER_TIMES_ITIME     ( 1 )
 
     /* Define time ranges */
-    # define ER_TIMES_DAY       ( 86400 )
-    # define ER_TIMES_MONTH     ( ER_TIMES_DAY * 30 )
-    # define ER_TIMES_YEAR      ( ER_TIMES_MONTH * 12 )
+    # define ER_TIMES_DAY       ( _LE_TIME_L( 86400 ) )
+    # define ER_TIMES_MONTH     ( ER_TIMES_DAY * _LE_TIME_L( 30 ) )
+    # define ER_TIMES_YEAR      ( ER_TIMES_MONTH * _LE_TIME_L( 12 ) )
 
     /* Define SRTM time */
-    # define ER_TIMES_SRTM(t)   ( ( 950486422 / t ) * t )
-
-    /* Define control dimensions */
-
-    # define ER_TIMES_CW        ( 1920 )
-    # define ER_TIMES_CH        ( 64+32 )
-    # define ER_TIMES_CL        ( 32 )
-    # define ER_TIMES_CP        ( ER_TIMES_CL )
+    # define ER_TIMES_SRTM(t)   ( ( _LE_TIME_L( 950486422 ) / t ) * t )
 
 /*
     header - preprocessor macros
