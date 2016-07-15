@@ -63,8 +63,11 @@
 
         }
 
-        /* Set defaults */
+        /* Set default time */
         er_times_set_default( & er_times );
+
+        /* Set nearest time */
+        er_times_set_nearest( & er_times );
 
         /* Return constructed structure */
         return( er_times );
@@ -195,11 +198,11 @@
     le_void_t er_times_set_zoom( er_times_t * const er_times, le_size_t const er_mode ) {
 
         /* Update zoom value */
-        er_times->tm_zoom *= ( er_mode == ER_TIMES_IZOOM ? 0.91 : 1.1 );
+        er_times->tm_zoom *= ( er_mode == ER_TIMES_DECREASE ? 0.91 : 1.1 );
 
         /* Check limitation */
-        if ( er_times->tm_zoom <= ER_TIMES_ZOOM_L ) er_times->tm_zoom = ER_TIMES_ZOOM_L;
-        if ( er_times->tm_zoom >= ER_TIMES_ZOOM_U ) er_times->tm_zoom = ER_TIMES_ZOOM_U;
+        if ( er_times->tm_zoom <= ER_TIMES_ZOOM_MIN ) er_times->tm_zoom = ER_TIMES_ZOOM_MIN;
+        if ( er_times->tm_zoom >= ER_TIMES_ZOOM_MAX ) er_times->tm_zoom = ER_TIMES_ZOOM_MAX;
 
         /* Update nearest times */
         er_times_set_nearest( er_times );
@@ -209,7 +212,7 @@
     le_void_t er_times_set_pose( er_times_t * const er_times, le_size_t const er_mode ) {
 
         /* Update position value */
-        er_times->tm_pose += er_times->tm_zoom * ( er_mode == ER_TIMES_DPOSE ? -0.02 : 0.02 );
+        er_times->tm_pose += er_times->tm_zoom * ( er_mode == ER_TIMES_DECREASE ? -0.02 : 0.02 );
 
         /* Update nearest times */
         er_times_set_nearest( er_times );
@@ -219,7 +222,7 @@
     le_void_t er_times_set_time( er_times_t * const er_times, le_size_t const er_mode ) {
 
         /* Check mode */
-        if ( er_mode == ER_TIMES_DTIME ) {
+        if ( er_mode == ER_TIMES_DECREASE ) {
 
             /* Update pointed time */
             er_times->tm_curr = ( er_times->tm_curr == 0 ? er_times->tm_count - 1 : er_times->tm_curr - 1 );
@@ -274,9 +277,11 @@
         /* Static buffer variables */
         static le_byte_t * er_buffer = NULL;
 
-        le_time_t er_point = 0;
+        /* Graduation scale variables */
+        le_time_t er_grad = ER_TIMES_GRAD_SCALE;
 
-        le_time_t er_grad[4] = { ER_TIMES_GRAD4, ER_TIMES_GRAD3, ER_TIMES_GRAD2, ER_TIMES_GRAD1 };
+        le_time_t er_point = 0;
+        le_size_t er_egde = 0;
 
         /* Boundaries variables */
         le_time_t er_lbound = er_times->tm_pose - ( er_times->tm_zoom >> 1 );
@@ -302,15 +307,21 @@
 
         }
 
-        /* Reset buffer */
-        for ( le_size_t er_parse = 3; er_parse < er_csize; er_parse += 4 ) er_buffer[er_parse] = 208;
+        /* Reset graphical buffer */
+        for ( le_size_t er_parse = 3; er_parse < er_csize; er_parse += 4 ) {
 
-        glColor3f( 0.3, 0.3, 0.3 );
+            /* Reset alpha channel component */
+            er_buffer[er_parse] = 208;
 
-        /* Time string position */
+        }
+
+        /* Information string position */
         glRasterPos2i( 16 , er_coffset + er_cheight - 12 );
 
-        /* Display time string */
+        /* Information string color */
+        glColor3f( 0.3, 0.3, 0.3 );
+
+        /* Display information string */
         glutBitmapString( GLUT_BITMAP_HELVETICA_10, er_times_range( er_times, er_lbound, er_ubound ) );
 
         /* Display times from stack */
@@ -319,24 +330,11 @@
             /* Check time visibility */
             if ( ( er_ref[er_parse] > er_lbound ) && ( er_ref[er_parse] < er_ubound ) ) {
 
-                /* Check colorisation */
-                if ( er_parse == er_times->tm_curr ) {
+                /* Set time string color */
+                if ( er_sel[er_parse] != _LE_TIME_NULL ) glColor3f( 0.3, 0.3, 0.3 ); else glColor3f( 0.7, 0.7, 0.7 );
 
-                    /* Push color */
-                    glColor3f( 0.9, 0.4, 0.3 );
-
-                } else
-                if ( er_sel[er_parse] != _LE_TIME_NULL ) {
-
-                    /* Push color */
-                    glColor3f( 0.3, 0.3, 0.3 );
-
-                } else {
-
-                    /* Push color */
-                    glColor3f( 0.7, 0.7, 0.7 );
-
-                }
+                /* Check highlighted time string */
+                if ( er_parse == er_times->tm_curr ) glColor3f( 0.3, 0.5, 0.7 );
 
                 /* Time string position */
                 glRasterPos2i( er_cwidth * ( ( le_real_t ) ( er_ref[er_parse] - er_lbound ) / er_times->tm_zoom ), er_coffset + 4 );
@@ -349,18 +347,19 @@
         }
 
         /* Display graduation */
-        for ( le_size_t er_index = 0; er_index < 4; er_index ++ ) {
+        for ( le_size_t er_index = 0; er_index < ER_TIMES_GRAP_DEPTH; er_grad /= 10, er_index ++ ) {
 
             /* Check scale displayability */
-            if ( ( ( ( ( le_real_t ) er_grad[er_index] ) / er_times->tm_zoom ) * er_cwidth ) > 4 ) {
+            if ( ( ( ( ( le_real_t ) er_grad ) / er_times->tm_zoom ) * er_cwidth ) > 4 ) {
 
                 /* Display graduation at current scale */
-                for ( le_time_t er_parse = ER_TIMES_RUD( er_lbound, er_grad[er_index] ); er_parse < er_ubound; er_parse += er_grad[er_index] ) {
+                for ( le_time_t er_parse = ER_TIMES_RUD( er_lbound, er_grad ); er_parse < er_ubound; er_parse += er_grad ) {
 
                     /* Compute position of graduation */
                     er_point = ( ( ( ( le_real_t ) er_parse ) - er_lbound ) / er_times->tm_zoom ) * er_cwidth;
 
-                    le_size_t er_egde = 18 + ( er_index << 2 );
+                    /* Compute graduation egdes */
+                    er_egde = 18 + ( er_index << 2 );
 
                     /* Display graduation */
                     for ( le_size_t er_pixel = er_egde; er_pixel < er_cheight - er_egde; er_pixel ++ ) {
@@ -393,9 +392,11 @@
         /* Static string array variables */
         static le_char_t er_string[256] = { 0 };
 
+        /* Decomposed time variables */
         struct tm er_struct = * localtime( & er_time );
 
-        strftime((char*)er_string, sizeof(er_string), "%Y-%m-%d-%H:%M:%S", &er_struct);
+        /* Compose date string */
+        strftime( ( char * ) er_string, sizeof( er_string ), "%Y-%m-%d-%H:%M:%S", & er_struct );
 
         /* Return composed string */
         return( er_string );
@@ -411,13 +412,10 @@
         sprintf( ( char * ) er_string, "%s", er_times_string( er_lbound ) );
 
         /* Compose range string */
-        sprintf( ( char * ) er_string, "%s to %s", er_string, er_times_string( er_ubound ) );
+        sprintf( ( char * ) er_string, "%s ( %.1fy )", er_string, ( float ) er_times->tm_zoom / ER_TIMES_YEAR );
 
         /* Compose range string */
-        sprintf( ( char * ) er_string, "%s (%.1fy)", er_string, ( float ) er_times->tm_zoom / ER_TIMES_YEAR );
-
-        /* Compose range string */
-        sprintf( ( char * ) er_string, "%s - eratosthene @ dhlab epfl", er_string );     
+        sprintf( ( char * ) er_string, "%s %s", er_string, er_times_string( er_ubound ) );
 
         /* Return composed string */
         return( er_string );

@@ -310,8 +310,8 @@
             case ( 't' ) : { er_times_set( & er_engine.eg_times ); } break;
 
             /* Update times */
-            case ( 'n' ) : { er_times_set_time( & er_engine.eg_times, ER_TIMES_DTIME ); } break;
-            case ( 'm' ) : { er_times_set_time( & er_engine.eg_times, ER_TIMES_ITIME ); } break;
+            case ( 'n' ) : { er_times_set_time( & er_engine.eg_times, ER_TIMES_DECREASE ); } break;
+            case ( 'm' ) : { er_times_set_time( & er_engine.eg_times, ER_TIMES_INCREASE ); } break;
 
             /* Display position */
             case ( 'p' ) : {
@@ -356,15 +356,15 @@
         if ( glutGetModifiers() == GLUT_ACTIVE_ALT ) {
 
             /* Mouse event switch - update time zoom */
-            if ( er_engine.eg_button == 3 ) er_times_set_zoom( & er_engine.eg_times, ER_TIMES_IZOOM );
-            if ( er_engine.eg_button == 4 ) er_times_set_zoom( & er_engine.eg_times, ER_TIMES_DZOOM );
+            if ( er_engine.eg_button == 3 ) er_times_set_zoom( & er_engine.eg_times, ER_TIMES_INCREASE );
+            if ( er_engine.eg_button == 4 ) er_times_set_zoom( & er_engine.eg_times, ER_TIMES_DECREASE );
 
         } else
         if ( glutGetModifiers() == ( GLUT_ACTIVE_CTRL | GLUT_ACTIVE_ALT ) ) {
 
             /* Mouse event switch - update time position */
-            if ( er_engine.eg_button == 3 ) er_times_set_pose( & er_engine.eg_times, ER_TIMES_IPOSE );
-            if ( er_engine.eg_button == 4 ) er_times_set_pose( & er_engine.eg_times, ER_TIMES_DPOSE );
+            if ( er_engine.eg_button == 3 ) er_times_set_pose( & er_engine.eg_times, ER_TIMES_INCREASE );
+            if ( er_engine.eg_button == 4 ) er_times_set_pose( & er_engine.eg_times, ER_TIMES_DECREASE );
 
         } else {
 

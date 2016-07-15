@@ -58,52 +58,33 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_TIMES_C         { \
-                                NULL, \
-                                _LE_USE_PORT, \
-                                _LE_TIME_NULL, \
-                                ER_TIMES_YEAR, \
-                                0, \
-                                _LE_TIME_NULL, \
-                                _LE_TRUE, \
-                                0, \
-                                LE_ARRAY_C, \
-                                LE_ARRAY_C, \
-                                _LE_TRUE \
-                                }
+    # define ER_TIMES_C          { NULL, _LE_USE_PORT, _LE_TIME_NULL, ER_TIMES_YEAR, 0, _LE_TIME_NULL, _LE_TRUE, 0, LE_ARRAY_C, LE_ARRAY_C, _LE_TRUE }
 
-    /* Define second graduation */
-    # define ER_TIMES_GRAD1     ( _LE_TIME_L(    100000 ) )
-    # define ER_TIMES_GRAD2     ( _LE_TIME_L(   1000000 ) )
-    # define ER_TIMES_GRAD3     ( _LE_TIME_L(  10000000 ) )
-    # define ER_TIMES_GRAD4     ( _LE_TIME_L( 100000000 ) )
+    /* Define modification modes */
+    # define ER_TIMES_DECREASE   ( 0 )
+    # define ER_TIMES_INCREASE   ( 1 )
 
-    /* Define time ranges */
-    # define ER_TIMES_DAY       ( _LE_TIME_L( 86400 ) )
-    # define ER_TIMES_MONTH     ( ER_TIMES_DAY * _LE_TIME_L( 30 ) )
-    # define ER_TIMES_YEAR      ( ER_TIMES_MONTH * _LE_TIME_L( 12 ) )
+    /* Define standard intervalle */
+    # define ER_TIMES_DAY        ( _LE_TIME_L( 86400 ) )
+    # define ER_TIMES_YEAR       ( _LE_TIME_L( 86400 ) * _LE_TIME_L( 30 ) * _LE_TIME_L ( 12 ) )
 
-    /* Define zoom limitation */
-    # define ER_TIMES_ZOOM_L    ( ER_TIMES_DAY * _LE_TIME_L(     5 ) )
-    # define ER_TIMES_ZOOM_U    ( ER_TIMES_DAY * _LE_TIME_L( 18250 ) )
+    /* Define graduation configuration */
+    # define ER_TIMES_GRAD_SCALE ( _LE_TIME_L( 100000000 ) )
+    # define ER_TIMES_GRAP_DEPTH ( 4 )
 
-    /* Define control modes */
-    # define ER_TIMES_DZOOM     ( 0 )
-    # define ER_TIMES_IZOOM     ( 1 )
-    # define ER_TIMES_DPOSE     ( 0 )
-    # define ER_TIMES_IPOSE     ( 1 )
-    # define ER_TIMES_DTIME     ( 0 )
-    # define ER_TIMES_ITIME     ( 1 )
-
-    /* Define SRTM time */
-    # define ER_TIMES_SRTM(t)   ( ( _LE_TIME_L( 950486422 ) / t ) * t )
+    /* Define zoom limitations */
+    # define ER_TIMES_ZOOM_MIN   ( ER_TIMES_DAY * _LE_TIME_L(     5 ) )
+    # define ER_TIMES_ZOOM_MAX   ( ER_TIMES_DAY * _LE_TIME_L( 18250 ) )
 
 /*
     header - preprocessor macros
  */
 
     /* Define rounding macro */
-    # define ER_TIMES_RUD(t,r)  ( ( ( t / r ) * r ) + r )
+    # define ER_TIMES_RUD(t,r)   ( ( ( t / r ) * r ) + r )
+
+    /* Define SRTM macro (default) */
+    # define ER_TIMES_SRTM(t)    ( ( _LE_TIME_L( 950486422 ) / t ) * t )
 
 /*
     header - type definition
