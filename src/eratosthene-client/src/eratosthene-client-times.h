@@ -72,6 +72,21 @@
                                 _LE_TRUE \
                                 }
 
+    /* Define second graduation */
+    # define ER_TIMES_GRAD1     ( _LE_TIME_L(    100000 ) )
+    # define ER_TIMES_GRAD2     ( _LE_TIME_L(   1000000 ) )
+    # define ER_TIMES_GRAD3     ( _LE_TIME_L(  10000000 ) )
+    # define ER_TIMES_GRAD4     ( _LE_TIME_L( 100000000 ) )
+
+    /* Define time ranges */
+    # define ER_TIMES_DAY       ( _LE_TIME_L( 86400 ) )
+    # define ER_TIMES_MONTH     ( ER_TIMES_DAY * _LE_TIME_L( 30 ) )
+    # define ER_TIMES_YEAR      ( ER_TIMES_MONTH * _LE_TIME_L( 12 ) )
+
+    /* Define zoom limitation */
+    # define ER_TIMES_ZOOM_L    ( ER_TIMES_DAY * _LE_TIME_L(     5 ) )
+    # define ER_TIMES_ZOOM_U    ( ER_TIMES_DAY * _LE_TIME_L( 18250 ) )
+
     /* Define control modes */
     # define ER_TIMES_DZOOM     ( 0 )
     # define ER_TIMES_IZOOM     ( 1 )
@@ -80,17 +95,15 @@
     # define ER_TIMES_DTIME     ( 0 )
     # define ER_TIMES_ITIME     ( 1 )
 
-    /* Define time ranges */
-    # define ER_TIMES_DAY       ( _LE_TIME_L( 86400 ) )
-    # define ER_TIMES_MONTH     ( ER_TIMES_DAY * _LE_TIME_L( 30 ) )
-    # define ER_TIMES_YEAR      ( ER_TIMES_MONTH * _LE_TIME_L( 12 ) )
-
     /* Define SRTM time */
     # define ER_TIMES_SRTM(t)   ( ( _LE_TIME_L( 950486422 ) / t ) * t )
 
 /*
     header - preprocessor macros
  */
+
+    /* Define rounding macro */
+    # define ER_TIMES_RUD(t,r)  ( ( ( t / r ) * r ) + r )
 
 /*
     header - type definition
@@ -143,6 +156,10 @@
     le_void_t er_times_set_nearest( er_times_t * const er_times );
 
     le_void_t er_times_display( er_times_t const * const er_times );
+
+    le_char_t * er_times_string( le_time_t const er_time );
+
+    le_char_t * er_times_range( er_times_t const * const er_times, le_time_t const er_lbound, le_time_t const er_ubound );
 
 /*
     header - C/C++ compatibility
