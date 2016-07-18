@@ -353,14 +353,14 @@
         if ( er_engine.eg_state != GLUT_DOWN ) return;
 
         /* Interface switch */
-        if ( glutGetModifiers() == GLUT_ACTIVE_ALT ) {
+        if ( glutGetModifiers() == ( GLUT_ACTIVE_CTRL | GLUT_ACTIVE_ALT ) ) {
 
             /* Mouse event switch - update time zoom */
             if ( er_engine.eg_button == 3 ) er_times_set_zoom( & er_engine.eg_times, ER_TIMES_INCREASE );
             if ( er_engine.eg_button == 4 ) er_times_set_zoom( & er_engine.eg_times, ER_TIMES_DECREASE );
 
         } else
-        if ( glutGetModifiers() == ( GLUT_ACTIVE_CTRL | GLUT_ACTIVE_ALT ) ) {
+        if ( glutGetModifiers() == GLUT_ACTIVE_ALT ) {
 
             /* Mouse event switch - update time position */
             if ( er_engine.eg_button == 3 ) er_times_set_pose( & er_engine.eg_times, ER_TIMES_INCREASE );
@@ -410,12 +410,12 @@
         /* Angle ranges - cyclic */
         if ( er_engine.eg_vlon > +180.0 ) er_engine.eg_vlon -= +360.0;
         if ( er_engine.eg_vlon < -180.0 ) er_engine.eg_vlon += +360.0;
-        if ( er_engine.eg_vlat > + 90.0 ) er_engine.eg_vlat  = + 90.0;
-        if ( er_engine.eg_vlat < - 90.0 ) er_engine.eg_vlat  = - 90.0;
         if ( er_engine.eg_vazm > +360.0 ) er_engine.eg_vazm -= +360.0;
         if ( er_engine.eg_vazm < -360.0 ) er_engine.eg_vazm += +360.0;
 
         /* Angles ranges - clamp */
+        if ( er_engine.eg_vlat > + 90.0 ) er_engine.eg_vlat = + 90.0;
+        if ( er_engine.eg_vlat < - 90.0 ) er_engine.eg_vlat = - 90.0;
         if ( er_engine.eg_vgam < -120.0 ) er_engine.eg_vgam = -120.0;
         if ( er_engine.eg_vgam > +120.0 ) er_engine.eg_vgam = +120.0;
 
