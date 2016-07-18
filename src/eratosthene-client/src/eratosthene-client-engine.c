@@ -302,16 +302,16 @@
             case ( 'q' ) : { er_engine.eg_point --; } break;
 
             /* Update point of view */
-            case ( 'r' ) : { er_engine.eg_valt = 1.5 * ER_ERA; }
-            case ( 'a' ) : { er_engine.eg_vazm = 0.0; }
-            case ( 'g' ) : { er_engine.eg_vgam = 0.0; } break;
+            case ( 'c' ) : { er_engine.eg_valt = 1.5 * ER_ERA; }
+            case ( 'x' ) : { er_engine.eg_vazm = 0.0; }
+            case ( 'y' ) : { er_engine.eg_vgam = 0.0; } break;
 
             /* Update times */
-            case ( 't' ) : { er_times_set( & er_engine.eg_times ); } break;
+            case ( 'd' ) : { er_times_set( & er_engine.eg_times ); } break;
 
             /* Update times */
-            case ( 'n' ) : { er_times_set_time( & er_engine.eg_times, ER_TIMES_DECREASE ); } break;
-            case ( 'm' ) : { er_times_set_time( & er_engine.eg_times, ER_TIMES_INCREASE ); } break;
+            case ( 'a' ) : { er_times_set_time( & er_engine.eg_times, ER_TIMES_DECREASE ); } break;
+            case ( 's' ) : { er_times_set_time( & er_engine.eg_times, ER_TIMES_INCREASE ); } break;
 
             /* Display position */
             case ( 'p' ) : {

@@ -86,7 +86,7 @@
  */
 
     /* Define rounding macro */
-    # define ER_TIMES_RUD(t,r)    ( ( ( t / r ) * r ) + r )
+    # define ER_TIMES_ROUND(t,r)  ( ( ( t / r ) * r ) + r )
 
     /* Define SRTM macro (default) */
     # define ER_TIMES_SRTM(t)     ( ( _LE_TIME_L( 950486422 ) / t ) * t )
@@ -133,13 +133,13 @@
 
     le_void_t er_times_set_default( er_times_t * const er_times );
 
+    le_void_t er_times_set_nearest( er_times_t * const er_times );
+
     le_void_t er_times_set_zoom( er_times_t * const er_times, le_size_t const er_mode );
 
     le_void_t er_times_set_pose( er_times_t * const er_times, le_size_t const er_mode );
 
     le_void_t er_times_set_time( er_times_t * const er_times, le_size_t const er_mode );
-
-    le_void_t er_times_set_nearest( er_times_t * const er_times );
 
     le_void_t er_times_display( er_times_t const * const er_times );
 
