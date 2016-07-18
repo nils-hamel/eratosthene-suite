@@ -272,7 +272,6 @@
         static le_size_t er_cwidth  = 0;
         static le_size_t er_cheight = 0;
         static le_size_t er_csize   = 0;
-        static le_size_t er_coffset = 0;
 
         /* Static buffer variables */
         static le_byte_t * er_buffer = NULL;
@@ -296,8 +295,7 @@
 
             /* Compute buffer sizes */
             er_cwidth  = glutGet( GLUT_SCREEN_WIDTH  );
-            er_cheight = glutGet( GLUT_SCREEN_HEIGHT ) * 0.07;
-            er_coffset = glutGet( GLUT_SCREEN_HEIGHT ) * 0.07;
+            er_cheight = glutGet( GLUT_SCREEN_HEIGHT ) * 0.1;
 
             /* Compute buffer byte count */
             er_csize = er_cwidth * er_cheight * 4;
@@ -315,15 +313,13 @@
 
         }
 
-        /* Information string position */
-        glRasterPos2i( 16 , er_coffset + er_cheight - 12 );
-
         /* Information string color */
-        glColor3f( 0.3, 0.3, 0.3 );
+        glColor3f( 0.5, 0.5, 0.5 );
 
-        /* Display information string */
-        glutBitmapString( GLUT_BITMAP_HELVETICA_10, er_times_range( er_times, er_lbound, er_ubound ) );
-
+        /* Display indicative dates */
+        er_times_print_date( er_lbound, 16, er_cheight - 2, ER_TIMES_JUST_LEFT );
+        er_times_print_date( er_ubound, er_cwidth - 16, er_cheight - 2, ER_TIMES_JUST_RIGHT );
+        
         /* Display times from stack */
         for ( le_size_t er_parse = 0; er_parse < er_times->tm_count; er_parse ++ ) {
 
@@ -331,16 +327,13 @@
             if ( ( er_ref[er_parse] > er_lbound ) && ( er_ref[er_parse] < er_ubound ) ) {
 
                 /* Set time string color */
-                if ( er_sel[er_parse] != _LE_TIME_NULL ) glColor3f( 0.3, 0.3, 0.3 ); else glColor3f( 0.7, 0.7, 0.7 );
+                if ( er_sel[er_parse] != _LE_TIME_NULL ) glColor3f( 0.5, 0.5, 0.5 ); else glColor3f( 0.7, 0.7, 0.7 );
 
                 /* Check highlighted time string */
                 if ( er_parse == er_times->tm_curr ) glColor3f( 0.3, 0.5, 0.7 );
 
-                /* Time string position */
-                glRasterPos2i( er_cwidth * ( ( le_real_t ) ( er_ref[er_parse] - er_lbound ) / er_times->tm_zoom ), er_coffset + 4 );
-
-                /* Display time string */
-                glutBitmapString( GLUT_BITMAP_HELVETICA_10, er_times_string( er_ref[er_parse] )  );
+                /* Display date string */
+                er_times_print_date( er_ref[er_parse], er_cwidth * ( ( le_real_t ) ( er_ref[er_parse] - er_lbound ) / er_times->tm_zoom ), 19, ER_TIMES_JUST_CENTER );
 
             }
 
@@ -358,14 +351,19 @@
                     /* Compute position of graduation */
                     er_point = ( ( ( ( le_real_t ) er_parse ) - er_lbound ) / er_times->tm_zoom ) * er_cwidth;
 
-                    /* Compute graduation egdes */
-                    er_egde = 18 + ( er_index << 2 );
+                    /* Check boundaries */
+                    if ( ( er_point >= 16 ) && ( er_point <= er_cwidth - 16 ) ) {
 
-                    /* Display graduation */
-                    for ( le_size_t er_pixel = er_egde; er_pixel < er_cheight - er_egde; er_pixel ++ ) {
+                        /* Compute graduation egdes */
+                        er_egde = 20 + ( er_index << 2 );
 
-                        /* Update alpha channel */
-                        er_buffer[(er_point + er_pixel * er_cwidth) * 4 + 3] -= 52;
+                        /* Display graduation */
+                        for ( le_size_t er_pixel = er_egde; er_pixel < er_cheight - er_egde; er_pixel ++ ) {
+
+                            /* Update alpha channel */
+                            er_buffer[(er_point + er_pixel * er_cwidth) * 4 + 3] -= 52;
+
+                        }
 
                     }
 
@@ -376,7 +374,7 @@
         }
 
         /* Buffer display position */
-        glRasterPos2i( 0, er_coffset );
+        glRasterPos2i( 0, 0 );
 
         /* Display buffer */
         glDrawPixels( er_cwidth, er_cheight, GL_RGBA, GL_UNSIGNED_BYTE, er_buffer );
@@ -387,38 +385,45 @@
     source - auxiliary methods
  */
 
-    le_char_t * er_times_string( le_time_t const er_time ) {
+    le_void_t er_times_print_date( le_time_t const er_time, le_size_t const er_x, le_size_t const er_y, le_enum_t const er_justify ) {
 
-        /* Static string array variables */
-        static le_char_t er_string[256] = { 0 };
+        /* String array varibles */
+        le_char_t er_string[256] = { 0 };
 
-        /* Decomposed time variables */
-        struct tm er_struct = * localtime( & er_time );
+        /* Time decomposition variable */
+        struct tm er_struct = * gmtime( & er_time );
 
         /* Compose date string */
         strftime( ( char * ) er_string, sizeof( er_string ), "%Y-%m-%d-%H:%M:%S", & er_struct );
 
-        /* Return composed string */
-        return( er_string );
+        /* Switch on string justification */
+        switch ( er_justify ) {
 
-    }
+            case( ER_TIMES_JUST_LEFT ) : {
 
-    le_char_t * er_times_range( er_times_t const * const er_times, le_time_t const er_lbound, le_time_t const er_ubound ) {
+                /* Assign string position */
+                glRasterPos2i( er_x, er_y - 13 );
 
-        /* Static string array variables */
-        static le_char_t er_string[256] = { 0 };
+            } break;
 
-        /* Compose range string */
-        sprintf( ( char * ) er_string, "%s", er_times_string( er_lbound ) );
+            case( ER_TIMES_JUST_RIGHT ) : {
 
-        /* Compose range string */
-        sprintf( ( char * ) er_string, "%s ( %.1fy )", er_string, ( float ) er_times->tm_zoom / ER_TIMES_YEAR );
+                /* Assign string position */
+                glRasterPos2i( er_x - strlen( ( char * ) er_string ) * 8, er_y - 13 );
 
-        /* Compose range string */
-        sprintf( ( char * ) er_string, "%s %s", er_string, er_times_string( er_ubound ) );
+            } break;
 
-        /* Return composed string */
-        return( er_string );
+            case( ER_TIMES_JUST_CENTER ) : {
+
+                /* Assign string position */
+                glRasterPos2i( er_x - strlen( ( char * ) er_string ) * 4, er_y - 13 );
+
+            } break;
+
+        };
+
+        /* Display string */
+        glutBitmapString( GLUT_BITMAP_8_BY_13, er_string );
 
     }
 
