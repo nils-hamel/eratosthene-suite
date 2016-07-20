@@ -171,10 +171,10 @@
         le_address_set_time( & er_addr, er_time );
 
         /* Parsing neighbour central cells - longitude */
-        for ( er_plon = 0; er_plon < 11; er_plon ++ ) {
+        for ( er_plon = 0; er_plon < 9; er_plon ++ ) {
 
             /* Parsing neighbour central cells - latitude */
-            for ( er_plat = 0; er_plat < 7; er_plat ++ ) {
+            for ( er_plat = 0; er_plat < 5; er_plat ++ ) {
 
                 /* Compose position vector */
                 er_pose[0] = er_lon + er_scale * ( ( le_real_t ) er_plon - 4.0 );

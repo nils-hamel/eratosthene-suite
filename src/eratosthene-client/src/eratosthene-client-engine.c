@@ -32,6 +32,9 @@
 
     le_enum_t er_engine_create( le_char_t * const er_ip, le_sock_t const er_port ) {
 
+        /* Dominant color variables */
+        float er_color[4] = { 0.0, 0.0, 0.0, 0.0 };
+
         /* Create engine model */
         if ( ( er_engine.eg_model = er_model_create( ER_ENGINE_STACK, er_ip, er_port ) )._status == _LE_FALSE ) return( _LE_FALSE );
 
@@ -53,14 +56,21 @@
         /* Graphical thread behavior configuration */
         glutSetOption( GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION );
 
-        /* Buffers clear values */
-        glClearColor( 0.0, 0.0, 0.0, 0.0 );
+        /* Color buffer clear values */
+        glClearColor( er_color[0], er_color[1], er_color[2], er_color[3] );
+
+        /* Depth buffer clear values */
         glClearDepth( 1.0 );
 
         /* OpenGL features configuration */
         glEnable( GL_DEPTH_TEST );
         glEnable( GL_BLEND );
 
+        /* OpenGL Fog configuration */
+        glFogf ( GL_FOG_MODE   , GL_LINEAR );
+        glFogf ( GL_FOG_DENSITY, 0.3       );
+        glFogfv( GL_FOG_COLOR  , er_color  );
+        
         /* Blending function configuration */
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -232,6 +242,10 @@
 
     le_void_t er_engine_proj_model( int er_width, int er_height ) {
 
+        /* Clipping plane variables */
+        le_real_t er_neac = er_geodesy_near( er_engine.eg_valt );
+        le_real_t er_farc = er_geodesy_far ( er_engine.eg_valt );
+
         /* Matrix mode to projection */
         glMatrixMode( GL_PROJECTION );
 
@@ -239,7 +253,7 @@
         glLoadIdentity();
 
         /* Compute projectio matrix */
-        gluPerspective( 45.0, ( double ) er_width / er_height, er_geodesy_near( er_engine.eg_valt ), er_geodesy_far( er_engine.eg_valt ) );
+        gluPerspective( 45.0, ( double ) er_width / er_height, er_neac, er_farc );
 
         /* Matrix mode to modelview */
         glMatrixMode( GL_MODELVIEW );
@@ -252,6 +266,13 @@
 
         /* Apply scale factor to projection matrix */
         glScaled( er_engine.eg_vscl, er_engine.eg_vscl, er_engine.eg_vscl );
+
+        /* Apply fog configuration */
+        glFogf( GL_FOG_START, er_farc * 0.8 );
+        glFogf( GL_FOG_END  , er_farc       );
+
+        /* Enable fog feature */
+        glEnable( GL_FOG );
 
     }
 
@@ -271,6 +292,9 @@
 
         /* Set model view matrix to identity */
         glLoadIdentity();
+
+        /* Disable fog feature */
+        glDisable( GL_FOG );
 
     }
 
