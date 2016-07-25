@@ -18,18 +18,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   common-include.h
+    /*! \file   common-time.h
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Inclusion header
+     *  Time management
      */
 
 /*
     header - inclusion guard
  */
 
-    # ifndef __LC_INCLUDE__
-    # define __LC_INCLUDE__
+    # ifndef __LC_TIME__
+    # define __LC_TIME__
 
 /*
     header - C/C++ compatibility
@@ -43,9 +43,8 @@
     header - includes
  */
 
-    # include "common-args.h"
-    # include "common-image.h"
-    # include "common-time.h"
+    # include <time.h>
+    # include "common.h"
 
 /*
     header - preprocessor definitions
@@ -66,6 +65,8 @@
 /*
     header - function prototypes
  */
+
+    unsigned char * lc_time_to_string( time_t const lc_time, unsigned char * const lc_string, size_t const lc_limit );
 
 /*
     header - C/C++ compatibility

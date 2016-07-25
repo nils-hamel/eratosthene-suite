@@ -18,66 +18,22 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   common-include.h
-     *  \author Nils Hamel <n.hamel@bluewin.ch>
-     *
-     *  Inclusion header
-     */
-
-/*
-    header - inclusion guard
- */
-
-    # ifndef __LC_INCLUDE__
-    # define __LC_INCLUDE__
-
-/*
-    header - C/C++ compatibility
- */
-
-    # ifdef __cplusplus
-    extern "C" {
-    # endif
-
-/*
-    header - includes
- */
-
-    # include "common-args.h"
     # include "common-image.h"
-    # include "common-time.h"
 
 /*
-    header - preprocessor definitions
+    source - conversion methods
  */
 
-/*
-    header - preprocessor macros
- */
+    unsigned char * lc_time_to_string( time_t const lc_time, unsigned char * const lc_string, size_t const lc_limit ) {
 
-/*
-    header - type definition
- */
+        /* Time decomposition variable */
+        struct tm lc_struct = * gmtime( & lc_time );
 
-/*
-    header - structures
- */
+        /* Compose date string */
+        strftime( ( char * ) lc_string, lc_limit, "%Y%m%d-%H%M%S", & lc_struct );
 
-/*
-    header - function prototypes
- */
+        /* Return filled string */
+        return( lc_string );
 
-/*
-    header - C/C++ compatibility
- */
-
-    # ifdef __cplusplus
     }
-    # endif
-
-/*
-    header - inclusion guard
- */
-
-    # endif
 
