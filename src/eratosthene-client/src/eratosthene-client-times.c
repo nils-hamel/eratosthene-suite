@@ -141,11 +141,19 @@
     source - mutator methods
  */
 
-    le_void_t er_times_set( er_times_t * const er_times ) {
+    le_void_t er_times_set( er_times_t * const er_times, le_enum_t const er_unique ) {
 
         /* Array base pointers variables */
         le_time_t * er_ref = ( le_time_t * ) le_array_get_byte( & er_times->tm_times );
         le_time_t * er_sel = ( le_time_t * ) le_array_get_byte( & er_times->tm_stack );
+
+        /* Check unicity flag */
+        if ( er_unique == _LE_TRUE ) {
+
+            /* Disable every times */
+            for ( le_size_t er_parse = 0; er_parse < er_times->tm_count; er_parse ++ ) er_sel[er_parse] = _LE_TIME_NULL;
+
+        }
 
         /* Check state of time */
         if ( er_sel[er_times->tm_curr] == _LE_TIME_NULL ) {

@@ -331,23 +331,12 @@
             case ( 'y' ) : { er_engine.eg_vgam = 0.0; } break;
 
             /* Update times */
-            case ( 'd' ) : { er_times_set( & er_engine.eg_times ); } break;
+            case ( 'd' ) : { er_times_set( & er_engine.eg_times, _LE_FALSE ); } break;
+            case ( 'f' ) : { er_times_set( & er_engine.eg_times, _LE_TRUE  ); } break;
 
             /* Update times */
             case ( 'a' ) : { er_times_set_time( & er_engine.eg_times, ER_TIMES_DECREASE ); } break;
             case ( 's' ) : { er_times_set_time( & er_engine.eg_times, ER_TIMES_INCREASE ); } break;
-
-            /* Display position */
-            case ( 'p' ) : {
-
-                /* Display position and orientation */
-                printf( "%" _LE_REAL_P "\n", er_engine.eg_vlon );
-                printf( "%" _LE_REAL_P "\n", er_engine.eg_vlat );
-                printf( "%" _LE_REAL_P "\n", er_engine.eg_valt );
-                printf( "%" _LE_REAL_P "\n", er_engine.eg_vazm );
-                printf( "%" _LE_REAL_P "\n", er_engine.eg_vgam );
-
-            } break;
 
         };
 

@@ -74,7 +74,7 @@
 
     /* Define zoom limitations */
     # define ER_TIMES_ZOOM_MIN    ( ER_TIMES_DAY * _LE_TIME_L(     5 ) )
-    # define ER_TIMES_ZOOM_MAX    ( ER_TIMES_DAY * _LE_TIME_L( 18250 ) )
+    # define ER_TIMES_ZOOM_MAX    ( ER_TIMES_DAY * _LE_TIME_L( 91250 ) )
 
     /* Define string justification flags */
     # define ER_TIMES_JUST_LEFT   ( 0 )
@@ -129,7 +129,7 @@
 
     le_enum_t er_times_get_update( er_times_t * const er_times );
 
-    le_void_t er_times_set( er_times_t * const er_times );
+    le_void_t er_times_set( er_times_t * const er_times, le_enum_t const er_unique );
 
     le_void_t er_times_set_default( er_times_t * const er_times );
 
