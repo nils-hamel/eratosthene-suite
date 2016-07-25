@@ -37,7 +37,7 @@
         if ( ( er_times.tm_tdis = er_client_server_tparam( er_ip, er_port ) ) == _LE_TIME_NULL ) {
 
             /* Send message */
-            er_times._status = _LE_FALSE; return( er_times );
+            return( er_times._status = _LE_FALSE, er_times );
 
         }
 
@@ -48,7 +48,7 @@
         if ( le_array_get_size( & er_times.tm_times ) <= 0 ) {
 
             /* Send message */
-            er_times._status = _LE_FALSE; return( er_times );
+            return( er_times._status = _LE_FALSE, er_times );
 
         }
 
@@ -392,42 +392,28 @@
     le_void_t er_times_print_date( le_time_t const er_time, le_size_t const er_x, le_size_t const er_y, le_enum_t const er_justify ) {
 
         /* String array varibles */
-        le_char_t er_string[256] = { 0 };
+        le_char_t er_string[32] = { 0 };
 
-        /* Time decomposition variable */
-        struct tm er_struct = * gmtime( & er_time );
+        /* Check justification */
+        if ( er_justify == ER_TIMES_JUST_LEFT ) {
 
-        /* Compose date string */
-        strftime( ( char * ) er_string, sizeof( er_string ), "%F-%H%M%S", & er_struct );
+            /* Assign string position */
+            glRasterPos2i( er_x, er_y - 13 );
 
-        /* Switch on string justification */
-        switch ( er_justify ) {
+        } else if ( er_justify == ER_TIMES_JUST_RIGHT ) {
 
-            case( ER_TIMES_JUST_LEFT ) : {
+            /* Assign string position */
+            glRasterPos2i( er_x - strlen( ( char * ) er_string ) * 8, er_y - 13 );
 
-                /* Assign string position */
-                glRasterPos2i( er_x, er_y - 13 );
+        } else {
 
-            } break;
+            /* Assign string position */
+            glRasterPos2i( er_x - strlen( ( char * ) er_string ) * 4, er_y - 13 );
 
-            case( ER_TIMES_JUST_RIGHT ) : {
-
-                /* Assign string position */
-                glRasterPos2i( er_x - strlen( ( char * ) er_string ) * 8, er_y - 13 );
-
-            } break;
-
-            case( ER_TIMES_JUST_CENTER ) : {
-
-                /* Assign string position */
-                glRasterPos2i( er_x - strlen( ( char * ) er_string ) * 4, er_y - 13 );
-
-            } break;
-
-        };
+        }
 
         /* Display string */
-        glutBitmapString( GLUT_BITMAP_8_BY_13, er_string );
+        glutBitmapString( GLUT_BITMAP_8_BY_13, lc_time_to_string( er_time, er_string, 32 ) );
 
     }
 

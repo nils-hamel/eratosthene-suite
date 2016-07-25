@@ -51,6 +51,7 @@
 
     # include <time.h>
     # include <GL/freeglut.h>
+    # include <common-include.h>
     # include <eratosthene-include.h>
 
 /*
