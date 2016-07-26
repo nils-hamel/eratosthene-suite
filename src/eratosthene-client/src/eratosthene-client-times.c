@@ -162,11 +162,12 @@
 
             /* Check for SRTM data */
             if ( er_times->tm_time[er_parse] == ER_TIMES_SRTM( er_times->tm_tparam ) ) {
+                
+                /* Enable default time */
+                er_times->tm_pose = er_times->tm_time[er_times->tm_view[0] = er_parse];
 
-                /* Update flag and enable default time */
-                er_flag = _LE_TRUE, er_times->tm_pose = er_times->tm_time[er_times->tm_view[0] = er_parse];
-
-            }
+            /* Update state flag */
+            er_flag = _LE_TRUE; }
 
         }
 
@@ -187,29 +188,30 @@
             if ( ( er_current = le_time_abs( er_times->tm_time[er_parse] - er_times->tm_pose ) ) < er_distance ) {
 
                 /* Update nearest index and distance */
-                er_times->tm_near = er_parse, er_distance = er_current;
+                er_times->tm_near = er_parse;
 
-            }
+            /* Update distance */
+            er_distance = er_current; }
 
         }
 
     }
 
-    le_void_t er_times_set_zoom( er_times_t * const er_times, le_size_t const er_mode ) {
+    le_void_t er_times_set_zoom( er_times_t * const er_times, le_real_t const er_factor ) {
 
         /* Update zoom value */
-        er_times->tm_zoom *= ( er_mode == ER_TIMES_DECREASE ? 1.0 / 1.1 : 1.1 );
+        er_times->tm_zoom *= er_factor;
 
-        /* Check limitation */
+        /* Check zoom limitations */
         if ( er_times->tm_zoom <= ER_TIMES_ZOOM_MIN ) er_times->tm_zoom = ER_TIMES_ZOOM_MIN;
         if ( er_times->tm_zoom >= ER_TIMES_ZOOM_MAX ) er_times->tm_zoom = ER_TIMES_ZOOM_MAX;
 
     }
 
-    le_void_t er_times_set_pose( er_times_t * const er_times, le_size_t const er_mode ) {
+    le_void_t er_times_set_pose( er_times_t * const er_times, le_real_t const er_factor ) {
 
         /* Update position value */
-        er_times->tm_pose += er_times->tm_zoom * ( er_mode == ER_TIMES_DECREASE ? -0.02 : 0.02 );
+        er_times->tm_pose += er_times->tm_zoom * er_factor;
 
         /* Update nearest times */
         er_times_set_nearest( er_times );
@@ -256,10 +258,12 @@
             /* Memory allocation check */
             return;
 
-        }
+        } else {
 
-        /* Reset buffer bytes */
-        for ( le_size_t er_i = 3; er_i < er_bsize; er_buffer[er_i += 4] = 208 );
+            /* Reset buffer bytes */
+            for ( le_size_t er_i = 3; er_i < er_bsize; er_buffer[er_i += 4] = 208 );
+
+        }
 
         /* Display boundaries times */
         er_times_display_date( er_lbound, 16, er_shift + 19, ER_TIMES_JUST_LEFT, 0 );
@@ -286,16 +290,16 @@
 
         }
 
-        /* Display graduation scales */
+        /* Display graduations */
         for ( le_size_t er_scale = 0; er_scale < ER_TIMES_GRAP_DEPTH; er_dgrad /= 10, er_scale ++ ) {
 
             /* Check graduation spacing */
-            if ( ( ( ( ( le_real_t ) er_dgrad ) / er_times->tm_zoom ) * er_xsize ) > 4 ) {
+            if ( ( ( ( ( le_real_t ) er_dgrad ) / er_times->tm_zoom ) * er_xsize ) > 6 ) {
 
                 /* Display graduation */
                 for ( le_time_t er_parse = ER_TIMES_ROUND( er_lbound, er_dgrad ); er_parse < er_ubound; er_parse += er_dgrad ) {
 
-                    /* Compute graduation increment x-position */
+                    /* Compute graduation x-position */
                     er_xgrad = ( ( ( ( le_real_t ) er_parse ) - er_lbound ) / er_times->tm_zoom ) * er_xsize;
 
                     /* Check interface boundaries */
@@ -308,7 +312,7 @@
                         for ( le_size_t er_pixel = er_ygrad; er_pixel < er_ysize - er_ygrad; er_pixel ++ ) {
 
                             /* Update interface buffer alpha channel */
-                            er_buffer[(er_xgrad + er_pixel * er_xsize) * 4 + 3] -= 52;
+                            er_buffer[(er_xgrad + er_pixel * er_xsize) * 4 + 3] -= 255 / ER_TIMES_GRAP_DEPTH;
 
                         }
 
@@ -336,11 +340,11 @@
         /* Compose date string */
         lc_time_to_string( er_time, er_string, 32 );
 
-        /* Check justification */
+        /* Check justification - assign shift */
         if ( er_justify == ER_TIMES_JUST_RIGHT  ) er_x -= strlen( ( char * ) er_string ) * 8;
         if ( er_justify == ER_TIMES_JUST_CENTER ) er_x -= strlen( ( char * ) er_string ) * 4;
 
-        /* Check color */
+        /* Check color - assign color */
         if ( er_color == 0 ) glColor3f( 0.5, 0.5, 0.5 ); else glColor3f( 0.2, 0.5, 0.8 );
 
         /* Assign string position */

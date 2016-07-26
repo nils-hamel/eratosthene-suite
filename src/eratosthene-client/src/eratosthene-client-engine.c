@@ -365,15 +365,15 @@
         if ( glutGetModifiers() == ( GLUT_ACTIVE_CTRL | GLUT_ACTIVE_ALT ) ) {
 
             /* Mouse event switch - update time zoom */
-            if ( er_engine.eg_button == 3 ) er_times_set_zoom( & er_engine.eg_times, ER_TIMES_INCREASE );
-            if ( er_engine.eg_button == 4 ) er_times_set_zoom( & er_engine.eg_times, ER_TIMES_DECREASE );
+            if ( er_engine.eg_button == 3 ) er_times_set_zoom( & er_engine.eg_times, 1.0990 );
+            if ( er_engine.eg_button == 4 ) er_times_set_zoom( & er_engine.eg_times, 0.9099 );
 
         } else
         if ( glutGetModifiers() == GLUT_ACTIVE_ALT ) {
 
             /* Mouse event switch - update time position */
-            if ( er_engine.eg_button == 3 ) er_times_set_pose( & er_engine.eg_times, ER_TIMES_INCREASE );
-            if ( er_engine.eg_button == 4 ) er_times_set_pose( & er_engine.eg_times, ER_TIMES_DECREASE );
+            if ( er_engine.eg_button == 3 ) er_times_set_pose( & er_engine.eg_times, + 0.02 );
+            if ( er_engine.eg_button == 4 ) er_times_set_pose( & er_engine.eg_times, - 0.02 );
 
         } else {
 

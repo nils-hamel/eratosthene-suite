@@ -59,38 +59,33 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_TIMES_C           { NULL, _LE_USE_PORT, _LE_TRUE, _LE_TIME_NULL, LE_ARRAY_C, _LE_TIME_NULL, ER_TIMES_YEAR, 0, { _LE_SIZE_NULL, _LE_SIZE_NULL }, 0, NULL, _LE_TRUE }
-
-    /* Define modification modes */
-    # define ER_TIMES_DECREASE    ( 0 )
-    # define ER_TIMES_INCREASE    ( 1 )
+    # define ER_TIMES_C            { NULL, _LE_USE_PORT, _LE_TRUE, _LE_TIME_NULL, LE_ARRAY_C, _LE_TIME_NULL, ER_TIMES_DAY * _LE_TIME_L( 365 ), 0, { _LE_SIZE_NULL, _LE_SIZE_NULL }, 0, NULL, _LE_TRUE }
 
     /* Define standard intervalle */
-    # define ER_TIMES_DAY         ( _LE_TIME_L( 86400 ) )
-    # define ER_TIMES_YEAR        ( _LE_TIME_L( 86400 ) * _LE_TIME_L( 30 ) * _LE_TIME_L ( 12 ) )
+    # define ER_TIMES_DAY          ( _LE_TIME_L( 86400 ) )
 
     /* Define graduation configuration */
-    # define ER_TIMES_GRAD_SCALE  ( _LE_TIME_L( 1000000000 ) )
-    # define ER_TIMES_GRAP_DEPTH  ( 5 )
+    # define ER_TIMES_GRAD_SCALE   ( _LE_TIME_L( 1000000000 ) )
+    # define ER_TIMES_GRAP_DEPTH   ( 5 )
 
     /* Define zoom limitations */
-    # define ER_TIMES_ZOOM_MIN    ( ER_TIMES_DAY * _LE_TIME_L(     5 ) )
-    # define ER_TIMES_ZOOM_MAX    ( ER_TIMES_DAY * _LE_TIME_L( 91250 ) )
+    # define ER_TIMES_ZOOM_MIN     ( ER_TIMES_DAY * _LE_TIME_L(     5 ) )
+    # define ER_TIMES_ZOOM_MAX     ( ER_TIMES_DAY * _LE_TIME_L( 91250 ) )
 
     /* Define string justification flags */
-    # define ER_TIMES_JUST_LEFT   ( 0 )
-    # define ER_TIMES_JUST_RIGHT  ( 1 )
-    # define ER_TIMES_JUST_CENTER ( 2 )
+    # define ER_TIMES_JUST_LEFT    ( 0 )
+    # define ER_TIMES_JUST_RIGHT   ( 1 )
+    # define ER_TIMES_JUST_CENTER  ( 2 )
 
 /*
     header - preprocessor macros
  */
 
     /* Define rounding macro */
-    # define ER_TIMES_ROUND(t,r)  ( ( ( t / r ) * r ) + r )
+    # define ER_TIMES_ROUND(t,r)   ( ( ( t / r ) * r ) + r )
 
     /* Define SRTM macro (default) */
-    # define ER_TIMES_SRTM(t)     ( ( _LE_TIME_L( 950486422 ) / t ) * t )
+    # define ER_TIMES_SRTM(t)      ( ( _LE_TIME_L( 950486422 ) / t ) * t )
 
 /*
     header - type definition
@@ -139,9 +134,9 @@
 
     le_void_t er_times_set_nearest( er_times_t * const er_times );
 
-    le_void_t er_times_set_zoom( er_times_t * const er_times, le_size_t const er_mode );
+    le_void_t er_times_set_zoom( er_times_t * const er_times, le_real_t const er_factor );
 
-    le_void_t er_times_set_pose( er_times_t * const er_times, le_size_t const er_mode );
+    le_void_t er_times_set_pose( er_times_t * const er_times, le_real_t const er_factor );
 
     le_void_t er_times_display( er_times_t const * const er_times );
 
