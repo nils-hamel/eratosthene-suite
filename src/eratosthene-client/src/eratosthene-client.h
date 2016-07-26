@@ -66,7 +66,9 @@
     header - internal includes
  */
 
-    # include "eratosthene-client-engine.h"
+    # include "eratosthene-client-times.h"
+    # include "eratosthene-client-model.h"
+    # include "eratosthene-client-geodesy.h"
 
 /*
     header - external includes
@@ -74,13 +76,25 @@
 
     # include <stdio.h>
     # include <stdlib.h>
+    # include <unistd.h>
     # include <GL/freeglut.h>
+    # ifdef __OPENMP__
+    # include <omp.h>
+    # else
+    # include <pthread.h>
+    # endif
     # include <common-include.h>
     # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions
  */
+
+    /* Define pseudo-constructor */
+    # define ER_CLIENT_C     { _LE_TRUE, ER_MODEL_C, ER_TIMES_C, 0, GLUT_UP, 0, 0, 1.0, ER_ERD, 12.335911, 45.438064, 0.0, 0.0, 1.0 }
+
+    /* Define cell stack size */
+    # define ER_CLIENT_STACK 4096
 
 /*
     header - preprocessor macros
@@ -93,6 +107,70 @@
 /*
     header - structures
  */
+
+    /*! \struct er_client_struct
+     *  \brief Rendering engine handle
+     *
+     *  This structure holds the rendering engine descriptor. It contains fields
+     *  for rendering configuration, client events and motions control. It also
+     *  contains the model descriptor that contains the information needed to
+     *  render the earth modelisation.
+     *
+     *  \var er_client_struct::cl_model
+     *  Engine model descriptor
+     *  \var er_client_struct::cl_point
+     *  Engine rendering point size
+     *  \var er_client_struct::cl_button
+     *  Event mouse button
+     *  \var er_client_struct::cl_state
+     *  Event mouse state
+     *  \var er_client_struct::cl_x
+     *  Event mouse position
+     *  \var er_client_struct::cl_y
+     *  Event mouse position
+     *  \var er_client_struct::cl_u
+     *  Event mouse pushed position
+     *  \var er_client_struct::cl_v
+     *  Event mouse pushed position
+     *  \var er_client_struct::cl_inertia
+     *  Point of view intertial factor
+     *  \var er_client_struct::cl_valt
+     *  Point of view altitude (radial components)
+     *  \var er_client_struct::cl_vlon
+     *  Point of view longitude
+     *  \var er_client_struct::cl_vlat
+     *  Point of view latitude
+     *  \var er_client_struct::cl_vazm
+     *  Point of view azimuthal angle
+     *  \var er_client_struct::cl_vgam
+     *  Point of view tilt angle
+     *  \var er_client_struct::cl_vscl
+     *  Point of view scale factor 
+     *  \var er_client_struct::cl_vtim
+     *  Point of view time
+     */
+
+    typedef struct er_client_struct {
+
+        le_enum_t  cl_loops;
+
+        er_model_t cl_model;
+        er_times_t cl_times;
+
+        le_enum_t  cl_button;
+        le_enum_t  cl_state;
+        le_diff_t  cl_x;
+        le_diff_t  cl_y;
+        le_real_t  cl_inertia;
+
+        le_real_t  cl_valt;
+        le_real_t  cl_vlon;
+        le_real_t  cl_vlat;
+        le_real_t  cl_vazm;
+        le_real_t  cl_vgam;
+        le_real_t  cl_vscl;
+
+    } er_client_t;
 
 /*
     header - function prototypes
@@ -113,6 +191,119 @@
      */
 
     int main( int argc, char ** argv );
+
+    /*! \brief constructor/destructor methods
+     *
+     *  This function creates and returns the rendering engine descriptor. In
+     *  addition to the initialisation of the fields, it also initialise the
+     *  graphical context and setup callbacks functions. It is also responsible
+     *  of the model descriptor creation.
+     *
+     *  \param er_stack Size of the model cells array
+     *  \param er_ip    Server ip address
+     *  \param er_port  Server service port
+     *
+     *  \return Returns _LE_TRUE on success, _LE_FALSE otherwise
+     */
+
+    le_enum_t er_client_create( le_char_t * const er_ip, le_sock_t const er_port );
+
+    /*! \brief constructor/destructor methods
+     *
+     *  This function deletes a rendering engine descriptor created by the
+     *  \b er_client_create function. In addition to model deletion, it also
+     *  uninitialise the graphical context and model descriptor.
+     *
+     *  Note that, because of event management through callback functions, the
+     *  instance of the rendering engine descriptor is global :(
+     */
+
+    le_void_t er_client_delete( le_void_t );
+
+    /*! \brief engine loop
+     *
+     *  This function holds the callback procedure for the model rendering.
+     */
+
+    le_void_t er_client_loops_render( le_void_t );
+
+    /*! \brief engine loop
+     *
+     *  This function implements an infinit loop that contains the procedure
+     *  needed to update the model.
+     *
+     *  \param er_null Null pointer
+     *
+     *  \return Null pointer
+     */
+
+    le_void_t er_client_loops_update( le_void_t );
+
+    /*! \brief engine callbacks - reshape
+     *
+     *  This function implements the reshape callback called on rendering
+     *  buffer reshape.
+     *
+     *  This project requiering dynamic near and far planes, this function is
+     *  called each time a model rendering starts.
+     *
+     *  \param er_width  Width, in pixel, of the rendering buffer
+     *  \param er_height Height, in pixels, of the rendering buffer
+     */
+
+    //le_void_t er_client_calls_reshape( int er_width, int er_height );
+    le_void_t er_client_proj_model( int er_width, int er_height );
+
+    le_void_t er_client_proj_interface( int er_width, int er_height );
+
+    le_void_t er_client_calls_reshape( int er_width, int er_height );
+
+    /*! \brief engine callbacks - keyboard
+     *
+     *  This function implements the keyboard callback function called on
+     *  keyboard events.
+     *
+     *  \param er_keycode Keyboard key code
+     *  \param er_x       Mouse position at key press
+     *  \param er_y       Mouse position at key press
+     */
+
+    le_void_t er_client_calls_keybd( unsigned char er_keycode, int er_x, int er_y );
+
+    /*! \brief engine callbacks - mouse
+     *
+     *  This function implements the mouse click callback function called on
+     *  mouse click events.
+     *
+     *  \param er_button Mouse button code
+     *  \param er_state  Mouse button state
+     *  \param er_x      Mouse position at click
+     *  \param er_y      Mouse position at click
+     */
+
+    le_void_t er_client_calls_mouse( int er_button, int er_state, int er_x, int er_y );
+
+    /*! \brief engine callbacks - mouse
+     *
+     *  This function implements the mouse motion callback function called on
+     *  mouse motion events.
+     *
+     *  \param er_x Mouse position
+     *  \param er_y Mouse position
+     */
+
+    le_void_t er_client_calls_move( int er_x, int er_y );    
+
+    /*! \brief engine callbacks - ranges
+     *
+     *  This function implements the range verification callback function. It
+     *  is typically called each time a model rendering starts. It verify that
+     *  point of view angle and distance remains in the determined ranges.
+     */
+
+    le_void_t er_client_calls_range();
+
+    void * er_client_pthread( void * er_null );
 
 /*
     header - C/C++ compatibility
