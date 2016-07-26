@@ -61,26 +61,14 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_MODEL_C {\
-        NULL,\
-        _LE_USE_PORT,\
-        _LE_SIZE_NULL,\
-        _LE_TIME_NULL,\
-        0.0,\
-        0.0,\
-        0.0,\
-        0,\
-        0,\
-        NULL,\
-        _LE_TRUE\
-    }
+    # define ER_MODEL_C       { NULL, _LE_USE_PORT, _LE_SIZE_NULL, _LE_TIME_NULL, 0.0, 0.0, 0.0, 0, 0, NULL, _LE_TRUE }
 
     /* Define model parameters */
-    # define ER_MODEL_DPT 7
+    # define ER_MODEL_DPT     7
 
     /* Define display array types */
-    # define ER_MODEL_VA  GL_DOUBLE
-    # define ER_MODEL_CA  GL_UNSIGNED_BYTE
+    # define ER_MODEL_VERTEX  GL_DOUBLE
+    # define ER_MODEL_COLORS  GL_UNSIGNED_BYTE
 
 /*
     header - preprocessor macros

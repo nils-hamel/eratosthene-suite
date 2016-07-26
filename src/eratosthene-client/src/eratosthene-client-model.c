@@ -37,7 +37,7 @@
         if ( ( er_model.md_sdis = er_client_server_sparam( er_ip, er_port ) ) == _LE_SIZE_NULL ) {
 
             /* Send message */
-            er_model._status = _LE_FALSE; return( er_model );
+            return( er_model._status = _LE_FALSE, er_model );
 
         }
 
@@ -45,7 +45,7 @@
         if ( ( er_model.md_tdis = er_client_server_tparam( er_ip, er_port ) ) == _LE_TIME_NULL ) {
 
             /* Send message */
-            er_model._status = _LE_FALSE; return( er_model );
+            return( er_model._status = _LE_FALSE, er_model );
 
         }
 
@@ -53,7 +53,7 @@
         if ( ( er_model.md_cell = ( er_cell_t * ) malloc( ( er_model.md_size = er_cells ) * sizeof( er_cell_t ) ) ) == NULL ) {
 
             /* Send message */
-            er_model._status = _LE_FALSE; return( er_model );
+            return( er_model._status = _LE_FALSE, er_model );
 
         }
 
@@ -413,8 +413,8 @@
             if ( ( er_count = er_cell_get_size( ( er_model->md_cell ) + er_parse ) ) > 0 ) {
 
                 /* Vertex and color pointer to cell arrays */
-                glVertexPointer( 3, ER_MODEL_VA, 0, er_cell_get_pose( ( er_model->md_cell ) + er_parse ) );
-                glColorPointer ( 3, ER_MODEL_CA, 0, er_cell_get_data( ( er_model->md_cell ) + er_parse ) );
+                glVertexPointer( 3, ER_MODEL_VERTEX, 0, er_cell_get_pose( ( er_model->md_cell ) + er_parse ) );
+                glColorPointer ( 3, ER_MODEL_COLORS, 0, er_cell_get_data( ( er_model->md_cell ) + er_parse ) );
 
                 /* Cell matrix */
                 glPushMatrix(); {

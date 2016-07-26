@@ -36,7 +36,7 @@
         float er_color[4] = { 0.00, 0.02, 0.04, 0.00 };
 
         /* Create engine model */
-        if ( ( er_client.cl_model = er_model_create( ER_CLIENT_STACK, er_ip, er_port ) )._status == _LE_FALSE ) return( _LE_FALSE );
+        if ( ( er_client.cl_model = er_model_create( 4096, er_ip, er_port ) )._status == _LE_FALSE ) return( _LE_FALSE );
 
         /* Create engine times */
         if ( ( er_client.cl_times = er_times_create( er_ip, er_port ) )._status == _LE_FALSE ) return( _LE_FALSE );
@@ -168,11 +168,11 @@
         /* Update ranges */
         er_client_calls_range();
 
-        /* Projection : model */
-        er_client_proj_model( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
-
         /* Clear color and depth buffers */
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+        /* Projection : model */
+        er_client_proj_model( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
 
         /* Push matrix - model */
         glPushMatrix(); {
@@ -253,6 +253,9 @@
         le_real_t er_neac = er_geodesy_near( er_client.cl_valt );
         le_real_t er_farc = er_geodesy_far ( er_client.cl_valt );
 
+        /* Compute scale factor */
+        er_client.cl_vscl = er_geodesy_scale( er_client.cl_valt );
+
         /* Matrix mode to projection */
         glMatrixMode( GL_PROJECTION );
 
@@ -267,9 +270,6 @@
 
         /* Set model view matrix to identity */
         glLoadIdentity();
-
-        /* Compute scale factor */
-        er_client.cl_vscl = er_geodesy_scale( er_client.cl_valt );
 
         /* Apply scale factor to projection matrix */
         glScaled( er_client.cl_vscl, er_client.cl_vscl, er_client.cl_vscl );
@@ -322,22 +322,22 @@
         switch( er_keycode ) {
 
             /* Interrupt engine loops */
-            case (  27 ) : { glutLeaveMainLoop(), er_client.cl_loops = _LE_FALSE; } break;
+            case ( 0x1b ) : { glutLeaveMainLoop(), er_client.cl_loops = _LE_FALSE; } break;
 
             /* Update point size */
-            case (  49 ) :
-            case (  50 ) :
-            case (  51 ) : 
-            case (  52 ) : { glPointSize( er_keycode - 48 ); } break;
+            case ( 0x31 ) :
+            case ( 0x32 ) :
+            case ( 0x33 ) : 
+            case ( 0x34 ) : { glPointSize( er_keycode - 0x30 ); } break;
 
             /* Update point of view */
-            case (  99 ) : { er_client.cl_valt = ER_ERD; }
-            case ( 120 ) : { er_client.cl_vazm = 0.0; }
-            case ( 121 ) : { er_client.cl_vgam = 0.0; } break;
+            case ( 0x63 ) : { er_client.cl_valt = ER_ERD; }
+            case ( 0x78 ) : { er_client.cl_vazm = 0.0; }
+            case ( 0x79 ) : { er_client.cl_vgam = 0.0; } break;
 
             /* Update times */
-            case (  97 ) : { er_times_set( & er_client.cl_times, 0 ); } break;
-            case ( 115 ) : { er_times_set( & er_client.cl_times, 1 ); } break;
+            case ( 0x61 ) : { er_times_set( & er_client.cl_times, 0 ); } break;
+            case ( 0x73 ) : { er_times_set( & er_client.cl_times, 1 ); } break;
 
         };
 

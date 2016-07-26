@@ -93,9 +93,6 @@
     /* Define pseudo-constructor */
     # define ER_CLIENT_C     { _LE_TRUE, ER_MODEL_C, ER_TIMES_C, 0, GLUT_UP, 0, 0, 1.0, ER_ERD, 12.335911, 45.438064, 0.0, 0.0, 1.0 }
 
-    /* Define cell stack size */
-    # define ER_CLIENT_STACK 4096
-
 /*
     header - preprocessor macros
  */
