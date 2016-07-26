@@ -59,7 +59,7 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_TIMES_C           { NULL, _LE_USE_PORT, _LE_TRUE, _LE_TIME_NULL, LE_ARRAY_C, _LE_TIME_NULL, ER_TIMES_YEAR, 0, { _LE_TIME_NULL, _LE_TIME_NULL }, 0, NULL, _LE_TRUE }
+    # define ER_TIMES_C           { NULL, _LE_USE_PORT, _LE_TRUE, _LE_TIME_NULL, LE_ARRAY_C, _LE_TIME_NULL, ER_TIMES_YEAR, 0, { _LE_SIZE_NULL, _LE_SIZE_NULL }, 0, NULL, _LE_TRUE }
 
     /* Define modification modes */
     # define ER_TIMES_DECREASE    ( 0 )
@@ -70,8 +70,8 @@
     # define ER_TIMES_YEAR        ( _LE_TIME_L( 86400 ) * _LE_TIME_L( 30 ) * _LE_TIME_L ( 12 ) )
 
     /* Define graduation configuration */
-    # define ER_TIMES_GRAD_SCALE  ( _LE_TIME_L( 100000000 ) )
-    # define ER_TIMES_GRAP_DEPTH  ( 4 )
+    # define ER_TIMES_GRAD_SCALE  ( _LE_TIME_L( 1000000000 ) )
+    # define ER_TIMES_GRAP_DEPTH  ( 5 )
 
     /* Define zoom limitations */
     # define ER_TIMES_ZOOM_MIN    ( ER_TIMES_DAY * _LE_TIME_L(     5 ) )
@@ -112,7 +112,7 @@
         le_time_t   tm_pose;
         le_time_t   tm_zoom;
         le_size_t   tm_near;
-        le_time_t   tm_view[2];
+        le_size_t   tm_view[2];
 
         le_size_t   tm_size;
         le_time_t * tm_time;
@@ -133,8 +133,6 @@
 
     le_enum_t er_times_get_update( er_times_t * const er_times );
 
-    le_size_t er_times_get_nearest( er_times_t const * const er_times );
-
     le_void_t er_times_set( er_times_t * const er_times, le_size_t const er_index );
 
     le_void_t er_times_set_default( er_times_t * const er_times );
@@ -147,7 +145,7 @@
 
     le_void_t er_times_display( er_times_t const * const er_times );
 
-    le_void_t er_times_print_date( le_time_t const er_time, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify );
+    le_void_t er_times_display_date( le_time_t const er_time, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify, le_enum_t const er_color );
 
 /*
     header - C/C++ compatibility

@@ -58,14 +58,6 @@
         /* Retrieve times array */
         er_times.tm_time = ( le_time_t * ) le_array_get_byte( & er_times.tm_tarray );
 
-        /* Parsing times array */
-        //for ( le_size_t er_parse = 0; er_parse < le_array_get_size( & er_times.tm_tarray ); er_parse += LE_ARRAY_64T_LEN ) {
-
-            /* Push selection allocation */
-        //    le_array_set_push( & er_times.tm_stack, LE_ARRAY_64T, NULL, _LE_TIME_NULL, NULL );
-
-        //}
-
         /* Set default time */
         er_times_set_default( & er_times );
 
@@ -81,9 +73,6 @@
 
         /* Deleted structure variables */
         er_times_t er_delete = ER_TIMES_C;
-
-        /* Unallocate stack array */
-        //le_array_delete( & er_times->tm_stack );
 
         /* Unallocate times array */
         le_array_delete( & er_times->tm_tarray );
@@ -106,10 +95,10 @@
         while ( er_parse < 2 ) {
 
             /* Check enable time array */
-            if ( er_times->tm_view[er_parse] != _LE_TIME_NULL ) {
+            if ( er_times->tm_view[er_parse] != _LE_SIZE_NULL ) {
 
                 /* Return enable time */
-                return( er_times->tm_view[er_parse ++] );
+                return( er_times->tm_time[er_times->tm_view[er_parse ++]] );
 
             /* Continue enumeration */
             } else { ++ er_parse; }
@@ -144,15 +133,15 @@
         if ( ( er_index >= 0 ) && ( er_index < 2 ) ) {
 
             /* Check enable time state */
-            if ( er_times->tm_view[er_index] != er_times->tm_time[er_times->tm_near] ) {
+            if ( er_times->tm_view[er_index] != er_times->tm_near ) {
             
                 /* Enable highlighted time */
-                er_times->tm_view[er_index] = er_times->tm_time[er_times->tm_near];
+                er_times->tm_view[er_index] = er_times->tm_near;
 
             } else {
 
                 /* Disable highlighted time */
-                er_times->tm_view[er_index] = _LE_TIME_NULL;
+                er_times->tm_view[er_index] = _LE_SIZE_NULL;
 
             }
 
@@ -175,14 +164,14 @@
             if ( er_times->tm_time[er_parse] == ER_TIMES_SRTM( er_times->tm_tparam ) ) {
 
                 /* Update flag and enable default time */
-                er_flag = _LE_TRUE, er_times->tm_pose = er_times->tm_view[0] = er_times->tm_time[er_parse];
+                er_flag = _LE_TRUE, er_times->tm_pose = er_times->tm_time[er_times->tm_view[0] = er_parse];
 
             }
 
         }
 
         /* Check state flag - enable first time as default */
-        if ( er_flag == _LE_FALSE ) er_times->tm_pose = er_times->tm_view[0] = er_times->tm_time[0];
+        if ( er_flag == _LE_FALSE ) er_times->tm_pose = er_times->tm_time[er_times->tm_view[0] = 0];
 
     }
 
@@ -240,6 +229,7 @@
         static le_size_t er_xsize = 0;
         static le_size_t er_ysize = 0;
         static le_size_t er_bsize = 0;
+        static le_size_t er_shift = 32;
 
         /* Graduation display variables */
         le_time_t er_xgrad = 0;
@@ -260,40 +250,37 @@
             /* Compute buffer size */
             er_bsize = er_xsize * er_ysize * 4;
 
-            /* Allocate buffer memory - initialise memory */
-            if ( ( er_buffer = ( le_byte_t * ) malloc( er_bsize ) ) != NULL ) memset( er_buffer, 255, er_bsize );
+            /* Allocate buffer memory - initialise buffer bytes */
+            if ( ( er_buffer = malloc( er_bsize ) ) != NULL ) memset( er_buffer, 255, er_bsize );
+
+            /* Memory allocation check */
+            return;
 
         }
 
-        /* Reset graphical buffer */
-        for ( le_size_t er_parse = 3; er_parse < er_bsize; er_parse += 4 ) er_buffer[er_parse] = 208;
+        /* Reset buffer bytes */
+        for ( le_size_t er_i = 3; er_i < er_bsize; er_buffer[er_i += 4] = 208 );
 
-        /* Information string color */
-        glColor3f( 0.5, 0.5, 0.5 );
+        /* Display boundaries times */
+        er_times_display_date( er_lbound, 16, er_shift + 19, ER_TIMES_JUST_LEFT, 0 );
 
-        /* Display indicative dates - lower */
-        er_times_print_date( er_lbound, 16, er_ysize - 2, ER_TIMES_JUST_LEFT );
+        /* Display boundaries times */
+        er_times_display_date( er_ubound, er_xsize - 16, er_shift + 19, ER_TIMES_JUST_RIGHT, 0 );
 
-        /* Display indicative dates - upper */
-        er_times_print_date( er_ubound, er_xsize - 16, er_ysize - 2, ER_TIMES_JUST_RIGHT );
+        /* Display selected times */
+        if ( er_times->tm_view[0] != _LE_SIZE_NULL ) er_times_display_date( er_times->tm_time[er_times->tm_view[0]], ( er_xsize >> 1 ) - 16, er_shift + 19, ER_TIMES_JUST_RIGHT, 1 );
+
+        /* Display selected times */
+        if ( er_times->tm_view[1] != _LE_SIZE_NULL ) er_times_display_date( er_times->tm_time[er_times->tm_view[1]], ( er_xsize >> 1 ) + 16, er_shift + 19, ER_TIMES_JUST_LEFT , 1 );
         
-        /* Display times */
+        /* Display dynamic times */
         for ( le_size_t er_parse = 0; er_parse < er_times->tm_size; er_parse ++ ) {
 
             /* Check time visibility */
             if ( ( er_times->tm_time[er_parse] > er_lbound ) && ( er_times->tm_time[er_parse] < er_ubound ) ) {
 
-                /* Check time state - assign color */
-                if ( er_times->tm_time[er_parse] == er_times->tm_view[0] ) glColor3f( 0.3, 0.5, 0.7 ); else glColor3f( 0.5, 0.5, 0.5 );
-
-                /* Check time state - assign color */
-                if ( er_times->tm_time[er_parse] == er_times->tm_view[1] ) glColor3f( 0.3, 0.7, 0.5 );
-
-                /* Check time state - assign color */
-                if ( er_parse == er_times->tm_near ) glColor3f( 0.7, 0.3, 0.5 );
-
                 /* Display date string */
-                er_times_print_date( er_times->tm_time[er_parse], er_xsize * ( ( le_real_t ) ( er_times->tm_time[er_parse] - er_lbound ) / er_times->tm_zoom ), 19, ER_TIMES_JUST_CENTER );
+                er_times_display_date( er_times->tm_time[er_parse], er_xsize * ( ( le_real_t ) ( er_times->tm_time[er_parse] - er_lbound ) / er_times->tm_zoom ), er_shift + er_ysize - 2, ER_TIMES_JUST_CENTER, er_parse == er_times->tm_near );
 
             }
 
@@ -333,22 +320,18 @@
 
         }
 
-        /* Buffer display position */
-        glRasterPos2i( 0, 0 );
+        /* Position buffer */
+        glRasterPos2i( 0, er_shift );
 
         /* Display buffer */
         glDrawPixels( er_xsize, er_ysize, GL_RGBA, GL_UNSIGNED_BYTE, er_buffer );
 
     }
 
-/*
-    source - auxiliary methods
- */
+    le_void_t er_times_display_date( le_time_t const er_time, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify, le_enum_t const er_color ) {
 
-    le_void_t er_times_print_date( le_time_t const er_time, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify ) {
-
-        /* String array varibles */
-        le_char_t er_string[32] = { 0 };
+        /* String array variables */
+        static le_char_t er_string[32] = { 0 };
 
         /* Compose date string */
         lc_time_to_string( er_time, er_string, 32 );
@@ -356,6 +339,9 @@
         /* Check justification */
         if ( er_justify == ER_TIMES_JUST_RIGHT  ) er_x -= strlen( ( char * ) er_string ) * 8;
         if ( er_justify == ER_TIMES_JUST_CENTER ) er_x -= strlen( ( char * ) er_string ) * 4;
+
+        /* Check color */
+        if ( er_color == 0 ) glColor3f( 0.5, 0.5, 0.5 ); else glColor3f( 0.2, 0.5, 0.8 );
 
         /* Assign string position */
         glRasterPos2i( er_x, er_y - 13 );
