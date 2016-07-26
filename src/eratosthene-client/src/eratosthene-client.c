@@ -275,7 +275,7 @@
         glScaled( er_client.cl_vscl, er_client.cl_vscl, er_client.cl_vscl );
 
         /* Apply fog configuration */
-        glFogf( GL_FOG_START, er_farc * 0.8 );
+        glFogf( GL_FOG_START, er_farc * 0.7 );
         glFogf( GL_FOG_END  , er_farc       );
 
         /* Enable fog feature */
