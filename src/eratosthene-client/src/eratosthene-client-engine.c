@@ -326,17 +326,13 @@
             case ( 'q' ) : { er_engine.eg_point --; } break;
 
             /* Update point of view */
-            case ( 'c' ) : { er_engine.eg_valt = 1.5 * ER_ERA; }
+            case ( 'c' ) : { er_engine.eg_valt = ER_ERD; }
             case ( 'x' ) : { er_engine.eg_vazm = 0.0; }
             case ( 'y' ) : { er_engine.eg_vgam = 0.0; } break;
 
             /* Update times */
-            case ( 'd' ) : { er_times_set( & er_engine.eg_times, _LE_FALSE ); } break;
-            case ( 'f' ) : { er_times_set( & er_engine.eg_times, _LE_TRUE  ); } break;
-
-            /* Update times */
-            case ( 'a' ) : { er_times_set_time( & er_engine.eg_times, ER_TIMES_DECREASE ); } break;
-            case ( 's' ) : { er_times_set_time( & er_engine.eg_times, ER_TIMES_INCREASE ); } break;
+            case ( 'a' ) : { er_times_set( & er_engine.eg_times, 0 ); } break;
+            case ( 's' ) : { er_times_set( & er_engine.eg_times, 1 ); } break;
 
         };
 

@@ -55,6 +55,7 @@
     # define ER_ER2 ( ER_ERA / 2.00 )
     # define ER_ERL ( ER_ERA * 0.75 )
     # define ER_ERU ( ER_ERA * 3.00 )
+    # define ER_ERD ( ER_ERA * 2.00 )
 
     /* Define motion inertia */
     # define ER_INB ( 5.0 / 1000.0 )
