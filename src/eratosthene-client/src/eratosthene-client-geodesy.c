@@ -129,7 +129,7 @@
  //(( h - (w/2) ) - ( (w/3) * sn.^8 ) )
 
         /* Return far plane depth */
-        return( ( er_altitude - ER_ER2 - ( ER_ERA / 3.0 ) * pow( er_normal, 20 ) ) * er_normal );
+        return( ( er_altitude - ER_ER2 - ( ER_ERA / 2.5 ) * pow( er_normal, 20 ) ) * er_normal );
 
     }
 

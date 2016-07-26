@@ -227,7 +227,7 @@
         /* Static buffer variables */
         static le_byte_t * er_buffer = NULL;
 
-        /* Static buffer configuration variables */
+        /* Static buffer display variables */
         static le_size_t er_xsize = 0;
         static le_size_t er_ysize = 0;
         static le_size_t er_bsize = 0;
@@ -258,12 +258,10 @@
             /* Memory allocation check */
             return;
 
-        } else {
-
-            /* Reset buffer bytes */
-            for ( le_size_t er_i = 3; er_i < er_bsize; er_buffer[er_i += 4] = 208 );
-
         }
+
+        /* Reset buffer bytes */
+        for ( le_size_t er_i = 3; er_i < er_bsize; er_buffer[er_i += 4] = 208 );
 
         /* Display boundaries times */
         er_times_display_date( er_lbound, 16, er_shift + 19, ER_TIMES_JUST_LEFT, 0 );
