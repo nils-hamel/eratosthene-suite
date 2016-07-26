@@ -213,15 +213,11 @@
         /* Time variables */
         le_time_t er_etime = _LE_TIME_NULL;
 
-        /* Update variables */
-        le_enum_t er_model_flag = _LE_FALSE;
-        le_enum_t er_times_flag = _LE_FALSE;
-
         /* Query model update necessities */
-        er_model_flag = er_model_get_update( & er_client.cl_model, er_client.cl_vlon, er_client.cl_vlat, er_client.cl_valt );
+        le_enum_t er_model_flag = er_model_get_update( & er_client.cl_model, er_client.cl_vlon, er_client.cl_vlat, er_client.cl_valt );
 
         /* Query times update necessities */
-        er_times_flag = er_times_get_update( & er_client.cl_times );
+        le_enum_t er_times_flag = er_times_get_update( & er_client.cl_times );
 
         /* Check model update necessities */
         if ( ( er_model_flag == _LE_TRUE ) || ( er_times_flag == _LE_TRUE ) ) {
