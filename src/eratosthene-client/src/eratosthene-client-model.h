@@ -96,9 +96,9 @@
      *  Server ip address
      *  \var er_model_struct::md_port
      *  Server service port
-     *  \var er_model_struct::md_sdis
+     *  \var er_model_struct::md_sparam
      *  Server spatial indexation parameter
-     *  \var er_model_struct::md_tdis
+     *  \var er_model_struct::md_tparam
      *  Server time indexation parameter
      *  \var er_model_struct::md_mtim
      *  Model update time
@@ -121,8 +121,8 @@
         le_char_t * md_svip;
         le_sock_t   md_port;
 
-        le_size_t   md_sdis;
-        le_time_t   md_tdis;
+        le_size_t   md_sparam;
+        le_time_t   md_tparam;
 
         le_real_t   md_mlon;
         le_real_t   md_mlat;
@@ -148,7 +148,7 @@
      *  In addition, it also ask the remote server for the spatial and time
      *  indexation parameters and allocate the cells array memory.
      *
-     *  If the \b md_sdis or \b md_tdis parameters are respectively set to
+     *  If the \b md_sparam or \b md_tparam parameters are respectively set to
      *  _LE_SIZE_NULL or _LE_TIME_NULL, the descriptor creation failed.
      *
      *  \param er_cells Cells array size
@@ -170,28 +170,6 @@
      */
 
     le_void_t er_model_delete( er_model_t * const er_model );
-
-    /*! \brief accessor methods
-     *
-     *  Returns model spatial indexation parameter.
-     *
-     *  \param er_model Model structure
-     *
-     *  \return Spatial indexation parameter
-     */
-
-    le_size_t er_model_get_sdisc( er_model_t const * const er_model );
-
-    /*! \brief accessor methods
-     *
-     *  Returns model time indexation parameter.
-     *
-     *  \param er_model Model structure
-     *
-     *  \return Time indexation parameter
-     */
-
-    le_size_t er_model_get_tdisc( er_model_t const * const er_model );
 
     /*! \brief accessor methods
      *

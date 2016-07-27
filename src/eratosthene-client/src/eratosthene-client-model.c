@@ -34,7 +34,7 @@
         er_model.md_port = er_port;
 
         /* Retrieve server configuration */
-        if ( ( er_model.md_sdis = er_client_server_sparam( er_ip, er_port ) ) == _LE_SIZE_NULL ) {
+        if ( ( er_model.md_sparam = er_client_server_sparam( er_ip, er_port ) ) == _LE_SIZE_NULL ) {
 
             /* Send message */
             return( er_model._status = _LE_FALSE, er_model );
@@ -42,7 +42,7 @@
         }
 
         /* Retrieve server configuration */
-        if ( ( er_model.md_tdis = er_client_server_tparam( er_ip, er_port ) ) == _LE_TIME_NULL ) {
+        if ( ( er_model.md_tparam = er_client_server_tparam( er_ip, er_port ) ) == _LE_TIME_NULL ) {
 
             /* Send message */
             return( er_model._status = _LE_FALSE, er_model );
@@ -99,20 +99,6 @@
 /*
     source - accessor methods
  */
-
-    le_size_t er_model_get_sdisc( er_model_t const * const er_model ) {
-
-        /* Return model space discretisation */
-        return( er_model->md_sdis );
-
-    }
-
-    le_size_t er_model_get_tdisc( er_model_t const * const er_model ) {
-
-        /* Return model time discretisation */
-        return( er_model->md_tdis );
-
-    }
 
     le_enum_t er_model_get_update( er_model_t * const er_model, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
 
@@ -222,10 +208,10 @@
         er_dist = er_geodesy_cell( er_addr, er_lon, er_lat, er_alt - ER_ERA );
 
         /* Compute geodetic scale */
-        er_scale = er_geodesy_distance( er_dist, LE_GEODESY_ASYA - 1, er_model->md_sdis - ER_MODEL_DPT );
+        er_scale = er_geodesy_distance( er_dist, LE_GEODESY_ASYA - 1, er_model->md_sparam - ER_MODEL_DPT );
 
         /* Check geodetic scale value */
-        if ( ( fabs( er_scale - er_size ) < 1 ) || ( er_size == ( er_model->md_sdis - ER_MODEL_DPT ) ) ) {
+        if ( ( fabs( er_scale - er_size ) < 1 ) || ( er_size == ( er_model->md_sparam - ER_MODEL_DPT ) ) ) {
 
             /* Set address depth */
             le_address_set_depth( er_addr, ER_MODEL_DPT );
