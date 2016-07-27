@@ -36,7 +36,7 @@
         float er_color[4] = { 0.00, 0.02, 0.04, 0.00 };
 
         /* Create engine model */
-        if ( ( er_client.cl_model = er_model_create( 4096, er_ip, er_port ) )._status == _LE_FALSE ) return( _LE_FALSE );
+        if ( ( er_client.cl_model = er_model_create( 2048, er_ip, er_port ) )._status == _LE_FALSE ) return( _LE_FALSE );
 
         /* Create engine times */
         if ( ( er_client.cl_times = er_times_create( er_ip, er_port ) )._status == _LE_FALSE ) return( _LE_FALSE );
@@ -237,7 +237,7 @@
             er_model_set_update_query( & er_client.cl_model );
 
             /* Terminate model update */
-            er_model_set_update_destroy( & er_client.cl_model );
+            er_model_set_update_terminate( & er_client.cl_model );
 
         }
 

@@ -100,6 +100,19 @@
     source - accessor methods
  */
 
+    le_size_t er_model_get_cell( er_model_t const * const er_model, le_size_t const er_from ) {
+
+        /* Parsing cell array */
+        for ( le_size_t er_parse = er_from; er_parse < er_model->md_size; er_parse ++ ) {
+
+            /* Check cell state - returned index */
+            if ( er_cell_get_flag( er_model->md_cell + er_parse ) == _LE_FALSE ) return( er_parse );
+
+        /* Return index */
+        } return( er_model->md_size );
+
+    }
+
     le_enum_t er_model_get_update( er_model_t * const er_model, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
 
         /* Returned value variables */
@@ -125,16 +138,16 @@
 
     le_void_t er_model_set_update_prepare( er_model_t * const er_model ) {
 
+        /* Reset update index */
+        er_model->md_push = 1;
+
         /* Parsing model cells */
         for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
 
             /* Reset cell flag */
-            er_cell_set_flag( er_model->md_cell + er_parse, ER_CELL_DOWN );
+            er_cell_set_flag( er_model->md_cell + er_parse, _LE_FALSE );
 
         }
-
-        /* Reset push index */
-        er_model->md_push = 1;
 
     }
 
@@ -257,12 +270,10 @@
 
         /* Parsing variables */
         le_size_t er_parse = 0;
-
-        /* Selected cell variables */
-        le_size_t er_found = 0;
+        le_size_t er_inner = 0;
 
         /* Searching variables */
-        le_size_t er_search = 0;
+        le_size_t er_found  = 0;
 
         /* Parsing model cells */
         for ( er_parse = 1; er_parse < er_model->md_push; er_parse ++ ) {
@@ -270,35 +281,23 @@
             /* Check pushed address */
             if ( er_cell_get_push( er_model->md_cell + er_parse ) == _LE_TRUE ) {
 
-                /* Reset search */
-                er_found = er_model->md_size;
+                /* Reset cell search */
+                er_inner = 1, er_found = er_model->md_size;
 
                 /* Searching allocation */
-                er_search = 1; while ( ( er_search < er_model->md_size ) && ( er_found == er_model->md_size ) ) {
+                while ( ( er_inner < er_model->md_size ) && ( er_found == er_model->md_size ) ) {
 
                     /* Compare address and pushed address */
-                    if ( er_cell_get_match( er_model->md_cell + er_search, er_model->md_cell + er_parse ) == _LE_TRUE ) {
+                    if ( er_cell_get_match( er_model->md_cell + er_inner, er_model->md_cell + er_parse ) == _LE_TRUE ) {
 
-                        /* Assign found index */
-                        er_found = er_search;
+                        /* Reset pushed address */
+                        er_cell_set_pop( er_model->md_cell + er_parse );
 
-                    } else {
+                        /* Update cell flag */
+                        er_cell_set_flag( er_model->md_cell + er_inner, _LE_TRUE );
 
-                        /* Continue search */
-                        er_search ++;
-
-                    }
-
-                }
-
-                /* Check search results */
-                if ( er_found != er_model->md_size ) {
-
-                    /* Reset pushed address */
-                    er_cell_set_pop( er_model->md_cell + er_parse );
-
-                    /* Update cell flag */
-                    er_cell_set_flag( er_model->md_cell + er_found, ER_CELL_PUSH );
+                    /* Update cell search */
+                    er_found = er_inner; } else { er_inner ++; }
 
                 }
 
@@ -306,33 +305,30 @@
 
         }
 
-        /* Reset selected cell */
-        er_found = 1;
-
         /* Parsing model cells */
         for ( er_parse = 1; er_parse < er_model->md_push; er_parse ++ ) {
 
             /* Check pushed address */
             if ( er_cell_get_push( er_model->md_cell + er_parse ) == _LE_TRUE ) {
 
-                /* Searched unactive cell */
-                while ( ( er_cell_get_flag( er_model->md_cell + er_found ) != ER_CELL_DOWN ) && ( er_found < er_model->md_size ) ) er_found ++;
-
                 /* Check search results */
-                if ( er_found != er_model->md_size ) {
+                if ( ( er_found = er_model_get_cell( er_model, er_parse ) ) != er_model->md_size ) {
 
                     /* Swap address and pushed address */
                     er_cell_set_swap( er_model->md_cell + er_found, er_model->md_cell + er_parse );
 
-                    /* Update cell flag */
-                    er_cell_set_flag( er_model->md_cell + er_found, ER_CELL_PUSH );
-
-                    /* Update cell */
+                    /* Update cell array */
                     er_cell_io_query( er_model->md_cell + er_found, er_model->md_svip, er_model->md_port );
+
+                    /* Update cell flag */
+                    er_cell_set_flag( er_model->md_cell + er_found, _LE_TRUE );
+
+                    /* Update cell state */
+                    er_cell_set_draw( er_model->md_cell + er_found, _LE_TRUE );
 
                 }
 
-                /* Reset pushed address */
+                /* Reset pused address */
                 er_cell_set_pop( er_model->md_cell + er_parse );
 
             }
@@ -341,16 +337,16 @@
 
     }
 
-    le_void_t er_model_set_update_destroy( er_model_t * const er_model ) {
+    le_void_t er_model_set_update_terminate( er_model_t * const er_model ) {
 
         /* Parsing model cells */
         for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
 
             /* Check cell flag */
-            if ( er_cell_get_flag( er_model->md_cell + er_parse ) == ER_CELL_DOWN ) {
+            if ( er_cell_get_flag( er_model->md_cell + er_parse ) == _LE_FALSE ) {
 
-                /* Empty cell */
-                er_cell_set_empty( er_model->md_cell + er_parse );
+                /* Update cell state */
+                er_cell_set_draw( er_model->md_cell + er_parse, _LE_FALSE );
 
             }
 
@@ -363,9 +359,6 @@
  */
 
     le_void_t er_model_display_cell( er_model_t * const er_model, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt, le_real_t const er_azm, le_real_t const er_gam ) {
-
-        /* Count variables */
-        le_size_t er_count = 0;
 
         /* Rotation vector variables */
         le_real_t * er_vcell = NULL;
@@ -396,7 +389,7 @@
         for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
 
             /* Check cell content */
-            if ( ( er_count = er_cell_get_size( ( er_model->md_cell ) + er_parse ) ) > 0 ) {
+            if ( er_cell_get_draw( er_model->md_cell + er_parse ) == _LE_TRUE ) {
 
                 /* Vertex and color pointer to cell arrays */
                 glVertexPointer( 3, ER_MODEL_VERTEX, 0, er_cell_get_pose( ( er_model->md_cell ) + er_parse ) );
@@ -420,7 +413,8 @@
                     glRotated( - er_lon, 0.0, 1.0, 0.0 );
 
                     /* Display graphical primitives */
-                    glDrawArrays( GL_POINTS, 0, er_count / 3 );
+                    //glDrawArrays( GL_POINTS, 0, er_count / 3 );
+                    glDrawArrays( GL_POINTS, 0, er_cell_get_size( er_model->md_cell + er_parse ) / 3 );
 
                 /* Cell matrix */
                 } glPopMatrix();

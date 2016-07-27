@@ -67,6 +67,13 @@
 
     }
 
+    le_enum_t er_cell_get_draw( er_cell_t const * const er_cell ) {
+
+        /* Return cell flag */
+        return( er_cell->ce_draw );
+
+    }
+
     le_enum_t er_cell_get_push( er_cell_t const * const er_cell ) {
 
         /* Return pushed address state */
@@ -110,6 +117,13 @@
 
         /* Assign cell flag */
         er_cell->ce_flag = er_flag;
+
+    }
+
+    le_void_t er_cell_set_draw( er_cell_t * const er_cell, le_enum_t const er_draw ) {
+
+        /* Assign cell flag */
+        er_cell->ce_draw = er_draw;
 
     }
 

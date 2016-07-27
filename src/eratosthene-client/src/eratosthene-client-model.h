@@ -171,6 +171,8 @@
 
     le_void_t er_model_delete( er_model_t * const er_model );
 
+    le_size_t er_model_get_cell( er_model_t const * const er_model, le_size_t const er_from );
+
     /*! \brief accessor methods
      *
      *  This function checks the model update requirements. It checks the motion
@@ -259,7 +261,7 @@
      *  \param er_model Model structure
      */
 
-    le_void_t er_model_set_update_destroy( er_model_t * const er_model );
+    le_void_t er_model_set_update_terminate( er_model_t * const er_model );
 
     /*! \brief model display methods
      *

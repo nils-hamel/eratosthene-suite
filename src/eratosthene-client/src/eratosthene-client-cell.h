@@ -57,11 +57,7 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_CELL_C      { ER_CELL_DOWN, { 0 }, { 0 }, 0, NULL, NULL, { 0.0 } }
-
-    /* Define cell flags */
-    # define ER_CELL_DOWN   0
-    # define ER_CELL_PUSH   1
+    # define ER_CELL_C      { _LE_FALSE, _LE_FALSE, { 0 }, { 0 }, 0, NULL, NULL, { 0.0 } }
 
     /* Define cell array size */
     # define ER_CELL_ARRAY  884736
@@ -114,6 +110,7 @@
     typedef struct er_cell_struct {
 
         le_enum_t    ce_flag;
+        le_enum_t    ce_draw;
 
         le_char_t    ce_addr[LE_NETWORK_SB_ADDR];
         le_char_t    ce_push[LE_NETWORK_SB_ADDR];
@@ -160,6 +157,8 @@
      */
 
     le_enum_t er_cell_get_flag( er_cell_t const * const er_cell );
+
+    le_enum_t er_cell_get_draw( er_cell_t const * const er_cell );
 
     /*! \brief accessor methods
      *
@@ -227,6 +226,8 @@
      */
 
     le_void_t er_cell_set_flag( er_cell_t * const er_cell, le_enum_t const er_flag );
+
+    le_void_t er_cell_set_draw( er_cell_t * const er_cell, le_enum_t const er_draw );
 
     /*! \brief mutator methods
      *
