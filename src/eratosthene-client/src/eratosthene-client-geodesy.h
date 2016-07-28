@@ -121,6 +121,12 @@
 
     le_real_t er_geodesy_cell( le_address_t * const er_addr, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
 
+    le_real_t er_geodesy_dist( le_address_t const * const er_cell, le_real_t const er_lon, le_real_t er_lat, le_real_t er_alt );
+
+    le_real_t er_geodesy_select( le_real_t const er_distance, le_real_t const er_altitude );
+
+    le_real_t er_geodesy_level( le_real_t const er_distance, le_size_t const er_scale, le_size_t const er_depth );
+
     /*! \brief model functions
      *
      *  This function computes the floating point scale index of a provided

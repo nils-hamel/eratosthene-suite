@@ -65,6 +65,7 @@
 
     /* Define model parameters */
     # define ER_MODEL_DPT     7
+    //7
 
     /* Define display array types */
     # define ER_MODEL_VERTEX  GL_DOUBLE
@@ -171,7 +172,7 @@
 
     le_void_t er_model_delete( er_model_t * const er_model );
 
-    le_size_t er_model_get_cell( er_model_t const * const er_model, le_size_t const er_from );
+    le_size_t er_model_get_cell( er_model_t const * const er_model );
 
     /*! \brief accessor methods
      *
@@ -202,39 +203,7 @@
 
     le_void_t er_model_set_update_prepare( er_model_t * const er_model );
 
-    /*! \brief mutator methods
-     *
-     *  This function is part of the model update procedure.
-     *
-     *  Its role is to determine the largest cell to consider near the point of
-     *  view. These cells are then decomposed along their daughters in function
-     *  of the position of the point of view.
-     *
-     *  \param er_model Model structure
-     *  \param er_time  Point of view time
-     *  \param er_lon   Point of view longitude
-     *  \param er_lat   Point of view latitude
-     *  \param er_alt   Point of view altitude
-     */
-
-    le_void_t er_model_set_update_model( er_model_t * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t er_alt );
-
-    /*! \brief mutator methods
-     *
-     *  This function is part of the model update procedure.
-     *
-     *  Its role is to decompose the cells selected by the function
-     *  \b er_model_set_update_model. According to the distance to the point
-     *  of view, cells or their daughters are recursively considered for query.
-     *
-     *  \param er_model Model structure
-     *  \param er_addr  Selected cell address structure
-     *  \param er_lon   Point of view longitude
-     *  \param er_lat   Point of view latitude
-     *  \param er_alt   Point of view altitude
-     */
-
-    le_void_t er_model_set_update_cells( er_model_t * const er_model, le_address_t * const er_addr, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
+    le_void_t er_model_set_update_cell( er_model_t * const er_model, le_address_t * const er_enum, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
 
     /*! \brief mutator methods
      *

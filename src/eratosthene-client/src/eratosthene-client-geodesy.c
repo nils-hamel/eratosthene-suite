@@ -88,8 +88,70 @@
     }
 
 /*
+    source - distance methods
+ */
+
+    le_real_t er_geodesy_dist( le_address_t const * const er_cell, le_real_t const er_lon, le_real_t er_lat, le_real_t er_alt ) {
+
+        /* Position array variables */
+        le_real_t er_pose1[6] = { 0.0 };
+        le_real_t er_pose2[6] = { 0.0, 0.0, 0.0, er_lon, er_lat, er_alt };
+
+        /* Address size variables */
+        le_size_t er_size = le_address_get_size( er_cell ) + 1;
+
+        /* Compute planimetric shift */
+        le_real_t er_shift = LE_GEODESY_LRAN / pow( 2.0, er_size );
+
+        /* Retrive address position */
+        le_address_get_pose( er_cell, er_pose1 + 3 );
+
+        /* Convert position to cartesian coordinates */
+        er_pose1[1] = er_pose1[5] + ER_ERA + ( ER_ERA * LE_2P ) / pow( 2.0, er_size );
+        er_pose1[0] = er_pose1[1] * cos( er_pose1[4] += er_shift );
+        er_pose1[2] = er_pose1[0] * cos( er_pose1[3] += er_shift );
+        er_pose1[0] = er_pose1[0] * sin( er_pose1[3] );
+        er_pose1[1] = er_pose1[1] * sin( er_pose1[4] );
+
+        /* Convert position to cartesian coordinates */
+        er_pose2[1] = er_pose2[5];
+        er_pose2[0] = er_pose2[1] * cos( er_pose2[4] );
+        er_pose2[2] = er_pose2[0] * cos( er_pose2[3] );
+        er_pose2[0] = er_pose2[0] * sin( er_pose2[3] );
+        er_pose2[1] = er_pose2[1] * sin( er_pose2[4] );
+
+        /* Compute differences */
+        er_pose1[2] -= er_pose2[2];
+        er_pose1[0] -= er_pose2[0];
+        er_pose1[1] -= er_pose2[1];
+
+        /* Return distance to cell */
+        return( sqrt( er_pose1[2] * er_pose1[2] + er_pose1[0] * er_pose1[0] + er_pose1[1] * er_pose1[1] ) );
+
+    }
+
+/*
     source - model functions
  */
+
+    le_real_t er_geodesy_select( le_real_t const er_distance, le_real_t const er_altitude ) {
+
+        /* Computation variables */
+        le_real_t er_normal = ( er_altitude - ER_ERA ) / ER_ERA;
+
+        /* Return selection function */
+        return( er_altitude * ( 1.0 - 0.75 * exp( - 20.0 * er_normal * er_normal ) ) );
+
+    }
+
+    le_real_t er_geodesy_level( le_real_t const er_distance, le_size_t const er_scale, le_size_t const er_depth ) {
+
+        /* Return level function */        
+        //return( 5.0 + ( er_scale - er_depth - 5.0 ) * exp( - 60.0 * ( er_distance / ER_ERA ) ) );
+
+        return( ( er_scale - er_depth ) - log ( er_distance + 1.0 ) / log ( 2.0 ) + 1.0 / log( 2.0 ) );
+
+    }
 
     le_real_t er_geodesy_distance( le_real_t const er_distance, le_size_t const er_scale_min, le_size_t const er_scale_max ) {
 
@@ -125,8 +187,6 @@
 
         /* Computation variables */
         le_real_t er_normal = er_geodesy_scale( er_altitude );
-
- //(( h - (w/2) ) - ( (w/3) * sn.^8 ) )
 
         /* Return far plane depth */
         return( ( er_altitude - ER_ER2 - ( ER_ERA / 2.5 ) * pow( er_normal, 20 ) ) * er_normal );

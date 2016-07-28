@@ -100,10 +100,10 @@
     source - accessor methods
  */
 
-    le_size_t er_model_get_cell( er_model_t const * const er_model, le_size_t const er_from ) {
+    le_size_t er_model_get_cell( er_model_t const * const er_model ) {
 
         /* Parsing cell array */
-        for ( le_size_t er_parse = er_from; er_parse < er_model->md_size; er_parse ++ ) {
+        for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
 
             /* Check cell state - returned index */
             if ( er_cell_get_flag( er_model->md_cell + er_parse ) == _LE_FALSE ) return( er_parse );
@@ -151,114 +151,70 @@
 
     }
 
-    le_void_t er_model_set_update_model( er_model_t * const er_model, le_time_t const er_time, le_real_t const er_lon, le_real_t const er_lat, le_real_t er_alt ) {
-
-        /* Parsing variables */
-        le_size_t er_plon = 0;
-        le_size_t er_plat = 0;
-
-        /* Position vector variable */
-        le_real_t er_pose[3] = { 0.0, 0.0, er_alt - ER_ERA };
-
-        /* Scale width variables */
-        le_real_t er_scale = LE_2P / pow( 2, LE_GEODESY_ASYA - 1 );
-
-        /* Address variables */
-        le_address_t er_addr = LE_ADDRESS_C_SIZE( LE_GEODESY_ASYA - 1 );
-
-        /* Assign address time */
-        le_address_set_time( & er_addr, er_time );
-
-        /* Parsing neighbour central cells - longitude */
-        for ( er_plon = 0; er_plon < 9; er_plon ++ ) {
-
-            /* Parsing neighbour central cells - latitude */
-            for ( er_plat = 0; er_plat < 5; er_plat ++ ) {
-
-                /* Compose position vector */
-                er_pose[0] = er_lon + er_scale * ( ( le_real_t ) er_plon - 4.0 );
-                er_pose[1] = er_lat + er_scale * ( ( le_real_t ) er_plat - 2.0 );
-
-                /* Assign address depth */
-                le_address_set_depth( & er_addr, ER_MODEL_DPT );
-
-                /* Assign address size */
-                le_address_set_size( & er_addr, LE_GEODESY_ASYA - 1 );
-
-                /* Assign address position */
-                le_address_set_pose( & er_addr, er_pose );
-
-                /* Recursive address push */
-                er_model_set_update_cells( er_model, & er_addr, er_lon, er_lat, er_alt );
-
-            }
-
-        }
-
-    }
-
-    le_void_t er_model_set_update_cells( er_model_t * const er_model, le_address_t * const er_addr, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
-
-        /* Parsing variables */
-        le_size_t er_parse = 0;
+    le_void_t er_model_set_update_cell( er_model_t * const er_model, le_address_t * const er_enum, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
 
         /* Distance variables */
         le_real_t er_dist = 0.0;
 
-        /* Scale variables */
-        le_real_t er_scale = 0.0;
+        /* Scale base variables */
+        le_size_t er_base = _LE_USE_BASE;
 
-        /* Address size variables */
-        le_size_t er_size = 0; 
+        /* Enumerator address size variables */
+        le_size_t er_scale = le_address_get_size( er_enum );
 
-        /* Check model limitation */
-        if ( er_model->md_push >= er_model->md_size ) return;
+        /* Asynchronous dimension management */
+        if ( er_scale < LE_GEODESY_ASYA ) er_base >>= 1;
+        if ( er_scale < LE_GEODESY_ASYP ) er_base >>= 1;
 
-        /* Retrieve address size */
-        er_size = le_address_get_size( er_addr );
+        /* Check enumeration limits */
+        if ( er_scale < ( er_model->md_sparam - ER_MODEL_DPT - 1 ) ) {
 
-        /* Compute distance to cell */
-        er_dist = er_geodesy_cell( er_addr, er_lon, er_lat, er_alt - ER_ERA );
+            /* Parsing scale digits */
+            for ( le_size_t er_digit = 0; er_digit < er_base; er_digit ++ ) {
 
-        /* Compute geodetic scale */
-        er_scale = er_geodesy_distance( er_dist, LE_GEODESY_ASYA - 1, er_model->md_sparam - ER_MODEL_DPT );
+                /* Update enumerator size */
+                le_address_set_size( er_enum, er_scale + 1 );
 
-        /* Check geodetic scale value */
-        if ( ( fabs( er_scale - er_size ) < 1 ) || ( er_size == ( er_model->md_sparam - ER_MODEL_DPT ) ) ) {
+                /* Assign enumerator digit */
+                le_address_set_digit( er_enum, er_scale, er_digit );
 
-            /* Set address depth */
-            le_address_set_depth( er_addr, ER_MODEL_DPT );
+                /* Check enumeration mode */
+                if ( er_scale >= 4 ) {
 
-            /* Set cell address */
-            er_cell_set_push( er_model->md_cell + ( er_model->md_push ++ ), er_addr );
+                    /* Compute distance */
+                    er_dist = er_geodesy_dist( er_enum, er_lon, er_lat, er_alt );
 
-        } else {
+                    /* Check selection criterion */
+                    if ( er_dist < er_geodesy_select( er_dist, er_alt ) ) {
 
-            /* Set address depth */
-            le_address_set_depth( er_addr, 0 );
+                        /* Check level function */
+                        if ( fabs( er_geodesy_level( er_dist, er_model->md_sparam, ER_MODEL_DPT ) - ( le_real_t ) er_scale ) < 1.0 ) {
 
-            /* Set cell address */
-            er_cell_set_addr( er_model->md_cell, er_addr );
+                            /* Check stack */
+                            if ( er_model->md_push < er_model->md_size ) {
 
-            /* Check cell emptyness */
-            if ( er_cell_io_query( er_model->md_cell, er_model->md_svip, er_model->md_port ) > 0 ) {
+                                /* Set address depth */
+                                le_address_set_depth( er_enum, ER_MODEL_DPT );
 
-                /* Set address depth */
-                le_address_set_depth( er_addr, ER_MODEL_DPT );
+                                /* Set cell address */
+                                er_cell_set_push( er_model->md_cell + ( er_model->md_push ++ ), er_enum );
 
-                /* Parsing sub-cells */
-                for ( er_parse = 0; er_parse < _LE_USE_BASE; er_parse ++ ) {
+                            }
 
-                    /* Set address size */
-                    le_address_set_size( er_addr, er_size + 1 );
+                        /* Continue enumeration */
+                        } else { 
 
-                    /* Set address digit */
-                    le_address_set_digit( er_addr, er_size, er_parse );
+                            le_address_set_depth( er_enum, 0 );
+                            er_cell_set_addr( er_model->md_cell, er_enum );
+                            if ( er_cell_io_query( er_model->md_cell, er_model->md_svip, er_model->md_port ) > 0 )
+                            er_model_set_update_cell( er_model, er_enum, er_lon, er_lat, er_alt ); 
 
-                    /* Recursive cell searching */
-                    er_model_set_update_cells( er_model, er_addr, er_lon, er_lat, er_alt );
+                        }
 
-                }
+                    }
+
+                /* Constraintless enumeration */
+                } else { er_model_set_update_cell( er_model, er_enum, er_lon, er_lat, er_alt ); }
 
             }
 
@@ -296,6 +252,9 @@
                         /* Update cell flag */
                         er_cell_set_flag( er_model->md_cell + er_inner, _LE_TRUE );
 
+                        /* Update cell flag */
+                        er_cell_set_draw( er_model->md_cell + er_inner, _LE_TRUE );
+
                     /* Update cell search */
                     er_found = er_inner; } else { er_inner ++; }
 
@@ -312,7 +271,7 @@
             if ( er_cell_get_push( er_model->md_cell + er_parse ) == _LE_TRUE ) {
 
                 /* Check search results */
-                if ( ( er_found = er_model_get_cell( er_model, er_parse ) ) != er_model->md_size ) {
+                if ( ( er_found = er_model_get_cell( er_model ) ) != er_model->md_size ) {
 
                     /* Swap address and pushed address */
                     er_cell_set_swap( er_model->md_cell + er_found, er_model->md_cell + er_parse );

@@ -228,8 +228,14 @@
             /* Enable times enumeration */
             while ( ( er_etime = er_times_get( & er_client.cl_times ) ) != _LE_TIME_NULL ) {
 
-                /* Update model cells */
-                er_model_set_update_model( & er_client.cl_model, er_etime, er_client.cl_vlon * ER_D2R, er_client.cl_vlat * ER_D2R, er_client.cl_valt );
+                /* Address variables */
+                le_address_t er_enum = LE_ADDRESS_C;
+
+                /* Assign address time */
+                le_address_set_time( & er_enum, er_etime );
+
+                /* Update model cell */
+                er_model_set_update_cell( & er_client.cl_model, & er_enum, er_client.cl_vlon * ER_D2R, er_client.cl_vlat * ER_D2R, er_client.cl_valt );
 
             }
 
