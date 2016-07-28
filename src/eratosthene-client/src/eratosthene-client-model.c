@@ -153,56 +153,55 @@
 
     le_void_t er_model_set_update_cell( er_model_t * const er_model, le_address_t * const er_enum, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
 
+        /* Enumerator address size variables */
+        le_size_t er_scale = le_address_get_size( er_enum );
+        
         /* Distance variables */
         le_real_t er_dist = 0.0;
 
         /* Scale base variables */
         le_size_t er_base = _LE_USE_BASE;
 
-        /* Enumerator address size variables */
-        le_size_t er_scale = le_address_get_size( er_enum );
-
         /* Asynchronous dimension management */
         if ( er_scale < LE_GEODESY_ASYA ) er_base >>= 1;
         if ( er_scale < LE_GEODESY_ASYP ) er_base >>= 1;
 
-        /* Check enumeration limits */
-        if ( er_scale < ( er_model->md_sparam - ER_MODEL_DPT - 1 ) ) {
+        /* Parsing scale digits */
+        for ( le_size_t er_digit = 0; er_digit < er_base; er_digit ++ ) {
 
-            /* Parsing scale digits */
-            for ( le_size_t er_digit = 0; er_digit < er_base; er_digit ++ ) {
+            /* Update enumerator size */
+            le_address_set_size( er_enum, er_scale + 1 );
 
-                /* Update enumerator size */
-                le_address_set_size( er_enum, er_scale + 1 );
+            /* Assign enumerator digit */
+            le_address_set_digit( er_enum, er_scale, er_digit );
 
-                /* Assign enumerator digit */
-                le_address_set_digit( er_enum, er_scale, er_digit );
+            /* Check enumeration mode */
+            if ( er_scale >= 4 ) {
 
-                /* Check enumeration mode */
-                if ( er_scale >= 4 ) {
+                /* Compute distance */
+                er_dist = er_geodesy_distance( er_enum, er_lon, er_lat, er_alt );
 
-                    /* Compute distance */
-                    er_dist = er_geodesy_distance( er_enum, er_lon, er_lat, er_alt );
+                /* Check selection criterion */
+                if ( er_dist < er_geodesy_limit( er_dist, er_alt ) ) {
 
-                    /* Check selection criterion */
-                    if ( er_dist < er_geodesy_limit( er_dist, er_alt ) ) {
+                    /* Check level function */
+                    if ( fabs( er_geodesy_depth( er_dist, er_model->md_sparam, ER_MODEL_DPT ) - ( le_real_t ) er_scale ) < 1.0 ) {
 
-                        /* Check level function */
-                        if ( fabs( er_geodesy_depth( er_dist, er_model->md_sparam, ER_MODEL_DPT ) - ( le_real_t ) er_scale ) < 1.0 ) {
+                        /* Check stack */
+                        if ( er_model->md_push < er_model->md_size ) {
 
-                            /* Check stack */
-                            if ( er_model->md_push < er_model->md_size ) {
+                            /* Set address depth */
+                            le_address_set_depth( er_enum, ER_MODEL_DPT );
 
-                                /* Set address depth */
-                                le_address_set_depth( er_enum, ER_MODEL_DPT );
+                            /* Set cell address */
+                            er_cell_set_push( er_model->md_cell + ( er_model->md_push ++ ), er_enum );
 
-                                /* Set cell address */
-                                er_cell_set_push( er_model->md_cell + ( er_model->md_push ++ ), er_enum );
+                        }
 
-                            }
+                    /* Continue enumeration */
+                    } else {
 
-                        /* Continue enumeration */
-                        } else { 
+                        if ( ( er_scale + 2 + ER_MODEL_DPT ) < er_model->md_sparam ) {
 
                             le_address_set_depth( er_enum, 0 );
                             er_cell_set_addr( er_model->md_cell, er_enum );
@@ -213,10 +212,10 @@
 
                     }
 
-                /* Constraintless enumeration */
-                } else { er_model_set_update_cell( er_model, er_enum, er_lon, er_lat, er_alt ); }
+                }
 
-            }
+            /* Constraintless enumeration */
+            } else { er_model_set_update_cell( er_model, er_enum, er_lon, er_lat, er_alt ); }
 
         }
 

@@ -82,8 +82,11 @@
 
     le_real_t er_geodesy_depth( le_real_t const er_distance, le_size_t const er_scale, le_size_t const er_depth ) {
 
+        /* Computation variables */
+        le_real_t er_normal = ( er_scale - er_depth - 1 ) - log ( 0.75 * er_distance + 1.0 ) / log ( 2.0 ) + 1.0 / log( 2.0 );
+
         /* Return evaluation */
-        return( ( er_scale - er_depth ) - log ( er_distance + 1.0 ) / log ( 2.0 ) + 1.0 / log( 2.0 ) );
+        return( er_normal < 5 ? 5 : er_normal );
 
     }
 
