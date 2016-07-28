@@ -182,7 +182,7 @@
                 if ( er_scale >= 4 ) {
 
                     /* Compute distance */
-                    er_dist = er_geodesy_dist( er_enum, er_lon, er_lat, er_alt );
+                    er_dist = er_geodesy_distance( er_enum, er_lon, er_lat, er_alt );
 
                     /* Check selection criterion */
                     if ( er_dist < er_geodesy_select( er_dist, er_alt ) ) {

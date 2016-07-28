@@ -24,42 +24,45 @@
     source - distance methods
  */
 
-    le_real_t er_geodesy_dist( le_address_t const * const er_cell, le_real_t const er_lon, le_real_t er_lat, le_real_t er_alt ) {
+    le_real_t er_geodesy_distance( le_address_t const * const er_cell, le_real_t const er_lon, le_real_t er_lat, le_real_t er_alt ) {
 
-        /* Position array variables */
-        le_real_t er_pose1[6] = { 0.0 };
-        le_real_t er_pose2[6] = { 0.0, 0.0, 0.0, er_lon, er_lat, er_alt };
+        /* Static array variables */
+        static le_real_t er_pose[12] = { 0.0 };
 
-        /* Address size variables */
-        le_size_t er_size = le_address_get_size( er_cell ) + 1;
+        /* Scale half variables */
+        le_real_t er_scale = _LE_SIZE_L( 1 ) << ( le_address_get_size( er_cell ) + 1 );;
 
-        /* Compute planimetric shift */
-        le_real_t er_shift = LE_GEODESY_LRAN / pow( 2.0, er_size );
+        /* Scale shift variables */
+        le_real_t er_shift = LE_GEODESY_LRAN / er_scale;
 
-        /* Retrive address position */
-        le_address_get_pose( er_cell, er_pose1 + 3 );
+        /* Initialise array elements */
+        er_pose[ 3] = 0.0, er_pose[ 4] = 0.0, er_pose[ 5] = 0.0;
 
-        /* Convert position to cartesian coordinates */
-        er_pose1[1] = er_pose1[5] + ER_ERA + ( ER_ERA * LE_2P ) / pow( 2.0, er_size );
-        er_pose1[0] = er_pose1[1] * cos( er_pose1[4] += er_shift );
-        er_pose1[2] = er_pose1[0] * cos( er_pose1[3] += er_shift );
-        er_pose1[0] = er_pose1[0] * sin( er_pose1[3] );
-        er_pose1[1] = er_pose1[1] * sin( er_pose1[4] );
+        /* Initialise array elements */
+        er_pose[ 9] = er_lon, er_pose[10] = er_lat, er_pose[11] = er_alt;
+
+        /* Retrieve address position */
+        le_address_get_pose( er_cell, er_pose + 3 );
 
         /* Convert position to cartesian coordinates */
-        er_pose2[1] = er_pose2[5];
-        er_pose2[0] = er_pose2[1] * cos( er_pose2[4] );
-        er_pose2[2] = er_pose2[0] * cos( er_pose2[3] );
-        er_pose2[0] = er_pose2[0] * sin( er_pose2[3] );
-        er_pose2[1] = er_pose2[1] * sin( er_pose2[4] );
+        er_pose[1] = er_pose[ 5] + ER_ERA + ( ER_ERA * LE_2P ) / er_scale;
+        er_pose[0] = er_pose[ 1] * cos( er_pose[ 4] += er_shift );
+        er_pose[2] = er_pose[ 0] * cos( er_pose[ 3] += er_shift );
+        er_pose[0] = er_pose[ 0] * sin( er_pose[ 3] );
+        er_pose[1] = er_pose[ 1] * sin( er_pose[ 4] );
+
+        /* Convert position to cartesian coordinates */
+        er_pose[7] = er_pose[11];
+        er_pose[6] = er_pose[ 7] * cos( er_pose[10] );
+        er_pose[8] = er_pose[ 6] * cos( er_pose[ 9] );
+        er_pose[6] = er_pose[ 6] * sin( er_pose[ 9] );
+        er_pose[7] = er_pose[ 7] * sin( er_pose[10] );
 
         /* Compute differences */
-        er_pose1[2] -= er_pose2[2];
-        er_pose1[0] -= er_pose2[0];
-        er_pose1[1] -= er_pose2[1];
+        er_pose[2] -= er_pose[8], er_pose[0] -= er_pose[6], er_pose[1] -= er_pose[7];
 
-        /* Return distance to cell */
-        return( sqrt( er_pose1[2] * er_pose1[2] + er_pose1[0] * er_pose1[0] + er_pose1[1] * er_pose1[1] ) );
+        /* Return distance */
+        return( sqrt( er_pose[2] * er_pose[2] + er_pose[0] * er_pose[0] + er_pose[1] * er_pose[1] ) );
 
     }
 
