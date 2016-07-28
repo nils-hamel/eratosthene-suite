@@ -21,73 +21,6 @@
     # include "eratosthene-client-geodesy.h"
 
 /*
-    source - conversion functions
- */
-
-    le_void_t er_geodesy_cartesian( le_real_t * const er_array, le_size_t const er_count ) {
-
-        /* Optimisation variables */
-        le_real_t er_lon = 0.0;
-        le_real_t er_lat = 0.0;
-
-        /* Parsing array */
-        for ( le_size_t er_parse = 0; er_parse < er_count; er_parse += 3 ) {
-
-            /* Push coordinates angles */
-            er_lon = er_array[er_parse  ];
-            er_lat = er_array[er_parse+1];
-
-            /* Optimised coordinates conversion */
-            er_array[er_parse+1] = er_array[er_parse+2] + ER_ERA;
-            er_array[er_parse  ] = er_array[er_parse+1] * cos( er_lat );
-            er_array[er_parse+2] = er_array[er_parse  ] * cos( er_lon );
-            er_array[er_parse  ] = er_array[er_parse  ] * sin( er_lon );
-            er_array[er_parse+1] = er_array[er_parse+1] * sin( er_lat );
-
-        }
-
-    }
-
-/*
-    source - cell functions
- */
-
-    le_real_t er_geodesy_cell( le_address_t * const er_addr, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
-
-        /* Address size variables */
-        le_size_t er_size = le_address_get_size( er_addr ) + 1;
-
-        /* Position array variables */
-        le_real_t er_pose[] = { er_lon, er_lat, er_alt, 0.0, 0.0, 0.0 };
-
-        /* Planimetric shift variables */
-        le_real_t er_shiftp = ( LE_GEODESY_LMAX - LE_GEODESY_LMIN ) / pow( 2.0, er_size );
-
-        /* Altimetric shift variables */
-        le_real_t er_shifta = ( LE_2P * LE_GEODESY_WGS84_A ) / pow( 2.0, er_size );
-
-        /* Compute cell position */
-        le_address_get_pose( er_addr, er_pose + 3 );
-
-        /* Compute cell center */
-        er_pose[3] += er_shiftp;
-        er_pose[4] += er_shiftp;
-        er_pose[5] += er_shifta;
-
-        /* Convert position to cartesian coordinates */
-        er_geodesy_cartesian( er_pose, 6 );
-
-        /* Optimisation step */
-        er_pose[0] = er_pose[0] - er_pose[3];
-        er_pose[1] = er_pose[1] - er_pose[4];
-        er_pose[2] = er_pose[2] - er_pose[5];
-
-        /* Compute and return distance to cell center */
-        return( sqrt( er_pose[0] * er_pose[0] + er_pose[1] * er_pose[1] + er_pose[2] * er_pose[2] ) );
-
-    }
-
-/*
     source - distance methods
  */
 
@@ -150,16 +83,6 @@
         //return( 5.0 + ( er_scale - er_depth - 5.0 ) * exp( - 60.0 * ( er_distance / ER_ERA ) ) );
 
         return( ( er_scale - er_depth ) - log ( er_distance + 1.0 ) / log ( 2.0 ) + 1.0 / log( 2.0 ) );
-
-    }
-
-    le_real_t er_geodesy_distance( le_real_t const er_distance, le_size_t const er_scale_min, le_size_t const er_scale_max ) {
-
-        /* Computation variables */
-        le_real_t er_model = er_scale_max - ( log( er_distance + 5.0 ) / log( 2.0 ) ) + log( 5.0 ) / log( 2.0 );
-
-        /* Return scale-distance constraints */
-        return( er_model < er_scale_min ? er_scale_min : er_model );
 
     }
 

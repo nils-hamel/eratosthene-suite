@@ -86,61 +86,11 @@
     header - function prototypes
  */
 
-    /*! \brief conversion functions
-     *
-     *  This function converts spherical coordinates into cartesian coordinates
-     *  of the element contained in the array \b er_array. The \b er_count
-     *  parameter has to give the number of elements of the array, being of
-     *  dimension one, rather than the number of points.
-     *
-     *  The results of the conversion are place in the array, replacing the
-     *  spherical elements.
-     *
-     *  The spherical coordinates expects the direct frame defined by the
-     *  longitude, latitude and radial vector, in this order.
-     *
-     *  \param er_array Array structure
-     *  \param er_count Number of elements in the array
-     */
-
-    le_void_t er_geodesy_cartesian( le_real_t * const er_array, le_size_t const er_count );
-
-    /*! \brief cell functions
-     *
-     *  This function computes the cartesian distance between the center of the
-     *  class represented by the address structure to the position provided as
-     *  parameter, typically a point of view.
-     *
-     *  \param er_addr Cell address structure
-     *  \param er_lon  Longitude
-     *  \param er_lat  Latitude
-     *  \param er_alt  Altitude (radial distance)
-     *
-     *  \return Distance between cell center and the provided position
-     */
-
-    le_real_t er_geodesy_cell( le_address_t * const er_addr, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
-
     le_real_t er_geodesy_dist( le_address_t const * const er_cell, le_real_t const er_lon, le_real_t er_lat, le_real_t er_alt );
 
     le_real_t er_geodesy_select( le_real_t const er_distance, le_real_t const er_altitude );
 
     le_real_t er_geodesy_level( le_real_t const er_distance, le_size_t const er_scale, le_size_t const er_depth );
-
-    /*! \brief model functions
-     *
-     *  This function computes the floating point scale index of a provided
-     *  equivalence class (represented by its distance to the model point of
-     *  view) that determine the scale at which class have to be queried.
-     *
-     *  \param er_distance  Distance between class center and point of view
-     *  \param er_scale_min Minimum authorised scale
-     *  \param er_scale_max Maximum authorised scale
-     *
-     *  \return Class gathering initial scale
-     */
-
-    le_real_t er_geodesy_distance( le_real_t const er_distance, le_size_t const er_scale_min, le_size_t const er_scale_max );
 
     /*! \brief model functions
      *
