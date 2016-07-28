@@ -300,7 +300,9 @@
 
     le_void_t er_client_calls_range();
 
+    # ifndef __OPENMP__
     void * er_client_pthread( void * er_null );
+    # endif
 
 /*
     header - C/C++ compatibility

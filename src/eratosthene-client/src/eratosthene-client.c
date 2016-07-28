@@ -131,8 +131,8 @@
         } else {
 
     # ifdef __OPENMP__
-    # pragma omp parallel sections
-    {
+            # pragma omp parallel sections
+            {
             /* Model update thread */
             # pragma omp section
             while ( usleep( 500 ), er_client.cl_loops == _LE_TRUE ) er_client_loops_update();
@@ -140,7 +140,7 @@
             /* Model display thread */
             # pragma omp section
             glutMainLoop();
-    }
+            }
     # else
             /* Model update thread */
             pthread_t er_pmodel; pthread_create( & er_pmodel, NULL, & er_client_pthread, NULL );
@@ -174,31 +174,29 @@
         /* Projection : model */
         er_client_proj_model( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
 
-        /* Push matrix - model */
+        /* Matrix - earth */
         glPushMatrix(); {
 
             /* Display earth */
             er_model_display_earth( er_client.cl_vlon, er_client.cl_vlat, er_client.cl_valt, er_client.cl_vazm, er_client.cl_vgam );
 
-        /* Pop matrix - model */
         } glPopMatrix();
 
-        /* Push matrix - model */
+        /* Matrix - model */
         glPushMatrix(); {
 
             /* Display model */
             er_model_display_cell( & ( er_client.cl_model ), er_client.cl_vlon, er_client.cl_vlat, er_client.cl_valt, er_client.cl_vazm, er_client.cl_vgam );
 
-        /* Pop matrix - model */
         } glPopMatrix();
 
         /* Projection : interface */
         er_client_proj_interface( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
 
-        /* Push matrix - interface */
+        /* Matrix - interface */
         glPushMatrix(); {
 
-            /* Display time manager */
+            /* Display interface */
             er_times_display( & er_client.cl_times );
 
         } glPopMatrix();
@@ -209,6 +207,9 @@
     }
 
     le_void_t er_client_loops_update( le_void_t ) {
+
+        /* Address variables */
+        le_address_t er_enum = LE_ADDRESS_C;
 
         /* Time variables */
         le_time_t er_etime = _LE_TIME_NULL;
@@ -228,13 +229,13 @@
             /* Enable times enumeration */
             while ( ( er_etime = er_times_get( & er_client.cl_times ) ) != _LE_TIME_NULL ) {
 
-                /* Address variables */
-                le_address_t er_enum = LE_ADDRESS_C;
+                /* Reset address size */
+                le_address_set_size( & er_enum, 0 );
 
-                /* Assign address time */
+                /* Reset address time */
                 le_address_set_time( & er_enum, er_etime );
 
-                /* Update model cell */
+                /* Update model for specified time */
                 er_model_set_update_cell( & er_client.cl_model, & er_enum, er_client.cl_vlon * ER_D2R, er_client.cl_vlat * ER_D2R, er_client.cl_valt );
 
             }
@@ -281,8 +282,8 @@
         glScaled( er_client.cl_vscl, er_client.cl_vscl, er_client.cl_vscl );
 
         /* Apply fog configuration */
-        glFogf( GL_FOG_START, er_farc * 0.7 );
-        glFogf( GL_FOG_END  , er_farc       );
+        glFogf( GL_FOG_START, er_farc * 0.85 );
+        glFogf( GL_FOG_END  , er_farc        );
 
         /* Enable fog feature */
         glEnable( GL_FOG );
@@ -441,6 +442,7 @@
     source - auxiliary methods
  */
 
+    # ifndef __OPENMP__
     void * er_client_pthread( void * er_null ) {
 
         /* Model update thread - pthread specific derivation */
@@ -450,4 +452,5 @@
         return( NULL );
 
     }
+    # endif
 

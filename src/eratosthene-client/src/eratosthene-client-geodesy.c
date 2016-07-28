@@ -79,9 +79,7 @@
 
     le_real_t er_geodesy_level( le_real_t const er_distance, le_size_t const er_scale, le_size_t const er_depth ) {
 
-        /* Return level function */        
-        //return( 5.0 + ( er_scale - er_depth - 5.0 ) * exp( - 60.0 * ( er_distance / ER_ERA ) ) );
-
+        /* Return level function */
         return( ( er_scale - er_depth ) - log ( er_distance + 1.0 ) / log ( 2.0 ) + 1.0 / log( 2.0 ) );
 
     }
