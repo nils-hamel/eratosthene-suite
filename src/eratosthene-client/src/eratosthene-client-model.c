@@ -185,10 +185,10 @@
                     er_dist = er_geodesy_distance( er_enum, er_lon, er_lat, er_alt );
 
                     /* Check selection criterion */
-                    if ( er_dist < er_geodesy_select( er_dist, er_alt ) ) {
+                    if ( er_dist < er_geodesy_limit( er_dist, er_alt ) ) {
 
                         /* Check level function */
-                        if ( fabs( er_geodesy_level( er_dist, er_model->md_sparam, ER_MODEL_DPT ) - ( le_real_t ) er_scale ) < 1.0 ) {
+                        if ( fabs( er_geodesy_depth( er_dist, er_model->md_sparam, ER_MODEL_DPT ) - ( le_real_t ) er_scale ) < 1.0 ) {
 
                             /* Check stack */
                             if ( er_model->md_push < er_model->md_size ) {

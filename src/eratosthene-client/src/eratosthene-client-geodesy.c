@@ -67,22 +67,22 @@
     }
 
 /*
-    source - model functions
+    source - model methods
  */
 
-    le_real_t er_geodesy_select( le_real_t const er_distance, le_real_t const er_altitude ) {
+    le_real_t er_geodesy_limit( le_real_t const er_distance, le_real_t const er_altitude ) {
 
         /* Computation variables */
-        le_real_t er_normal = ( er_altitude - ER_ERA ) / ER_ERA;
+        le_real_t er_normal = er_altitude / ER_ERA - 1.0;
 
-        /* Return selection function */
-        return( er_altitude * ( 1.0 - 0.75 * exp( - 20.0 * er_normal * er_normal ) ) );
+        /* Return evaluation */
+        return( er_altitude * ( 1.0 - 0.75 * exp( - LE_2P * er_normal * er_normal ) ) );
 
     }
 
-    le_real_t er_geodesy_level( le_real_t const er_distance, le_size_t const er_scale, le_size_t const er_depth ) {
+    le_real_t er_geodesy_depth( le_real_t const er_distance, le_size_t const er_scale, le_size_t const er_depth ) {
 
-        /* Return level function */
+        /* Return evaluation */
         return( ( er_scale - er_depth ) - log ( er_distance + 1.0 ) / log ( 2.0 ) + 1.0 / log( 2.0 ) );
 
     }
@@ -90,9 +90,9 @@
     le_real_t er_geodesy_scale( le_real_t const er_altitude ) {
 
         /* Computation variables */
-        le_real_t er_normal = ( er_altitude - ER_ERA ) / ER_ERA;
+        le_real_t er_normal = er_altitude / ER_ERA - 1.0;
 
-        /* Return scale factor */
+        /* Return evaluation */
         return( exp( - LE_PI * er_normal * er_normal ) );
 
     }
@@ -102,8 +102,8 @@
         /* Computation variables */
         le_real_t er_normal = pow( fabs( er_altitude - ER_ERA ) / ( ER_ERA * 2.0 ), 4 );
 
-        /* Return near plane depth */
-        return( 1.0 + ER_ERA * er_normal * er_geodesy_scale( er_altitude ) );
+        /* Return evaluation */
+        return( ER_ERA * er_normal * er_geodesy_scale( er_altitude ) + 1.0 );
 
     }
 
@@ -112,7 +112,7 @@
         /* Computation variables */
         le_real_t er_normal = er_geodesy_scale( er_altitude );
 
-        /* Return far plane depth */
+        /* Return evaluation */
         return( ( er_altitude - ER_ER2 - ( ER_ERA / 2.5 ) * pow( er_normal, 20 ) ) * er_normal );
 
     }
