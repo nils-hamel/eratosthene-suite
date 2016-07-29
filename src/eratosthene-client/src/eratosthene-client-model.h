@@ -127,9 +127,8 @@
         le_size_t   md_sparam;
         le_time_t   md_tparam;
 
-        le_size_t   md_push;
-
         le_size_t   md_size;
+        le_size_t   md_push;
         er_cell_t * md_cell;
 
     le_enum_t _status; } er_model_t;

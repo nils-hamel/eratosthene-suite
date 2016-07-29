@@ -26,7 +26,7 @@
 
     er_model_t er_model_create( le_char_t * const er_ip, le_sock_t const er_port ) {
 
-        /* Returned structure variables */
+        /* Created structure variables */
         er_model_t er_model = ER_MODEL_C;
 
         /* Assign server network configuration */
@@ -57,7 +57,7 @@
 
         }
 
-        /* Initialise model cells */
+        /* Create model cells */
         for ( le_size_t er_parse = 0; er_parse < er_model.md_size; er_parse ++ ) {
 
             /* Initialise cell */
@@ -72,26 +72,21 @@
 
     le_void_t er_model_delete( er_model_t * const er_model ) {
 
-        /* Model variables */
+        /* Deleted structure variables */
         er_model_t er_reset = ER_MODEL_C;
 
-        /* Check cells stack state */
-        if ( er_model->md_size > 0 ) {
+        /* Delete model cells */
+        for ( le_size_t er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
 
-            /* Delete model cells */
-            for ( le_size_t er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
-
-                /* Delete cell */
-                er_cell_delete( er_model->md_cell + er_parse );
-
-            }
-
-            /* Unallocate cells stack memory */
-            free( er_model->md_cell );
+            /* Delete cell */
+            er_cell_delete( er_model->md_cell + er_parse );
 
         }
 
-        /* Clear model fields */
+        /* Check stack state - memory unallocation */
+        if ( er_model->md_cell != NULL ) free( er_model->md_cell );
+
+        /* Delete structure */
         * ( er_model ) = er_reset;
 
     }
@@ -102,14 +97,16 @@
 
     le_size_t er_model_get_cell( er_model_t const * const er_model ) {
 
-        /* Parsing cell array */
+        /* Parsing cells stack */
         for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
 
-            /* Check cell state - returned index */
+            /* Check cell state - return index */
             if ( er_cell_get_flag( er_model->md_cell + er_parse ) == _LE_FALSE ) return( er_parse );
 
+        }
+
         /* Return index */
-        } return( er_model->md_size );
+        return( er_model->md_size );
 
     }
 

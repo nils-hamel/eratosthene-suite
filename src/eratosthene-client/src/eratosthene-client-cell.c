@@ -26,7 +26,7 @@
 
     er_cell_t er_cell_create( le_void_t ) {
 
-        /* Constructed structure variables */
+        /* Created structure variables */
         er_cell_t er_cell = ER_CELL_C;
 
         /* Allocate geodetic array memory */
@@ -35,7 +35,7 @@
         /* Allocate colorimetric array memory */
         er_cell.ce_data = malloc( sizeof( le_data_t ) * ER_CELL_ARRAY );
 
-        /* Return constructed structure */
+        /* Return created structure */
         return( er_cell );
 
     }
@@ -51,7 +51,7 @@
         /* Check array state - memory unallocation */
         if ( er_cell->ce_data != NULL ) free( er_cell->ce_data );
 
-        /* Return deleted structure */
+        /* Delete structure */
         * ( er_cell ) = er_reset;
 
     }
