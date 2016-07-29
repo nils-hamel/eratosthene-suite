@@ -58,12 +58,10 @@
     # define ER_ERD ( ER_ERA * 2.00 )
 
     /* Define motion inertia */
+    # define ER_INT ( LE_PI / ( LE_GEODESY_WGS84_A * 180.0 ) )
     # define ER_INB ( 5.0 / 1000.0 )
     # define ER_INR ( 1.0 / 1000.0 )
-    # define ER_INT ( LE_PI / ( LE_GEODESY_WGS84_A * 180.0 ) )
-
-    /* Define motion inertia multipliers */
-    # define ER_IML (  0.1 )
+    # define ER_IML ( 1.0 / 10.0 )
     # define ER_IMU ( 10.0 )
 
     /* Define conversion factors */

@@ -36,12 +36,12 @@
         le_real_t er_shift = LE_GEODESY_LRAN / er_scale;
 
         /* Initialise array elements */
-        er_pose[ 3] = 0.0, er_pose[ 4] = 0.0, er_pose[ 5] = 0.0;
+        er_pose[3] = 0.0, er_pose[4] = 0.0, er_pose[5] = 0.0;
 
         /* Initialise array elements */
-        er_pose[ 9] = er_lon, er_pose[10] = er_lat, er_pose[11] = er_alt;
+        er_pose[9] = er_lon, er_pose[10] = er_lat, er_pose[11] = er_alt;
 
-        /* Retrieve address position */
+        /* Retrieve address edge */
         le_address_get_pose( er_cell, er_pose + 3 );
 
         /* Convert position to cartesian coordinates */
@@ -58,7 +58,7 @@
         er_pose[6] = er_pose[ 6] * sin( er_pose[ 9] );
         er_pose[7] = er_pose[ 7] * sin( er_pose[10] );
 
-        /* Compute differences */
+        /* Compute respective differences */
         er_pose[2] -= er_pose[8], er_pose[0] -= er_pose[6], er_pose[1] -= er_pose[7];
 
         /* Return distance */
@@ -82,11 +82,14 @@
 
     le_real_t er_geodesy_depth( le_real_t const er_distance, le_size_t const er_sparam, le_size_t const er_depth ) {
 
+        /* Clamping variables */
+        le_real_t er_clamp = er_sparam - er_depth - 2;
+
         /* Computation variables */
-        le_real_t er_normal = log( ( ER_ER2 - 10.0 ) / ( er_distance - 10.0 ) ) / log( 2.0 ) + 5.0;
+        le_real_t er_normal = log( ( ER_ER2 - 10.0 ) / ( er_distance - 10.0 ) ) / M_LN2 + 5.0;
 
         /* Return evaluation */
-        return( er_normal < 5 ? 5 : er_normal > er_sparam - er_depth - 2 ? er_sparam - er_depth - 2 : er_normal );
+        return( er_normal < 5 ? 5 : ( er_normal > er_clamp ? er_clamp : er_normal ) );
 
     }
 
