@@ -24,7 +24,7 @@
     source - constructor/destructor methods
  */
 
-    er_model_t er_model_create( le_size_t er_cells, le_char_t * const er_ip, le_sock_t const er_port ) {
+    er_model_t er_model_create( le_char_t * const er_ip, le_sock_t const er_port ) {
 
         /* Returned structure variables */
         er_model_t er_model = ER_MODEL_C;
@@ -50,7 +50,7 @@
         }
 
         /* Allocate cells stack memory */
-        if ( ( er_model.md_cell = ( er_cell_t * ) malloc( ( er_model.md_size = er_cells ) * sizeof( er_cell_t ) ) ) == NULL ) {
+        if ( ( er_model.md_cell = ( er_cell_t * ) malloc( ( er_model.md_size = ER_MODEL_STACK ) * sizeof( er_cell_t ) ) ) == NULL ) {
 
             /* Send message */
             return( er_model._status = _LE_FALSE, er_model );

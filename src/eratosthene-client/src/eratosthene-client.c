@@ -36,7 +36,7 @@
         float er_color[4] = { 0.00, 0.02, 0.04, 0.00 };
 
         /* Create engine model */
-        if ( ( er_client.cl_model = er_model_create( 8192, er_ip, er_port ) )._status == _LE_FALSE ) return( _LE_FALSE );
+        if ( ( er_client.cl_model = er_model_create( er_ip, er_port ) )._status == _LE_FALSE ) return( _LE_FALSE );
 
         /* Create engine times */
         if ( ( er_client.cl_times = er_times_create( er_ip, er_port ) )._status == _LE_FALSE ) return( _LE_FALSE );
@@ -47,7 +47,7 @@
         /* Create rendering window */
         glutCreateWindow( "eratosthene-client" );
 
-        /* Fullscreen rendering window */
+        /* Rendering window configuration */
         glutFullScreen();
 
         /* Cursor configuration */
@@ -66,12 +66,12 @@
         glEnable( GL_DEPTH_TEST  );
         glEnable( GL_BLEND       );
 
-        /* OpenGL Fog configuration */
+        /* OpenGL fog configuration */
         glFogf ( GL_FOG_MODE   , GL_LINEAR );
         glFogf ( GL_FOG_DENSITY, 0.3       );
         glFogfv( GL_FOG_COLOR  , er_color  );
         
-        /* Blending function configuration */
+        /* OpenGL blending configuration */
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         /* Declare engine callback functions */
@@ -93,7 +93,7 @@
 
     le_void_t er_client_delete( le_void_t ) {
 
-        /* Engine variables */
+        /* Cleared structure variables */
         er_client_t er_reset = ER_CLIENT_C;
 
         /* Delete engine times */
@@ -114,7 +114,7 @@
     int main( int argc, char ** argv ) {
 
         /* Server address variables */
-        le_char_t * le_addr = ( le_char_t * ) lc_read_string( argc, argv, "--ip"  , "-i" );
+        le_char_t * le_svip = ( le_char_t * ) lc_read_string( argc, argv, "--ip"  , "-i" );
 
         /* Server port variables */
         le_size_t le_port = ( le_size_t   ) lc_read_uint( argc, argv, "--port", "-t", _LE_USE_PORT );
@@ -122,37 +122,38 @@
         /* Initialise GL/GLU/GLUT */
         glutInit( & argc, argv );
 
-        /* Create rendering engine */
-        if ( er_client_create( le_addr, le_port ) == _LE_FALSE ) {
+        /* Create client */
+        if ( er_client_create( le_svip, le_port ) == _LE_FALSE ) {
 
             /* Display message */
             fprintf( stderr, "eratosthene-suite : error : unable to create model\n" );
 
-        } else {
-
-    # ifdef __OPENMP__
-            # pragma omp parallel sections
-            {
-            /* Model update thread */
-            # pragma omp section
-            while ( usleep( 500 ), er_client.cl_loops == _LE_TRUE ) er_client_loops_update();
-
-            /* Model display thread */
-            # pragma omp section
-            glutMainLoop();
-            }
-    # else
-            /* Model update thread */
-            pthread_t er_pmodel; pthread_create( & er_pmodel, NULL, & er_client_pthread, NULL );
-            
-            /* Model display thread */
-            glutMainLoop();
-    # endif
-
-            /* Delete rendering engine */
-            er_client_delete();
+            /* Return to system */
+            return( EXIT_SUCCESS );
 
         }
+
+    # ifdef __OPENMP__
+    # pragma omp parallel sections
+    {
+        /* Model update thread */
+        # pragma omp section
+        while ( er_client.cl_loops == _LE_TRUE ) er_client_loops_update();
+
+        /* Model display thread */
+        # pragma omp section
+        glutMainLoop();
+    }
+    # else
+        /* Model update thread */
+        pthread_t er_pmodel; pthread_create( & er_pmodel, NULL, & er_client_pthread, NULL );
+        
+        /* Model display thread */
+        glutMainLoop();
+    # endif
+
+        /* Delete client */
+        er_client_delete();
 
         /* Return to system */
         return( EXIT_SUCCESS );
@@ -165,7 +166,7 @@
 
     le_void_t er_client_loops_render( le_void_t ) {
 
-        /* Update ranges */
+        /* Ranges management */
         er_client_calls_range();
 
         /* Clear color and depth buffers */
@@ -182,10 +183,10 @@
 
         } glPopMatrix();
 
-        /* Matrix - model */
+        /* Matrix - cells */
         glPushMatrix(); {
 
-            /* Display model */
+            /* Display cells */
             er_model_display_cell( & ( er_client.cl_model ), er_client.cl_vlon, er_client.cl_vlat, er_client.cl_valt, er_client.cl_vazm, er_client.cl_vgam );
 
         } glPopMatrix();
@@ -226,7 +227,7 @@
             /* Prepare model update */
             er_model_set_update_prepare( & er_client.cl_model );
 
-            /* Enable times enumeration */
+            /* Model times enumeration */
             while ( ( er_etime = er_times_get( & er_client.cl_times ) ) != _LE_TIME_NULL ) {
 
                 /* Reset address size */
@@ -235,7 +236,7 @@
                 /* Reset address time */
                 le_address_set_time( & er_enum, er_etime );
 
-                /* Update model for specified time */
+                /* Update model cells */
                 er_model_set_update_cell( & er_client.cl_model, & er_enum, er_client.cl_vlon * ER_D2R, er_client.cl_vlat * ER_D2R, er_client.cl_valt );
 
             }
@@ -246,7 +247,8 @@
             /* Terminate model update */
             er_model_set_update_terminate( & er_client.cl_model );
 
-        }
+        /* Delaying updates */
+        } usleep( 500 );
 
     }
 
@@ -260,33 +262,29 @@
         le_real_t er_neac = er_geodesy_near( er_client.cl_valt );
         le_real_t er_farc = er_geodesy_far ( er_client.cl_valt );
 
-        /* Compute scale factor */
+        /* Compute model scale factor */
         er_client.cl_vscl = er_geodesy_scale( er_client.cl_valt );
 
         /* Matrix mode to projection */
         glMatrixMode( GL_PROJECTION );
 
-        /* Set projection matrix to identity */
+        /* Set matrix to identity */
         glLoadIdentity();
 
-        /* Compute projectio matrix */
+        /* Compute projection matrix */
         gluPerspective( 45.0, ( double ) er_width / er_height, er_neac, er_farc );
 
         /* Matrix mode to modelview */
         glMatrixMode( GL_MODELVIEW );
 
-        /* Set model view matrix to identity */
+        /* Set matrix to identity */
         glLoadIdentity();
 
         /* Apply scale factor to projection matrix */
         glScaled( er_client.cl_vscl, er_client.cl_vscl, er_client.cl_vscl );
 
-        /* Apply fog configuration */
-        glFogf( GL_FOG_START, er_farc * 0.85 );
-        glFogf( GL_FOG_END  , er_farc        );
-
-        /* Enable fog feature */
-        glEnable( GL_FOG );
+        /* Adapt and enable fog feature */
+        glFogf( GL_FOG_START, er_farc * 0.85 ), glFogf( GL_FOG_END, er_farc ), glEnable( GL_FOG );
 
     }
 
@@ -295,16 +293,16 @@
         /* Matrix mode to projection */
         glMatrixMode( GL_PROJECTION );
 
-        /* Set projection matrix to identity */
+        /* Set matrix to identity */
         glLoadIdentity();
 
-        /* Compute projectio matrix */
+        /* Compute projection matrix */
         glOrtho( 0, glutGet( GLUT_SCREEN_WIDTH ), 0, glutGet( GLUT_SCREEN_HEIGHT ), -1.0, 1.0 );
 
         /* Matrix mode to modelview */
         glMatrixMode( GL_MODELVIEW );
 
-        /* Set model view matrix to identity */
+        /* Set matrix to identity */
         glLoadIdentity();
 
         /* Disable fog feature */
@@ -318,7 +316,7 @@
 
     le_void_t er_client_calls_reshape( int er_width, int er_height ) {
 
-        /* Reset viewport */
+        /* Configurate viewport */
         glViewport( 0, 0, er_width, er_height );
 
     }
@@ -352,32 +350,36 @@
 
     le_void_t er_client_calls_mouse( int er_button, int er_state, int er_x, int er_y ) {
 
-        /* Update engine handle */
-        er_client.cl_button  = er_button;
-        er_client.cl_state   = er_state;
-        er_client.cl_x       = er_x;
-        er_client.cl_y       = er_y;
-        er_client.cl_inertia = ER_INB * fabs( er_client.cl_valt - ER_ERA );
+        /* Keyboard modifiers variables */
+        le_enum_t er_modifiers = glutGetModifiers();
+
+        /* Check mouse state */
+        if ( ( er_client.cl_state = er_state ) != GLUT_DOWN ) return;
+
+        /* Update client interface */
+        er_client.cl_button = er_button;
+        er_client.cl_x      = er_x;
+        er_client.cl_y      = er_y;
+
+        /* Compute inertial factor */
+        er_client.cl_inertia = abs( er_client.cl_valt - ER_ERA ) * ER_INB;
 
         /* Clamp inertial value */
         if ( er_client.cl_inertia < 5.0 ) er_client.cl_inertia = 5.0;
 
-        /* Inertial multiplier */
-        if ( glutGetModifiers() == GLUT_ACTIVE_CTRL  ) er_client.cl_inertia *= ER_IMU;
-        if ( glutGetModifiers() == GLUT_ACTIVE_SHIFT ) er_client.cl_inertia *= ER_IML;
-
-        /* Check mouse state */
-        if ( er_client.cl_state != GLUT_DOWN ) return;
+        /* Inertial multiplier application */
+        if ( er_modifiers == GLUT_ACTIVE_CTRL  ) er_client.cl_inertia *= ER_IMU;
+        if ( er_modifiers == GLUT_ACTIVE_SHIFT ) er_client.cl_inertia *= ER_IML;
 
         /* Interface switch */
-        if ( glutGetModifiers() == ( GLUT_ACTIVE_CTRL | GLUT_ACTIVE_ALT ) ) {
+        if ( er_modifiers == ( GLUT_ACTIVE_CTRL | GLUT_ACTIVE_ALT ) ) {
 
             /* Mouse event switch - update time zoom */
             if ( er_client.cl_button == 3 ) er_times_set_zoom( & er_client.cl_times, 1.0990 );
             if ( er_client.cl_button == 4 ) er_times_set_zoom( & er_client.cl_times, 0.9099 );
 
         } else
-        if ( glutGetModifiers() == GLUT_ACTIVE_ALT ) {
+        if ( er_modifiers == GLUT_ACTIVE_ALT ) {
 
             /* Mouse event switch - update time position */
             if ( er_client.cl_button == 3 ) er_times_set_pose( & er_client.cl_times, + 0.02 );
@@ -446,7 +448,7 @@
     void * er_client_pthread( void * er_null ) {
 
         /* Model update thread - pthread specific derivation */
-        while ( usleep( 500 ), er_client.cl_loops == _LE_TRUE ) er_client_loops_update();
+        while ( er_client.cl_loops == _LE_TRUE ) er_client_loops_update();
 
         /* Return null pointer */
         return( NULL );

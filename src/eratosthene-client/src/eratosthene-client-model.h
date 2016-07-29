@@ -63,6 +63,9 @@
     /* Define pseudo-constructor */
     # define ER_MODEL_C       { NULL, _LE_USE_PORT, _LE_SIZE_NULL, _LE_TIME_NULL, 0.0, 0.0, 0.0, 0, 0, NULL, _LE_TRUE }
 
+    /* Define model stack */
+    # define ER_MODEL_STACK   4096
+
     /* Define model parameters */
     # define ER_MODEL_DPT     7
     //7
@@ -159,7 +162,7 @@
      *  \return Created model structure
      */
 
-    er_model_t er_model_create( le_size_t er_cells, le_char_t * const er_ip, le_sock_t const er_port );
+    er_model_t er_model_create( le_char_t * const er_ip, le_sock_t const er_port );
 
     /*! \brief constructor/destructor methods
      *
