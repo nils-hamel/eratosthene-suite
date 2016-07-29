@@ -26,7 +26,7 @@
 
     er_cell_t er_cell_create( le_void_t ) {
 
-        /* Cell variables */
+        /* Constructed structure variables */
         er_cell_t er_cell = ER_CELL_C;
 
         /* Allocate geodetic array memory */
@@ -42,13 +42,13 @@
 
     le_void_t er_cell_delete( er_cell_t * const er_cell ) {
 
-        /* Cell variables */
+        /* Deleted structure variables */
         er_cell_t er_reset = ER_CELL_C;
 
-        /* Check array state and memory unallocation */
+        /* Check array state - memory unallocation */
         if ( er_cell->ce_pose != NULL ) free( er_cell->ce_pose );
 
-        /* Check array state and memory unallocation */
+        /* Check array state - memory unallocation */
         if ( er_cell->ce_data != NULL ) free( er_cell->ce_data );
 
         /* Return deleted structure */
@@ -127,13 +127,6 @@
 
     }
 
-    le_void_t er_cell_set_addr( er_cell_t * const er_cell, le_address_t const * const er_address ) {
-
-        /* Compute and assign cell address */
-        le_address_ct_string( er_address, er_cell->ce_addr );
-
-    }
-
     le_void_t er_cell_set_push( er_cell_t * const er_cell, le_address_t const * const er_address ) {
 
         /* Compute and assign cell address */
@@ -155,27 +148,17 @@
 
     }
 
-    le_void_t er_cell_set_empty( er_cell_t * const er_cell ) {
-
-        /* Empty array */
-        er_cell->ce_size = 0;
-
-        /* Clear address */
-        er_cell->ce_addr[0] = '\0';
-
-    }
-
 /*
     source - i/o methods
  */
 
     le_size_t er_cell_io_query( er_cell_t * const er_cell, le_char_t const * const er_ip, le_sock_t const er_port ) {
 
-        /* Socket variables */
-        le_sock_t er_socket = _LE_SOCK_NULL;
-
         /* Returned value variables */
         le_size_t er_return = 0;
+
+        /* Socket variables */
+        le_sock_t er_socket = _LE_SOCK_NULL;
 
         /* Check socket state */
         if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {

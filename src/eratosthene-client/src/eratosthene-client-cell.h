@@ -231,17 +231,6 @@
 
     /*! \brief mutator methods
      *
-     *  This function assign the standard query address to the cell based on the
-     *  provided address structure.
-     *
-     *  \param er_cell    Cell structure
-     *  \param er_address Address structure
-     */
-
-    le_void_t er_cell_set_addr( er_cell_t * const er_cell, le_address_t const * const er_address );
-
-    /*! \brief mutator methods
-     *
      *  This function assign the standard query address to the cell push address
      *  base on the provided address structure.
      *
@@ -271,16 +260,6 @@
      */
 
     le_void_t er_cell_set_swap( er_cell_t * const er_addr, er_cell_t * const er_push );
-
-    /*! \brief mutator methods
-     *
-     *  This function empty the provided cell. It clears the cell size and
-     *  standard address, but memory allocation is left unchanged.
-     *
-     *  \param er_cell Cell structure
-     */
-
-    le_void_t er_cell_set_empty( er_cell_t * const er_cell );
 
     le_size_t er_cell_io_query( er_cell_t * const er_cell, le_char_t const * const er_ip, le_sock_t const er_port );
 

@@ -203,7 +203,10 @@
                             le_address_set_depth( er_enum, 0 );
 
                             /* Set cell address */
-                            er_cell_set_addr( er_model->md_cell, er_enum );
+                            er_cell_set_push( er_model->md_cell, er_enum );
+
+                            /* Swap addresses */
+                            er_cell_set_swap( er_model->md_cell, er_model->md_cell );
 
                             /* Check parent cell */
                             if ( er_cell_io_query( er_model->md_cell, er_model->md_svip, er_model->md_port ) > 0 ) {
