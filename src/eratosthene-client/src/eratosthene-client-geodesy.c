@@ -70,7 +70,7 @@
     source - model methods
  */
 
-    le_real_t er_geodesy_limit( le_real_t const er_distance, le_real_t const er_altitude ) {
+    le_real_t er_geodesy_limit( le_real_t const er_altitude ) {
 
         /* Computation variables */
         le_real_t er_normal = er_altitude / ER_ERA - 1.0;
@@ -80,13 +80,13 @@
 
     }
 
-    le_real_t er_geodesy_depth( le_real_t const er_distance, le_size_t const er_scale, le_size_t const er_depth ) {
+    le_real_t er_geodesy_depth( le_real_t const er_distance, le_size_t const er_sparam, le_size_t const er_depth ) {
 
         /* Computation variables */
-        le_real_t er_normal = ( er_scale - er_depth - 1 ) - log ( 0.75 * er_distance + 1.0 ) / log ( 2.0 ) + 1.0 / log( 2.0 );
+        le_real_t er_normal = log( ( ER_ER2 - 10.0 ) / ( er_distance - 10.0 ) ) / log( 2.0 ) + 5.0;
 
         /* Return evaluation */
-        return( er_normal < 5 ? 5 : er_normal );
+        return( er_normal < 5 ? 5 : er_normal > er_sparam - er_depth - 2 ? er_sparam - er_depth - 2 : er_normal );
 
     }
 

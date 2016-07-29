@@ -88,7 +88,7 @@
 
     le_real_t er_geodesy_distance( le_address_t const * const er_cell, le_real_t const er_lon, le_real_t er_lat, le_real_t er_alt );
 
-    le_real_t er_geodesy_limit( le_real_t const er_distance, le_real_t const er_altitude );
+    le_real_t er_geodesy_limit( le_real_t const er_altitude );
 
     le_real_t er_geodesy_depth( le_real_t const er_distance, le_size_t const er_scale, le_size_t const er_depth );
 
