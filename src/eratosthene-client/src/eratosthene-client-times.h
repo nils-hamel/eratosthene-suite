@@ -59,7 +59,7 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_TIMES_C            { NULL, _LE_USE_PORT, _LE_TRUE, _LE_TIME_NULL, LE_ARRAY_C, _LE_TIME_NULL, ER_TIMES_DAY * _LE_TIME_L( 365 ), 0, { _LE_SIZE_NULL, _LE_SIZE_NULL }, 0, NULL, _LE_TRUE }
+    # define ER_TIMES_C            { NULL, _LE_USE_PORT, _LE_TIME_NULL, LE_ARRAY_C, _LE_TIME_NULL, ER_TIMES_DAY * _LE_TIME_L( 365 ), 0, { _LE_SIZE_NULL, _LE_SIZE_NULL }, 0, NULL, _LE_TRUE }
 
     /* Define standard intervalle */
     # define ER_TIMES_DAY          ( _LE_TIME_L( 86400 ) )
@@ -100,7 +100,6 @@
         le_char_t * tm_svip;
         le_sock_t   tm_port;
 
-        le_enum_t   tm_update;
         le_time_t   tm_tparam;
         le_array_t  tm_tarray;
 

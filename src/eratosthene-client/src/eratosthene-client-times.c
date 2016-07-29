@@ -112,13 +112,17 @@
 
     le_enum_t er_times_get_update( er_times_t * const er_times ) {
 
+        /* Static view-times array variables */
+        static le_size_t er_view[2] = { _LE_SIZE_NULL, _LE_SIZE_NULL };
+
         /* Returned value variables */
-        le_enum_t er_return = er_times->tm_update;
+        le_enum_t er_return = _LE_FALSE;
 
-        /* Update modification flag */
-        er_times->tm_update = _LE_FALSE;
+        /* Check update necessities */
+        if ( er_times->tm_view[0] != er_view[0] ) er_view[0] = er_times->tm_view[0], er_return = _LE_TRUE;
+        if ( er_times->tm_view[1] != er_view[1] ) er_view[1] = er_times->tm_view[1], er_return = _LE_TRUE;
 
-        /* Return modification flag */
+        /* Send answer */
         return( er_return );
 
     }
@@ -144,9 +148,6 @@
                 er_times->tm_view[er_index] = _LE_SIZE_NULL;
 
             }
-
-            /* Trigger model update */
-            er_times->tm_update = _LE_TRUE;
 
         }
 

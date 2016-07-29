@@ -115,17 +115,16 @@
 
     le_enum_t er_model_get_update( er_model_t * const er_model, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
 
+        /* Static position memory variables */
+        static le_real_t er_mlon = 0.0, er_mlat = 0.0, er_malt = 0.0;
+
         /* Returned value variables */
         le_enum_t er_return = _LE_FALSE;
 
         /* Check update necessities - update return */
-        if ( er_model->md_mlon != er_lon ) er_model->md_mlon = er_lon, er_return = _LE_TRUE;
-
-        /* Check update necessities - update return */
-        if ( er_model->md_mlat != er_lat ) er_model->md_mlat = er_lat, er_return = _LE_TRUE;
-
-        /* Check update necessities - update return */
-        if ( er_model->md_malt != er_alt ) er_model->md_malt = er_alt, er_return = _LE_TRUE;
+        if ( er_mlon != er_lon ) er_mlon = er_lon, er_return = _LE_TRUE;
+        if ( er_mlat != er_lat ) er_mlat = er_lat, er_return = _LE_TRUE;
+        if ( er_malt != er_alt ) er_malt = er_alt, er_return = _LE_TRUE;
 
         /* Send answer */
         return( er_return );
@@ -181,13 +180,13 @@
                 if ( er_dist < er_geodesy_limit( er_alt ) ) {
 
                     /* Check depth criterion */
-                    if ( fabs( er_geodesy_depth( er_dist, er_model->md_sparam, ER_MODEL_DPT ) - ( le_real_t ) er_scale ) < 1.0 ) {
+                    if ( fabs( er_geodesy_depth( er_dist, er_model->md_sparam, ER_MODEL_DEPTH ) - ( le_real_t ) er_scale ) < 1.0 ) {
 
                         /* Check cells stack */
                         if ( er_model->md_push < er_model->md_size ) {
 
                             /* Set address depth */
-                            le_address_set_depth( er_enum, ER_MODEL_DPT );
+                            le_address_set_depth( er_enum, ER_MODEL_DEPTH );
 
                             /* Set cell address */
                             er_cell_set_push( er_model->md_cell + ( er_model->md_push ++ ), er_enum );
@@ -197,7 +196,7 @@
                     } else {
 
                         /* Check enumeration boundary */
-                        if ( ( er_scale + ER_MODEL_DPT + 2 ) < er_model->md_sparam ) {
+                        if ( ( er_scale + ER_MODEL_DEPTH + 2 ) < er_model->md_sparam ) {
 
                             /* Set address depth */
                             le_address_set_depth( er_enum, 0 );
