@@ -173,22 +173,6 @@
     header - function prototypes
  */
 
-    /*! \brief main function
-     *
-     *  The main function simply reads the arguments and parameters and creates
-     *  the client rendering engine descriptor. It then calls the rendering
-     *  engine main loop function to starts the graphical rendering. As the
-     *  engine exits its main loop, the main function deletes the rendering
-     *  engine descriptor and the execution stops.
-     *
-     *  \param argc Main function parameters
-     *  \param argv Main function parameters
-     *
-     *  \return Standard exit code
-     */
-
-    int main( int argc, char ** argv );
-
     /*! \brief constructor/destructor methods
      *
      *  This function creates and returns the rendering engine descriptor. In
@@ -217,6 +201,22 @@
 
     le_void_t er_client_delete( le_void_t );
 
+    /*! \brief main function
+     *
+     *  The main function simply reads the arguments and parameters and creates
+     *  the client rendering engine descriptor. It then calls the rendering
+     *  engine main loop function to starts the graphical rendering. As the
+     *  engine exits its main loop, the main function deletes the rendering
+     *  engine descriptor and the execution stops.
+     *
+     *  \param argc Main function parameters
+     *  \param argv Main function parameters
+     *
+     *  \return Standard exit code
+     */
+
+    int main( int argc, char ** argv );
+
     /*! \brief engine loop
      *
      *  This function holds the callback procedure for the model rendering.
@@ -236,6 +236,10 @@
 
     le_void_t er_client_loops_update( le_void_t );
 
+    le_void_t er_client_proj_model( int er_width, int er_height );
+
+    le_void_t er_client_proj_interface( int er_width, int er_height );
+
     /*! \brief engine callbacks - reshape
      *
      *  This function implements the reshape callback called on rendering
@@ -247,11 +251,6 @@
      *  \param er_width  Width, in pixel, of the rendering buffer
      *  \param er_height Height, in pixels, of the rendering buffer
      */
-
-    //le_void_t er_client_calls_reshape( int er_width, int er_height );
-    le_void_t er_client_proj_model( int er_width, int er_height );
-
-    le_void_t er_client_proj_interface( int er_width, int er_height );
 
     le_void_t er_client_calls_reshape( int er_width, int er_height );
 
