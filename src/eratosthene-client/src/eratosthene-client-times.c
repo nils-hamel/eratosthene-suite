@@ -215,6 +215,26 @@
 
     }
 
+    le_void_t er_times_set_unset( er_times_t * const er_times, le_size_t const er_index ) {
+
+        /* Check consistency */
+        if ( ( er_index >= 0 ) && ( er_index < ER_TIMES_VIEW ) ) {
+
+            /* Check time state */
+            if ( er_times->tm_view[er_index] != _LE_TIME_NULL ) {
+
+                /* Set time position to enable time */
+                er_times->tm_pose = er_times->tm_time[er_times->tm_view[er_index]];
+
+                /* Assign implicit nearest */
+                er_times->tm_near = er_times->tm_view[er_index];
+
+            }
+
+        }
+
+    }
+
 /*
     source - display methods
  */

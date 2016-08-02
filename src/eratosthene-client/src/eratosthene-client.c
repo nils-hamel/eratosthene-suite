@@ -337,9 +337,13 @@
             case ( 0x78 ) : { er_client.cl_vazm = 0.0; }
             case ( 0x79 ) : { er_client.cl_vgam = 0.0; } break;
 
-            /* Update times */
+            /* Update point size */
             case ( 0x61 ) : { er_times_set( & er_client.cl_times, 0 ); } break;
             case ( 0x73 ) : { er_times_set( & er_client.cl_times, 1 ); } break;
+
+            /* Update point size */
+            case ( 0x71 ) : { er_times_set_unset( & er_client.cl_times, 0 ); } break;
+            case ( 0x77 ) : { er_times_set_unset( & er_client.cl_times, 1 ); } break;
 
         };
 

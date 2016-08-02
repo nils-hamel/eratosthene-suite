@@ -138,6 +138,8 @@
 
     le_void_t er_times_set_pose( er_times_t * const er_times, le_real_t const er_factor );
 
+    le_void_t er_times_set_unset( er_times_t * const er_times, le_size_t const er_index );
+
     le_void_t er_times_display( er_times_t const * const er_times );
 
     le_void_t er_times_display_date( le_time_t const er_time, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify, le_enum_t const er_color );
