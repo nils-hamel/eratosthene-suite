@@ -92,7 +92,7 @@
         static le_size_t er_parse = 0;
 
         /* Enumeration on enable time array */
-        while ( er_parse < 2 ) {
+        while ( er_parse < ER_TIMES_VIEW ) {
 
             /* Check enable time array */
             if ( er_times->tm_view[er_parse] != _LE_SIZE_NULL ) {
@@ -113,7 +113,7 @@
     le_enum_t er_times_get_update( er_times_t * const er_times ) {
 
         /* Static view-times array variables */
-        static le_size_t er_view[2] = { _LE_SIZE_NULL, _LE_SIZE_NULL };
+        static le_size_t er_view[ER_TIMES_VIEW] = { _LE_SIZE_NULL, _LE_SIZE_NULL };
 
         /* Returned value variables */
         le_enum_t er_return = _LE_FALSE;
@@ -134,7 +134,7 @@
     le_void_t er_times_set( er_times_t * const er_times, le_size_t const er_index ) {
 
         /* Check consistency */
-        if ( ( er_index >= 0 ) && ( er_index < 2 ) ) {
+        if ( ( er_index >= 0 ) && ( er_index < ER_TIMES_VIEW ) ) {
 
             /* Check enable time state */
             if ( er_times->tm_view[er_index] != er_times->tm_near ) {
@@ -155,13 +155,13 @@
 
     le_void_t er_times_set_default( er_times_t * const er_times ) {
 
-        /* State flag variables */
+        /* Flag variables */
         le_enum_t er_flag = _LE_FALSE;
 
         /* Parsing times array */
         for ( le_size_t er_parse = 0; er_parse < er_times->tm_size; er_parse ++ ) {
 
-            /* Check for SRTM data */
+            /* Search for SRTM data */
             if ( er_times->tm_time[er_parse] == ER_TIMES_SRTM( er_times->tm_tparam ) ) {
                 
                 /* Enable default time */
@@ -172,7 +172,7 @@
 
         }
 
-        /* Check state flag - enable first time as default */
+        /* Check flag - enable first time as default */
         if ( er_flag == _LE_FALSE ) er_times->tm_pose = er_times->tm_time[er_times->tm_view[0] = 0];
 
     }
@@ -201,11 +201,7 @@
     le_void_t er_times_set_zoom( er_times_t * const er_times, le_real_t const er_factor ) {
 
         /* Update zoom value */
-        er_times->tm_zoom *= er_factor;
-
-        /* Check zoom limitations */
-        if ( er_times->tm_zoom <= ER_TIMES_ZOOM_MIN ) er_times->tm_zoom = ER_TIMES_ZOOM_MIN;
-        if ( er_times->tm_zoom >= ER_TIMES_ZOOM_MAX ) er_times->tm_zoom = ER_TIMES_ZOOM_MAX;
+        er_times->tm_zoom = lc_clamp( er_times->tm_zoom * er_factor, ER_TIMES_ZOOM_MIN, ER_TIMES_ZOOM_MAX );
 
     }
 
@@ -256,10 +252,8 @@
             /* Allocate buffer memory - initialise buffer bytes */
             if ( ( er_buffer = malloc( er_bsize ) ) != NULL ) memset( er_buffer, 255, er_bsize );
 
-            /* Memory allocation check */
-            return;
-
-        }
+        /* Trigger memory allocation check */
+        return; }
 
         /* Reset buffer bytes */
         for ( le_size_t er_i = 3; er_i < er_bsize; er_buffer[er_i += 4] = 208 );
@@ -339,12 +333,12 @@
         /* Compose date string */
         lc_time_to_string( er_time, er_string, 32 );
 
+        /* Check color - assign color */
+        if ( er_color == 0 ) glColor3f( 0.5, 0.5, 0.5 ); else glColor3f( 0.2, 0.5, 0.8 );
+
         /* Check justification - assign shift */
         if ( er_justify == ER_TIMES_JUST_RIGHT  ) er_x -= strlen( ( char * ) er_string ) * 8;
         if ( er_justify == ER_TIMES_JUST_CENTER ) er_x -= strlen( ( char * ) er_string ) * 4;
-
-        /* Check color - assign color */
-        if ( er_color == 0 ) glColor3f( 0.5, 0.5, 0.5 ); else glColor3f( 0.2, 0.5, 0.8 );
 
         /* Assign string position */
         glRasterPos2i( er_x, er_y - 13 );

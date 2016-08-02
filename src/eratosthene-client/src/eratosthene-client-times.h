@@ -61,6 +61,9 @@
     /* Define pseudo-constructor */
     # define ER_TIMES_C            { NULL, _LE_USE_PORT, _LE_TIME_NULL, LE_ARRAY_C, _LE_TIME_NULL, ER_TIMES_DAY * _LE_TIME_L( 365 ), 0, { _LE_SIZE_NULL, _LE_SIZE_NULL }, 0, NULL, _LE_TRUE }
 
+    /* Define view count */
+    # define ER_TIMES_VIEW         ( 2 )
+
     /* Define standard intervalle */
     # define ER_TIMES_DAY          ( _LE_TIME_L( 86400 ) )
 
@@ -106,12 +109,10 @@
         le_time_t   tm_pose;
         le_time_t   tm_zoom;
         le_size_t   tm_near;
-        le_size_t   tm_view[2];
+        le_size_t   tm_view[ER_TIMES_VIEW];
 
         le_size_t   tm_size;
         le_time_t * tm_time;
-
-        //le_array_t  tm_stack;
 
     le_enum_t _status; } er_times_t;
 
