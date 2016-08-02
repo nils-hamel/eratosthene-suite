@@ -108,17 +108,17 @@
 
     typedef struct er_cell_struct {
 
-        le_enum_t    ce_flag;
-        le_enum_t    ce_draw;
+        le_enum_t   ce_flag;
+        le_enum_t   ce_draw;
 
-        le_char_t    ce_addr[LE_NETWORK_SB_ADDR];
-        le_char_t    ce_push[LE_NETWORK_SB_ADDR];
+        le_char_t   ce_addr[LE_NETWORK_SB_ADDR];
+        le_char_t   ce_push[LE_NETWORK_SB_ADDR];
 
-        le_size_t    ce_size;
-        le_real_t *  ce_pose;
-        le_data_t *  ce_data;
+        le_size_t   ce_size;
+        le_real_t * ce_pose;
+        le_data_t * ce_data;
 
-        le_real_t    ce_edge[3];
+        le_real_t   ce_edge[3];
         
     } er_cell_t;
 

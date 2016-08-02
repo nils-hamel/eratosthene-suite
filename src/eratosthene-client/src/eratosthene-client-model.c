@@ -290,7 +290,7 @@
     le_void_t er_model_set_update_terminate( er_model_t * const er_model ) {
 
         /* Parsing model cells */
-        for ( le_size_t er_parse = 1; er_parse < er_model->md_push; er_parse ++ ) {
+        for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
 
             /* Check cell flag */
             if ( er_cell_get_flag( er_model->md_cell + er_parse ) == _LE_FALSE ) {
