@@ -171,7 +171,7 @@
         if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
 
             /* Server/client handshake */
-            if ( le_client_handshake( er_socket, LE_NETWORK_MODE_QMOD, ER_CELL_TFMT ) == LE_ERROR_SUCCESS ) {
+            if ( le_client_handshake( er_socket, LE_NETWORK_MODE_QMOD, LE_ARRAY_64R ) == LE_ERROR_SUCCESS ) {
 
                 /* Read cell from server */
                 er_return = er_cell_io_read( er_cell, er_socket );
@@ -212,34 +212,32 @@
         /* Socket i/o buffer variables */
         static le_byte_t er_buffer[LE_NETWORK_SB_STRM] = LE_NETWORK_C;
 
-        /* Empty cell */
-        er_cell->ce_size = 0;
-
         /* Write query on socket - send cell size */
         if ( write( er_socket, er_cell->ce_addr, LE_NETWORK_SB_ADDR ) != LE_NETWORK_SB_ADDR ) return( er_cell->ce_size );
 
-        /* Create address from query */
+        /* Extract cell edge from address */
         le_address_cf_string( & er_address, er_cell->ce_addr );
-
-        /* Compute cell edge */
-        le_address_get_pose( & er_address, er_cell->ce_edge );
+        le_address_get_pose ( & er_address, er_cell->ce_edge );
 
         /* Compute edge cartesian coordinates */
         er_cell->ce_edge[2] = ER_ERA * cos( er_cell->ce_edge[1] ) * cos( er_cell->ce_edge[0] );
         er_cell->ce_edge[0] = ER_ERA * cos( er_cell->ce_edge[1] ) * sin( er_cell->ce_edge[0] );
         er_cell->ce_edge[1] = ER_ERA * sin( er_cell->ce_edge[1] );
 
+        /* Reset cell array size */
+        er_cell->ce_size = 0;
+
         /* Reading query array */
         while ( er_read < _LE_USE_RETRY ) {
 
             /* Read array from socket */
-            if ( ( er_count = read( er_socket, er_buffer + er_bridge, _LE_USE_MTU ) + er_bridge ) >= ER_CELL_TLEN ) {
+            if ( ( er_count = read( er_socket, er_buffer + er_bridge, _LE_USE_MTU ) + er_bridge ) >= LE_ARRAY_64R_LEN ) {
 
                 /* Check cell limitation */
-                if ( ( er_csize = er_cell->ce_size + ( er_count / ER_CELL_TLEN ) * 3 ) < ER_CELL_ARRAY ) {
+                if ( ( er_csize = er_cell->ce_size + ( er_count / LE_ARRAY_64R_LEN ) * 3 ) < ER_CELL_ARRAY ) {
 
                     /* Parsing received bloc */
-                    for ( er_parse = 0; er_parse < ( er_count / ER_CELL_TLEN ) * ER_CELL_TLEN; er_parse += ER_CELL_TLEN, er_track += 3 ) {
+                    for ( er_parse = 0; er_parse < ER_CELL_ROUND( er_count, LE_ARRAY_64R_LEN ); er_track += 3, er_parse += LE_ARRAY_64R_LEN ) {
 
                         /* Compute array pointers */
                         er_pap = ( le_real_t * ) ( er_buffer + er_parse );
@@ -251,9 +249,9 @@
                         er_cell->ce_data[er_track + 2] = er_dap[2];                        
 
                         /* Optimised element vertex extraction */
-                        er_cell->ce_pose[er_track + 1] = ( er_pap[2] += ER_ERA ) * sin( er_pap[1] ) - er_cell->ce_edge[1];
-                        er_cell->ce_pose[er_track    ] = ( er_pap[2] ) * ( er_pap[1] = cos( er_pap[1] ) ) * sin( er_pap[0] ) - er_cell->ce_edge[0];
-                        er_cell->ce_pose[er_track + 2] = ( er_pap[2] ) * ( er_pap[1] ) * cos( er_pap[0] ) - er_cell->ce_edge[2];
+                        er_cell->ce_pose[er_track + 1] = - er_cell->ce_edge[1] + sin( er_pap[1] ) * ( er_pap[2] += ER_ERA );
+                        er_cell->ce_pose[er_track    ] = - er_cell->ce_edge[0] + er_pap[2] * sin( er_pap[0] ) * ( er_pap[1] = cos( er_pap[1] ) );
+                        er_cell->ce_pose[er_track + 2] = - er_cell->ce_edge[2] + er_pap[2] * er_pap[1] * cos( er_pap[0] );
 
                     }
 
@@ -261,9 +259,9 @@
                     er_cell->ce_size = er_csize;
 
                     /* Bridge management */
-                    if ( ( er_bridge = ( er_count % ER_CELL_TLEN ) ) != 0 ) memcpy( er_buffer, er_buffer + ( er_count - er_bridge ), er_bridge );
+                    if ( ( er_bridge = ( er_count % LE_ARRAY_64R_LEN ) ) != 0 ) memcpy( er_buffer, er_buffer + ( er_count - er_bridge ), er_bridge );
 
-                /* Update redundancy */
+                /* Reset redundancy */
                 er_read = 0; } else { er_read = _LE_USE_RETRY; }
                 
             /* Update redundancy */

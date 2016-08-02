@@ -57,18 +57,17 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_CELL_C      { _LE_FALSE, _LE_FALSE, { 0 }, { 0 }, 0, NULL, NULL, { 0.0 } }
+    # define ER_CELL_C             { _LE_FALSE, _LE_FALSE, { 0 }, { 0 }, 0, NULL, NULL, { 0.0 } }
 
     /* Define cell array size */
-    # define ER_CELL_ARRAY  884736
-
-    /* Define cell transfert protocol */
-    # define ER_CELL_TFMT   LE_ARRAY_64R
-    # define ER_CELL_TLEN   LE_ARRAY_64R_LEN
+    # define ER_CELL_ARRAY         884736
 
 /*
     header - preprocessor macros
  */
+
+    /* Define rounding macro */
+    # define ER_CELL_ROUND( t, r ) ( ( ( t ) / ( r ) ) * ( r ) )
 
 /*
     header - type definition
