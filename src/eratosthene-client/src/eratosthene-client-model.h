@@ -67,6 +67,7 @@
     # define ER_MODEL_STACK  4096
 
     /* Define model parameters */
+    # define ER_MODEL_ENUM   3
     # define ER_MODEL_DEPTH  7
 
     /* Define display array types */

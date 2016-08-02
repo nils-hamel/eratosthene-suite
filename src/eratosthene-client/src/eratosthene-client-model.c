@@ -113,15 +113,15 @@
     le_enum_t er_model_get_update( er_model_t * const er_model, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
 
         /* Static position memory variables */
-        static le_real_t er_mlon = 0.0, er_mlat = 0.0, er_malt = 0.0;
+        static le_real_t er_memlon = 0.0, er_memlat = 0.0, er_memalt = 0.0;
 
         /* Returned value variables */
         le_enum_t er_return = _LE_FALSE;
 
         /* Check update necessities - update return */
-        if ( er_mlon != er_lon ) er_mlon = er_lon, er_return = _LE_TRUE;
-        if ( er_mlat != er_lat ) er_mlat = er_lat, er_return = _LE_TRUE;
-        if ( er_malt != er_alt ) er_malt = er_alt, er_return = _LE_TRUE;
+        if ( er_memlon != er_lon ) er_memlon = er_lon, er_return = _LE_TRUE;
+        if ( er_memlat != er_lat ) er_memlat = er_lat, er_return = _LE_TRUE;
+        if ( er_memalt != er_alt ) er_memalt = er_alt, er_return = _LE_TRUE;
 
         /* Send answer */
         return( er_return );
@@ -168,7 +168,7 @@
             le_address_set_digit( er_enum, er_scale, er_digit );
 
             /* Check enumeration constraint */
-            if ( er_scale >= 4 ) {
+            if ( er_scale > ER_MODEL_ENUM ) {
 
                 /* Compute distance */
                 er_dist = er_geodesy_distance( er_enum, er_lon, er_lat, er_alt );
@@ -322,21 +322,14 @@
 
     le_void_t er_model_display_cell( er_model_t * const er_model, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt, le_real_t const er_azm, le_real_t const er_gam ) {
 
-        /* Rotation vector variables */
-        le_real_t * er_vcell = NULL;
-
         /* Optimisation variables */
         le_real_t er_cosl = cos( - er_lon * ER_D2R );
         le_real_t er_sinl = sin( - er_lon * ER_D2R );
         le_real_t er_cosa = cos( + er_lat * ER_D2R );
         le_real_t er_sina = sin( + er_lat * ER_D2R );
 
-        /* Rotation matrix variables */
-        le_real_t er_rcell[3][3] = {
-        { + er_cosl          , +     0.0, + er_sinl           },
-        { + er_sina * er_sinl, + er_cosa, - er_sina * er_cosl },
-        { - er_cosa * er_sinl, + er_sina, + er_cosa * er_cosl }
-        };
+        /* Edge array variables */
+        le_real_t * er_edge = NULL;
 
         /* Motion management - tilt rotation */
         glRotated( - er_gam, 1.0, 0.0, 0.0 );
@@ -347,35 +340,30 @@
         /* Motion management - azimuth rotation */
         glRotated( + er_azm, 0.0, 0.0, 1.0 );
 
-        /* Display cells content */
+        /* Display model cells */
         for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
 
-            /* Check cell content */
+            /* Check cell state */
             if ( er_cell_get_draw( er_model->md_cell + er_parse ) == _LE_TRUE ) {
 
-                /* Vertex and color pointer to cell arrays */
-                glVertexPointer( 3, ER_MODEL_VERTEX, 0, er_cell_get_pose( ( er_model->md_cell ) + er_parse ) );
-                glColorPointer ( 3, ER_MODEL_COLORS, 0, er_cell_get_data( ( er_model->md_cell ) + er_parse ) );
+                /* Vertex and color pointer assignation */
+                glVertexPointer( 3, ER_MODEL_VERTEX, 0, er_cell_get_pose( er_model->md_cell + er_parse ) );
+                glColorPointer ( 3, ER_MODEL_COLORS, 0, er_cell_get_data( er_model->md_cell + er_parse ) );
 
                 /* Cell matrix */
                 glPushMatrix(); {
 
-                    /* Assign cell edge array */
-                    er_vcell = ( ( er_model->md_cell ) + er_parse )->ce_edge;
+                    /* Retrieve edge array */
+                    er_edge = er_cell_get_edge( er_model->md_cell + er_parse );
 
                     /* Motion management - cell edge translation */
-                    glTranslated( 
-                    er_rcell[0][0] * er_vcell[0] + er_rcell[0][1] * er_vcell[1] + er_rcell[0][2] * er_vcell[2],
-                    er_rcell[1][0] * er_vcell[0] + er_rcell[1][1] * er_vcell[1] + er_rcell[1][2] * er_vcell[2],
-                    er_rcell[2][0] * er_vcell[0] + er_rcell[2][1] * er_vcell[1] + er_rcell[2][2] * er_vcell[2] - ER_ERA
-                    );
+                    glTranslated( er_cosl * er_edge[0] + er_sinl * er_edge[2], er_sina * er_sinl * er_edge[0] + er_cosa * er_edge[1] - er_sina * er_cosl * er_edge[2], er_cosa * er_cosl * er_edge[2] + er_sina * er_edge[1] - er_cosa * er_sinl * er_edge[0] - ER_ERA );
 
                     /* Motion management - planimetric rotation */
                     glRotated( + er_lat, 1.0, 0.0, 0.0 );
                     glRotated( - er_lon, 0.0, 1.0, 0.0 );
 
                     /* Display graphical primitives */
-                    //glDrawArrays( GL_POINTS, 0, er_count / 3 );
                     glDrawArrays( GL_POINTS, 0, er_cell_get_size( er_model->md_cell + er_parse ) / 3 );
 
                 /* Cell matrix */
@@ -408,16 +396,16 @@
         /* Earth wireframe - orientation */
         glRotated( 90.0, 1.0, 0.0, 0.0 );
 
-        /* Earth frame - color */
+        /* Earth wireframe - color */
         glColor3f( 0.3, 0.32, 0.4 );
 
-        /* Earth model variables */
+        /* Create quadric */
         GLUquadricObj * er_earth = gluNewQuadric();
 
         /* Configure quadric */
         gluQuadricDrawStyle( er_earth, GLU_LINE );
 
-        /* Draw quadric */
+        /* Display quadric */
         gluSphere( er_earth, ER_ERA, 360, 180 );
 
         /* Delete quadric */
