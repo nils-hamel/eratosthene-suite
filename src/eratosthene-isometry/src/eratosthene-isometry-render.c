@@ -333,13 +333,13 @@
         if ( er_view == NULL ) return( ER_ISOMETRY_VIEW_NW );
 
         /* Check view parameter - return value */
-        if ( LC_STRC( er_view, "ne" ) == LC_TRUE ) return( ER_ISOMETRY_VIEW_NE );
+        if ( lc_strc( er_view, "ne" ) == LC_TRUE ) return( ER_ISOMETRY_VIEW_NE );
         else 
-        if ( LC_STRC( er_view, "nw" ) == LC_TRUE ) return( ER_ISOMETRY_VIEW_NW );
+        if ( lc_strc( er_view, "nw" ) == LC_TRUE ) return( ER_ISOMETRY_VIEW_NW );
         else
-        if ( LC_STRC( er_view, "sw" ) == LC_TRUE ) return( ER_ISOMETRY_VIEW_SW );
+        if ( lc_strc( er_view, "sw" ) == LC_TRUE ) return( ER_ISOMETRY_VIEW_SW );
         else 
-        if ( LC_STRC( er_view, "se" ) == LC_TRUE ) return( ER_ISOMETRY_VIEW_SE );
+        if ( lc_strc( er_view, "se" ) == LC_TRUE ) return( ER_ISOMETRY_VIEW_SE );
 
         /* Return default value */
         return( ER_ISOMETRY_VIEW_NW );

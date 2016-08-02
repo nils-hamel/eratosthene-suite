@@ -81,7 +81,10 @@
  */
 
     /* String comparison */
-    # define LC_STRC( a, b ) ( strcmp( ( char * ) a, ( char * ) b ) == 0 ? LC_TRUE : LC_FALSE )
+    # define lc_strc( a, b )     ( strcmp( ( char * ) a, ( char * ) b ) == 0 ? LC_TRUE : LC_FALSE )
+
+    /* Range clamping */
+    # define lc_clamp( v, a, b ) ( ( v ) > ( a ) ? ( a ) : ( ( v ) < ( b ) ? ( b ) : ( v ) ) )
 
 /*
     header - type definition
