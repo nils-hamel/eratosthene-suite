@@ -38,7 +38,7 @@
             /* Client/server query handshake */
             if ( le_client_handshake( er_socket, LE_NETWORK_MODE_AMOD, LE_ARRAY_64T ) == LE_ERROR_SUCCESS ) {
 
-                /* Retrieve times array */
+                /* Retrieve server parameter */
                 le_array_io_read( & er_array, er_socket );
 
             }
@@ -48,7 +48,7 @@
 
         }
 
-        /* Return times array */
+        /* Return server parameter */
         return( er_array );
 
     }
@@ -59,7 +59,7 @@
 
     le_size_t er_client_server_sparam( le_char_t const * const er_ip, le_sock_t const er_port ) {
 
-        /* Returned value variables */
+        /* Returned structure variables */
         le_size_t er_return = _LE_SIZE_NULL;
 
         /* Socket variables */
@@ -88,7 +88,7 @@
 
     le_time_t er_client_server_tparam( le_char_t const * const er_ip, le_sock_t const er_port ) {
 
-        /* Returned value variables */
+        /* Returned structure variables */
         le_time_t er_return = _LE_SIZE_NULL;
 
         /* Socket variables */
