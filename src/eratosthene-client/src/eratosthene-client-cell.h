@@ -217,6 +217,8 @@
 
     le_data_t * er_cell_get_data( er_cell_t const * const er_cell );
 
+    le_real_t * er_cell_get_edge( er_cell_t const * const er_cell );
+
     /*! \brief mutator methods
      *
      *  Sets the cell state flags.

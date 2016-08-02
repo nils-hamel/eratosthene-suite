@@ -98,14 +98,21 @@
     le_real_t * er_cell_get_pose( er_cell_t const * const er_cell ) {
 
         /* Return cell geodetic array pointer */
-        return( er_cell->ce_pose );
+        return( ( le_real_t * ) er_cell->ce_pose );
 
     }
 
     le_data_t * er_cell_get_data( er_cell_t const * const er_cell ) {
 
         /* Return cell colorimetric array pointer */
-        return( er_cell->ce_data );
+        return( ( le_data_t * ) er_cell->ce_data );
+
+    }
+
+    le_real_t * er_cell_get_edge( er_cell_t const * const er_cell ) {
+
+        /* Return cell edge array pointer */
+        return( ( le_real_t * ) er_cell->ce_edge );
 
     }
 
