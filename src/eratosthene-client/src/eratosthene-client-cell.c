@@ -237,7 +237,7 @@
                 if ( ( er_csize = er_cell->ce_size + ( er_count / LE_ARRAY_64R_LEN ) * 3 ) < ER_CELL_ARRAY ) {
 
                     /* Parsing received bloc */
-                    for ( er_parse = 0; er_parse < ER_CELL_ROUND( er_count, LE_ARRAY_64R_LEN ); er_track += 3, er_parse += LE_ARRAY_64R_LEN ) {
+                    for ( er_parse = 0; er_parse < ( er_count / LE_ARRAY_64R_LEN ) * LE_ARRAY_64R_LEN; er_track += 3, er_parse += LE_ARRAY_64R_LEN ) {
 
                         /* Compute array pointers */
                         er_pap = ( le_real_t * ) ( er_buffer + er_parse );

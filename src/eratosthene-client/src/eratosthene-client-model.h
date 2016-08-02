@@ -64,11 +64,11 @@
     # define ER_MODEL_C      { NULL, _LE_USE_PORT, _LE_SIZE_NULL, _LE_TIME_NULL, 0, 1, NULL, _LE_TRUE }
 
     /* Define model stack */
-    # define ER_MODEL_STACK  4096
+    # define ER_MODEL_STACK  ( 4096 )
 
     /* Define model parameters */
-    # define ER_MODEL_ENUM   3
-    # define ER_MODEL_DEPTH  7
+    # define ER_MODEL_ENUM   ( 3 )
+    # define ER_MODEL_DEPTH  ( 7 )
 
     /* Define display array types */
     # define ER_MODEL_VERTEX GL_DOUBLE
