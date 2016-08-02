@@ -121,6 +121,9 @@
         /* Activate graphical context */
         glXMakeCurrent( er_render->re_display, er_render->re_wdisp, er_render->re_context );
 
+        /* Initialise extension */
+        glewInit();
+
         /* Create render buffers */
         glGenFramebuffers ( 1, & er_render->re_buffer );
         glGenTextures     ( 1, & er_render->re_bcolor );
@@ -140,7 +143,7 @@
         /* Activate render buffers */
         glFramebufferTexture2D   ( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D  , er_render->re_bcolor, 0);
         glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT , GL_RENDERBUFFER, er_render->re_bdepth );
-                
+
         /* Check rendering buffer */
         if ( glCheckFramebufferStatus( GL_FRAMEBUFFER ) != GL_FRAMEBUFFER_COMPLETE ) {
 

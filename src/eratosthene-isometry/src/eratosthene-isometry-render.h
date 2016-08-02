@@ -54,33 +54,16 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_RENDER_C { \
-        0.0, \
-        0.0, \
-        0.0, \
-        0.0, \
-        0.0, \
-        0.0, \
-        { 0 }, \
-        1, \
-        0, \
-        0, \
-        NULL, \
-        0, \
-        0, \
-        0, \
-        0, \
-        0  \
-    }
+    # define ER_RENDER_C         { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, { 0 }, 1, 0, 0, NULL, 0, 0, 0, 0, 0 }
 
     /* Define trigonometric factors */
-    # define ER_ISOMETRY_D2R        ( LE_PI / 180.0 )
+    # define ER_ISOMETRY_D2R     ( LE_PI / 180.0 )
 
     /* Define default view */
-    # define ER_ISOMETRY_VIEW_NE    ( + 45.0 )
-    # define ER_ISOMETRY_VIEW_NW    ( - 45.0 )
-    # define ER_ISOMETRY_VIEW_SW    ( +135.0 )
-    # define ER_ISOMETRY_VIEW_SE    ( -135.0 )
+    # define ER_ISOMETRY_VIEW_NE ( + 45.0 )
+    # define ER_ISOMETRY_VIEW_NW ( - 45.0 )
+    # define ER_ISOMETRY_VIEW_SW ( +135.0 )
+    # define ER_ISOMETRY_VIEW_SE ( -135.0 )
 
 /*
     header - preprocessor macros
@@ -146,27 +129,27 @@
 
     typedef struct er_render_struct {
 
-        le_real_t     re_azim;
-        le_real_t     re_tilt;
+        le_real_t    re_azim;
+        le_real_t    re_tilt;
 
-        le_real_t     re_xfac;
-        le_real_t     re_yfac;
-        le_real_t     re_zfac;
+        le_real_t    re_xfac;
+        le_real_t    re_yfac;
+        le_real_t    re_zfac;
 
-        le_real_t     re_size;
-        le_real_t     re_edge[3];
+        le_real_t    re_size;
+        le_real_t    re_edge[3];
 
-        le_size_t     re_thick;
-        le_size_t     re_width;
-        le_size_t     re_height;
+        le_size_t    re_thick;
+        le_size_t    re_width;
+        le_size_t    re_height;
 
-        Display     * re_display;
-        Window        re_wdisp;
-        GLXContext    re_context;
+        Display    * re_display;
+        Window       re_wdisp;
+        GLXContext   re_context;
 
-        GLuint        re_buffer;
-        GLuint        re_bcolor;
-        GLuint        re_bdepth;
+        GLuint       re_buffer;
+        GLuint       re_bcolor;
+        GLuint       re_bdepth;
         
     } er_render_t;
 
