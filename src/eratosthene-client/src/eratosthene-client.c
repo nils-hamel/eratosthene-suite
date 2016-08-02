@@ -422,21 +422,14 @@
 
     le_void_t er_client_calls_range() {
 
-        /* Angle ranges - cyclic */
-        if ( er_client.cl_vlon > +180.0 ) er_client.cl_vlon -= +360.0;
-        if ( er_client.cl_vlon < -180.0 ) er_client.cl_vlon += +360.0;
-        if ( er_client.cl_vazm > +360.0 ) er_client.cl_vazm -= +360.0;
-        if ( er_client.cl_vazm < -360.0 ) er_client.cl_vazm += +360.0;
+        /* Range clamping - cyclic */
+        er_client.cl_vlon = lc_angle( er_client.cl_vlon );
+        er_client.cl_vazm = lc_angle( er_client.cl_vazm );
 
-        /* Angles ranges - clamp */
-        if ( er_client.cl_vlat > + 90.0 ) er_client.cl_vlat = + 90.0;
-        if ( er_client.cl_vlat < - 90.0 ) er_client.cl_vlat = - 90.0;
-        if ( er_client.cl_vgam < -120.0 ) er_client.cl_vgam = -120.0;
-        if ( er_client.cl_vgam > +120.0 ) er_client.cl_vgam = +120.0;
-
-        /* Radius ranges - clamp */
-        if ( er_client.cl_valt < ER_ERL ) er_client.cl_valt = ER_ERL;
-        if ( er_client.cl_valt > ER_ERU ) er_client.cl_valt = ER_ERU;
+        /* Range clamping - clamped */
+        er_client.cl_vlat = lc_clamp( er_client.cl_vlat,  -90.0,  +90.0 );
+        er_client.cl_vgam = lc_clamp( er_client.cl_vgam, -120.0, +120.0 );
+        er_client.cl_valt = lc_clamp( er_client.cl_valt, ER_ERL, ER_ERU );
 
     }
 

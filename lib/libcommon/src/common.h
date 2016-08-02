@@ -84,7 +84,8 @@
     # define lc_strc( a, b )     ( strcmp( ( char * ) a, ( char * ) b ) == 0 ? LC_TRUE : LC_FALSE )
 
     /* Range clamping */
-    # define lc_clamp( v, a, b ) ( ( v ) > ( a ) ? ( a ) : ( ( v ) < ( b ) ? ( b ) : ( v ) ) )
+    # define lc_clamp( v, a, b ) ( ( v ) < ( a ) ? ( a ) : ( ( v ) > ( b ) ? ( b ) : ( v ) ) )
+    # define lc_angle( v )       ( ( v ) > +180.0 ? ( v ) - 360.0 : ( ( v ) < -180.0 ? ( v ) + 360 : ( v ) ) )
 
 /*
     header - type definition
