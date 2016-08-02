@@ -132,21 +132,6 @@
     source - mutator methods
  */
 
-    le_void_t er_model_set_update_prepare( er_model_t * const er_model ) {
-
-        /* Reset update index */
-        er_model->md_push = 1;
-
-        /* Parsing model cells */
-        for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
-
-            /* Reset cell flag */
-            er_cell_set_flag( er_model->md_cell + er_parse, _LE_FALSE );
-
-        }
-
-    }
-
     le_void_t er_model_set_update_cell( er_model_t * const er_model, le_address_t * const er_enum, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
 
         /* Enumerator size variables */
@@ -279,6 +264,9 @@
                     /* Swap address and pushed address */
                     er_cell_set_swap( er_model->md_cell + er_found, er_model->md_cell + er_parse );
 
+                    /* Reset pushed address */
+                    er_cell_set_pop( er_model->md_cell + er_parse );
+
                     /* Update cell array */
                     er_cell_io_query( er_model->md_cell + er_found, er_model->md_svip, er_model->md_port );
 
@@ -302,7 +290,7 @@
     le_void_t er_model_set_update_terminate( er_model_t * const er_model ) {
 
         /* Parsing model cells */
-        for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
+        for ( le_size_t er_parse = 1; er_parse < er_model->md_push; er_parse ++ ) {
 
             /* Check cell flag */
             if ( er_cell_get_flag( er_model->md_cell + er_parse ) == _LE_FALSE ) {
@@ -310,9 +298,17 @@
                 /* Update cell state */
                 er_cell_set_draw( er_model->md_cell + er_parse, _LE_FALSE );
 
+            } else {
+
+                /* Reset cell state */
+                er_cell_set_flag( er_model->md_cell + er_parse, _LE_FALSE );
+
             }
 
         }
+
+        /* Reset update index */
+        er_model->md_push = 1;
 
     }
 

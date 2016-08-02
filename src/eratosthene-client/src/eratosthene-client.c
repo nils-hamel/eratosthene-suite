@@ -224,9 +224,6 @@
         /* Check model update necessities */
         if ( ( er_model_flag == _LE_TRUE ) || ( er_times_flag == _LE_TRUE ) ) {
 
-            /* Prepare model update */
-            er_model_set_update_prepare( & er_client.cl_model );
-
             /* Model times enumeration */
             while ( ( er_etime = er_times_get( & er_client.cl_times ) ) != _LE_TIME_NULL ) {
 

@@ -61,7 +61,7 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_MODEL_C      { NULL, _LE_USE_PORT, _LE_SIZE_NULL, _LE_TIME_NULL, 0, 0, NULL, _LE_TRUE }
+    # define ER_MODEL_C      { NULL, _LE_USE_PORT, _LE_SIZE_NULL, _LE_TIME_NULL, 0, 1, NULL, _LE_TRUE }
 
     /* Define model stack */
     # define ER_MODEL_STACK  4096
@@ -188,18 +188,6 @@
      */
 
     le_enum_t er_model_get_update( er_model_t * const er_model, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
-
-    /*! \brief mutator methods
-     *
-     *  This function is part of the model update procedure.
-     *
-     *  Its role is to prepare the cells array to the incoming cells gathered
-     *  during update.
-     *
-     *  \param er_model Model structure
-     */
-
-    le_void_t er_model_set_update_prepare( er_model_t * const er_model );
 
     le_void_t er_model_set_update_cell( er_model_t * const er_model, le_address_t * const er_enum, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
 
