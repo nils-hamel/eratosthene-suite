@@ -212,11 +212,13 @@
         /* Socket i/o buffer variables */
         static le_byte_t er_buffer[LE_NETWORK_SB_STRM] = LE_NETWORK_C;
 
-        /* Write query on socket - send cell size */
-        if ( write( er_socket, er_cell->ce_addr, LE_NETWORK_SB_ADDR ) != LE_NETWORK_SB_ADDR ) return( er_cell->ce_size );
-
-        /* Extract cell edge from address */
+        /* Convert string to address */
         le_address_cf_string( & er_address, er_cell->ce_addr );
+
+        /* Write query address on socket */
+        le_address_io_write( & er_address, er_socket );
+
+        /* Extract cell edge components */
         le_address_get_pose ( & er_address, er_cell->ce_edge );
 
         /* Compute edge cartesian coordinates */

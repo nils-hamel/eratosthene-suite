@@ -77,6 +77,9 @@
         /* Query array variables */
         le_array_t er_array = LE_ARRAY_C;
 
+        /* Address variables */
+        le_address_t er_address = LE_ADDRESS_C;
+
         /* Socket variables */
         le_sock_t er_socket = _LE_SOCK_NULL;
 
@@ -96,19 +99,32 @@
 
             } else {
 
-                /* Query on server */
-                if ( le_client_system_query_array( er_socket, & er_array, ( le_char_t * ) lc_read_string( argc, argv, "--query", "-q" ) ) != LE_ERROR_SUCCESS ) {
+                /* Convert string query to address */
+                le_address_cf_string( & er_address, ( le_char_t * ) lc_read_string( argc, argv, "--query", "-q" ) );
+
+                /* Write query address on socket */
+                if ( le_address_io_write( & er_address, er_socket ) != LE_ERROR_SUCCESS ) {
 
                     /* Display message */
-                    fprintf( stderr, "eratosthene-suite : error : unable to perform query on server\n" );
+                    fprintf( stderr, "eratosthene-suite : error : unable to send query to server\n" );
 
                 } else {
 
-                    /* Render function */
-                    if ( er_isometry( argc, argv, & er_array ) != _LE_TRUE ) {
+                    /* Query on server */
+                    if ( le_array_io_read( & er_array, er_socket ) != LE_ERROR_SUCCESS ) {
 
                         /* Display message */
-                        fprintf( stderr, "eratosthene-suite : error : unable to render isometry\n" );
+                        fprintf( stderr, "eratosthene-suite : error : unable to read array from server\n" );
+
+                    } else {
+
+                        /* Render function */
+                        if ( er_isometry( argc, argv, & er_array ) != _LE_TRUE ) {
+
+                            /* Display message */
+                            fprintf( stderr, "eratosthene-suite : error : unable to render isometry\n" );
+
+                        }
 
                     }
 
