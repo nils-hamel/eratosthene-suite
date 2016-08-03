@@ -57,7 +57,8 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_CELL_C     { _LE_FALSE, _LE_FALSE, { 0 }, { 0 }, 0, NULL, NULL, { 0.0 } }
+    //# define ER_CELL_C     { _LE_FALSE, _LE_FALSE, { 0 }, { 0 }, 0, NULL, NULL, { 0.0 } }
+    # define ER_CELL_C     { _LE_FALSE, _LE_FALSE, LE_ADDRESS_C, LE_ADDRESS_C, 0, NULL, NULL, { 0.0 } }
 
     /* Define cell array size */
     # define ER_CELL_ARRAY ( 884736 )
@@ -105,15 +106,15 @@
 
     typedef struct er_cell_struct {
 
-        le_enum_t   ce_flag;
-        le_enum_t   ce_draw;
+        le_enum_t    ce_flag;
+        le_enum_t    ce_draw;
 
-        le_char_t   ce_addr[LE_NETWORK_SB_ADDR];
-        le_char_t   ce_push[LE_NETWORK_SB_ADDR];
+        le_address_t ce_addr;
+        le_address_t ce_push;
 
-        le_size_t   ce_size;
-        le_real_t * ce_pose;
-        le_data_t * ce_data;
+        le_size_t    ce_size;
+        le_real_t *  ce_pose;
+        le_data_t *  ce_data;
 
         le_real_t   ce_edge[3];
         
@@ -178,7 +179,7 @@
      *  \return Returns _LE_TRUE on identity, _LE_FALSE otherwise
      */
 
-    le_enum_t er_cell_get_match( er_cell_t const * const er_cell, er_cell_t const * const er_push );
+    le_enum_t er_cell_get_match( er_cell_t const * const er_addr, er_cell_t const * const er_push );
 
     /*! \brief accessor methods
      *

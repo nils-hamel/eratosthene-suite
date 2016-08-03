@@ -77,14 +77,14 @@
     le_enum_t er_cell_get_push( er_cell_t const * const er_cell ) {
 
         /* Return pushed address state */
-        return( er_cell->ce_push[0] != '\0' ? _LE_TRUE : _LE_FALSE );
+        return( le_address_get_size( & er_cell->ce_push ) != 0 ? _LE_TRUE : _LE_FALSE );
 
     }
 
-    le_enum_t er_cell_get_match( er_cell_t const * const er_cell, er_cell_t const * const er_push ) {
+    le_enum_t er_cell_get_match( er_cell_t const * const er_addr, er_cell_t const * const er_push ) {
 
-        /* Return matching state */
-        return( strcmp( ( char * ) er_cell->ce_addr, ( char * ) er_push->ce_push ) == 0 ? _LE_TRUE : _LE_FALSE );
+        /* Return comparison result */
+        return( le_address_cmp( & er_addr->ce_addr, & er_push->ce_push ) );
 
     }
 
@@ -137,21 +137,21 @@
     le_void_t er_cell_set_push( er_cell_t * const er_cell, le_address_t const * const er_address ) {
 
         /* Compute and assign cell address */
-        le_address_ct_string( er_address, er_cell->ce_push );
+        er_cell->ce_push = * er_address;
 
     }
 
     le_void_t er_cell_set_pop( er_cell_t * const er_cell ) {
 
         /* Clear pushed address */
-        er_cell->ce_push[0] = '\0';
+        le_address_set_size( & er_cell->ce_push, 0 );
 
     }
 
     le_void_t er_cell_set_swap( er_cell_t * const er_addr, er_cell_t * const er_push ) {
 
         /* Swap address and pushed address */
-        strcpy( ( char * ) er_addr->ce_addr, ( char * ) er_push->ce_push );
+        er_addr->ce_addr = er_push->ce_push;
 
     }
 
@@ -206,20 +206,14 @@
         le_real_t * er_pap = NULL;
         le_data_t * er_dap = NULL;
 
-        /* Address variables */
-        static le_address_t er_address = LE_ADDRESS_C;
-
         /* Socket i/o buffer variables */
         static le_byte_t er_buffer[LE_NETWORK_SB_STRM] = LE_NETWORK_C;
 
-        /* Convert string to address */
-        le_address_cf_string( & er_address, er_cell->ce_addr );
-
         /* Write query address on socket */
-        le_address_io_write( & er_address, er_socket );
+        le_address_io_write( & er_cell->ce_addr, er_socket );
 
         /* Extract cell edge components */
-        le_address_get_pose ( & er_address, er_cell->ce_edge );
+        le_address_get_pose( & er_cell->ce_addr, er_cell->ce_edge );
 
         /* Compute edge cartesian coordinates */
         er_cell->ce_edge[2] = ER_ERA * cos( er_cell->ce_edge[1] ) * cos( er_cell->ce_edge[0] );
