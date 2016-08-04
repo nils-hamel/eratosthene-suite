@@ -29,34 +29,47 @@
         /* Returned structure variables */
         er_times_t er_times = ER_TIMES_C;
 
+        /* Array variables */
+        le_array_t er_array  = LE_ARRAY_C;
+
+        /* Array access_variables */
+        le_array_cf_t er_access = LE_ARRAY_CF_C;
+
         /* Assign server connection parameters */
         er_times.tm_svip = er_ip;
         er_times.tm_port = er_port;
 
-        /* Retrieve server configuration */
-        if ( ( er_times.tm_tparam = er_client_server_tparam( er_ip, er_port ) ) == _LE_TIME_NULL ) {
+        /* Query server configuration array */
+        if ( er_server_array( er_ip, er_port, LE_NETWORK_MODE_CMOD, & er_array ) != LE_ERROR_SUCCESS ) {
 
             /* Send message */
             return( er_times._status = _LE_FALSE, er_times );
 
+        } else {
+
+            /* Compute configuration array mapping */
+            le_array_cf( le_array_get_byte( & er_array ), 0, er_access );
+
+            /* Retrieve configuration */
+            er_times.tm_tparam = er_access.as_time[0];
+
         }
 
-        /* Query times array */
-        er_times.tm_tarray = er_client_server_times( er_ip, er_port );
-
-        /* Check array size */
-        if ( le_array_get_size( & er_times.tm_tarray ) <= 0 ) {
+        /* Query server times array */
+        if ( er_server_array( er_ip, er_port, LE_NETWORK_MODE_AMOD, & er_times.tm_tarray ) != LE_ERROR_SUCCESS ) {
 
             /* Send message */
             return( er_times._status = _LE_FALSE, er_times );
 
+        } else {
+
+            /* Compute times array size */
+            er_times.tm_size = le_array_get_size( & er_times.tm_tarray ) / LE_ARRAY_TFL;
+
+            /* Compute times array base */
+            er_times.tm_time = ( le_time_t * ) le_array_get_byte( & er_times.tm_tarray );
+
         }
-
-        /* Retrieve times count */
-        er_times.tm_size = le_array_get_record( & er_times.tm_tarray, LE_ARRAY_64T_LEN );
-
-        /* Retrieve times array */
-        er_times.tm_time = ( le_time_t * ) le_array_get_byte( & er_times.tm_tarray );
 
         /* Set default time */
         er_times_set_default( & er_times );

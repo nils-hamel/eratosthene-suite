@@ -21,97 +21,29 @@
     # include "eratosthene-client-server.h"
 
 /*
-    source - server times access methods
+    source - server array methods
  */
 
-    le_array_t er_client_server_times( le_char_t const * const er_ip, le_sock_t const er_port ) {
-
-        /* Returned structure variables */
-        le_array_t er_array = LE_ARRAY_C;
+    le_enum_t er_server_array( le_char_t const * const er_ip, le_sock_t const er_port, le_enum_t const er_mode, le_array_t * const er_array ) {
 
         /* Socket variables */
         le_sock_t er_socket = _LE_SOCK_NULL;
 
-        /* Establish server connection */
-        if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
+        /* Establish connection to server - send message */
+        if ( ( er_socket = le_client_create( er_ip, er_port ) ) == _LE_SOCK_NULL ) return( LE_ERROR_IO_SOCKET );
 
-            /* Client/server query handshake */
-            if ( le_client_handshake( er_socket, LE_NETWORK_MODE_AMOD, LE_ARRAY_64T ) == LE_ERROR_SUCCESS ) {
+        /* Server/client handshake */
+        if ( le_client_handshake( er_socket, er_mode, LE_ARRAY_TFD ) == LE_ERROR_SUCCESS ) {
 
-                /* Retrieve server parameter */
-                le_array_io_read( & er_array, er_socket );
-
-            }
-
-            /* Close server connection */
-            er_socket = le_client_delete( er_socket );
+            /* Retreive server array */
+            le_array_io_read( er_array, er_socket );
 
         }
 
-        /* Return server parameter */
-        return( er_array );
+        /* Close connection to server */
+        le_client_delete( er_socket );
+
+        /* Send message */
+        return( LE_ERROR_SUCCESS );
 
     }
-
-/*
-    source - server parameters access methods
- */
-
-    le_size_t er_client_server_sparam( le_char_t const * const er_ip, le_sock_t const er_port ) {
-
-        /* Returned structure variables */
-        le_size_t er_return = _LE_SIZE_NULL;
-
-        /* Socket variables */
-        le_sock_t er_socket = _LE_SOCK_NULL;
-
-        /* Establish server connection */
-        if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
-
-            /* Client/server query handshake */
-            if ( le_client_handshake( er_socket, LE_NETWORK_MODE_SMOD, LE_ARRAY_NULL ) == LE_ERROR_SUCCESS ) {
-
-                /* Retrieve server parameter */
-                er_return = le_client_system_sparam( er_socket );
-
-            }
-
-            /* Close server connection */
-            er_socket = le_client_delete( er_socket );
-
-        }
-
-        /* Return server parameter */
-        return( er_return );
-
-    }
-
-    le_time_t er_client_server_tparam( le_char_t const * const er_ip, le_sock_t const er_port ) {
-
-        /* Returned structure variables */
-        le_time_t er_return = _LE_SIZE_NULL;
-
-        /* Socket variables */
-        le_sock_t er_socket = _LE_SOCK_NULL;
-
-        /* Establish server connection */
-        if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
-
-            /* Client/server query handshake */
-            if ( le_client_handshake( er_socket, LE_NETWORK_MODE_TMOD, LE_ARRAY_NULL ) == LE_ERROR_SUCCESS ) {
-
-                /* Retrieve server parameter */
-                er_return = le_client_system_tparam( er_socket );
-
-            }
-
-            /* Close server connection */
-            er_socket = le_client_delete( er_socket );
-
-        }
-
-        /* Return server parameter */
-        return( er_return );
-
-    }
-

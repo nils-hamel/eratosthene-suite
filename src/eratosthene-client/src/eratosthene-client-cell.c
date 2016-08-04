@@ -171,7 +171,7 @@
         if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
 
             /* Server/client handshake */
-            if ( le_client_handshake( er_socket, LE_NETWORK_MODE_QMOD, LE_ARRAY_64R ) == LE_ERROR_SUCCESS ) {
+            if ( le_client_handshake( er_socket, LE_NETWORK_MODE_QMOD, LE_ARRAY_RFD ) == LE_ERROR_SUCCESS ) {
 
                 /* Read cell from server */
                 er_return = er_cell_io_read( er_cell, er_socket );
@@ -227,13 +227,13 @@
         while ( er_read < _LE_USE_RETRY ) {
 
             /* Read array from socket */
-            if ( ( er_count = read( er_socket, er_buffer + er_bridge, _LE_USE_MTU ) + er_bridge ) >= LE_ARRAY_64R_LEN ) {
+            if ( ( er_count = read( er_socket, er_buffer + er_bridge, _LE_USE_MTU ) + er_bridge ) >= LE_ARRAY_RFL ) {
 
                 /* Check cell limitation */
-                if ( ( er_csize = er_cell->ce_size + ( er_count / LE_ARRAY_64R_LEN ) * 3 ) < ER_CELL_ARRAY ) {
+                if ( ( er_csize = er_cell->ce_size + ( er_count / LE_ARRAY_RFL ) * 3 ) < ER_CELL_ARRAY ) {
 
                     /* Parsing received bloc */
-                    for ( er_parse = 0; er_parse < ( er_count / LE_ARRAY_64R_LEN ) * LE_ARRAY_64R_LEN; er_track += 3, er_parse += LE_ARRAY_64R_LEN ) {
+                    for ( er_parse = 0; er_parse < ( er_count / LE_ARRAY_RFL ) * LE_ARRAY_RFL; er_track += 3, er_parse += LE_ARRAY_RFL ) {
 
                         /* Compute array pointers */
                         er_pap = ( le_real_t * ) ( er_buffer + er_parse );
@@ -255,15 +255,15 @@
                     er_cell->ce_size = er_csize;
 
                     /* Bridge management */
-                    if ( ( er_bridge = ( er_count % LE_ARRAY_64R_LEN ) ) != 0 ) memcpy( er_buffer, er_buffer + ( er_count - er_bridge ), er_bridge );
+                    if ( ( er_bridge = ( er_count % LE_ARRAY_RFL ) ) != 0 ) memcpy( er_buffer, er_buffer + ( er_count - er_bridge ), er_bridge );
 
                 /* Reset redundancy */
                 er_read = 0; } else { er_read = _LE_USE_RETRY; }
                 
             /* Update redundancy */
             } else { er_read ++; }
-            
-        }        
+
+        }
 
         /* Send cell size */
         return( er_cell->ce_size );

@@ -82,7 +82,7 @@
             } else {
 
                 /* Client-server injection handshake */
-                if ( le_client_handshake( er_client, LE_NETWORK_MODE_IMOD, LE_ARRAY_64S ) != LE_ERROR_SUCCESS ) {
+                if ( le_client_handshake( er_client, LE_NETWORK_MODE_IMOD, LE_ARRAY_SFD ) != LE_ERROR_SUCCESS ) {
 
                     /* Display message */
                     fprintf( stderr, "eratosthene-inject : error : authorisation failed\n" );

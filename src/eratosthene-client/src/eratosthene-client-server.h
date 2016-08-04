@@ -65,6 +65,8 @@
     header - function prototypes
  */
 
+    le_enum_t er_server_array( le_char_t const * const er_ip, le_sock_t const er_port, le_enum_t const er_mode, le_array_t * const er_array );
+
     /*! \brief server times access methods
      *
      */

@@ -29,23 +29,30 @@
         /* Created structure variables */
         er_model_t er_model = ER_MODEL_C;
 
+        /* Array variables */
+        le_array_t er_array = LE_ARRAY_C;
+
+        /* Array access variables */
+        le_array_cf_t er_access = LE_ARRAY_CF_C;
+
         /* Assign server network configuration */
         er_model.md_svip = er_ip;
         er_model.md_port = er_port;
 
-        /* Retrieve server configuration */
-        if ( ( er_model.md_sparam = er_client_server_sparam( er_ip, er_port ) ) == _LE_SIZE_NULL ) {
+        /* Query server configuration array */
+        if ( er_server_array( er_ip, er_port, LE_NETWORK_MODE_CMOD, & er_array ) != LE_ERROR_SUCCESS ) {
 
             /* Send message */
             return( er_model._status = _LE_FALSE, er_model );
 
-        }
+        } else {
 
-        /* Retrieve server configuration */
-        if ( ( er_model.md_tparam = er_client_server_tparam( er_ip, er_port ) ) == _LE_TIME_NULL ) {
+            /* Compute configuration array mapping */
+            le_array_cf( le_array_get_byte( & er_array ), 0, er_access );
 
-            /* Send message */
-            return( er_model._status = _LE_FALSE, er_model );
+            /* Retrieve configuration */
+            er_model.md_sparam = er_access.as_size[0];
+            er_model.md_tparam = er_access.as_time[0];
 
         }
 
@@ -55,13 +62,15 @@
             /* Send message */
             return( er_model._status = _LE_FALSE, er_model );
 
-        }
+        } else {
 
-        /* Create model cells */
-        for ( le_size_t er_parse = 0; er_parse < er_model.md_size; er_parse ++ ) {
+            /* Create model cells */
+            for ( le_size_t er_parse = 0; er_parse < er_model.md_size; er_parse ++ ) {
 
-            /* Initialise cell */
-            er_model.md_cell[er_parse] = er_cell_create();
+                /* Initialise cell */
+                er_model.md_cell[er_parse] = er_cell_create();
+
+            }
 
         }
 
@@ -75,16 +84,21 @@
         /* Deleted structure variables */
         er_model_t er_reset = ER_MODEL_C;
 
-        /* Delete model cells */
-        for ( le_size_t er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
+        /* Check stack state */
+        if ( er_model->md_cell != NULL ) {
 
-            /* Delete cell */
-            er_cell_delete( er_model->md_cell + er_parse );
+            /* Delete model cells */
+            for ( le_size_t er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
+
+                /* Delete cell */
+                er_cell_delete( er_model->md_cell + er_parse );
+
+            }
+
+            /* Unallocate stack memory */
+            free( er_model->md_cell );
 
         }
-
-        /* Check stack state - memory unallocation */
-        if ( er_model->md_cell != NULL ) free( er_model->md_cell );
 
         /* Delete structure */
         * ( er_model ) = er_reset;
