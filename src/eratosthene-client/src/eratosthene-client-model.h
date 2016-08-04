@@ -45,7 +45,6 @@
 
     # include "eratosthene-client-cell.h"
     # include "eratosthene-client-geodesy.h"
-    # include "eratosthene-client-server.h"
 
 /*
     header - external includes

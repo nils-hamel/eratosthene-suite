@@ -40,7 +40,7 @@
         er_times.tm_port = er_port;
 
         /* Query server configuration array */
-        if ( er_server_array( er_ip, er_port, LE_NETWORK_MODE_CMOD, & er_array ) != LE_ERROR_SUCCESS ) {
+        if ( le_client_array( er_ip, er_port, LE_NETWORK_MODE_CMOD, & er_array ) != LE_ERROR_SUCCESS ) {
 
             /* Send message */
             return( er_times._status = _LE_FALSE, er_times );
@@ -56,7 +56,7 @@
         }
 
         /* Query server times array */
-        if ( er_server_array( er_ip, er_port, LE_NETWORK_MODE_AMOD, & er_times.tm_tarray ) != LE_ERROR_SUCCESS ) {
+        if ( le_client_array( er_ip, er_port, LE_NETWORK_MODE_AMOD, & er_times.tm_tarray ) != LE_ERROR_SUCCESS ) {
 
             /* Send message */
             return( er_times._status = _LE_FALSE, er_times );
