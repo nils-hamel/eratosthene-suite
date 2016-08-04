@@ -171,7 +171,7 @@
         if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
 
             /* Server/client handshake */
-            if ( le_client_handshake( er_socket, LE_NETWORK_MODE_QMOD, LE_ARRAY_RFD ) == LE_ERROR_SUCCESS ) {
+            if ( le_client_handshake( er_socket, LE_NETWORK_MODE_QMOD ) == LE_ERROR_SUCCESS ) {
 
                 /* Read cell from server */
                 er_return = er_cell_io_read( er_cell, er_socket );

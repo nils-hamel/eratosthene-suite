@@ -33,7 +33,7 @@
         if ( ( er_socket = le_client_create( er_ip, er_port ) ) == _LE_SOCK_NULL ) return( LE_ERROR_IO_SOCKET );
 
         /* Server/client handshake */
-        if ( le_client_handshake( er_socket, er_mode, LE_ARRAY_TFD ) == LE_ERROR_SUCCESS ) {
+        if ( le_client_handshake( er_socket, er_mode ) == LE_ERROR_SUCCESS ) {
 
             /* Retreive server array */
             le_array_io_read( er_array, er_socket );
