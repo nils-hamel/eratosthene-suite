@@ -84,7 +84,7 @@
     le_enum_t er_cell_get_match( er_cell_t const * const er_addr, er_cell_t const * const er_push ) {
 
         /* Return comparison result */
-        return( le_address_cmp( & er_addr->ce_addr, & er_push->ce_push ) );
+        return( le_address_get_equal( & er_addr->ce_addr, & er_push->ce_push ) );
 
     }
 
