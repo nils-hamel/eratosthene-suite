@@ -36,7 +36,7 @@
         if ( ( er_system = le_system_create( ( le_char_t * ) lc_read_string( argc, argv, "--path", "-p" ) ) )._status != LE_ERROR_SUCCESS ) {
 
             /* Display message */
-            fprintf( stderr, "eratosthene-server : error : unable to create system handle\n" );
+            fprintf( stderr, "eratosthene-suite : error : unable to create system handle\n" );
 
         } else {
 
@@ -44,12 +44,12 @@
             if ( ( er_server = le_server_create( lc_read_uint( argc, argv, "--port", "-t", _LE_USE_PORT ) ) ) == _LE_SOCK_NULL ) {
 
                 /* Display message */
-                fprintf( stderr, "eratosthene-server : error : unable to create server handle\n" );
+                fprintf( stderr, "eratosthene-suite : error : unable to create server handle\n" );
 
             } else {
 
                 /* Display message */
-                fprintf( stderr, "eratosthene-server : server listening on TCP/IP\n" );
+                fprintf( stderr, "eratosthene-suite : server listening on TCP/IP\n" );
 
                 /* Server handle and idle */
                 le_server( er_server, & er_system );

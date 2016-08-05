@@ -63,7 +63,11 @@
     # endif
 
 /*
-    header - includes
+    header - internal includes
+ */
+
+/*
+    header - external includes
  */
 
     # include <stdio.h>

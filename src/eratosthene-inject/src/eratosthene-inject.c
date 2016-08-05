@@ -67,7 +67,7 @@
         if ( ( er_stream = fopen( lc_read_string( argc, argv, "--file", "-f" ), "rb" ) ) == NULL ) {
 
             /* Display message */
-            fprintf( stderr, "eratosthene-inject : error : unable to access file\n" );
+            fprintf( stderr, "eratosthene-suite : error : unable to access file\n" );
 
         } else {
 
@@ -75,7 +75,7 @@
             if ( ( er_client = le_client_create( ( le_char_t * ) lc_read_string( argc, argv, "--ip", "-i" ), lc_read_uint( argc, argv, "--port", "-t", _LE_USE_PORT ) ) ) == _LE_SOCK_NULL ) {
 
                 /* Display message */
-                fprintf( stderr, "eratosthene-inject : error : unable to connect to server\n" );
+                fprintf( stderr, "eratosthene-suite : error : unable to connect to server\n" );
 
             } else {
 
@@ -83,7 +83,7 @@
                 if ( le_client_handshake( er_client, LE_NETWORK_MODE_IMOD ) != LE_ERROR_SUCCESS ) {
 
                     /* Display message */
-                    fprintf( stderr, "eratosthene-inject : error : authorisation failed\n" );
+                    fprintf( stderr, "eratosthene-suite : error : authorisation failed\n" );
 
                 } else {
 
@@ -91,7 +91,7 @@
                     if ( er_injection( er_client, er_stream ) != LE_ERROR_SUCCESS ) {
 
                         /* Display message */
-                        fprintf( stderr, "eratosthene-inject : error : write on socket failure\n" );
+                        fprintf( stderr, "eratosthene-suite : error : write on socket failure\n" );
 
                     }
 
