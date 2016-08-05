@@ -278,9 +278,6 @@
                     /* Swap address and pushed address */
                     er_cell_set_swap( er_model->md_cell + er_found, er_model->md_cell + er_parse );
 
-                    /* Reset pushed address */
-                    //er_cell_set_pop( er_model->md_cell + er_parse );
-
                     /* Update cell array */
                     er_cell_io_query( er_model->md_cell + er_found, er_model->md_svip, er_model->md_port );
 

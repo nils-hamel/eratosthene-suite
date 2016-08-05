@@ -126,7 +126,7 @@
         if ( er_client_create( le_svip, le_port ) == _LE_FALSE ) {
 
             /* Display message */
-            fprintf( stderr, "eratosthene-suite : error : unable to create model\n" );
+            fprintf( stderr, "eratosthene-suite : error : unable to create client\n" );
 
             /* Return to system */
             return( EXIT_SUCCESS );
