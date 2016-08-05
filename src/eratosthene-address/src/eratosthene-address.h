@@ -76,8 +76,8 @@
  */
 
     /* Trigonometric conversion factors */
-    # define ER_ADDRESS_D2R ( ( le_real_t ) LE_PI / 180.0 )
-    # define ER_ADDRESS_R2D ( 180.0 / ( le_real_t ) LE_PI )
+    # define ER_ADDRESS_D2R ( LE_PI / _LE_REAL_L( 180.0 ) )
+    # define ER_ADDRESS_R2D ( _LE_REAL_L( 180.0 ) / LE_PI )
 
     /* Display format specifier */
     # define ER_ADDRESS_PFS "%" _LE_REAL_P ", %" _LE_REAL_P ", %" _LE_REAL_P "\n"
