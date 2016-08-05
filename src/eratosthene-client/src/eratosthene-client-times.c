@@ -234,7 +234,7 @@
         if ( ( er_index >= 0 ) && ( er_index < ER_TIMES_VIEW ) ) {
 
             /* Check time state */
-            if ( er_times->tm_view[er_index] != _LE_TIME_NULL ) {
+            if ( er_times->tm_view[er_index] != _LE_SIZE_NULL ) {
 
                 /* Set time position to enable time */
                 er_times->tm_pose = er_times->tm_time[er_times->tm_view[er_index]];
