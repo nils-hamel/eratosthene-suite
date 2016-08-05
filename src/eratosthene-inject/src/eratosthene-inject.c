@@ -24,7 +24,7 @@
     source - injection procedure
  */
 
-    void er_injection( le_sock_t const er_client, FILE * const er_stream ) {
+    le_enum_t er_injection( le_sock_t const er_client, FILE * const er_stream ) {
 
         /* Socket i/o count variables */
         le_size_t er_fread = 1;
@@ -39,17 +39,15 @@
             /* Read stream elements */
             if ( ( er_fread = fread( ( le_void_t * ) er_buffer, sizeof( le_byte_t ), _LE_USE_MTU, er_stream ) ) > 0 ) {
 
-                /* Write buffer to socket */
-                if ( ( er_write = write( er_client, er_buffer, er_fread ) ) != er_fread ) {
-
-                    /* Display message */
-                    fprintf( stderr, "eratosthene-inject : error : partial buffer writing on socket\n" );
-
-                }    
+                /* Write buffer to socket - send message */
+                if ( ( er_write = write( er_client, er_buffer, er_fread ) ) != er_fread ) return( LE_ERROR_IO_WRITE );
 
             }
 
         }
+
+        /* Send message */
+        return( LE_ERROR_SUCCESS );
 
     }
 
@@ -90,7 +88,12 @@
                 } else {
 
                     /* Injection procedure */
-                    er_injection( er_client, er_stream );
+                    if ( er_injection( er_client, er_stream ) != LE_ERROR_SUCCESS ) {
+
+                        /* Display message */
+                        fprintf( stderr, "eratosthene-inject : error : write on socket failure\n" );
+
+                    }
 
                 }
 
