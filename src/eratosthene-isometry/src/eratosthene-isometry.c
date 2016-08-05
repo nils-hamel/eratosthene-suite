@@ -61,7 +61,7 @@
         }
 
         /* Delete rendering structure */
-        er_render = er_render_delete( & er_render );
+        er_render_delete( & er_render );
 
         /* Send message */
         return( er_message );
@@ -74,11 +74,11 @@
 
     int main( int argc, char ** argv ) {
 
-        /* Query array variables */
-        le_array_t er_array = LE_ARRAY_C;
-
         /* Address variables */
         le_address_t er_address = LE_ADDRESS_C;
+
+        /* Query array variables */
+        le_array_t er_array = LE_ARRAY_C;
 
         /* Socket variables */
         le_sock_t er_socket = _LE_SOCK_NULL;

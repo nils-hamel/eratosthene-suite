@@ -59,12 +59,6 @@
     /* Define trigonometric factors */
     # define ER_ISOMETRY_D2R     ( LE_PI / 180.0 )
 
-    /* Define default view */
-    # define ER_ISOMETRY_VIEW_NE ( + 45.0 )
-    # define ER_ISOMETRY_VIEW_NW ( - 45.0 )
-    # define ER_ISOMETRY_VIEW_SW ( +135.0 )
-    # define ER_ISOMETRY_VIEW_SE ( -135.0 )
-
 /*
     header - preprocessor macros
  */
@@ -187,7 +181,7 @@
      *  \return Returns deleted rendering structure  
      */
 
-    er_render_t er_render_delete( er_render_t * const er_render );
+    le_void_t er_render_delete( er_render_t * const er_render );
 
     /*! \brief display methods
      *

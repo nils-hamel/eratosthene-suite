@@ -29,26 +29,22 @@
         /* Returned structure variables */
         er_render_t er_render = ER_RENDER_C;
 
-        /* Projection variables */
-        le_real_t er_angle = atan( 1.0 / sqrt( 2.0 ) );
-        le_real_t er_unity = sqrt( 2.0 ) / cos( er_angle );
+        /* Compute edge position and size */
+        er_render.re_size   = er_render_get_edge( er_query, er_render.re_edge );
 
         /* Check and assign azimuth angle */
         er_render.re_azim   = er_render_get_view( er_view );
 
         /* Check and assign tilt */
-        er_render.re_tilt   = er_tilt  >= 0.0 ? ( er_tilt <= 90.0 ? -er_tilt : -45.0 ) : -45.0;
+        er_render.re_tilt   = lc_clamp( -er_tilt, -90.0, 0.0 );
 
         /* Compute projection domain */
-        er_render.re_xfac   = sqrt( 2.0 );
-        er_render.re_yfac   = cos( - er_angle - ( er_render.re_tilt * ER_ISOMETRY_D2R ) ) * er_unity;
-        er_render.re_zfac   = cos( - er_angle - ( er_render.re_tilt * ER_ISOMETRY_D2R ) ) * er_unity * 2.0;
-
-        /* Compute edge position and size */
-        er_render.re_size   = er_render_get_edge( er_query, er_render.re_edge );
+        er_render.re_xfac   = er_render.re_size * 0.5 * sqrt( 2.0 );
+        er_render.re_yfac   = er_render.re_size * 0.5 * sqrt( 2.0 ) * sin( atan( sqrt( 2.0 ) ) - er_render.re_tilt * ER_ISOMETRY_D2R ) / sin( atan( sqrt( 2.0 ) ) );
+        er_render.re_zfac   = er_render.re_size * 0.5 * sin( atan( 1.0 / sqrt( 2.0 ) ) - er_render.re_tilt * ER_ISOMETRY_D2R ) / sin( atan( 1.0 / sqrt( 2.0 ) ) );
 
         /* Check and assign thickness */
-        er_render.re_thick  = er_thick > 1 ? ( er_thick < 32 ? er_thick : 32 ) : 1;
+        er_render.re_thick  = lc_clamp( er_thick, 1, 32 );
 
         /* Compute projection size */
         er_render.re_width  = er_width;
@@ -59,16 +55,13 @@
 
     }
 
-    er_render_t er_render_delete( er_render_t * const er_render ) {
+    le_void_t er_render_delete( er_render_t * const er_render ) {
 
-        /* Returned value variables */
+        /* Deleted structure variables */
         er_render_t er_delete = ER_RENDER_C;
 
         /* Clear rendering structure */
         * er_render = er_delete;
-
-        /* Return deleted structure */
-        return( * er_render );
 
     }
 
@@ -93,20 +86,19 @@
         /* Create display handle */
         if ( ( er_render->re_display = XOpenDisplay( NULL ) ) == NULL ) {
 
+            /* Send message */
             return( _LE_FALSE );
 
-        } else {
+        }
 
-            /* Choose visual */
-            if ( ( er_visual = glXChooseVisual( er_render->re_display, 0, er_vattrib ) ) == NULL ) {
+        /* Choose visual */
+        if ( ( er_visual = glXChooseVisual( er_render->re_display, 0, er_vattrib ) ) == NULL ) {
 
-                /* Close display */
-                XCloseDisplay( er_render->re_display );
+            /* Close display */
+            XCloseDisplay( er_render->re_display );
 
-                /* Send message */
-                return( _LE_FALSE );
-
-            }
+            /* Send message */
+            return( _LE_FALSE );
 
         }
 
@@ -153,12 +145,10 @@
             /* Send message */
             return( _LE_FALSE );
 
-        } else {
-
-            /* Send message */
-            return( _LE_TRUE );
-
         }
+
+        /* Send message */
+        return( _LE_TRUE );
 
     }
 
@@ -186,11 +176,6 @@
 
     le_void_t er_render_projection( er_render_t * const er_render ) {
 
-        /* Projection edge variables */
-        le_real_t er_xbound = ( er_render->re_size / 2.0 ) * er_render->re_xfac;
-        le_real_t er_ybound = ( er_render->re_size / 2.0 ) * er_render->re_yfac;
-        le_real_t er_zbound = ( er_render->re_size / 2.0 ) * er_render->re_zfac;
-
         /* Initialise buffer clear values */
         glClearColor( 0.0, 0.0, 0.0, 0.0 );
         glClearDepth( 1.0 );
@@ -208,7 +193,7 @@
         glLoadIdentity();
 
         /* Compute porjection matrix */
-        glOrtho( -er_xbound, +er_xbound, -er_ybound, +er_ybound, -er_zbound, +er_zbound );
+        glOrtho( -er_render->re_xfac, +er_render->re_xfac, -er_render->re_yfac, +er_render->re_yfac, -er_render->re_zfac, +er_render->re_zfac );
 
         /* Matrix mode to modelview */
         glMatrixMode( GL_MODELVIEW );
@@ -216,26 +201,26 @@
         /* Clear modelview matrix */
         glLoadIdentity();
 
+    }
+
+    le_void_t er_render_primivites( er_render_t * const er_render, le_array_t * const er_array ) {
+
+        /* Line pointer variables */
+        le_real_t * er_pose = NULL;
+        le_data_t * er_data = NULL;
+
+        /* Cell dimension variables */
+        le_real_t er_cmid = er_render->re_size / 2.0;
+
+        /* Array pointer variables */
+        le_byte_t * er_byte = le_array_get_byte( er_array );
+
         /* Clear buffers */
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
         /* Apply isometric rotation */
         glRotatef( er_render->re_tilt, 1.0, 0.0, 0.0 );
         glRotatef( er_render->re_azim, 0.0, 0.0, 1.0 );
-
-    }
-
-    le_void_t er_render_primivites( er_render_t * const er_render, le_array_t * const er_array ) {
-
-        /* Cell dimension variables */
-        le_real_t er_cmid = er_render->re_size / 2.0;
-
-        /* Line pointer variables */
-        le_real_t * er_pose = NULL;
-        le_data_t * er_data = NULL;
-
-        /* Array pointer variables */
-        le_byte_t * er_byte = le_array_get_byte( er_array );
 
         /* Primitive bloc */
         glPointSize( er_render->re_thick ); glBegin( GL_POINTS ); {
@@ -313,7 +298,7 @@
         if ( er_buffer == NULL ) return( _LE_FALSE );
 
         /* Read buffer pixels */
-        glFinish(); glGetTexImage( GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, er_buffer );
+        glFinish(), glGetTexImage( GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, er_buffer );
 
         /* Export buffer pixels */
         er_message = lc_image_png_write( er_path, er_render->re_width, er_render->re_height, LC_IMAGE_RGBA, er_buffer );
@@ -333,19 +318,16 @@
     le_real_t er_render_get_view( le_char_t const * const er_view ) {
 
         /* Check pointer validity - return default value */
-        if ( er_view == NULL ) return( ER_ISOMETRY_VIEW_NW );
+        if ( er_view == NULL ) return( -45.0 );
 
         /* Check view parameter - return value */
-        if ( lc_strc( er_view, "ne" ) == LC_TRUE ) return( ER_ISOMETRY_VIEW_NE );
-        else 
-        if ( lc_strc( er_view, "nw" ) == LC_TRUE ) return( ER_ISOMETRY_VIEW_NW );
-        else
-        if ( lc_strc( er_view, "sw" ) == LC_TRUE ) return( ER_ISOMETRY_VIEW_SW );
-        else 
-        if ( lc_strc( er_view, "se" ) == LC_TRUE ) return( ER_ISOMETRY_VIEW_SE );
+        if ( lc_strc( er_view, "ne" ) == LC_TRUE ) return( + 45.0 );
+        if ( lc_strc( er_view, "nw" ) == LC_TRUE ) return( - 45.0 );
+        if ( lc_strc( er_view, "sw" ) == LC_TRUE ) return( +135.0 );
+        if ( lc_strc( er_view, "se" ) == LC_TRUE ) return( -135.0 );
 
         /* Return default value */
-        return( ER_ISOMETRY_VIEW_NW );
+        return( -45.0 );
 
     }
 
