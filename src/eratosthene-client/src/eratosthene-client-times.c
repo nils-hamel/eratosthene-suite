@@ -254,14 +254,20 @@
 
     le_void_t er_times_display( er_times_t const * const er_times ) {
 
-        /* Static buffer variables */
-        static le_byte_t * er_buffer = NULL;
-
         /* Static buffer display variables */
         static le_size_t er_xsize = 0;
-        static le_size_t er_ysize = 0;
+        static le_size_t er_ysize = 96;
+        static le_size_t er_wsize = 0;
         static le_size_t er_bsize = 0;
-        static le_size_t er_shift = 32;
+
+        static le_size_t er_heig0 = 32;
+        static le_size_t er_heig1 = 24;
+        static le_size_t er_heig2 = 60;
+        static le_size_t er_heig3 = 68;
+        static le_size_t er_heig4 = 76;
+
+        /* Static buffer variables */
+        static le_byte_t * er_buffer = NULL;
 
         /* Graduation display variables */
         le_time_t er_xgrad = 0;
@@ -276,41 +282,38 @@
         if ( er_buffer == NULL ) {
 
             /* Compute buffer dimensions */
-            er_xsize = glutGet( GLUT_SCREEN_WIDTH  );
-            er_ysize = glutGet( GLUT_SCREEN_HEIGHT ) * 0.1;
+            er_xsize = glutGet( GLUT_SCREEN_WIDTH );
 
             /* Compute buffer size */
-            er_bsize = er_xsize * er_ysize * 4;
+            er_wsize = er_xsize << 2;
+            er_bsize = er_wsize * er_ysize;
 
-            /* Allocate buffer memory - initialise buffer bytes */
-            if ( ( er_buffer = malloc( er_bsize ) ) != NULL ) memset( er_buffer, 255, er_bsize );
+            /* Allocate buffer memory - return */
+            if ( ( er_buffer = malloc( er_bsize ) ) == NULL ) return; 
 
-        /* Trigger memory allocation check */
-        return; }
+            /* Initialise buffer bytes */
+            memset( er_buffer, 255, er_bsize );
+
+        }
 
         /* Reset buffer bytes */
-        for ( le_size_t er_i = 3; er_i < er_bsize; er_buffer[er_i += 4] = 208 );
+        for ( le_size_t er_i = 3, er_j = 0; er_i < er_bsize; er_i += 4, er_j = er_i / er_wsize ) {
 
-        /* Display boundaries times */
-        er_times_display_date( er_lbound, 16, er_shift + 19, ER_TIMES_JUST_LEFT, 0 );
+            /* Check heights */
+            if ( er_j == er_heig2 ) {
 
-        /* Display boundaries times */
-        er_times_display_date( er_ubound, er_xsize - 16, er_shift + 19, ER_TIMES_JUST_RIGHT, 0 );
+                /* Reset pixel alpha channel */
+                er_buffer[er_i] = 128;
 
-        /* Display selected times */
-        if ( er_times->tm_view[0] != _LE_SIZE_NULL ) er_times_display_date( er_times->tm_time[er_times->tm_view[0]], ( er_xsize >> 1 ) - 16, er_shift + 19, ER_TIMES_JUST_RIGHT, 1 );
+            } else if ( ( er_j < er_heig1 ) || ( er_j % 2 == 1 ) ) {
 
-        /* Display selected times */
-        if ( er_times->tm_view[1] != _LE_SIZE_NULL ) er_times_display_date( er_times->tm_time[er_times->tm_view[1]], ( er_xsize >> 1 ) + 16, er_shift + 19, ER_TIMES_JUST_LEFT , 1 );
-        
-        /* Display dynamic times */
-        for ( le_size_t er_parse = 0; er_parse < er_times->tm_size; er_parse ++ ) {
+                /* Reset pixel alpha channel */
+                er_buffer[er_i] = 224;
 
-            /* Check time visibility */
-            if ( ( er_times->tm_time[er_parse] > er_lbound ) && ( er_times->tm_time[er_parse] < er_ubound ) ) {
+            } else {
 
-                /* Display date string */
-                er_times_display_date( er_times->tm_time[er_parse], er_xsize * ( ( le_real_t ) ( er_times->tm_time[er_parse] - er_lbound ) / er_times->tm_zoom ), er_shift + er_ysize - 2, ER_TIMES_JUST_CENTER, er_parse == er_times->tm_near );
+                /* Reset pixel alpha channel */
+                er_buffer[er_i] = 200;
 
             }
 
@@ -320,29 +323,22 @@
         for ( le_size_t er_scale = 0; er_scale < ER_TIMES_GRAP_DEPTH; er_dgrad /= 10, er_scale ++ ) {
 
             /* Check graduation spacing */
-            if ( ( ( ( ( le_real_t ) er_dgrad ) / er_times->tm_zoom ) * er_xsize ) > 6 ) {
+            if ( ( ( ( le_real_t ) er_dgrad ) / er_times->tm_zoom ) * er_xsize < 6 ) continue;
 
-                /* Display graduation */
-                for ( le_time_t er_parse = ER_TIMES_ROUND( er_lbound, er_dgrad ); er_parse < er_ubound; er_parse += er_dgrad ) {
+            /* Display graduation */
+            for ( le_time_t er_parse = ER_TIMES_ROUND( er_lbound, er_dgrad ); er_parse < er_ubound; er_parse += er_dgrad ) {
 
-                    /* Compute graduation x-position */
-                    er_xgrad = ( ( ( ( le_real_t ) er_parse ) - er_lbound ) / er_times->tm_zoom ) * er_xsize;
+                /* Compute graduation position x-position */
+                er_xgrad = ( ( ( ( le_real_t ) er_parse ) - er_lbound ) / er_times->tm_zoom ) * er_xsize;
 
-                    /* Check interface boundaries */
-                    if ( ( er_xgrad >= 16 ) && ( er_xgrad <= er_xsize - 16 ) ) {
+                /* Compute graduation position y-position */
+                er_ygrad = er_heig1 + ( er_scale << 2 ) + 2;
 
-                        /* Compute graduation y-position */
-                        er_ygrad = 20 + ( er_scale << 2 );
+                /* Display graduation increment */
+                for ( le_size_t er_pixel = er_ygrad; er_pixel < er_heig2; er_pixel ++ ) {
 
-                        /* Display graduation increment */
-                        for ( le_size_t er_pixel = er_ygrad; er_pixel < er_ysize - er_ygrad; er_pixel ++ ) {
-
-                            /* Update interface buffer alpha channel */
-                            er_buffer[(er_xgrad + er_pixel * er_xsize) * 4 + 3] -= 255 / ER_TIMES_GRAP_DEPTH;
-
-                        }
-
-                    }
+                    /* Update interface buffer alpha channel */
+                    er_buffer[( ( er_xgrad + er_pixel * er_xsize ) << 2 ) + 3] -= 32;
 
                 }
 
@@ -350,15 +346,55 @@
 
         }
 
+        /* Display boundaries times */
+        er_times_display_date( er_lbound, 16, er_heig0 + 20, ER_TIMES_JUST_LEFT );
+
+        /* Display boundaries times */
+        er_times_display_date( er_ubound, er_xsize - 16, er_heig0 + 20, ER_TIMES_JUST_RIGHT );
+
+        /* Display selected times */
+        if ( er_times->tm_view[0] != _LE_SIZE_NULL ) er_times_display_date( er_times->tm_time[er_times->tm_view[0]], ( er_xsize >> 1 ) - 16, er_heig0 + 20, ER_TIMES_JUST_RIGHT );
+
+        /* Display selected times */
+        if ( er_times->tm_view[1] != _LE_SIZE_NULL ) er_times_display_date( er_times->tm_time[er_times->tm_view[1]], ( er_xsize >> 1 ) + 16, er_heig0 + 20, ER_TIMES_JUST_LEFT );
+        
+        /* Display dynamic times */
+        for ( le_size_t er_parse = 0; er_parse < er_times->tm_size; er_parse ++ ) {
+
+            /* Check time visibility */
+            if ( ( er_times->tm_time[er_parse] < er_lbound ) || ( er_times->tm_time[er_parse] > er_ubound ) ) continue;
+
+            /* Compute time x-position */
+            er_xgrad = er_xsize * ( ( le_real_t ) ( er_times->tm_time[er_parse] - er_lbound ) / er_times->tm_zoom );
+
+            /* Check time highlighting */
+            if ( er_parse == er_times->tm_near ) {
+
+                /* Display date string */
+                er_times_display_date( er_times->tm_time[er_parse], er_xgrad, er_heig0 + er_ysize - 2, ER_TIMES_JUST_LEFT );
+
+            /* Time marker configuration */
+            er_ygrad = er_heig4; } else { er_ygrad = er_heig3; }
+
+            /* Display time marker */
+            for ( le_size_t er_pixel = er_heig2 + 1; er_pixel < er_ygrad; er_pixel ++ ) {
+
+                /* Update interface buffer alpha channel */
+                er_buffer[( ( er_xgrad + er_pixel * er_xsize ) << 2 ) + 3] = 128;
+
+            }
+
+        }
+
         /* Position buffer */
-        glRasterPos2i( 0, er_shift );
+        glRasterPos2i( 0, er_heig0 );
 
         /* Display buffer */
         glDrawPixels( er_xsize, er_ysize, GL_RGBA, GL_UNSIGNED_BYTE, er_buffer );
 
     }
 
-    le_void_t er_times_display_date( le_time_t const er_time, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify, le_enum_t const er_color ) {
+    le_void_t er_times_display_date( le_time_t const er_time, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify ) {
 
         /* String array variables */
         static le_char_t er_string[32] = { 0 };
@@ -366,12 +402,12 @@
         /* Compose date string */
         lc_time_to_string( er_time, er_string, 32 );
 
-        /* Check color - assign color */
-        if ( er_color == 0 ) glColor3f( 0.5, 0.5, 0.5 ); else glColor3f( 0.2, 0.5, 0.8 );
-
         /* Check justification - assign shift */
         if ( er_justify == ER_TIMES_JUST_RIGHT  ) er_x -= strlen( ( char * ) er_string ) * 8;
         if ( er_justify == ER_TIMES_JUST_CENTER ) er_x -= strlen( ( char * ) er_string ) * 4;
+
+        /* Assign string color */
+        glColor3f( 0.3, 0.32, 0.4 );
 
         /* Assign string position */
         glRasterPos2i( er_x, er_y - 13 );
@@ -380,4 +416,5 @@
         glutBitmapString( GLUT_BITMAP_8_BY_13, er_string );
 
     }
+
 
