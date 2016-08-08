@@ -342,8 +342,8 @@
             case ( 0x73 ) : { er_times_set( & er_client.cl_times, 1 ); } break;
 
             /* Update point of view */
-            case ( 0x71 ) : { er_times_set_unset( & er_client.cl_times, 0 ); } break;
-            case ( 0x77 ) : { er_times_set_unset( & er_client.cl_times, 1 ); } break;
+            case ( 0x71 ) : { er_times_set_reset( & er_client.cl_times, 0 ); } break;
+            case ( 0x77 ) : { er_times_set_reset( & er_client.cl_times, 1 ); } break;
 
         };
 

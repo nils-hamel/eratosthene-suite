@@ -228,7 +228,7 @@
 
     }
 
-    le_void_t er_times_set_unset( er_times_t * const er_times, le_size_t const er_index ) {
+    le_void_t er_times_set_reset( er_times_t * const er_times, le_size_t const er_index ) {
 
         /* Check consistency */
         if ( ( er_index >= 0 ) && ( er_index < ER_TIMES_VIEW ) ) {
