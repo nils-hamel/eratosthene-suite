@@ -26,41 +26,25 @@
 
     int main( int argc, char ** argv ) {
 
-        /* Socket handle variables */
-        le_sock_t er_server = _LE_SOCK_NULL;
+        /* Server handle variables */
+        le_server_t er_server = LE_SERVER_C;
 
-        /* System handle variables */
-        le_system_t er_system = LE_SYSTEM_C;
-
-        /* Create system handle */
-        if ( ( er_system = le_system_create( ( le_char_t * ) lc_read_string( argc, argv, "--path", "-p" ) ) )._status != LE_ERROR_SUCCESS ) {
+        /* Create server handle */
+        if ( ( er_server = le_server_create( lc_read_uint( argc, argv, "--port", "-t", _LE_USE_PORT ), ( le_char_t * ) lc_read_string( argc, argv, "--path", "-p" ) ) )._status != LE_ERROR_SUCCESS ) {
 
             /* Display message */
-            fprintf( stderr, "eratosthene-suite : error : unable to create system handle\n" );
+            fprintf( stderr, "eratosthene-suite : error : unable to create server\n" );
 
         } else {
 
-            /* Create server handle */
-            if ( ( er_server = le_server_create( lc_read_uint( argc, argv, "--port", "-t", _LE_USE_PORT ) ) ) == _LE_SOCK_NULL ) {
+            /* Display message */
+            fprintf( stderr, "eratosthene-suite : state : server listening on TCP/IP\n" );
 
-                /* Display message */
-                fprintf( stderr, "eratosthene-suite : error : unable to create server handle\n" );
+            /* Server connections management */
+            le_server( & er_server );
 
-            } else {
-
-                /* Display message */
-                fprintf( stderr, "eratosthene-suite : server listening on TCP/IP\n" );
-
-                /* Server handle and idle */
-                le_server( er_server, & er_system );
-
-                /* Delete server handle */
-                er_server = le_server_delete( er_server );
-
-            }
-
-            /* Delete system handle */
-            er_system = le_system_delete( & er_system );
+            /* Delete server handle */
+            le_server_delete( & er_server );
 
         }
 
