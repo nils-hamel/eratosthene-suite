@@ -407,7 +407,7 @@
         if ( er_justify == ER_TIMES_JUST_CENTER ) er_x -= strlen( ( char * ) er_string ) * 4;
 
         /* Assign string color */
-        glColor3f( 0.3, 0.32, 0.4 );
+        glColor3f( 0.18, 0.22, 0.28 );
 
         /* Assign string position */
         glRasterPos2i( er_x, er_y - 13 );

@@ -403,14 +403,14 @@
         /* Earth wireframe - orientation */
         glRotated( 90.0, 1.0, 0.0, 0.0 );
 
-        /* Earth wireframe - color */
-        glColor3f( 0.3, 0.32, 0.4 );
-
         /* Create quadric */
         GLUquadricObj * er_earth = gluNewQuadric();
 
         /* Configure quadric */
         gluQuadricDrawStyle( er_earth, GLU_LINE );
+
+        /* Earth wireframe - color */
+        glColor3f( 0.18, 0.22, 0.28 );
 
         /* Display quadric */
         gluSphere( er_earth, ER_ERA, 360, 180 );

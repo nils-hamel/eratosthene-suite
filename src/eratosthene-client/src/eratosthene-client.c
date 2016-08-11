@@ -33,7 +33,7 @@
     le_enum_t er_client_create( le_char_t * const er_ip, le_sock_t const er_port ) {
 
         /* Dominant color variables */
-        float er_color[4] = { 0.00, 0.02, 0.04, 0.00 };
+        float er_color[4] = { 0.01, 0.03, 0.06, 0.00 };
 
         /* Create engine model */
         if ( ( er_client.cl_model = er_model_create( er_ip, er_port ) )._status == _LE_FALSE ) return( _LE_FALSE );
