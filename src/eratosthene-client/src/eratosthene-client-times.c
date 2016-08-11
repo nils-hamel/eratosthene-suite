@@ -305,7 +305,7 @@
                 /* Reset pixel alpha channel */
                 er_buffer[er_i] = 128;
 
-            } else if ( ( er_j < er_heig1 ) || ( er_j % 3 == 0 ) ) {
+            } else if ( er_j < er_heig1 ) {
 
                 /* Reset pixel alpha channel */
                 er_buffer[er_i] = 224;
