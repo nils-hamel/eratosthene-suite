@@ -86,7 +86,7 @@
         le_real_t er_clamp = er_sparam - er_depth - 2;
 
         /* Computation variables */
-        le_real_t er_normal = log( ( ER_ER2 - 10.0 ) / ( er_distance - 10.0 ) ) / M_LN2 + 5.0;
+        le_real_t er_normal = log( ER_ER2 / ( er_distance * 30.0 ) ) / M_LN2 + 9.5;
 
         /* Return evaluation */
         return( er_normal < 5 ? 5 : ( er_normal > er_clamp ? er_clamp : er_normal ) );
