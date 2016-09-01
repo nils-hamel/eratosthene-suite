@@ -59,6 +59,9 @@
     /* String to unsigned int */
     # define LC_ATOUI( p ) strtoul( p, NULL, 10 )
 
+    /* String to long */
+    # define LC_ATOL( p )  strtol( p, NULL, 10 )
+
     /* String to double precision */
     # define LC_ATODP( p ) atof( p )
 
@@ -125,6 +128,26 @@
      */
 
     unsigned int lc_read_uint( int const argc, char ** argv, char const * const er_long, char const * const er_short, unsigned int er_default );
+
+    /*! \brief arguments and parameters parsers
+     *
+     *  This function searches in the provided argument list if the specified
+     *  argument is present. As it is, the function converts into long the
+     *  value of the parameter corresponding to the found argument.
+     *
+     *  When the argument is not found in the list, the function simply returns
+     *  the provided default value.
+     *
+     *  \param  argc       Main function parameters
+     *  \param  argv       Main function parameters
+     *  \param  er_long    Argument string - long form
+     *  \param  er_short   Argument string - short form
+     *  \param  er_default Parameter default value
+     *
+     *  \return Parameter value on success, the default value otherwise
+     */
+
+    long lc_read_long( int const argc, char ** argv, char const * const er_long, char const * const er_short, long const er_default );
 
     /*! \brief arguments and parameters parsers
      *

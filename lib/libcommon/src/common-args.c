@@ -82,6 +82,24 @@
 
     }
 
+    long lc_read_long( int const argc, char ** argv, char const * const er_long, char const * const er_short, long const er_default ) {
+
+        /* Parses arguments and parameters */
+        for( int er_parse = 0 ; er_parse < argc; er_parse ++ ) {
+
+            /* Check argument */
+            if ( ( strcmp( argv[er_parse], er_long ) == 0 ) || ( strcmp( argv[er_parse], er_short ) == 0 ) ) {
+
+                /* Check consistency - return parameter */
+                if ( ( ++ er_parse ) < argc ) return( LC_ATOL( argv[er_parse] ) ); else return( er_default );
+
+            }
+
+        /* Return parameter */
+        } return( er_default );
+
+    }
+
     double lc_read_double( int const argc, char ** argv, char const * const er_long, char const * const er_short, double er_default ) {
 
         /* Parses arguments and parameters */
