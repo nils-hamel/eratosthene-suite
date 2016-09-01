@@ -24,7 +24,7 @@
     source - injection procedure
  */
 
-    le_enum_t er_injection( le_sock_t const er_client, FILE * const er_stream ) {
+    le_enum_t er_injection( le_sock_t const er_client, FILE * const er_stream, le_time_t const er_time ) {
 
         /* Socket i/o count variables */
         le_size_t er_fread = 1;
@@ -32,6 +32,14 @@
 
         /* Socket i/o buffer variables */
         le_byte_t er_buffer[LE_NETWORK_SB_SYNC] = LE_NETWORK_C;
+
+        /* Sending time on socket */
+        if ( write( er_client, & er_time, sizeof( le_time_t ) ) != sizeof( le_time_t ) ) {
+
+            /* Send message */
+            return( LE_ERROR_IO_WRITE );
+
+        }
 
         /* Stream data injection */
         while ( ( er_fread > 0 ) && ( er_fread == er_write ) ) {
@@ -63,6 +71,9 @@
         /* Socket handle variables */
         le_sock_t er_client = _LE_SOCK_NULL;
 
+        /* Time variables */
+        le_time_t er_time = lc_read_long( argc, argv, "--time", "-t", time( NULL ) );
+
         /* Create input stream */
         if ( ( er_stream = fopen( lc_read_string( argc, argv, "--file", "-f" ), "rb" ) ) == NULL ) {
 
@@ -88,7 +99,7 @@
                 } else {
 
                     /* Injection procedure */
-                    if ( er_injection( er_client, er_stream ) != LE_ERROR_SUCCESS ) {
+                    if ( er_injection( er_client, er_stream, er_time ) != LE_ERROR_SUCCESS ) {
 
                         /* Display message */
                         fprintf( stderr, "eratosthene-suite : error : write on socket failure\n" );

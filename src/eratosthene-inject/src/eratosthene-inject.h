@@ -72,6 +72,7 @@
 
     # include <stdio.h>
     # include <stdlib.h>
+    # include <time.h>
     # include <common-include.h>
     # include <eratosthene-include.h>
 
@@ -106,7 +107,7 @@
      *  \param er_stream Stream to file
      */
 
-    le_enum_t er_injection( le_sock_t const er_client, FILE * const er_stream );
+    le_enum_t er_injection( le_sock_t const er_client, FILE * const er_stream, le_time_t const er_time );
 
     /*! \brief main function
      *
