@@ -47,8 +47,13 @@
             /* Read stream elements */
             if ( ( er_fread = fread( ( le_void_t * ) er_buffer, sizeof( le_byte_t ), _LE_USE_MTU, er_stream ) ) > 0 ) {
 
-                /* Write buffer to socket - send message */
-                if ( ( er_write = write( er_client, er_buffer, er_fread ) ) != er_fread ) return( LE_ERROR_IO_WRITE );
+                /* Write buffer to socket */
+                if ( ( er_write = write( er_client, er_buffer, er_fread ) ) != er_fread ) {
+
+                    /* Send message */
+                    return( LE_ERROR_IO_WRITE );
+
+                }
 
             }
 
@@ -72,7 +77,7 @@
         le_sock_t er_client = _LE_SOCK_NULL;
 
         /* Time variables */
-        le_time_t er_time = lc_read_long( argc, argv, "--time", "-t", time( NULL ) );
+        le_time_t er_time = lc_read_signed( argc, argv, "--time", "-t", time( NULL ) );
 
         /* Create input stream */
         if ( ( er_stream = fopen( lc_read_string( argc, argv, "--file", "-f" ), "rb" ) ) == NULL ) {
@@ -83,7 +88,7 @@
         } else {
 
             /* Create client handle */
-            if ( ( er_client = le_client_create( ( le_char_t * ) lc_read_string( argc, argv, "--ip", "-i" ), lc_read_uint( argc, argv, "--port", "-t", _LE_USE_PORT ) ) ) == _LE_SOCK_NULL ) {
+            if ( ( er_client = le_client_create( ( le_char_t * ) lc_read_string( argc, argv, "--ip", "-i" ), lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT ) ) ) == _LE_SOCK_NULL ) {
 
                 /* Display message */
                 fprintf( stderr, "eratosthene-suite : error : unable to connect to server\n" );

@@ -117,7 +117,7 @@
         le_char_t * le_svip = ( le_char_t * ) lc_read_string( argc, argv, "--ip"  , "-i" );
 
         /* Server port variables */
-        le_size_t le_port = ( le_size_t   ) lc_read_uint( argc, argv, "--port", "-t", _LE_USE_PORT );
+        le_sock_t le_port = ( le_size_t   ) lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT );
 
         /* Initialise GL/GLU/GLUT */
         glutInit( & argc, argv );

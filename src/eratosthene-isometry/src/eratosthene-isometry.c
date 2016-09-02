@@ -37,9 +37,9 @@
             ( le_char_t * ) lc_read_string( argc, argv, "--view"  , "-v" ),
 
             /* Numeric parameters */
-            lc_read_double( argc, argv, "--tilt" , "-t", 45.0 ),
-            lc_read_uint  ( argc, argv, "--thick", "-k",    2 ),
-            lc_read_uint  ( argc, argv, "--width", "-w", 1024 )
+            lc_read_double  ( argc, argv, "--tilt" , "-t", 45.0 ),
+            lc_read_unsigned( argc, argv, "--thick", "-k",    2 ),
+            lc_read_unsigned( argc, argv, "--width", "-w", 1024 )
 
         );
 
@@ -84,7 +84,7 @@
         le_sock_t er_socket = _LE_SOCK_NULL;
 
         /* Create socket */
-        if ( ( er_socket = le_client_create( ( le_char_t * ) lc_read_string( argc, argv, "--ip", "-i" ), lc_read_uint( argc, argv, "--port", "-t", _LE_USE_PORT ) ) ) == _LE_SOCK_NULL ) {
+        if ( ( er_socket = le_client_create( ( le_char_t * ) lc_read_string( argc, argv, "--ip", "-i" ), lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT ) ) ) == _LE_SOCK_NULL ) {
 
             /* Display message */
             fprintf( stderr, "eratosthene-suite : error : unable to establish connection to server\n" );

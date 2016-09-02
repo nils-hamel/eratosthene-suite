@@ -46,6 +46,8 @@
     # include <stdio.h>
     # include <stdlib.h>
     # include <string.h>
+    # include <stdint.h>
+    # include <inttypes.h>
     # include "common.h"
 
 /*
@@ -55,15 +57,6 @@
 /*
     header - preprocessor macros
  */
-
-    /* String to unsigned int */
-    # define LC_ATOUI( p ) strtoul( p, NULL, 10 )
-
-    /* String to long */
-    # define LC_ATOL( p )  strtol( p, NULL, 10 )
-
-    /* String to double precision */
-    # define LC_ATODP( p ) atof( p )
 
 /*
     header - type definition
@@ -80,7 +73,7 @@
     /*! \brief switches parsers
      *
      *  This function searches in the provided arguments list if the specified
-     *  switch is present.
+     *  flag is present, in short or long form.
      *
      *  \param  argc     Main function parameters
      *  \param  argv     Main function parameters
@@ -95,9 +88,9 @@
     /*! \brief arguments and parameters parsers
      *
      *  This function searches in the provided arguments list if the specified
-     *  argument is present. When it is, the function returns the pointer to
-     *  the string containing the parameter of the found argument, NULL is
-     *  returned otherwise.
+     *  argument is present. As it is, the function returns the pointer to the
+     *  string containing the parameter of the found argument. The implicit
+     *  default value is NULL.
      *
      *  \param  argc     Main function parameters
      *  \param  argv     Main function parameters
@@ -112,31 +105,11 @@
     /*! \brief arguments and parameters parsers
      *
      *  This function searches in the provided argument list if the specified
-     *  argument is present. As it is, the function converts into unsigned int
-     *  the value of the parameter corresponding to the found argument.
+     *  argument is present. As it is, the function converts the parameter into
+     *  the largest signed int type and returns it.
      *
-     *  When the argument is not found in the list, the function simply returns
-     *  the provided default value.
-     *
-     *  \param  argc       Main function parameters
-     *  \param  argv       Main function parameters
-     *  \param  er_long    Argument string - long form
-     *  \param  er_short   Argument string - short form
-     *  \param  er_default Parameter default value
-     *
-     *  \return Parameter value on success, the default value otherwise
-     */
-
-    unsigned int lc_read_uint( int const argc, char ** argv, char const * const er_long, char const * const er_short, unsigned int er_default );
-
-    /*! \brief arguments and parameters parsers
-     *
-     *  This function searches in the provided argument list if the specified
-     *  argument is present. As it is, the function converts into long the
-     *  value of the parameter corresponding to the found argument.
-     *
-     *  When the argument is not found in the list, the function simply returns
-     *  the provided default value.
+     *  When the argument is not found in the list or on missing parameter, the
+     *  function simply returns the provided default value.
      *
      *  \param  argc       Main function parameters
      *  \param  argv       Main function parameters
@@ -147,16 +120,36 @@
      *  \return Parameter value on success, the default value otherwise
      */
 
-    long lc_read_long( int const argc, char ** argv, char const * const er_long, char const * const er_short, long const er_default );
+    intmax_t lc_read_signed( int const argc, char ** argv, char const * const er_long, char const * const er_short, intmax_t const er_default );
 
     /*! \brief arguments and parameters parsers
      *
      *  This function searches in the provided argument list if the specified
-     *  argument is present. As it is, the function converts into double the
-     *  value of the parameter corresponding to the found argument.
+     *  argument is present. As it is, the function converts the parameter into
+     *  the largest unsigned int type and returns it.
      *
-     *  When the argument is not found in the list, the function simply returns
-     *  the provided default value.
+     *  When the argument is not found in the list or on missing parameter, the
+     *  function simply returns the provided default value.
+     *
+     *  \param  argc       Main function parameters
+     *  \param  argv       Main function parameters
+     *  \param  er_long    Argument string - long form
+     *  \param  er_short   Argument string - short form
+     *  \param  er_default Parameter default value
+     *
+     *  \return Parameter value on success, the default value otherwise
+     */
+
+    uintmax_t lc_read_unsigned( int const argc, char ** argv, char const * const er_long, char const * const er_short, uintmax_t const er_default );
+
+    /*! \brief arguments and parameters parsers
+     *
+     *  This function searches in the provided argument list if the specified
+     *  argument is present. As it is, the function converts the parameter into
+     *  the double type and returns it.
+     *
+     *  When the argument is not found in the list or on missing parameter, the
+     *  function simply returns the provided default value.
      *
      *  \param  argc       Main function parameters
      *  \param  argv       Main function parameters
