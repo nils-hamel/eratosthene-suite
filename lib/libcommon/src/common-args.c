@@ -84,7 +84,7 @@
                 if ( ( ++ er_parse ) < argc ) {
 
                     /* Convert and return parameter */
-                    strtoimax( argv[er_parse], NULL, 10 );
+                    return( strtoimax( argv[er_parse], NULL, 10 ) );
 
                 /* Return default value */
                 } else { return( er_default ); }
@@ -110,7 +110,7 @@
                 if ( ( ++ er_parse ) < argc ) {
 
                     /* Convert and return parameter */
-                    strtoumax( argv[er_parse], NULL, 10 );
+                    return( strtoumax( argv[er_parse], NULL, 10 ) );
 
                 /* Return default value */
                 } else { return( er_default ); }
