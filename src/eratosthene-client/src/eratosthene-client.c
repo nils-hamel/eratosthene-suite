@@ -231,7 +231,7 @@
                 le_address_set_size( & er_enum, 0 );
 
                 /* Reset address time */
-                le_address_set_time( & er_enum, er_etime );
+                le_address_set_time( & er_enum, 0, er_etime );
 
                 /* Update model cells */
                 er_model_set_update_cell( & er_client.cl_model, & er_enum, er_client.cl_vlon * ER_D2R, er_client.cl_vlat * ER_D2R, er_client.cl_valt );
