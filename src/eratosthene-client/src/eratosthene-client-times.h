@@ -122,6 +122,8 @@
 
     le_void_t er_times_delete( er_times_t * const er_times );
 
+    le_void_t er_times_get2( er_times_t const * const er_times, le_address_t * const er_addr );
+
     le_time_t er_times_get( er_times_t const * const er_times );
 
     le_enum_t er_times_get_update( er_times_t * const er_times );

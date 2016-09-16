@@ -212,9 +212,6 @@
         /* Address variables */
         le_address_t er_enum = LE_ADDRESS_C;
 
-        /* Time variables */
-        le_time_t er_etime = _LE_TIME_NULL;
-
         /* Query model update necessities */
         le_enum_t er_model_flag = er_model_get_update( & er_client.cl_model, er_client.cl_vlon, er_client.cl_vlat, er_client.cl_valt );
 
@@ -224,19 +221,14 @@
         /* Check model update necessities */
         if ( ( er_model_flag == _LE_TRUE ) || ( er_times_flag == _LE_TRUE ) ) {
 
-            /* Model times enumeration */
-            while ( ( er_etime = er_times_get( & er_client.cl_times ) ) != _LE_TIME_NULL ) {
+            /* Reset address size */
+            le_address_set_size( & er_enum, 0 );
 
-                /* Reset address size */
-                le_address_set_size( & er_enum, 0 );
+            /* Compose query times */
+            er_times_get2( & er_client.cl_times, & er_enum );
 
-                /* Reset address time */
-                le_address_set_time( & er_enum, 0, er_etime );
-
-                /* Update model cells */
-                er_model_set_update_cell( & er_client.cl_model, & er_enum, er_client.cl_vlon * ER_D2R, er_client.cl_vlat * ER_D2R, er_client.cl_valt );
-
-            }
+            /* Update model cells */
+            er_model_set_update_cell( & er_client.cl_model, & er_enum, er_client.cl_vlon * ER_D2R, er_client.cl_vlat * ER_D2R, er_client.cl_valt );
 
             /* Server queries */
             er_model_set_update_query( & er_client.cl_model );
