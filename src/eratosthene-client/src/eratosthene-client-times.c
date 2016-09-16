@@ -99,7 +99,10 @@
     source - accessor methods
  */
 
-    le_void_t er_times_get2( er_times_t const * const er_times, le_address_t * const er_addr ) {
+    le_address_t er_times_get( er_times_t const * const er_times ) {
+
+        /* Returned structure variables */
+        le_address_t er_addr = LE_ADDRESS_C;
 
         /* Parsing viewable times */
         for ( le_size_t er_parse = 0; er_parse < _LE_USE_TIMES; er_parse ++ ) {
@@ -108,40 +111,19 @@
             if ( er_times->tm_view[er_parse] != _LE_SIZE_NULL ) {
 
                 /* Assign address viewable time */
-                le_address_set_time( er_addr, er_parse, er_times->tm_time[er_times->tm_view[er_parse]] );
+                le_address_set_time( & er_addr, er_parse, er_times->tm_time[er_times->tm_view[er_parse]] );
 
             } else {
 
                 /* Assign address null time */
-                le_address_set_time( er_addr, er_parse, _LE_TIME_NULL );
+                le_address_set_time( & er_addr, er_parse, _LE_TIME_NULL );
 
             }
 
         }
 
-    }
-
-    le_time_t er_times_get( er_times_t const * const er_times ) {
-
-        /* Static parser variables */
-        static le_size_t er_parse = 0;
-
-        /* Enumeration on enable time array */
-        while ( er_parse < ER_TIMES_VIEW ) {
-
-            /* Check enable time array */
-            if ( er_times->tm_view[er_parse] != _LE_SIZE_NULL ) {
-
-                /* Return enable time */
-                return( er_times->tm_time[er_times->tm_view[er_parse ++]] );
-
-            /* Continue enumeration */
-            } else { ++ er_parse; }
-
-        }
-
-        /* Reset enumeration and send time */
-        return( er_parse = 0, _LE_TIME_NULL );
+        /* Return structure */
+        return( er_addr );
 
     }
 
