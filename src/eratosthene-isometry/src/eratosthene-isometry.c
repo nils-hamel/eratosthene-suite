@@ -37,7 +37,7 @@
             ( le_char_t * ) lc_read_string( argc, argv, "--view"  , "-v" ),
 
             /* Numeric parameters */
-            lc_read_double  ( argc, argv, "--tilt" , "-t", 45.0 ),
+            lc_read_double  ( argc, argv, "--tilt" , "-l", 45.0 ),
             lc_read_unsigned( argc, argv, "--thick", "-k",    2 ),
             lc_read_unsigned( argc, argv, "--width", "-w", 1024 )
 
