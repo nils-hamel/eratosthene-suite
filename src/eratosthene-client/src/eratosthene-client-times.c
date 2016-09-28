@@ -26,7 +26,7 @@
 
     er_times_t er_times_create( le_char_t * const er_ip, le_sock_t const er_port ) {
 
-        /* Returned structure variables */
+        /* Created structure variables */
         er_times_t er_times = ER_TIMES_C;
 
         /* Array variables */
@@ -124,6 +124,13 @@
 
         /* Return structure */
         return( er_addr );
+
+    }
+
+    le_time_t er_times_get_time( er_times_t * const er_times, le_size_t const er_offset ) {
+
+        /* return time value */
+        return( er_times->tm_view[er_offset] );
 
     }
 

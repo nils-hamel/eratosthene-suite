@@ -35,11 +35,14 @@
         /* Dominant color variables */
         float er_color[4] = { 0.01, 0.03, 0.06, 0.00 };
 
-        /* Create engine model */
+        /* Create client model */
         if ( ( er_client.cl_model = er_model_create( er_ip, er_port ) )._status == _LE_FALSE ) return( _LE_FALSE );
 
-        /* Create engine times */
+        /* Create client times */
         if ( ( er_client.cl_times = er_times_create( er_ip, er_port ) )._status == _LE_FALSE ) return( _LE_FALSE );
+
+        /* Create client cinema */
+        if ( ( er_client.cl_movie = er_movie_create() )._status == _LE_FALSE ) return( _LE_FALSE );
 
         /* Initialise display mode */
         glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH );
@@ -74,7 +77,7 @@
         /* OpenGL blending configuration */
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        /* Declare engine callback functions */
+        /* Declare client callback functions */
         glutIdleFunc         ( er_client_loops_render  );
         glutKeyboardFunc     ( er_client_calls_keybd   );
         glutReshapeFunc      ( er_client_calls_reshape );
@@ -96,13 +99,16 @@
         /* Cleared structure variables */
         er_client_t er_reset = ER_CLIENT_C;
 
-        /* Delete engine times */
+        /* Delete client cinema */
+        er_movie_delete( & er_client.cl_movie );
+
+        /* Delete client times */
         er_times_delete( & er_client.cl_times );
 
-        /* Delete engine model */
+        /* Delete client model */
         er_model_delete( & er_client.cl_model );
 
-        /* Clear engine structure */
+        /* Clear client structure */
         er_client = er_reset;
 
     }
@@ -151,6 +157,9 @@
         /* Model display thread */
         glutMainLoop();
     # endif
+
+        /* post-execution cinematic */
+        if ( er_movie_get( & er_client.cl_movie ) == _LE_TRUE ) er_movie( & er_client.cl_movie );
 
         /* Delete client */
         er_client_delete();
@@ -312,7 +321,7 @@
         /* Switch on keycode */
         switch( er_keycode ) {
 
-            /* Interrupt engine loops */
+            /* Interrupt client loops */
             case ( 0x1b ) : { glutLeaveMainLoop(), er_client.cl_loops = _LE_FALSE; } break;
 
             /* Update point size */
@@ -333,6 +342,10 @@
             /* Update point of view */
             case ( 0x71 ) : { er_times_set_reset( & er_client.cl_times, 0 ); } break;
             case ( 0x77 ) : { er_times_set_reset( & er_client.cl_times, 1 ); } break;
+
+            /* update cinematic */
+            case ( 0x6f ) : { er_movie_set_clear( & er_client.cl_movie ); } break;
+            case ( 0x70 ) : { er_movie_set_push( & er_client.cl_movie, er_client.cl_valt, er_client.cl_vlon, er_client.cl_vlat, er_client.cl_vazm, er_client.cl_vgam, er_times_get_time( & er_client.cl_times, 0 ), er_times_get_time( & er_client.cl_times, 1 ) ); } break;
 
         };
 
