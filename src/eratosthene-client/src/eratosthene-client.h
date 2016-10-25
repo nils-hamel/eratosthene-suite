@@ -54,6 +54,10 @@
     # ifndef __ER_CLIENT__
     # define __ER_CLIENT__
 
+    # ifndef __OPENMP__
+    # error "OpenMP required"
+    # endif
+
 /*
     header - C/C++ compatibility
  */
@@ -79,11 +83,7 @@
     # include <stdlib.h>
     # include <unistd.h>
     # include <GL/freeglut.h>
-    # ifdef __OPENMP__
     # include <omp.h>
-    # else
-    # include <pthread.h>
-    # endif
     # include <common-include.h>
     # include <eratosthene-include.h>
 

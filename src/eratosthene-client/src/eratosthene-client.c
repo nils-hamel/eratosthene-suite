@@ -26,6 +26,9 @@
 
     er_client_t er_client = ER_CLIENT_C;
 
+
+    extern le_byte_t * er_buffer;
+
 /*
     source - constructor/destructor methods
  */
@@ -139,27 +142,21 @@
 
         }
 
-    # ifdef __OPENMP__
     # pragma omp parallel sections
     {
         /* Model update thread */
         # pragma omp section
+        {
         while ( er_client.cl_loops == _LE_TRUE ) er_client_loops_update();
+
+        /* post-execution cinematic */
+        if ( er_movie_get( & er_client.cl_movie ) == _LE_TRUE ) er_movie( & er_client.cl_movie );
+        }
 
         /* Model display thread */
         # pragma omp section
         glutMainLoop();
     }
-    # else
-        /* Model update thread */
-        pthread_t er_pmodel; pthread_create( & er_pmodel, NULL, & er_client_pthread, NULL );
-        
-        /* Model display thread */
-        glutMainLoop();
-    # endif
-
-        /* post-execution cinematic */
-        if ( er_movie_get( & er_client.cl_movie ) == _LE_TRUE ) er_movie( & er_client.cl_movie );
 
         /* Delete client */
         er_client_delete();
@@ -200,6 +197,8 @@
 
         } glPopMatrix();
 
+        if ( er_movie_get_reco( & er_client.cl_movie ) == _LE_FALSE ) {
+
         /* Projection : interface */
         er_client_proj_interface( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
 
@@ -211,8 +210,20 @@
 
         } glPopMatrix();
 
+        }
+
         /* Swap buffers */
         glutSwapBuffers();
+
+        if ( er_buffer != NULL ) {
+
+            /* buffer reading configuration */
+            glReadBuffer( GL_BACK );
+
+            /* read buffer bytes */
+            glReadPixels( 0, 0, glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ), GL_RGB, GL_UNSIGNED_BYTE, ( GLvoid * ) er_buffer );
+
+        }
 
     }
 
@@ -322,7 +333,12 @@
         switch( er_keycode ) {
 
             /* Interrupt client loops */
-            case ( 0x1b ) : { glutLeaveMainLoop(), er_client.cl_loops = _LE_FALSE; } break;
+            case ( 0x1b ) : { 
+
+                er_client.cl_loops = _LE_FALSE;
+                if ( er_movie_get( & er_client.cl_movie ) == _LE_FALSE ) glutLeaveMainLoop(); 
+
+            } break;
 
             /* Update point size */
             case ( 0x31 ) :
@@ -344,7 +360,7 @@
             case ( 0x77 ) : { er_times_set_reset( & er_client.cl_times, 1 ); } break;
 
             /* update cinematic */
-            case ( 0x6f ) : { er_movie_set_clear( & er_client.cl_movie ); } break;
+            case ( 0x6f ) : { er_movie_set_void( & er_client.cl_movie ); } break;
             case ( 0x70 ) : { er_movie_set_push( & er_client.cl_movie, er_client.cl_valt, er_client.cl_vlon, er_client.cl_vlat, er_client.cl_vazm, er_client.cl_vgam, er_times_get_time( & er_client.cl_times, 0 ), er_times_get_time( & er_client.cl_times, 1 ) ); } break;
 
         };
@@ -435,20 +451,4 @@
         er_client.cl_valt = lc_clamp( er_client.cl_valt, ER_ERL, ER_ERU );
 
     }
-
-/*
-    source - auxiliary methods
- */
-
-    # ifndef __OPENMP__
-    void * er_client_pthread( void * er_null ) {
-
-        /* Model update thread - pthread specific derivation */
-        while ( er_client.cl_loops == _LE_TRUE ) er_client_loops_update();
-
-        /* Return null pointer */
-        return( NULL );
-
-    }
-    # endif
 

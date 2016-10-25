@@ -56,7 +56,7 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_MOVIE_C     { 0, { { 0.0 } }, { { 0 } }, _LE_TRUE }
+    # define ER_MOVIE_C     { 0, _LE_FALSE, { { 0.0 } }, { { 0 } }, _LE_TRUE }
 
     /* Define stack size */
     # define ER_MOVIE_STACK 32
@@ -76,6 +76,7 @@
     typedef struct er_movie_struct {
 
         le_size_t cm_push;
+        le_enum_t cm_reco;
 
         le_real_t cm_pose[ER_MOVIE_STACK][5];
         le_size_t cm_time[ER_MOVIE_STACK][2];
@@ -92,11 +93,15 @@
 
     le_enum_t er_movie_get( er_movie_t const * const er_movie );
 
+    le_enum_t er_movie_get_reco( er_movie_t const * const er_movie );
+
+    le_void_t er_movie_set_void( er_movie_t * const er_movie );
+
     le_void_t er_movie_set_push( er_movie_t * const er_movie, le_real_t const er_valt, le_real_t const er_vlon, le_real_t const er_vlat, le_real_t const er_vazm, le_real_t const er_vgam, le_time_t const er_time1, le_time_t const er_time2 );
 
-    le_void_t er_movie_set_clear( er_movie_t * const er_movie );
+    le_real_t er_movie_dist( le_real_t er_l1, le_real_t er_a1, le_real_t er_h1, le_real_t er_l2, le_real_t er_a2, le_real_t er_h2 );
 
-    le_void_t er_movie( er_movie_t const * const er_movie );
+    le_void_t er_movie( er_movie_t * const er_movie );
 
 /*
     header - C/C++ compatibility

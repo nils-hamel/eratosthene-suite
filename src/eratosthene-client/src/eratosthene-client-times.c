@@ -130,7 +130,7 @@
     le_time_t er_times_get_time( er_times_t * const er_times, le_size_t const er_offset ) {
 
         /* return time value */
-        return( er_times->tm_view[er_offset] );
+        return( er_times->tm_time[er_times->tm_view[er_offset]] );
 
     }
 
