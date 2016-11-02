@@ -69,8 +69,8 @@
         glClearDepth( 1.0 );
 
         /* OpenGL features configuration */
-        glEnable( GL_DEPTH_TEST  );
-        glEnable( GL_BLEND       );
+        glEnable( GL_DEPTH_TEST );
+        glEnable( GL_BLEND      );
 
         /* OpenGL fog configuration */
         glFogf ( GL_FOG_MODE   , GL_LINEAR );
@@ -126,7 +126,7 @@
         le_char_t * le_svip = ( le_char_t * ) lc_read_string( argc, argv, "--ip"  , "-i" );
 
         /* Server port variables */
-        le_sock_t le_port = ( le_size_t   ) lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT );
+        le_sock_t le_port = ( le_sock_t ) lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT );
 
         /* Initialise GL/GLU/GLUT */
         glutInit( & argc, argv );
@@ -138,7 +138,7 @@
             fprintf( stderr, "eratosthene-suite : error : unable to create client\n" );
 
             /* Return to system */
-            return( EXIT_SUCCESS );
+            return( EXIT_FAILURE );
 
         }
 

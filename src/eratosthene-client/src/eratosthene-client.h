@@ -92,7 +92,7 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_CLIENT_C { _LE_TRUE, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, 0, GLUT_UP, 0, 0, 1.0, ER_ERD, 12.335435, 45.438531, 0.0, 0.0, 1.0 }
+    # define ER_CLIENT_C    { _LE_TRUE, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, 0, GLUT_UP, 0, 0, 1.0, ER_ERD, 12.335435, 45.438531, 0.0, 0.0, 1.0 }
 
 /*
     header - preprocessor macros
