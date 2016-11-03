@@ -73,7 +73,7 @@
     # include "eratosthene-client-geodesy.h"
     # include "eratosthene-client-times.h"
     # include "eratosthene-client-model.h"
-    # include "eratosthene-client-movie.h"
+    # include "eratosthene-motion.h"
 
 /*
     header - external includes
@@ -92,7 +92,12 @@
  */
 
     /* Define pseudo-constructor */
-    # define ER_CLIENT_C    { _LE_TRUE, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, 0, GLUT_UP, 0, 0, 1.0, ER_ERD, 12.335435, 45.438531, 0.0, 0.0, 1.0 }
+    # define ER_CLIENT_C(m) { m, ER_MODEL_C, ER_TIMES_C, 0, GLUT_UP, 0, 0, 1.0, ER_ERD, 12.335435, 45.438531, 0.0, 0.0, 1.0 }
+
+    /* Define execution modes */
+    # define ER_CLIENT_EXIT ( 0 )
+    # define ER_CLIENT_VIEW ( 1 )
+    # define ER_CLIENT_FILM ( 2 )
 
 /*
     header - preprocessor macros
@@ -154,7 +159,6 @@
 
         er_model_t cl_model;
         er_times_t cl_times;
-        er_movie_t cl_movie;
 
         le_enum_t  cl_button;
         le_enum_t  cl_state;
