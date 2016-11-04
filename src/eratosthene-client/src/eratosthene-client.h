@@ -73,7 +73,7 @@
     # include "eratosthene-client-geodesy.h"
     # include "eratosthene-client-times.h"
     # include "eratosthene-client-model.h"
-    # include "eratosthene-motion.h"
+    # include "eratosthene-client-movie.h"
 
 /*
     header - external includes
@@ -91,10 +91,10 @@
     header - preprocessor definitions
  */
 
-    /* Define pseudo-constructor */
-    # define ER_CLIENT_C(m) { m, ER_MODEL_C, ER_TIMES_C, 0, GLUT_UP, 0, 0, 1.0, ER_ERD, 12.335435, 45.438531, 0.0, 0.0, 1.0 }
+    /* define pseudo-constructor */
+    # define ER_CLIENT_C    { ER_CLIENT_VIEW, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, 0, GLUT_UP, 0, 0, 1.0, ER_ERD, 12.335435, 45.438531, 0.0, 0.0, 1.0, _LE_TRUE }
 
-    /* Define execution modes */
+    /* define execution modes */
     # define ER_CLIENT_EXIT ( 0 )
     # define ER_CLIENT_VIEW ( 1 )
     # define ER_CLIENT_FILM ( 2 )
@@ -159,6 +159,7 @@
 
         er_model_t cl_model;
         er_times_t cl_times;
+        er_movie_t cl_movie;
 
         le_enum_t  cl_button;
         le_enum_t  cl_state;
@@ -173,7 +174,7 @@
         le_real_t  cl_vgam;
         le_real_t  cl_vscl;
 
-    } er_client_t;
+    le_enum_t _status; } er_client_t;
 
 /*
     header - function prototypes
@@ -193,7 +194,7 @@
      *  \return Returns _LE_TRUE on success, _LE_FALSE otherwise
      */
 
-    le_enum_t er_client_create( le_char_t * const er_ip, le_sock_t const er_port );
+    er_client_t er_client_create( le_char_t * const er_ip, le_sock_t const er_port );
 
     /*! \brief constructor/destructor methods
      *
@@ -205,7 +206,7 @@
      *  instance of the rendering engine descriptor is global :(
      */
 
-    le_void_t er_client_delete( le_void_t );
+    le_void_t er_client_delete( er_client_t * const er_client );
 
     /*! \brief main function
      *
@@ -305,9 +306,7 @@
 
     le_void_t er_client_calls_range();
 
-    # ifndef __OPENMP__
-    void * er_client_pthread( void * er_null );
-    # endif
+    le_void_t glutFinish( le_void_t );
 
 /*
     header - C/C++ compatibility

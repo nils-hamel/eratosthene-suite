@@ -18,18 +18,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   eratosthene-motion.h
+    /*! \file   eratosthene-client-times.h
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Eratosthene client - motion (parallel system)
+     *  Eratosthene client - times module
      */
 
 /*
     header - inclusion guard
  */
 
-    # ifndef __ER_MOTION__
-    # define __ER_MOTION__
+    # ifndef __ER_CLIENT_MOVIE__
+    # define __ER_CLIENT_MOVIE__
 
 /*
     header - C/C++ compatibility
@@ -47,19 +47,17 @@
     header - external includes
  */
 
-    # include <GL/freeglut.h>
-    # include <common-include.h>
     # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions
  */
 
-    /* Define pseudo-constructor */
-    # define ER_MOTION_C     { 0, { { 0.0 } }, { { 0 } }, _LE_TRUE }
+    /* define pseudo-constructor */
+    # define ER_MOVIE_C     { 0, { { 0.0 } }, { { 0 } }, _LE_TRUE }
 
-    /* Define stack maximum size */
-    # define ER_MOTION_STACK ( 32 )
+    /* define stack size */
+    # define ER_MOVIE_STACK 32
 
 /*
     header - preprocessor macros
@@ -73,24 +71,29 @@
     header - structures
  */
 
-    typedef struct er_motion_struct {
+    typedef struct er_movie_struct {
 
-        le_size_t mt_push;
+        le_size_t mv_stack;
 
-        le_real_t mt_pose[ER_MOTION_STACK][5];
-        le_time_t mt_time[ER_MOTION_STACK][2];
+        le_real_t mv_poses[ER_MOVIE_STACK][5];
+        le_size_t mv_times[ER_MOVIE_STACK][2];
 
-    le_enum_t _status; } er_motion_t;
+    le_enum_t _status; } er_movie_t;
+
 
 /*
     header - function prototypes
  */
 
-    er_motion_t er_motion_create( le_void_t );
+    er_movie_t er_movie_create( le_void_t );
 
-    le_void_t er_motion_delete( er_motion_t * er_motion );
+    le_void_t er_movie_delete( er_movie_t * const er_movie );
 
-    le_enum_t er_motion_get( er_motion_t const * const er_motion );
+    le_void_t er_movie_set_empty( er_movie_t * const er_movie );
+
+    le_void_t er_movie_set_point( er_movie_t * const er_movie, le_real_t const er_vlon, le_real_t const er_vlat, le_real_t const er_valt, le_real_t const er_vazm, le_real_t const er_vgam, le_time_t const le_timea, le_time_t const le_timeb );
+
+    le_enum_t er_movie( er_movie_t const * const er_movie );
 
 /*
     header - C/C++ compatibility
