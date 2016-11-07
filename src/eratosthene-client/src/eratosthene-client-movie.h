@@ -47,6 +47,10 @@
     header - external includes
  */
 
+    # include <stdio.h>
+    # include <math.h>
+    # include <GL/freeglut.h>
+    # include <common-include.h>
     # include <eratosthene-include.h>
 
 /*
@@ -54,7 +58,7 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_MOVIE_C     { 0, { { 0.0 } }, { { 0 } }, _LE_TRUE }
+    # define ER_MOVIE_C     { 0, 0, NULL, { 0 }, 0, 0, 0.0, 0, { { 0.0 } }, _LE_TRUE }
 
     /* define stack size */
     # define ER_MOVIE_STACK 32
@@ -73,10 +77,19 @@
 
     typedef struct er_movie_struct {
 
-        le_size_t mv_stack;
+        le_size_t   mv_wbuffer;
+        le_size_t   mv_hbuffer;
+        le_byte_t * mv_pbuffer;
 
-        le_real_t mv_poses[ER_MOVIE_STACK][5];
-        le_size_t mv_times[ER_MOVIE_STACK][2];
+        le_char_t   mv_path[256];
+
+        le_size_t   mv_index;
+        le_size_t   mv_parse;
+        le_real_t   mv_param;
+
+        le_size_t   mv_stack;
+
+        le_real_t   mv_poses[ER_MOVIE_STACK][5];
 
     le_enum_t _status; } er_movie_t;
 
@@ -89,11 +102,15 @@
 
     le_void_t er_movie_delete( er_movie_t * const er_movie );
 
+    le_real_t er_movie_get_value( er_movie_t const * const er_movie, le_size_t const er_index );
+
+    le_void_t er_movie_set_reset( er_movie_t * const er_movie );
+
     le_void_t er_movie_set_empty( er_movie_t * const er_movie );
 
-    le_void_t er_movie_set_point( er_movie_t * const er_movie, le_real_t const er_vlon, le_real_t const er_vlat, le_real_t const er_valt, le_real_t const er_vazm, le_real_t const er_vgam, le_time_t const le_timea, le_time_t const le_timeb );
+    le_void_t er_movie_set_point( er_movie_t * const er_movie, le_real_t const er_vlon, le_real_t const er_vlat, le_real_t const er_valt, le_real_t const er_vazm, le_real_t const er_vgam );
 
-    le_enum_t er_movie( er_movie_t const * const er_movie );
+    le_enum_t er_movie( er_movie_t * const er_movie );
 
 /*
     header - C/C++ compatibility

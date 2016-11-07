@@ -243,6 +243,8 @@
 
     le_void_t er_client_loops_update( le_void_t );
 
+    le_void_t er_client_loops_movie( le_void_t );
+
     le_void_t er_client_proj_model( int er_width, int er_height );
 
     le_void_t er_client_proj_interface( int er_width, int er_height );

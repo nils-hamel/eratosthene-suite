@@ -122,6 +122,9 @@
         /* depth buffer clear values */
         glClearDepth( 1.0 );
 
+        /* opengl read buffer */
+        glReadBuffer( GL_BACK );
+
         /* opengl features configuration */
         glEnable( GL_DEPTH_TEST );
         glEnable( GL_BLEND      );
@@ -165,7 +168,7 @@
                 # pragma omp parallel sections
                 {
 
-                /* model update thread */
+                /* model update procedure */
                 # pragma omp section
                 while ( er_client.cl_loops == ER_CLIENT_VIEW ) { 
 
@@ -174,7 +177,7 @@
 
                 }
 
-                /* model display thread */
+                /* model display procedure */
                 # pragma omp section
                 while ( er_client.cl_loops == ER_CLIENT_VIEW ) { 
 
@@ -182,7 +185,16 @@
                     glutMainLoopEvent();
 
                     /* model display procedure */
-                    er_client_loops_render(); 
+                    er_client_loops_render();
+
+                    /* trigger primitives */
+                    glFlush();
+
+                    /* wait primitive */
+                    glFinish();
+
+                    /* swap buffers */
+                    glutSwapBuffers();
 
                 }
 
@@ -192,12 +204,30 @@
             } else if ( er_client.cl_loops == ER_CLIENT_FILM ) {
 
                 /* movie computation procedure */
-                while ( er_movie( & er_client.cl_movie ) == _LE_TRUE ) {
+                while ( er_client.cl_loops == ER_CLIENT_FILM ) {
+
+                    /* motion update procedure */
+                    er_client_loops_movie();
+
+                    /* model update procedure */
+                    er_client_loops_update();
+
+                    /* model display procedure */
+                    er_client_loops_render();
+
+                    /* trigger primitives */
+                    glFlush();
+
+                    /* wait primitive */
+                    glFinish();
+
+                    /* swap buffers */
+                    glutSwapBuffers();
+
+                    /* movie procedure */
+                    if ( er_movie( & er_client.cl_movie ) == _LE_FALSE ) er_client.cl_loops = ER_CLIENT_VIEW;
 
                 }
-
-                /* update execution mode */
-                er_client.cl_loops = ER_CLIENT_VIEW;
 
             }
 
@@ -245,6 +275,9 @@
 
         } glPopMatrix();
 
+        /* check execution mode */
+        if ( er_client.cl_loops == ER_CLIENT_FILM ) return;
+
         /* projection : interface */
         er_client_proj_interface( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
 
@@ -255,9 +288,6 @@
             er_times_display( & er_client.cl_times );
 
         } glPopMatrix();
-
-        /* swap buffers */
-        glutSwapBuffers();
 
     }
 
@@ -289,6 +319,17 @@
 
         /* delaying updates */
         } usleep( 500 );
+
+    }
+
+    le_void_t er_client_loops_movie( le_void_t ) {
+
+        /* compute point of view position */
+        er_client.cl_vlon = er_movie_get_value( & er_client.cl_movie, 0 );
+        er_client.cl_vlat = er_movie_get_value( & er_client.cl_movie, 1 );
+        er_client.cl_valt = er_movie_get_value( & er_client.cl_movie, 2 );
+        er_client.cl_vazm = er_movie_get_value( & er_client.cl_movie, 3 );
+        er_client.cl_vgam = er_movie_get_value( & er_client.cl_movie, 4 );
 
     }
 
@@ -393,7 +434,7 @@
 
             /* update movie stack */
             case ( 0x69 ) : { er_movie_set_empty( & er_client.cl_movie ); } break;
-            case ( 0x6f ) : { er_movie_set_point( & er_client.cl_movie, er_client.cl_vlon, er_client.cl_vlat, er_client.cl_valt, er_client.cl_vazm, er_client.cl_vgam, er_times_get_time( & er_client.cl_times, 0 ), er_times_get_time( & er_client.cl_times, 1 ) ); } break;
+            case ( 0x6f ) : { er_movie_set_point( & er_client.cl_movie, er_client.cl_vlon, er_client.cl_vlat, er_client.cl_valt, er_client.cl_vazm, er_client.cl_vgam ); } break;
 
         };
 
@@ -488,5 +529,5 @@
     source - stability methods
  */
 
-    le_void_t glutFinish( le_void_t ) { glutIdleFunc( glutLeaveMainLoop ); glutMainLoop(); }
+    le_void_t glutFinish( le_void_t ) { glutIdleFunc( glutLeaveMainLoop ), glutMainLoop(); }
 
