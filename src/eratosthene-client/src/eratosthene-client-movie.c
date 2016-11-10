@@ -92,20 +92,12 @@
             er_accum += ( er_weight = exp( - 3.0 * er_param * er_param ) );
 
             /* accumulate view interpolation factor */
-            er_view.vw_lon += er_weight * er_movie->mv_views[er_parse].vw_lon;
-            er_view.vw_lat += er_weight * er_movie->mv_views[er_parse].vw_lat;
-            er_view.vw_alt += er_weight * er_movie->mv_views[er_parse].vw_alt;
-            er_view.vw_azm += er_weight * er_movie->mv_views[er_parse].vw_azm;
-            er_view.vw_gam += er_weight * er_movie->mv_views[er_parse].vw_gam;
+            er_view_set_weight( & er_view, er_weight, & er_movie->mv_views[er_parse] );
 
         }
 
         /* compute interpolated view */
-        er_view.vw_lon /= er_accum;
-        er_view.vw_lat /= er_accum;
-        er_view.vw_alt /= er_accum;
-        er_view.vw_azm /= er_accum;
-        er_view.vw_gam /= er_accum;
+        er_view_set_devide( & er_view, er_accum );
 
         /* return computed structure */
         return( er_view );

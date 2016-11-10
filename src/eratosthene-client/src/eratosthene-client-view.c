@@ -47,3 +47,29 @@
 /*
     source - accessor methods
  */
+
+/*
+    source - mutator methods
+ */
+
+    le_void_t er_view_set_weight( er_view_t * const er_view, le_real_t const er_weight, er_view_t const * const er_value ) {
+
+        /* weighted view addition */
+        er_view->vw_lon += er_weight * er_value->vw_lon;
+        er_view->vw_lat += er_weight * er_value->vw_lat;
+        er_view->vw_alt += er_weight * er_value->vw_alt;
+        er_view->vw_azm += er_weight * er_value->vw_azm;
+        er_view->vw_gam += er_weight * er_value->vw_gam;
+
+    }
+
+    le_void_t er_view_set_devide( er_view_t * const er_view, le_real_t const er_value ) {
+
+        /* devide view parameters */
+        er_view->vw_lon /= er_value;
+        er_view->vw_lat /= er_value;
+        er_view->vw_alt /= er_value;
+        er_view->vw_azm /= er_value;
+        er_view->vw_gam /= er_value;
+
+    }
