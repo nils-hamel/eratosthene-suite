@@ -68,34 +68,47 @@
     source - accessor methods
  */
 
-    le_real_t er_movie_get_value( er_movie_t const * const er_movie, le_size_t const er_index ) {
+    er_view_t er_movie_get( er_movie_t const * const er_movie ) {
 
-        /* returned value variables */
-        le_real_t er_value = 0.0;
+        /* returned structure variables */
+        er_view_t er_view = ER_VIEW_C;
 
-        /* global parameter variables */
-        le_real_t er_global = 0.0;
+        /* interpolation parameter variables */
+        le_real_t er_param = 0.0;
 
         /* interpolation weight variables */
-        le_real_t er_local = 0.0;
-        le_real_t er_total = 0.0;
+        le_real_t er_weight = 0.0;
+
+        /* weight accumulation variables */
+        le_real_t er_accum = 0.0;
 
         /* parsing control points */
         for ( le_size_t er_parse = 0; er_parse < er_movie->mv_stack; er_parse ++ ) {
 
-            /* compute global parameter */
-            er_global = ( le_real_t ) er_parse - er_movie->mv_parse - er_movie->mv_param;
+            /* compute interpolation parameter */
+            er_param = ( le_real_t ) er_parse - er_movie->mv_parse - er_movie->mv_param;
 
             /* compute interpolation weight */
-            er_total += ( er_local = exp( - 3.0 * er_global * er_global ) );
+            er_accum += ( er_weight = exp( - 3.0 * er_param * er_param ) );
 
-            /* compute interpolation value */
-            er_value += er_local * er_movie->mv_poses[er_parse][er_index];
+            /* accumulate view interpolation factor */
+            er_view.vw_lon += er_weight * er_movie->mv_views[er_parse].vw_lon;
+            er_view.vw_lat += er_weight * er_movie->mv_views[er_parse].vw_lat;
+            er_view.vw_alt += er_weight * er_movie->mv_views[er_parse].vw_alt;
+            er_view.vw_azm += er_weight * er_movie->mv_views[er_parse].vw_azm;
+            er_view.vw_gam += er_weight * er_movie->mv_views[er_parse].vw_gam;
 
         }
 
-        /* returned interpolated value */
-        return( er_value / er_total );
+        /* compute interpolated view */
+        er_view.vw_lon /= er_accum;
+        er_view.vw_lat /= er_accum;
+        er_view.vw_alt /= er_accum;
+        er_view.vw_azm /= er_accum;
+        er_view.vw_gam /= er_accum;
+
+        /* return computed structure */
+        return( er_view );
 
     }
 
@@ -103,35 +116,34 @@
     source - manipulator methods
  */
 
-    le_void_t er_movie_set_reset( er_movie_t * const er_movie ) {
+    le_void_t er_movie_set( er_movie_t * const er_movie, er_view_t const * const er_view ) {
 
-        /* reset exportation index */
-        er_movie->mv_index = 0;
+        /* check stack state */
+        if ( er_movie->mv_stack == 0 ) {
 
-        /* reset intepolation parameters */
-        er_movie->mv_parse = 0;
-        er_movie->mv_param = 0.0;
+            /* reset exportation index */
+            er_movie->mv_index = 0;
+
+            /* reset interpolation parameters */
+            er_movie->mv_parse = 0;
+            er_movie->mv_param = 0.0;
+
+        }
+
+        /* check stack state */
+        if ( er_movie->mv_stack < ER_MOVIE_STACK ) {
+
+            /* stacking view */
+            er_movie->mv_views[er_movie->mv_stack ++] = ( * er_view );
+
+        }
 
     }
 
-    le_void_t er_movie_set_empty( er_movie_t * const er_movie ) {
+    le_void_t er_movie_set_clear( er_movie_t * const er_movie ) {
 
-        /* empty control point stack */
+        /* unstacking views */
         er_movie->mv_stack = 0;
-
-    }
-
-    le_void_t er_movie_set_point( er_movie_t * const er_movie, le_real_t const er_vlon, le_real_t const er_vlat, le_real_t const er_valt, le_real_t const er_vazm, le_real_t const er_vgam ) {
-
-        /* push point of view - space */
-        er_movie->mv_poses[er_movie->mv_stack][0] = er_vlon;
-        er_movie->mv_poses[er_movie->mv_stack][1] = er_vlat;
-        er_movie->mv_poses[er_movie->mv_stack][2] = er_valt;
-        er_movie->mv_poses[er_movie->mv_stack][3] = er_vazm;
-        er_movie->mv_poses[er_movie->mv_stack][4] = er_vgam;
-
-        /* update stack state */
-        er_movie->mv_stack ++;
 
     }
 
@@ -161,31 +173,30 @@
         /* buffer content exportation */
         lc_image_png_write( ( char * ) er_movie->mv_path, er_movie->mv_wbuffer, er_movie->mv_hbuffer, LC_IMAGE_RGBA, er_movie->mv_pbuffer );
 
-        /* update parameter */
-        if ( ( er_movie->mv_param += 0.0025 ) > 1.0 ) {
-
-            /* reset interpolation parameter */
-            er_movie->mv_param -= 1.0;
-
-            /* update interpolation parameter */
-            if ( ( ++ er_movie->mv_parse ) >= er_movie->mv_stack ) {
-
-                /* send message */
-                return( ER_COMMON_VIEW );
-
-            } else {
-
-                /* send message */
-                return( ER_COMMON_MOVIE );
-
-            }
-
-        } else {
+        /* update interpolation parameter */
+        if ( ( er_movie->mv_param += 0.0025 ) < 1.0 ) {
 
             /* send message */
             return( ER_COMMON_MOVIE );
 
         }
+
+        /* update interpolation parameter */
+        er_movie->mv_param -= 1.0;
+
+        /* update interpolation parameter */
+        if ( ( ++ er_movie->mv_parse ) < er_movie->mv_stack ) {
+
+            /* send message */
+            return( ER_COMMON_MOVIE );
+
+        }
+        
+        /* unstacking views */
+        er_movie->mv_stack = 0;
+
+        /* send message */
+        return( ER_COMMON_VIEW );
 
     }
 

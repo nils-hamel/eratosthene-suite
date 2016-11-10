@@ -197,7 +197,10 @@
                 while ( er_client.cl_loops == ER_COMMON_MOVIE ) {
 
                     /* motion update procedure */
-                    er_client_loops_movie();
+                    //er_client_loops_movie();
+
+                    /* motion management procedure */
+                    er_client.cl_view = er_movie_get( & er_client.cl_movie );
 
                     /* model update procedure */
                     er_client_loops_update();
@@ -296,12 +299,12 @@
 
     le_void_t er_client_loops_movie( le_void_t ) {
 
-        /* compute point of view position */
+        /* compute point of view position 
         er_client.cl_view.vw_lon = er_movie_get_value( & er_client.cl_movie, 0 );
         er_client.cl_view.vw_lat = er_movie_get_value( & er_client.cl_movie, 1 );
         er_client.cl_view.vw_alt = er_movie_get_value( & er_client.cl_movie, 2 );
         er_client.cl_view.vw_azm = er_movie_get_value( & er_client.cl_movie, 3 );
-        er_client.cl_view.vw_gam = er_movie_get_value( & er_client.cl_movie, 4 );
+        er_client.cl_view.vw_gam = er_movie_get_value( & er_client.cl_movie, 4 );*/
 
     }
 
@@ -405,8 +408,8 @@
             case ( 0x77 ) : { er_times_set_reset( & er_client.cl_times, 1 ); } break;
 
             /* update movie stack */
-            case ( 0x69 ) : { er_movie_set_empty( & er_client.cl_movie ); } break;
-            case ( 0x6f ) : { er_movie_set_point( & er_client.cl_movie, er_client.cl_view.vw_lon, er_client.cl_view.vw_lat, er_client.cl_view.vw_alt, er_client.cl_view.vw_azm, er_client.cl_view.vw_gam ); } break;
+            case ( 0x69 ) : { er_movie_set_clear( & er_client.cl_movie ); } break;
+            case ( 0x6f ) : { er_movie_set( & er_client.cl_movie, & er_client.cl_view ); } break;
 
         };
 
