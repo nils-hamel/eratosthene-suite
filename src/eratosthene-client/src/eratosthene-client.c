@@ -316,7 +316,7 @@
         le_real_t er_farc = er_geodesy_far ( er_client.cl_valt );
 
         /* compute model scale factor */
-        er_client.cl_vscl = er_geodesy_scale( er_client.cl_valt );
+        er_client.cl_scale = er_geodesy_scale( er_client.cl_valt );
 
         /* matrix mode to projection */
         glMatrixMode( GL_PROJECTION );
@@ -334,7 +334,7 @@
         glLoadIdentity();
 
         /* apply scale factor to projection matrix */
-        glScaled( er_client.cl_vscl, er_client.cl_vscl, er_client.cl_vscl );
+        glScaled( er_client.cl_scale, er_client.cl_scale, er_client.cl_scale );
 
         /* adapt and enable fog feature */
         glFogf( GL_FOG_START, er_farc * 0.85 ), glFogf( GL_FOG_END, er_farc ), glEnable( GL_FOG );

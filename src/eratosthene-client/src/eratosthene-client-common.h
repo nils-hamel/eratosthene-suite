@@ -66,6 +66,13 @@
     # define ER_COMMON_VIEW  ( 0x01 )
     # define ER_COMMON_MOVIE ( 0x02 )
 
+    /* define initial position */
+    # define ER_COMMON_LON   ( 12.335435 )
+    # define ER_COMMON_LAT   ( 45.438531 )
+    # define ER_COMMON_ALT   ( ER_ERD    )
+    # define ER_COMMON_AZM   ( 0.0       )
+    # define ER_COMMON_GAM   ( 0.0       )
+
 /*
     header - preprocessor macros
  */
