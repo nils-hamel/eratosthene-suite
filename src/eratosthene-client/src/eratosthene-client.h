@@ -75,6 +75,7 @@
     # include "eratosthene-client-times.h"
     # include "eratosthene-client-model.h"
     # include "eratosthene-client-movie.h"
+    # include "eratosthene-client-view.h"
 
 /*
     header - external includes
@@ -85,7 +86,7 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_CLIENT_C { ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, 0, GLUT_UP, 0, 0, 1.0, 1.0, ER_COMMON_ALT, ER_COMMON_LON, ER_COMMON_LAT, ER_COMMON_AZM, ER_COMMON_GAM, _LE_TRUE }
+    # define ER_CLIENT_C { ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, 0, GLUT_UP, 0, 0, 1.0, 1.0, ER_VIEW_D, _LE_TRUE }
 
 /*
     header - preprocessor macros
@@ -156,11 +157,7 @@
         le_real_t  cl_inertia;
         le_real_t  cl_scale;
 
-        le_real_t  cl_valt;
-        le_real_t  cl_vlon;
-        le_real_t  cl_vlat;
-        le_real_t  cl_vazm;
-        le_real_t  cl_vgam;
+        er_view_t  cl_view;
 
     le_enum_t _status; } er_client_t;
 

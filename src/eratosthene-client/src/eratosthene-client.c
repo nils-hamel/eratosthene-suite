@@ -247,7 +247,7 @@
         glPushMatrix(); {
 
             /* display earth */
-            er_model_display_earth( er_client.cl_vlon, er_client.cl_vlat, er_client.cl_valt, er_client.cl_vazm, er_client.cl_vgam );
+            er_model_display_earth( er_client.cl_view.vw_lon, er_client.cl_view.vw_lat, er_client.cl_view.vw_alt, er_client.cl_view.vw_azm, er_client.cl_view.vw_gam );
 
         } glPopMatrix();
 
@@ -255,7 +255,7 @@
         glPushMatrix(); {
 
             /* display cells */
-            er_model_display_cell( & ( er_client.cl_model ), er_client.cl_vlon, er_client.cl_vlat, er_client.cl_valt, er_client.cl_vazm, er_client.cl_vgam );
+            er_model_display_cell( & ( er_client.cl_model ), er_client.cl_view.vw_lon, er_client.cl_view.vw_lat, er_client.cl_view.vw_alt, er_client.cl_view.vw_azm, er_client.cl_view.vw_gam );
 
         } glPopMatrix();
 
@@ -284,7 +284,7 @@
         er_enum = er_times_get( & er_client.cl_times );
 
         /* update model cells */
-        er_model_set_update_cell( & er_client.cl_model, & er_enum, er_client.cl_vlon * ER_D2R, er_client.cl_vlat * ER_D2R, er_client.cl_valt );
+        er_model_set_update_cell( & er_client.cl_model, & er_enum, er_client.cl_view.vw_lon * ER_D2R, er_client.cl_view.vw_lat * ER_D2R, er_client.cl_view.vw_alt );
 
         /* server queries */
         er_model_set_update_query( & er_client.cl_model );
@@ -297,11 +297,11 @@
     le_void_t er_client_loops_movie( le_void_t ) {
 
         /* compute point of view position */
-        er_client.cl_vlon = er_movie_get_value( & er_client.cl_movie, 0 );
-        er_client.cl_vlat = er_movie_get_value( & er_client.cl_movie, 1 );
-        er_client.cl_valt = er_movie_get_value( & er_client.cl_movie, 2 );
-        er_client.cl_vazm = er_movie_get_value( & er_client.cl_movie, 3 );
-        er_client.cl_vgam = er_movie_get_value( & er_client.cl_movie, 4 );
+        er_client.cl_view.vw_lon = er_movie_get_value( & er_client.cl_movie, 0 );
+        er_client.cl_view.vw_lat = er_movie_get_value( & er_client.cl_movie, 1 );
+        er_client.cl_view.vw_alt = er_movie_get_value( & er_client.cl_movie, 2 );
+        er_client.cl_view.vw_azm = er_movie_get_value( & er_client.cl_movie, 3 );
+        er_client.cl_view.vw_gam = er_movie_get_value( & er_client.cl_movie, 4 );
 
     }
 
@@ -312,11 +312,11 @@
     le_void_t er_client_proj_model( int er_width, int er_height ) {
 
         /* clipping plane variables */
-        le_real_t er_neac = er_geodesy_near( er_client.cl_valt );
-        le_real_t er_farc = er_geodesy_far ( er_client.cl_valt );
+        le_real_t er_neac = er_geodesy_near( er_client.cl_view.vw_alt );
+        le_real_t er_farc = er_geodesy_far ( er_client.cl_view.vw_alt );
 
         /* compute model scale factor */
-        er_client.cl_scale = er_geodesy_scale( er_client.cl_valt );
+        er_client.cl_scale = er_geodesy_scale( er_client.cl_view.vw_alt );
 
         /* matrix mode to projection */
         glMatrixMode( GL_PROJECTION );
@@ -392,9 +392,9 @@
             case ( 0x34 ) : { glPointSize( er_keycode - 0x30 ); } break;
 
             /* update point of view */
-            case ( 0x63 ) : { er_client.cl_valt = ER_ERD; }
-            case ( 0x78 ) : { er_client.cl_vazm = 0.0; }
-            case ( 0x79 ) : { er_client.cl_vgam = 0.0; } break;
+            case ( 0x63 ) : { er_client.cl_view.vw_alt = ER_ERD; }
+            case ( 0x78 ) : { er_client.cl_view.vw_azm = 0.0; }
+            case ( 0x79 ) : { er_client.cl_view.vw_gam = 0.0; } break;
 
             /* update point of view */
             case ( 0x61 ) : { er_times_set( & er_client.cl_times, 0 ); } break;
@@ -406,7 +406,7 @@
 
             /* update movie stack */
             case ( 0x69 ) : { er_movie_set_empty( & er_client.cl_movie ); } break;
-            case ( 0x6f ) : { er_movie_set_point( & er_client.cl_movie, er_client.cl_vlon, er_client.cl_vlat, er_client.cl_valt, er_client.cl_vazm, er_client.cl_vgam ); } break;
+            case ( 0x6f ) : { er_movie_set_point( & er_client.cl_movie, er_client.cl_view.vw_lon, er_client.cl_view.vw_lat, er_client.cl_view.vw_alt, er_client.cl_view.vw_azm, er_client.cl_view.vw_gam ); } break;
 
         };
 
@@ -426,7 +426,7 @@
         er_client.cl_y      = er_y;
 
         /* compute inertial factor */
-        er_client.cl_inertia = abs( er_client.cl_valt - ER_ERA ) * ER_INB;
+        er_client.cl_inertia = abs( er_client.cl_view.vw_alt - ER_ERA ) * ER_INB;
 
         /* clamp inertial value */
         if ( er_client.cl_inertia < 5.0 ) er_client.cl_inertia = 5.0;
@@ -452,8 +452,8 @@
         } else {
 
             /* mouse event switch - update altitude */
-            if ( er_client.cl_button == 3 ) er_client.cl_valt += er_client.cl_inertia;
-            if ( er_client.cl_button == 4 ) er_client.cl_valt -= er_client.cl_inertia;
+            if ( er_client.cl_button == 3 ) er_client.cl_view.vw_alt += er_client.cl_inertia;
+            if ( er_client.cl_button == 4 ) er_client.cl_view.vw_alt -= er_client.cl_inertia;
 
         }
 
@@ -468,17 +468,17 @@
         if ( er_client.cl_button == GLUT_LEFT_BUTTON ) {
 
             /* update longitude and latitude */
-            er_client.cl_vlon += ( er_y - er_client.cl_y ) * ( ER_INT * er_client.cl_inertia ) * sin( er_client.cl_vazm * ER_D2R );
-            er_client.cl_vlat += ( er_y - er_client.cl_y ) * ( ER_INT * er_client.cl_inertia ) * cos( er_client.cl_vazm * ER_D2R );
-            er_client.cl_vlon -= ( er_x - er_client.cl_x ) * ( ER_INT * er_client.cl_inertia ) * cos( er_client.cl_vazm * ER_D2R );
-            er_client.cl_vlat += ( er_x - er_client.cl_x ) * ( ER_INT * er_client.cl_inertia ) * sin( er_client.cl_vazm * ER_D2R );
+            er_client.cl_view.vw_lon += ( er_y - er_client.cl_y ) * ( ER_INT * er_client.cl_inertia ) * sin( er_client.cl_view.vw_azm * ER_D2R );
+            er_client.cl_view.vw_lat += ( er_y - er_client.cl_y ) * ( ER_INT * er_client.cl_inertia ) * cos( er_client.cl_view.vw_azm * ER_D2R );
+            er_client.cl_view.vw_lon -= ( er_x - er_client.cl_x ) * ( ER_INT * er_client.cl_inertia ) * cos( er_client.cl_view.vw_azm * ER_D2R );
+            er_client.cl_view.vw_lat += ( er_x - er_client.cl_x ) * ( ER_INT * er_client.cl_inertia ) * sin( er_client.cl_view.vw_azm * ER_D2R );
 
         } else 
         if ( er_client.cl_button == GLUT_RIGHT_BUTTON ) {
 
             /* update azimuth and gamma */
-            er_client.cl_vazm -= ( er_x - er_client.cl_x ) * ER_INR;
-            er_client.cl_vgam += ( er_y - er_client.cl_y ) * ER_INR;
+            er_client.cl_view.vw_azm -= ( er_x - er_client.cl_x ) * ER_INR;
+            er_client.cl_view.vw_gam += ( er_y - er_client.cl_y ) * ER_INR;
 
         }
 
@@ -487,13 +487,13 @@
     le_void_t er_client_calls_range() {
 
         /* range clamping - cyclic */
-        er_client.cl_vlon = lc_angle( er_client.cl_vlon );
-        er_client.cl_vazm = lc_angle( er_client.cl_vazm );
+        er_client.cl_view.vw_lon = lc_angle( er_client.cl_view.vw_lon );
+        er_client.cl_view.vw_azm = lc_angle( er_client.cl_view.vw_azm );
 
         /* range clamping - clamped */
-        er_client.cl_vlat = lc_clamp( er_client.cl_vlat,  -90.0,  +90.0 );
-        er_client.cl_vgam = lc_clamp( er_client.cl_vgam, -120.0, +120.0 );
-        er_client.cl_valt = lc_clamp( er_client.cl_valt, ER_ERL, ER_ERU );
+        er_client.cl_view.vw_lat = lc_clamp( er_client.cl_view.vw_lat,  -90.0,  +90.0 );
+        er_client.cl_view.vw_gam = lc_clamp( er_client.cl_view.vw_gam, -120.0, +120.0 );
+        er_client.cl_view.vw_alt = lc_clamp( er_client.cl_view.vw_alt, ER_ERL, ER_ERU );
 
     }
 

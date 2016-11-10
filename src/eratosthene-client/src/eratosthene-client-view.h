@@ -18,18 +18,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   eratosthene-client-common.h
+    /*! \file   eratosthene-client-view.h
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Eratosthene client - common header
+     *  Eratosthene client - view module
      */
 
 /*
     header - inclusion guard
  */
 
-    # ifndef __ER_CLIENT_COMMON__
-    # define __ER_CLIENT_COMMON__
+    # ifndef __ER_CLIENT_VIEW__
+    # define __ER_CLIENT_VIEW__
 
 /*
     header - C/C++ compatibility
@@ -43,28 +43,21 @@
     header - internal includes
  */
 
+    # include "eratosthene-client-common.h"
+
 /*
     header - external includes
  */
-
-    # include <stdio.h>
-    # include <stdlib.h>
-    # include <unistd.h>
-    # include <time.h>
-    # include <math.h>
-    # include <GL/freeglut.h>
-    # include <omp.h>
-    # include <common-include.h>
-    # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions
  */
 
-    /* define execution modes */
-    # define ER_COMMON_EXIT  ( 0x00 )
-    # define ER_COMMON_VIEW  ( 0x01 )
-    # define ER_COMMON_MOVIE ( 0x02 )
+    /* define pseudo-constructor */
+    # define ER_VIEW_C { 0.0, 0.0, 0.0, 0.0, 0.0 }
+
+    /* define pseudo-constructor - default point of view */
+    # define ER_VIEW_D { 12.335435, 45.438531, ER_ERD, 0.0, 0.0 }
 
 /*
     header - preprocessor macros
@@ -78,9 +71,24 @@
     header - structures
  */
 
+    typedef struct er_view_struct {
+
+        le_real_t vw_lon;
+        le_real_t vw_lat;
+        le_real_t vw_alt;
+        le_real_t vw_azm;
+        le_real_t vw_gam; 
+
+    } er_view_t;
+
+
 /*
     header - function prototypes
  */
+
+    er_view_t er_view_create( le_void_t );
+
+    le_void_t er_view_delete( er_view_t * const er_view );
 
 /*
     header - C/C++ compatibility
