@@ -123,8 +123,6 @@
 
     le_time_t er_times_get_time( er_times_t * const er_times, le_size_t const er_offset );
 
-    le_enum_t er_times_get_update( er_times_t * const er_times );
-
     le_void_t er_times_set( er_times_t * const er_times, le_size_t const er_index );
 
     le_void_t er_times_set_default( er_times_t * const er_times );

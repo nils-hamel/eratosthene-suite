@@ -167,23 +167,6 @@
 
     le_size_t er_model_get_cell( er_model_t const * const er_model );
 
-    /*! \brief accessor methods
-     *
-     *  This function checks the model update requirements. It checks the motion
-     *  of the point of view provided as parameter to determine if model has to
-     *  be updated.
-     *
-     *  \param er_model Model structure
-     *  \param er_time  Point of view time
-     *  \param er_lon   Point of view longitude
-     *  \param er_lat   Point of view latitude
-     *  \param er_alt   Point of view altitude  
-     *
-     *  \return Returns _LE_TRUE on necessary update, _LE_FALSE otherwise
-     */
-
-    le_enum_t er_model_get_update( er_model_t * const er_model, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
-
     le_void_t er_model_set_update_cell( er_model_t * const er_model, le_address_t * const er_enum, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt );
 
     /*! \brief mutator methods

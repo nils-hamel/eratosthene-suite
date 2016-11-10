@@ -162,8 +162,7 @@
         lc_image_png_write( ( char * ) er_movie->mv_path, er_movie->mv_wbuffer, er_movie->mv_hbuffer, LC_IMAGE_RGBA, er_movie->mv_pbuffer );
 
         /* update parameter */
-        //if ( ( er_movie->mv_param += 0.0025 ) > 1.0 ) {
-        if ( ( er_movie->mv_param += 0.05 ) > 1.0 ) {
+        if ( ( er_movie->mv_param += 0.0025 ) > 1.0 ) {
 
             /* reset interpolation parameter */
             er_movie->mv_param -= 1.0;

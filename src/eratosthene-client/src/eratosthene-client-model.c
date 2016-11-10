@@ -124,24 +124,6 @@
 
     }
 
-    le_enum_t er_model_get_update( er_model_t * const er_model, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
-
-        /* Static position memory variables */
-        static le_real_t er_pose[3] = { 0.0, 0.0, 0.0 };
-
-        /* Returned value variables */
-        le_enum_t er_return = _LE_FALSE;
-
-        /* Check update necessities - update return */
-        if ( er_pose[0] != er_lon ) er_pose[0] = er_lon, er_return = _LE_TRUE;
-        if ( er_pose[1] != er_lat ) er_pose[1] = er_lat, er_return = _LE_TRUE;
-        if ( er_pose[2] != er_alt ) er_pose[2] = er_alt, er_return = _LE_TRUE;
-
-        /* Send answer */
-        return( er_return );
-
-    }
-
 /*
     source - mutator methods
  */

@@ -280,29 +280,17 @@
         /* address variables */
         le_address_t er_enum = LE_ADDRESS_C;
 
-        /* query model update necessities */
-        le_enum_t er_model_flag = er_model_get_update( & er_client.cl_model, er_client.cl_vlon, er_client.cl_vlat, er_client.cl_valt );
+        /* compose query times */
+        er_enum = er_times_get( & er_client.cl_times );
 
-        /* query times update necessities */
-        le_enum_t er_times_flag = er_times_get_update( & er_client.cl_times );
+        /* update model cells */
+        er_model_set_update_cell( & er_client.cl_model, & er_enum, er_client.cl_vlon * ER_D2R, er_client.cl_vlat * ER_D2R, er_client.cl_valt );
 
-        /* check model update necessities */
-        if ( ( er_model_flag == _LE_TRUE ) || ( er_times_flag == _LE_TRUE ) ) {
+        /* server queries */
+        er_model_set_update_query( & er_client.cl_model );
 
-            /* compose query times */
-            er_enum = er_times_get( & er_client.cl_times );
-
-            /* update model cells */
-            er_model_set_update_cell( & er_client.cl_model, & er_enum, er_client.cl_vlon * ER_D2R, er_client.cl_vlat * ER_D2R, er_client.cl_valt );
-
-            /* server queries */
-            er_model_set_update_query( & er_client.cl_model );
-
-            /* terminate model update */
-            er_model_set_update_terminate( & er_client.cl_model );
-
-        /* delaying updates */
-        } usleep( 500 );
+        /* terminate model update */
+        er_model_set_update_terminate( & er_client.cl_model );
 
     }
 
