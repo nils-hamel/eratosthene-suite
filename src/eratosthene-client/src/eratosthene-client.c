@@ -96,7 +96,7 @@
         le_sock_t le_port = ( le_sock_t ) lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT );
 
         /* color array variables */
-        float er_color[4] = { 0.00, 0.02, 0.04, 0.00 };
+        float er_color[4] = { 0.02, 0.04, 0.06, 0.00 };
 
         /* initialise gl/glu/glut */
         glutInit( & argc, argv );
@@ -121,9 +121,6 @@
 
         /* depth buffer clear values */
         glClearDepth( 1.0 );
-
-        /* opengl read buffer */
-        glReadBuffer( GL_BACK );
 
         /* opengl features configuration */
         glEnable( GL_DEPTH_TEST );
@@ -168,16 +165,7 @@
                 # pragma omp parallel sections
                 {
 
-                /* model update procedure */
-                # pragma omp section
-                while ( er_client.cl_loops == ER_CLIENT_VIEW ) { 
-
-                    /* model update procedure */
-                    er_client_loops_update();
-
-                }
-
-                /* model display procedure */
+                /* model display procedure - master thread */
                 # pragma omp section
                 while ( er_client.cl_loops == ER_CLIENT_VIEW ) { 
 
@@ -187,14 +175,17 @@
                     /* model display procedure */
                     er_client_loops_render();
 
-                    /* trigger primitives */
-                    glFlush();
-
-                    /* wait primitive */
-                    glFinish();
-
                     /* swap buffers */
                     glutSwapBuffers();
+
+                }
+
+                /* model update procedure - secondary thread */
+                # pragma omp section
+                while ( er_client.cl_loops == ER_CLIENT_VIEW ) { 
+
+                    /* model update procedure */
+                    er_client_loops_update();
 
                 }
 
@@ -203,7 +194,7 @@
 
             } else if ( er_client.cl_loops == ER_CLIENT_FILM ) {
 
-                /* movie computation procedure */
+                /* movie computation procedure - master thread */
                 while ( er_client.cl_loops == ER_CLIENT_FILM ) {
 
                     /* motion update procedure */
@@ -215,17 +206,11 @@
                     /* model display procedure */
                     er_client_loops_render();
 
-                    /* trigger primitives */
-                    glFlush();
-
-                    /* wait primitive */
-                    glFinish();
+                    /* movie procedure */
+                    if ( er_movie( & er_client.cl_movie ) == _LE_FALSE ) er_client.cl_loops = ER_CLIENT_VIEW;
 
                     /* swap buffers */
                     glutSwapBuffers();
-
-                    /* movie procedure */
-                    if ( er_movie( & er_client.cl_movie ) == _LE_FALSE ) er_client.cl_loops = ER_CLIENT_VIEW;
 
                 }
 
