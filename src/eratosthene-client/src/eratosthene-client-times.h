@@ -53,24 +53,24 @@
     header - preprocessor definitions
  */
 
-    /* Define pseudo-constructor */
+    /* define pseudo-constructor */
     # define ER_TIMES_C           { NULL, _LE_USE_PORT, _LE_TIME_NULL, LE_ARRAY_C, _LE_TIME_NULL, ER_TIMES_DAY * _LE_TIME_L( 365 ), 0, { _LE_SIZE_NULL, _LE_SIZE_NULL }, 0, NULL, _LE_TRUE }
 
-    /* Define view count */
+    /* define view count */
     # define ER_TIMES_VIEW        ( 2 )
 
-    /* Define standard intervalle */
+    /* define standard intervalle */
     # define ER_TIMES_DAY         ( _LE_TIME_L( 86400 ) )
 
-    /* Define graduation configuration */
+    /* define graduation configuration */
     # define ER_TIMES_GRAD_SCALE  ( _LE_TIME_L( 1000000000 ) )
     # define ER_TIMES_GRAP_DEPTH  ( 5 )
 
-    /* Define zoom limitations */
+    /* define zoom limitations */
     # define ER_TIMES_ZOOM_MIN    ( ER_TIMES_DAY * _LE_TIME_L(     5 ) )
     # define ER_TIMES_ZOOM_MAX    ( ER_TIMES_DAY * _LE_TIME_L( 91250 ) )
 
-    /* Define string justification flags */
+    /* define string justification flags */
     # define ER_TIMES_JUST_LEFT   ( 0 )
     # define ER_TIMES_JUST_RIGHT  ( 1 )
     # define ER_TIMES_JUST_CENTER ( 2 )
@@ -79,10 +79,10 @@
     header - preprocessor macros
  */
 
-    /* Define rounding macro */
+    /* define rounding macro */
     # define ER_TIMES_ROUND(t,r)  ( ( ( t / r ) * r ) + r )
 
-    /* Define SRTM macro (default) */
+    /* define SRTM macro (default) */
     # define ER_TIMES_SRTM(t)     ( ( _LE_TIME_L( 950486422 ) / t ) * t )
 
 /*

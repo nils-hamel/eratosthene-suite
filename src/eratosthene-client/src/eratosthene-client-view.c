@@ -73,3 +73,4 @@
         er_view->vw_gam /= er_value;
 
     }
+

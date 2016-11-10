@@ -196,9 +196,6 @@
                 /* movie computation procedure - master thread */
                 while ( er_client.cl_loops == ER_COMMON_MOVIE ) {
 
-                    /* motion update procedure */
-                    //er_client_loops_movie();
-
                     /* motion management procedure */
                     er_client.cl_view = er_movie_get( & er_client.cl_movie );
 
@@ -294,17 +291,6 @@
 
         /* terminate model update */
         er_model_set_update_terminate( & er_client.cl_model );
-
-    }
-
-    le_void_t er_client_loops_movie( le_void_t ) {
-
-        /* compute point of view position 
-        er_client.cl_view.vw_lon = er_movie_get_value( & er_client.cl_movie, 0 );
-        er_client.cl_view.vw_lat = er_movie_get_value( & er_client.cl_movie, 1 );
-        er_client.cl_view.vw_alt = er_movie_get_value( & er_client.cl_movie, 2 );
-        er_client.cl_view.vw_azm = er_movie_get_value( & er_client.cl_movie, 3 );
-        er_client.cl_view.vw_gam = er_movie_get_value( & er_client.cl_movie, 4 );*/
 
     }
 
