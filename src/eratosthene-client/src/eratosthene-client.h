@@ -70,6 +70,7 @@
     header - internal includes
  */
 
+    # include "eratosthene-client-common.h"
     # include "eratosthene-client-geodesy.h"
     # include "eratosthene-client-times.h"
     # include "eratosthene-client-model.h"
@@ -79,25 +80,12 @@
     header - external includes
  */
 
-    # include <stdio.h>
-    # include <stdlib.h>
-    # include <unistd.h>
-    # include <GL/freeglut.h>
-    # include <omp.h>
-    # include <common-include.h>
-    # include <eratosthene-include.h>
-
 /*
     header - preprocessor definitions
  */
 
     /* define pseudo-constructor */
-    # define ER_CLIENT_C    { ER_CLIENT_VIEW, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, 0, GLUT_UP, 0, 0, 1.0, ER_ERD, 12.335435, 45.438531, 0.0, 0.0, 1.0, _LE_TRUE }
-
-    /* define execution modes */
-    # define ER_CLIENT_EXIT ( 0 )
-    # define ER_CLIENT_VIEW ( 1 )
-    # define ER_CLIENT_FILM ( 2 )
+    # define ER_CLIENT_C    { ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, 0, GLUT_UP, 0, 0, 1.0, ER_ERD, 12.335435, 45.438531, 0.0, 0.0, 1.0, _LE_TRUE }
 
 /*
     header - preprocessor macros

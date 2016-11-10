@@ -43,17 +43,13 @@
     header - internal includes
  */
 
+    # include "eratosthene-client-common.h"
     # include "eratosthene-client-cell.h"
     # include "eratosthene-client-geodesy.h"
 
 /*
     header - external includes
  */
-
-    # include <GL/freeglut.h>
-    # include <GL/glu.h>
-    # include <math.h>
-    # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions

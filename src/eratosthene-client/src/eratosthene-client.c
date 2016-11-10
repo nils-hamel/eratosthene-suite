@@ -157,17 +157,17 @@
         }
 
         /* principale execution loop */
-        while ( er_client.cl_loops != ER_CLIENT_EXIT ) {
+        while ( er_client.cl_loops != ER_COMMON_EXIT ) {
 
             /* switch on execution mode */
-            if ( er_client.cl_loops == ER_CLIENT_VIEW ) {
+            if ( er_client.cl_loops == ER_COMMON_VIEW ) {
 
                 # pragma omp parallel sections
                 {
 
                 /* model display procedure - master thread */
                 # pragma omp section
-                while ( er_client.cl_loops == ER_CLIENT_VIEW ) { 
+                while ( er_client.cl_loops == ER_COMMON_VIEW ) { 
 
                     /* interface event procedure */
                     glutMainLoopEvent();
@@ -182,20 +182,19 @@
 
                 /* model update procedure - secondary thread */
                 # pragma omp section
-                while ( er_client.cl_loops == ER_CLIENT_VIEW ) { 
+                while ( er_client.cl_loops == ER_COMMON_VIEW ) { 
 
                     /* model update procedure */
                     er_client_loops_update();
 
                 }
 
-                /* # pragma omp parallel section */
                 }
 
-            } else if ( er_client.cl_loops == ER_CLIENT_FILM ) {
+            } else if ( er_client.cl_loops == ER_COMMON_MOVIE ) {
 
                 /* movie computation procedure - master thread */
-                while ( er_client.cl_loops == ER_CLIENT_FILM ) {
+                while ( er_client.cl_loops == ER_COMMON_MOVIE ) {
 
                     /* motion update procedure */
                     er_client_loops_movie();
@@ -207,7 +206,7 @@
                     er_client_loops_render();
 
                     /* movie procedure */
-                    if ( er_movie( & er_client.cl_movie ) == _LE_FALSE ) er_client.cl_loops = ER_CLIENT_VIEW;
+                    er_client.cl_loops = er_movie( & er_client.cl_movie );
 
                     /* swap buffers */
                     glutSwapBuffers();
@@ -261,7 +260,7 @@
         } glPopMatrix();
 
         /* check execution mode */
-        if ( er_client.cl_loops == ER_CLIENT_FILM ) return;
+        if ( er_client.cl_loops == ER_COMMON_MOVIE ) return;
 
         /* projection : interface */
         er_client_proj_interface( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
@@ -393,10 +392,10 @@
         switch( er_keycode ) {
 
             /* execution mode - exit */
-            case ( 0x1b ) : { er_client.cl_loops = ER_CLIENT_EXIT; } break;
+            case ( 0x1b ) : { er_client.cl_loops = ER_COMMON_EXIT; } break;
 
             /* execution mode - movie */
-            case ( 0x70 ) : { er_client.cl_loops = ER_CLIENT_FILM; } break;
+            case ( 0x70 ) : { er_client.cl_loops = ER_COMMON_MOVIE; } break;
 
             /* update point size */
             case ( 0x31 ) :

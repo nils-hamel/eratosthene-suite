@@ -40,11 +40,14 @@
     # endif
 
 /*
-    header - external includes
+    header - internal includes
  */
 
-    # include <math.h>
-    # include <eratosthene-include.h>
+    # include "eratosthene-client-common.h"
+
+/*
+    header - external includes
+ */
 
 /*
     header - preprocessor definitions

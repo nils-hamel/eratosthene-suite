@@ -145,7 +145,7 @@
         if ( er_movie->mv_stack < 2 ) {
 
             /* send message */
-            return( _LE_FALSE );
+            return( ER_COMMON_VIEW );
 
         }
 
@@ -172,19 +172,19 @@
             if ( ( ++ er_movie->mv_parse ) >= er_movie->mv_stack ) {
 
                 /* send message */
-                return( _LE_FALSE );
+                return( ER_COMMON_VIEW );
 
             } else {
 
                 /* send message */
-                return( _LE_TRUE );
+                return( ER_COMMON_MOVIE );
 
             }
 
         } else {
 
             /* send message */
-            return( _LE_TRUE );
+            return( ER_COMMON_MOVIE );
 
         }
 
