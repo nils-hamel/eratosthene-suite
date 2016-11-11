@@ -121,6 +121,10 @@
 
     int main( int argc, char ** argv );
 
+    le_void_t er_address_space( int argc, char ** argv );
+
+    le_void_t er_address_time( int argc, char ** argv );
+
 /*
     header - C/C++ compatibility
  */
