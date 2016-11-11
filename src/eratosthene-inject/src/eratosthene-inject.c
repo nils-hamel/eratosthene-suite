@@ -26,31 +26,31 @@
 
     le_enum_t er_injection( le_sock_t const er_client, FILE * const er_stream, le_time_t const er_time ) {
 
-        /* Socket i/o count variables */
+        /* socket i/o count variables */
         le_size_t er_fread = 1;
         le_size_t er_write = 1;
 
-        /* Socket i/o buffer variables */
+        /* socket i/o buffer variables */
         le_byte_t er_buffer[LE_NETWORK_SB_SYNC] = LE_NETWORK_C;
 
-        /* Sending time on socket */
+        /* sending time on socket */
         if ( write( er_client, & er_time, sizeof( le_time_t ) ) != sizeof( le_time_t ) ) {
 
-            /* Send message */
+            /* send message */
             return( LE_ERROR_IO_WRITE );
 
         }
 
-        /* Stream data injection */
+        /* stream data injection */
         while ( ( er_fread > 0 ) && ( er_fread == er_write ) ) {
 
-            /* Read stream elements */
+            /* read stream elements */
             if ( ( er_fread = fread( ( le_void_t * ) er_buffer, sizeof( le_byte_t ), _LE_USE_MTU, er_stream ) ) > 0 ) {
 
-                /* Write buffer to socket */
+                /* write buffer to socket */
                 if ( ( er_write = write( er_client, er_buffer, er_fread ) ) != er_fread ) {
 
-                    /* Send message */
+                    /* send message */
                     return( LE_ERROR_IO_WRITE );
 
                 }
@@ -59,7 +59,7 @@
 
         }
 
-        /* Send message */
+        /* send message */
         return( LE_ERROR_SUCCESS );
 
     }
@@ -70,60 +70,60 @@
 
     int main( int argc, char ** argv ) {
 
-        /* Stream handle variables */
+        /* stream handle variables */
         FILE * er_stream = NULL;
 
-        /* Socket handle variables */
+        /* socket handle variables */
         le_sock_t er_client = _LE_SOCK_NULL;
 
-        /* Time variables */
+        /* time variables */
         le_time_t er_time = lc_read_signed( argc, argv, "--time", "-t", time( NULL ) );
 
-        /* Create input stream */
+        /* create input stream */
         if ( ( er_stream = fopen( lc_read_string( argc, argv, "--file", "-f" ), "rb" ) ) == NULL ) {
 
-            /* Display message */
+            /* display message */
             fprintf( stderr, "eratosthene-suite : error : unable to access file\n" );
 
         } else {
 
-            /* Create client handle */
+            /* create client handle */
             if ( ( er_client = le_client_create( ( le_char_t * ) lc_read_string( argc, argv, "--ip", "-i" ), lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT ) ) ) == _LE_SOCK_NULL ) {
 
-                /* Display message */
+                /* display message */
                 fprintf( stderr, "eratosthene-suite : error : unable to connect to server\n" );
 
             } else {
 
-                /* Client-server injection handshake */
+                /* client-server injection handshake */
                 if ( le_client_handshake( er_client, LE_NETWORK_MODE_IMOD ) != LE_ERROR_SUCCESS ) {
 
-                    /* Display message */
+                    /* display message */
                     fprintf( stderr, "eratosthene-suite : error : authorisation failed\n" );
 
                 } else {
 
-                    /* Injection procedure */
+                    /* injection procedure */
                     if ( er_injection( er_client, er_stream, er_time ) != LE_ERROR_SUCCESS ) {
 
-                        /* Display message */
+                        /* display message */
                         fprintf( stderr, "eratosthene-suite : error : write on socket failure\n" );
 
                     }
 
                 }
 
-                /* Delete client handle */
+                /* delete client handle */
                 er_client = le_client_delete( er_client );
 
             }
 
-            /* Delete input stream */
+            /* delete input stream */
             fclose( er_stream );
 
         }
 
-        /* Return to system */
+        /* return to system */
         return( EXIT_SUCCESS );
 
     }

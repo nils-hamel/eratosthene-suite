@@ -26,29 +26,29 @@
 
     int main( int argc, char ** argv ) {
 
-        /* Server handle variables */
+        /* server handle variables */
         le_server_t er_server = LE_SERVER_C;
 
-        /* Create server handle */
+        /* create server handle */
         if ( ( er_server = le_server_create( lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT ), ( le_char_t * ) lc_read_string( argc, argv, "--path", "-p" ) ) )._status != LE_ERROR_SUCCESS ) {
 
-            /* Display message */
+            /* display message */
             fprintf( stderr, "eratosthene-suite : error : unable to create server\n" );
 
         } else {
 
-            /* Display message */
+            /* display message */
             fprintf( stderr, "eratosthene-suite : state : server listening on TCP/IP\n" );
 
-            /* Server connections management */
+            /* server connections management */
             le_server( & er_server );
 
-            /* Delete server handle */
+            /* delete server handle */
             le_server_delete( & er_server );
 
         }
 
-        /* Return to system */
+        /* return to system */
         return( EXIT_SUCCESS );
 
     }
