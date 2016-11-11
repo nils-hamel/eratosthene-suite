@@ -216,9 +216,9 @@
         le_address_get_pose( & er_cell->ce_addr, er_cell->ce_edge );
 
         /* Compute edge cartesian coordinates */
-        er_cell->ce_edge[2] = ER_ERA * cos( er_cell->ce_edge[1] ) * cos( er_cell->ce_edge[0] );
-        er_cell->ce_edge[0] = ER_ERA * cos( er_cell->ce_edge[1] ) * sin( er_cell->ce_edge[0] );
-        er_cell->ce_edge[1] = ER_ERA * sin( er_cell->ce_edge[1] );
+        er_cell->ce_edge[2] = LE_GEODESY_WGS84_A * cos( er_cell->ce_edge[1] ) * cos( er_cell->ce_edge[0] );
+        er_cell->ce_edge[0] = LE_GEODESY_WGS84_A * cos( er_cell->ce_edge[1] ) * sin( er_cell->ce_edge[0] );
+        er_cell->ce_edge[1] = LE_GEODESY_WGS84_A * sin( er_cell->ce_edge[1] );
 
         /* Reset cell array size */
         er_cell->ce_size = 0;
@@ -245,7 +245,7 @@
                         er_cell->ce_data[er_track + 2] = er_dap[2];                        
 
                         /* Optimised element vertex extraction */
-                        er_cell->ce_pose[er_track + 1] = - er_cell->ce_edge[1] + sin( er_pap[1] ) * ( er_pap[2] += ER_ERA );
+                        er_cell->ce_pose[er_track + 1] = - er_cell->ce_edge[1] + sin( er_pap[1] ) * ( er_pap[2] += LE_GEODESY_WGS84_A );
                         er_cell->ce_pose[er_track    ] = - er_cell->ce_edge[0] + er_pap[2] * sin( er_pap[0] ) * ( er_pap[1] = cos( er_pap[1] ) );
                         er_cell->ce_pose[er_track + 2] = - er_cell->ce_edge[2] + er_pap[2] * er_pap[1] * cos( er_pap[0] );
 

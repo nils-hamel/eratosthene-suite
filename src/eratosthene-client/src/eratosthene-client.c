@@ -459,36 +459,34 @@
 
     le_void_t er_client_calls_mouse( int er_button, int er_state, int er_x, int er_y ) {
 
-        /* keyboard modifiers variables */
-        le_enum_t er_modifiers = glutGetModifiers();
-
-        /* check mouse state */
+        /* check mouse state - return */
         if ( ( er_client.cl_state = er_state ) != GLUT_DOWN ) return;
 
-        /* update client interface */
+        /* update client - mouse button */
         er_client.cl_button = er_button;
-        er_client.cl_x      = er_x;
-        er_client.cl_y      = er_y;
 
-        /* compute inertial factor */
-        er_client.cl_inertia = abs( er_view_get_alt( & er_client.cl_view ) - ER_ERA ) * ER_INB;
+        /* update client - mouse position */
+        er_client.cl_x = er_x;
+        er_client.cl_y = er_y;
 
-        /* clamp inertial value */
+        /* compute inertial coefficient */
+        er_client.cl_inertia = abs( er_view_get_alt( & er_client.cl_view ) - LE_GEODESY_WGS84_A ) * ER_COMMON_INE;
+
+        /* clamp inertial coefficient */
         if ( er_client.cl_inertia < 5.0 ) er_client.cl_inertia = 5.0;
 
-        /* inertial multiplier application */
-        if ( er_modifiers == GLUT_ACTIVE_CTRL  ) er_client.cl_inertia *= ER_IMU;
-        if ( er_modifiers == GLUT_ACTIVE_SHIFT ) er_client.cl_inertia *= ER_IML;
+        /* apply inertial coefficient multipliers */
+        if ( glutGetModifiers() == GLUT_ACTIVE_CTRL  ) er_client.cl_inertia *= ER_COMMON_IMU;
+        if ( glutGetModifiers() == GLUT_ACTIVE_SHIFT ) er_client.cl_inertia *= ER_COMMON_IML;
 
         /* interface switch */
-        if ( er_modifiers == ( GLUT_ACTIVE_CTRL | GLUT_ACTIVE_ALT ) ) {
+        if ( glutGetModifiers() == ( GLUT_ACTIVE_CTRL | GLUT_ACTIVE_ALT ) ) {
 
             /* mouse event switch - update time zoom */
             if ( er_client.cl_button == 3 ) er_times_set_zoom( & er_client.cl_times, 1.0990 );
             if ( er_client.cl_button == 4 ) er_times_set_zoom( & er_client.cl_times, 0.9099 );
 
-        } else
-        if ( er_modifiers == GLUT_ACTIVE_ALT ) {
+        } else if ( glutGetModifiers() == GLUT_ACTIVE_ALT ) {
 
             /* mouse event switch - update time position */
             if ( er_client.cl_button == 3 ) er_times_set_pose( & er_client.cl_times, + 0.02 );
@@ -506,21 +504,32 @@
 
     le_void_t er_client_calls_move( int er_x, int er_y ) {
 
-        /* check mouse state */
+        /* coordinates differential variables */
+        le_real_t er_mdx = ( le_real_t ) er_x - er_client.cl_x;
+        le_real_t er_mdy = ( le_real_t ) er_y - er_client.cl_y;
+
+        /* check mouse state - return */
         if ( er_client.cl_state != GLUT_DOWN ) return;
 
         /* mouse event switch */
         if ( er_client.cl_button == GLUT_LEFT_BUTTON ) {
 
-            /* update longitude and latitude */
-            er_view_set_plan( & er_client.cl_view, ( er_x - er_client.cl_x ) * ( ER_INT * er_client.cl_inertia ), ( er_y - er_client.cl_y ) * ( ER_INT * er_client.cl_inertia ) );
+            /* apply inertial coefficients multipliers */
+            er_mdx *= ER_COMMON_INP * er_client.cl_inertia;
+            er_mdy *= ER_COMMON_INP * er_client.cl_inertia;
 
-        } else 
-        if ( er_client.cl_button == GLUT_RIGHT_BUTTON ) {
+            /* update longitude and latitude */
+            er_view_set_plan( & er_client.cl_view, er_mdx, er_mdy );
+
+        } else if ( er_client.cl_button == GLUT_RIGHT_BUTTON ) {
+
+            /* apply inetrial coefficients multipliers */
+            er_mdx *= ER_COMMON_INR;
+            er_mdy *= ER_COMMON_INR;
 
             /* update azimuth and gamma */
-            er_view_set_azm( & er_client.cl_view, ( er_client.cl_x - er_x ) * ER_INR );
-            er_view_set_gam( & er_client.cl_view, ( er_y - er_client.cl_y ) * ER_INR );
+            er_view_set_azm( & er_client.cl_view, - er_mdx );
+            er_view_set_gam( & er_client.cl_view, + er_mdy );
 
         }
 

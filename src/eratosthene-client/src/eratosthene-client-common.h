@@ -52,8 +52,8 @@
     # include <unistd.h>
     # include <time.h>
     # include <math.h>
-    # include <GL/freeglut.h>
     # include <omp.h>
+    # include <GL/freeglut.h>
     # include <common-include.h>
     # include <eratosthene-include.h>
 
@@ -67,8 +67,19 @@
     # define ER_COMMON_MOVIE ( 0x02 )
 
     /* define trigonometric factors */
-    # define ER_D2R ( 3.1415926535 / 180.0 )
-    # define ER_R2D ( 180.0 / 3.1415926535 )
+    # define ER_COMMON_D2R   ( 3.1415926535 / 180.0 )
+    # define ER_COMMON_R2D   ( 180.0 / 3.1415926535 )
+
+    /* define inertial coefficients */
+    # define ER_COMMON_INE   ( 1.0 / 100.0 )
+    # define ER_COMMON_IML   ( 1.0 / 10.0 )
+    # define ER_COMMON_IMU   ( 10.0 )
+    # define ER_COMMON_INR   ( 1.0 / 500.0 )
+    # define ER_COMMON_INP   ( 3.0 * LE_PI / ( LE_GEODESY_WGS84_A * 180.0 ) )
+
+    /* define altitude clamped range */
+    # define ER_COMMON_ALL   ( LE_GEODESY_WGS84_A * 0.75 )
+    # define ER_COMMON_ALU   ( LE_GEODESY_WGS84_A * 3.00 )
 
 /*
     header - preprocessor macros

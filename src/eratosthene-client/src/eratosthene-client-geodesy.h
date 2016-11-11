@@ -54,20 +54,6 @@
     header - preprocessor definitions
  */
 
-    /* Define geodetic parameters */
-    # define ER_ERA ( LE_GEODESY_WGS84_A )
-    # define ER_ER2 ( ER_ERA / 2.00 )
-    # define ER_ERL ( ER_ERA * 0.75 )
-    # define ER_ERU ( ER_ERA * 3.00 )
-    # define ER_ERD ( ER_ERA * 2.00 )
-
-    /* Define motion inertia */
-    # define ER_INT ( LE_PI / ( LE_GEODESY_WGS84_A * 180.0 ) )
-    # define ER_INB ( 5.0 / 1000.0 )
-    # define ER_INR ( 1.0 / 1000.0 )
-    # define ER_IML ( 1.0 / 10.0 )
-    # define ER_IMU ( 10.0 )
-
 /*
     header - preprocessor macros
  */

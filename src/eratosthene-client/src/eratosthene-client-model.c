@@ -316,10 +316,10 @@
         le_real_t er_lat = er_view_get_lat( er_view );
 
         /* Optimisation variables */
-        le_real_t er_cosl = cos( - er_lon * ER_D2R );
-        le_real_t er_sinl = sin( - er_lon * ER_D2R );
-        le_real_t er_cosa = cos( + er_lat * ER_D2R );
-        le_real_t er_sina = sin( + er_lat * ER_D2R );
+        le_real_t er_cosl = cos( - er_lon * ER_COMMON_D2R );
+        le_real_t er_sinl = sin( - er_lon * ER_COMMON_D2R );
+        le_real_t er_cosa = cos( + er_lat * ER_COMMON_D2R );
+        le_real_t er_sina = sin( + er_lat * ER_COMMON_D2R );
 
         /* Edge array variables */
         le_real_t * er_edge = NULL;
@@ -328,7 +328,7 @@
         glRotated( - er_view_get_gam( er_view ), 1.0, 0.0, 0.0 );
 
         /* Motion management - altimetric translation */
-        glTranslated( 0.0, 0.0, - er_view_get_alt( er_view ) + ER_ERA );
+        glTranslated( 0.0, 0.0, - er_view_get_alt( er_view ) + LE_GEODESY_WGS84_A );
 
         /* Motion management - azimuth rotation */
         glRotated( + er_view_get_azm( er_view ), 0.0, 0.0, 1.0 );
@@ -350,7 +350,7 @@
                     er_edge = er_cell_get_edge( er_model->md_cell + er_parse );
 
                     /* Motion management - cell edge translation */
-                    glTranslated( er_cosl * er_edge[0] + er_sinl * er_edge[2], er_sina * er_sinl * er_edge[0] + er_cosa * er_edge[1] - er_sina * er_cosl * er_edge[2], er_cosa * er_cosl * er_edge[2] + er_sina * er_edge[1] - er_cosa * er_sinl * er_edge[0] - ER_ERA );
+                    glTranslated( er_cosl * er_edge[0] + er_sinl * er_edge[2], er_sina * er_sinl * er_edge[0] + er_cosa * er_edge[1] - er_sina * er_cosl * er_edge[2], er_cosa * er_cosl * er_edge[2] + er_sina * er_edge[1] - er_cosa * er_sinl * er_edge[0] - LE_GEODESY_WGS84_A );
 
                     /* Motion management - planimetric rotation */
                     glRotated( + er_lat, 1.0, 0.0, 0.0 );
@@ -374,13 +374,13 @@
         glRotated( - er_view_get_gam( er_view ), 1.0, 0.0, 0.0 );
 
         /* Motion management - altimetric translation */
-        glTranslated( 0.0, 0.0, - er_view_get_alt( er_view ) + ER_ERA );
+        glTranslated( 0.0, 0.0, - er_view_get_alt( er_view ) + LE_GEODESY_WGS84_A );
 
         /* Motion management - azimuth rotation */
         glRotated( + er_view_get_azm( er_view ), 0.0, 0.0, 1.0 );
 
         /* Earth wireframe - centering */
-        glTranslated( 0.0, 0.0, - ER_ERA );
+        glTranslated( 0.0, 0.0, - LE_GEODESY_WGS84_A );
 
         /* Motion management - planimetric rotation */
         glRotated( + er_view_get_lat( er_view ), 1.0, 0.0, 0.0 );
@@ -399,7 +399,7 @@
         glColor3f( 0.18, 0.22, 0.28 );
 
         /* Display quadric */
-        gluSphere( er_earth, ER_ERA, 360, 180 );
+        gluSphere( er_earth, LE_GEODESY_WGS84_A, 360, 180 );
 
         /* Delete quadric */
         gluDeleteQuadric( er_earth );

@@ -86,8 +86,8 @@
     le_void_t er_view_get_pose( er_view_t const * const er_view, le_real_t * const er_pose ) {
 
         /* assign position */
-        er_pose[0] = er_view->vw_lon * ER_D2R;
-        er_pose[1] = er_view->vw_lat * ER_D2R;
+        er_pose[0] = er_view->vw_lon * ER_COMMON_D2R;
+        er_pose[1] = er_view->vw_lat * ER_COMMON_D2R;
         er_pose[2] = er_view->vw_alt;
 
     }
@@ -99,8 +99,8 @@
     le_void_t er_view_set_plan( er_view_t * const er_view, le_real_t const er_xvalue, le_real_t const er_yvalue ) {
 
         /* azimuthal anagles variables */
-        le_real_t er_cos = cos( er_view->vw_azm * ER_D2R );
-        le_real_t er_sin = sin( er_view->vw_azm * ER_D2R );
+        le_real_t er_cos = cos( er_view->vw_azm * ER_COMMON_D2R );
+        le_real_t er_sin = sin( er_view->vw_azm * ER_COMMON_D2R );
 
         /* update planimetric coordinates */
         er_view->vw_lon += er_yvalue * er_sin - er_xvalue * er_cos;
@@ -112,6 +112,10 @@
 
         /* update altitude */
         er_view->vw_alt += er_value;
+
+        /* clamp altitude value */
+        if ( er_view->vw_alt < ER_COMMON_ALL ) er_view->vw_alt = ER_COMMON_ALL;
+        if ( er_view->vw_alt > ER_COMMON_ALU ) er_view->vw_alt = ER_COMMON_ALU;
 
     }
 
@@ -126,6 +130,10 @@
 
         /* update gamma */
         er_view->vw_gam += er_value;
+
+        /* clamp gamma value */
+        if ( er_view->vw_gam > + 120.0 ) er_view->vw_gam = + 120.0;
+        if ( er_view->vw_gam < - 120.0 ) er_view->vw_gam = - 120.0;
 
     }
 
