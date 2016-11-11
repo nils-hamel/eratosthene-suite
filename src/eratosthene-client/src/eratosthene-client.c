@@ -156,20 +156,21 @@
 
         }
 
-        /* principale execution loop */
+        /* execution threads */
+        # pragma omp parallel sections
+        {
+
+        /* master thread - display procedure */
+        # pragma omp section
         while ( er_client.cl_loops != ER_COMMON_EXIT ) {
 
             /* switch on execution mode */
             if ( er_client.cl_loops == ER_COMMON_VIEW ) {
 
-                # pragma omp parallel sections
-                {
-
-                /* model display procedure - master thread */
-                # pragma omp section
+                /* principale execution loop */
                 while ( er_client.cl_loops == ER_COMMON_VIEW ) { 
 
-                    /* interface event procedure */
+                    /* interface events procedure */
                     glutMainLoopEvent();
 
                     /* model display procedure */
@@ -180,20 +181,9 @@
 
                 }
 
-                /* model update procedure - secondary thread */
-                # pragma omp section
-                while ( er_client.cl_loops == ER_COMMON_VIEW ) { 
-
-                    /* model update procedure */
-                    er_client_loops_update();
-
-                }
-
-                }
-
             } else if ( er_client.cl_loops == ER_COMMON_MOVIE ) {
 
-                /* movie computation procedure - master thread */
+                /* principale execution loop */
                 while ( er_client.cl_loops == ER_COMMON_MOVIE ) {
 
                     /* motion management procedure */
@@ -211,16 +201,39 @@
                     /* swap buffers */
                     glutSwapBuffers();
 
+                } 
+
+            /* thread idle mechanism */
+            } else { sleep( 1 ); }
+
+        }
+
+        /* secondary thread - model procedure */
+        # pragma omp section
+        while ( er_client.cl_loops != ER_COMMON_EXIT ) {
+
+            /* switch on execution mode */
+            if ( er_client.cl_loops == ER_COMMON_VIEW ) {
+
+                /* principale execution loop */
+                while ( er_client.cl_loops == ER_COMMON_VIEW ) { 
+
+                    /* model update procedure */
+                    er_client_loops_update();
+
                 }
 
-            }
+            /* thread idle mechanism */
+            } else { sleep( 1 ); }
+
+        }
 
         }
 
         /* delete client */
         er_client_delete( & er_client );
 
-        /* uninitialise glut */
+        /* uninitialise glut - see stability methods */
         glutFinish();
 
         /* send message */
