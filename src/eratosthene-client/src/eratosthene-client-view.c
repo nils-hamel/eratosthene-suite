@@ -48,6 +48,41 @@
     source - accessor methods
  */
 
+    le_real_t er_view_get_lon( er_view_t const * const er_view ) {
+
+        /* return view value */
+        return( er_view->vw_lon );
+
+    }
+
+    le_real_t er_view_get_lat( er_view_t const * const er_view ) {
+
+        /* return view value */
+        return( er_view->vw_lat );
+
+    }
+
+    le_real_t er_view_get_alt( er_view_t const * const er_view ) {
+
+        /* return view value */
+        return( er_view->vw_alt );
+
+    }
+
+    le_real_t er_view_get_azm( er_view_t const * const er_view ) {
+
+        /* return view value */
+        return( er_view->vw_azm );
+
+    }
+
+    le_real_t er_view_gat_gam( er_view_t const * const er_view ) {
+
+        /* return view value */
+        return( er_view->vw_gam );
+
+    }
+
 /*
     source - mutator methods
  */

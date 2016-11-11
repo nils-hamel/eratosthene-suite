@@ -90,6 +90,16 @@
 
     le_void_t er_view_delete( er_view_t * const er_view );
 
+    le_real_t er_view_get_lon( er_view_t const * const er_view );
+
+    le_real_t er_view_get_lat( er_view_t const * const er_view );
+
+    le_real_t er_view_get_alt( er_view_t const * const er_view );
+
+    le_real_t er_view_get_azm( er_view_t const * const er_view );
+
+    le_real_t er_view_gat_gam( er_view_t const * const er_view );
+
     le_void_t er_view_set_weight( er_view_t * const er_view, le_real_t const er_weight, er_view_t const * const er_value );
 
     le_void_t er_view_set_devide( er_view_t * const er_view, le_real_t const er_value );
