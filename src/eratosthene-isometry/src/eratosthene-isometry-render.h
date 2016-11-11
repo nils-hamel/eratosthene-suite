@@ -57,10 +57,10 @@
     header - preprocessor definitions
  */
 
-    /* Define pseudo-constructor */
+    /* define pseudo-constructor */
     # define ER_RENDER_C         { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, { 0 }, 1, 0, 0, NULL, 0, 0, 0, 0, 0 }
 
-    /* Define trigonometric factors */
+    /* define trigonometric factors */
     # define ER_ISOMETRY_D2R     ( LE_PI / 180.0 )
 
 /*
