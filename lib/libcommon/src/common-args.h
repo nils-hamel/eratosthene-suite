@@ -40,15 +40,14 @@
     # endif
 
 /*
-    header - includes
+    header - internal includes
  */
 
-    # include <stdio.h>
-    # include <stdlib.h>
-    # include <string.h>
-    # include <stdint.h>
-    # include <inttypes.h>
     # include "common.h"
+
+/*
+    header - external includes
+ */
 
 /*
     header - preprocessor definitions

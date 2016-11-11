@@ -26,117 +26,117 @@
 
     int lc_image_png_write( char const * const lc_path, int const lc_width, int const lc_height, int const lc_format, unsigned char * const lc_bytes ) {
 
-        /* Stream variables */
+        /* stream variables */
         FILE * lc_stream = NULL;
 
-        /* Components variables */
+        /* components variables */
         int lc_component = 0;
         int lc_colortype = 0;
 
-        /* Portable network graphics variables */
+        /* portable network graphics variables */
         png_structp lc_pngs = NULL;
         png_infop   lc_info = NULL;
 
-        /* Check image depth */
+        /* check image depth */
         if ( lc_format == LC_IMAGE_RGB ) {
 
-            /* Assign png color type */
+            /* assign png color type */
             lc_component = 3;
             lc_colortype = PNG_COLOR_TYPE_RGB;
 
         } else if ( lc_format == LC_IMAGE_RGBA ) {
 
-            /* Assign png color type */
+            /* assign png color type */
             lc_component = 4;
             lc_colortype = PNG_COLOR_TYPE_RGBA;
 
         } else {
 
-            /* Send message */
+            /* send message */
             return( LC_FALSE );
 
         }
 
-        /* Create output stream */
+        /* create output stream */
         if ( ( lc_stream = fopen( ( char * ) lc_path, "wb" ) ) == NULL ) {
 
-            /* Send message */
+            /* send message */
             return( LC_FALSE );
 
         }
 
-        /* Create portable network graphics structure */
+        /* create portable network graphics structure */
         if ( ( lc_pngs = png_create_write_struct( PNG_LIBPNG_VER_STRING, NULL, NULL, NULL ) ) == NULL ) {
 
-            /* Delete output stream */
+            /* delete output stream */
             fclose( lc_stream );
 
-            /* Send message */
+            /* send message */
             return( LC_FALSE );
 
         }
 
-        /* Create portable network graphics info */
+        /* create portable network graphics info */
         if ( ( lc_info = png_create_info_struct( lc_pngs ) ) == NULL ) {
 
-            /* Delete portable network graphics structure */
+            /* delete portable network graphics structure */
             png_destroy_write_struct( & lc_pngs, ( png_infopp ) NULL );
 
-            /* Delete output stream */
+            /* delete output stream */
             fclose( lc_stream );
 
-            /* Send message */
+            /* send message */
             return( LC_FALSE );
 
         }
 
-        /* Setup exception management */
+        /* setup exception management */
         if ( setjmp( png_jmpbuf( lc_pngs ) ) ) {
 
-            /* Create portable network graphics info */
+            /* create portable network graphics info */
             png_free_data( lc_pngs, lc_info, PNG_FREE_ALL, -1 );
 
-            /* Delete portable network graphics structure */
+            /* delete portable network graphics structure */
             png_destroy_write_struct( & lc_pngs, ( png_infopp ) NULL );
 
-            /* Delete output stream */
+            /* delete output stream */
             fclose( lc_stream );
 
-            /* Send message */
+            /* send message */
             return( LC_FALSE );
 
         }
 
-        /* Bind output stream */
+        /* bind output stream */
         png_init_io( lc_pngs, lc_stream );
 
-        /* Setup portable network format */
+        /* setup portable network format */
         png_set_IHDR( lc_pngs, lc_info, lc_width, lc_height, 8, lc_colortype, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
 
-        /* Write portable network graphics header */
+        /* write portable network graphics header */
         png_write_info( lc_pngs, lc_info );
 
-        /* Export portable network graphics pixels rows */
+        /* export portable network graphics pixels rows */
         for ( int lc_parse = 0; lc_parse < lc_height; lc_parse ++ ) {
 
-            /* Export current pixels row */
+            /* export current pixels row */
             png_write_row( lc_pngs, lc_bytes + ( lc_height - lc_parse - 1 ) * ( lc_width * lc_component ) );
 
         }
 
-        /* Write portable network graphics footer */
+        /* write portable network graphics footer */
         png_write_end( lc_pngs, NULL );
 
-        /* Create portable network graphics info */
+        /* create portable network graphics info */
         png_free_data( lc_pngs, lc_info, PNG_FREE_ALL, -1 );
 
-        /* Delete portable network graphics structure */
+        /* delete portable network graphics structure */
         png_destroy_write_struct( & lc_pngs, ( png_infopp ) NULL );
 
-        /* Delete output stream */
+        /* delete output stream */
         fclose( lc_stream );
 
-        /* Send message */
+        /* send message */
         return( LC_TRUE );
 
     }

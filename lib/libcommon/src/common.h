@@ -63,16 +63,28 @@
     # endif
 
 /*
-    header - includes
+    header - internal includes
  */
 
+/*
+    header - external includes
+ */
+
+    # include <stdio.h>
+    # include <stdlib.h>
+    # include <stdint.h>
+    # include <inttypes.h>
     # include <string.h>
+    # define __USE_XOPEN
+    # include <time.h>
+    # undef __USE_XOPEN
+    # include <png.h>
 
 /*
     header - preprocessor definitions
  */
 
-    /* Define boolean values */
+    /* define boolean values */
     # define LC_FALSE            ( 0 )
     # define LC_TRUE             ( 1 )
 
@@ -80,13 +92,13 @@
     header - preprocessor macros
  */
 
-    /* String comparison */
+    /* string comparison */
     # define lc_strc( a, b )     ( strcmp( ( char * ) a, ( char * ) b ) == 0 ? LC_TRUE : LC_FALSE )
 
-    /* Strict clamping */
+    /* strict clamping */
     # define lc_clamp( v, a, b ) ( ( v ) < ( a ) ? ( a ) : ( ( v ) > ( b ) ? ( b ) : ( v ) ) )
 
-    /* Cyclic clamping */
+    /* cyclic clamping */
     # define lc_angle( v )       ( ( v ) > +180.0 ? ( v ) - 360.0 : ( ( v ) < -180.0 ? ( v ) + 360 : ( v ) ) )
 
 /*

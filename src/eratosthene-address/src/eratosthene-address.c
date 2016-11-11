@@ -26,47 +26,47 @@
 
     int main( int argc, char ** argv ) {
 
-        /* Geodetic array variables */
+        /* geodetic array variables */
         le_real_t er_pose[3] = { 0.0 };
 
-        /* Address structure variables */
+        /* address structure variables */
         le_address_t er_addr = LE_ADDRESS_C_SIZE( lc_read_unsigned( argc, argv, "--scale", "-s", LE_GEODESY_ASYA ) );
 
-        /* Read position parameters */
+        /* read position parameters */
         er_pose[0] = lc_read_double( argc, argv, "--longitude", "-l", 0.0 );
         er_pose[1] = lc_read_double( argc, argv, "--latitude" , "-a", 0.0 );
         er_pose[2] = lc_read_double( argc, argv, "--altitude" , "-h", 0.0 );
 
-        /* Display original coordinates */
+        /* display original coordinates */
         fprintf( stdout, ER_ADDRESS_PFS, er_pose[0], er_pose[1], er_pose[2] );
 
-        /* Convert to radians */
+        /* convert to radians */
         er_pose[0] *= ER_ADDRESS_D2R;
         er_pose[1] *= ER_ADDRESS_D2R;
 
-        /* Convert position into index */
+        /* convert position into index */
         le_address_set_pose( & er_addr, er_pose );
 
-        /* Convert index into position */
+        /* convert index into position */
         le_address_get_pose( & er_addr, er_pose );
 
-        /* Convert to degrees */
+        /* convert to degrees */
         er_pose[0] *= ER_ADDRESS_R2D;
         er_pose[1] *= ER_ADDRESS_R2D;
 
-        /* Display reconverted coordinates */
+        /* display reconverted coordinates */
         fprintf( stdout, ER_ADDRESS_PFS, er_pose[0], er_pose[1], er_pose[2] );
 
-        /* Display address */
+        /* display address */
         for ( le_size_t er_parse = 0; er_parse < le_address_get_size( & er_addr ); er_parse ++ ) {
 
-            /* Display address digit */
+            /* display address digit */
             fprintf( stdout, "%c", le_address_get_digit( & er_addr, er_parse ) + 48 ); 
 
-        /* Output format */
+        /* output format */
         } fprintf( stdout, ", %" _LE_SIZE_P "\n", le_address_get_size( & er_addr ) );
 
-        /* Return to system */
+        /* return to system */
         return( EXIT_SUCCESS );
 
     }

@@ -40,12 +40,16 @@
     # endif
 
 /*
-    header - includes
+    header - internal includes
  */
 
     # include "common-args.h"
     # include "common-image.h"
     # include "common-time.h"
+
+/*
+    header - external includes
+ */
 
 /*
     header - preprocessor definitions

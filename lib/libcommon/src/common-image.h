@@ -40,18 +40,20 @@
     # endif
 
 /*
-    header - includes
+    header - internal includes
  */
 
-    # include <stdio.h>
-    # include <png.h>
     # include "common.h"
+
+/*
+    header - external includes
+ */
 
 /*
     header - preprocessor definitions
  */
 
-    /* Define image depth variables */
+    /* define image depth variables */
     # define LC_IMAGE_RGB  0
     # define LC_IMAGE_RGBA 1
 

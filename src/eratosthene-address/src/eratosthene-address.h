@@ -79,11 +79,11 @@
     header - preprocessor definitions
  */
 
-    /* Trigonometric conversion factors */
+    /* trigonometric conversion factors */
     # define ER_ADDRESS_D2R ( LE_PI / _LE_REAL_L( 180.0 ) )
     # define ER_ADDRESS_R2D ( _LE_REAL_L( 180.0 ) / LE_PI )
 
-    /* Display format specifier */
+    /* display format specifier */
     # define ER_ADDRESS_PFS "%" _LE_REAL_P ", %" _LE_REAL_P ", %" _LE_REAL_P "\n"
 
 /*

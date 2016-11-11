@@ -26,14 +26,29 @@
 
     unsigned char * lc_time_to_string( time_t const lc_time, unsigned char * const lc_string, size_t const lc_limit ) {
 
-        /* Time decomposition variable */
+        /* time decomposition variable */
         struct tm lc_struct = * gmtime( & lc_time );
 
-        /* Compose date string */
+        /* compose date string */
         strftime( ( char * ) lc_string, lc_limit, "%Y/%m/%d %H%M%S", & lc_struct );
 
-        /* Return filled string */
+        /* return filled string */
         return( lc_string );
 
     }
+
+    time_t lc_time_from_string( unsigned char * const lc_date, unsigned char * const lc_format ) {
+
+        /* time structure variable */
+        struct tm lc_time;
+
+        /* convert string into time structure */
+        strptime( ( char * ) lc_date, ( char * ) lc_format, & lc_time );
+
+        /* convert time structure in timestamps */
+        return(  mktime( & lc_time ) );
+
+    }
+
+    
 

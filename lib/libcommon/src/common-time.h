@@ -40,11 +40,14 @@
     # endif
 
 /*
-    header - includes
+    header - internal includes
  */
 
-    # include <time.h>
     # include "common.h"
+
+/*
+    header - external includes
+ */
 
 /*
     header - preprocessor definitions
@@ -67,6 +70,8 @@
  */
 
     unsigned char * lc_time_to_string( time_t const lc_time, unsigned char * const lc_string, size_t const lc_limit );
+
+    time_t lc_time_from_string( unsigned char * const lc_date, unsigned char * const lc_format );
 
 /*
     header - C/C++ compatibility

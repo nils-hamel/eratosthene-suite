@@ -26,20 +26,20 @@
 
     int lc_read_flag( int const argc, char ** argv, char const * const er_long, char const * const er_short ) {
 
-        /* Parsing arguments and parameters */
+        /* parsing arguments and parameters */
         for ( int er_parse = 0 ; er_parse < argc; er_parse ++ ) {
 
-            /* Check argument short and long forms */
+            /* check argument short and long forms */
             if ( ( strcmp( argv[er_parse], er_long ) == 0 ) || ( strcmp( argv[er_parse], er_short ) == 0 ) ) {
 
-                /* Return answer */
+                /* return answer */
                 return( LC_TRUE );
 
             }
 
         } 
 
-        /* Return answer */
+        /* return answer */
         return( LC_FALSE );
 
     }
@@ -50,102 +50,104 @@
 
     char * lc_read_string( int const argc, char ** argv, char const * const er_long, char const * const er_short ) {
         
-        /* Parsing arguments and parameters */
+        /* parsing arguments and parameters */
         for ( int er_parse = 0 ; er_parse < argc; er_parse ++ ) {
 
-            /* Check argument short and long forms */
+            /* check argument short and long forms */
             if ( ( strcmp( argv[er_parse], er_long ) == 0 ) || ( strcmp( argv[er_parse], er_short ) == 0 ) ) {
 
-                /* Check consistency */
+                /* check consistency */
                 if ( ( ++ er_parse ) < argc ) {
 
-                    /* Return parameter */
+                    /* return parameter */
                     return( argv[er_parse] ); 
 
-                /* Return default value */
+                /* return default value */
                 } else { return( NULL ); }
 
             }
 
-        /* Return default value */
-        } return( NULL );
+        }
+
+        /* return default value */
+        return( NULL );
 
     }
 
     intmax_t lc_read_signed( int const argc, char ** argv, char const * const er_long, char const * const er_short, intmax_t const er_default ) {
 
-        /* Parsing arguments and parameters */
+        /* parsing arguments and parameters */
         for ( int er_parse = 0; er_parse < argc; er_parse ++ ) {
 
-            /* Check argument short and long forms */
+            /* check argument short and long forms */
             if ( ( strcmp( argv[er_parse], er_long ) == 0 ) || ( strcmp( argv[er_parse], er_short ) == 0 ) ) {
 
-                /* Check consistency */
+                /* check consistency */
                 if ( ( ++ er_parse ) < argc ) {
 
-                    /* Convert and return parameter */
+                    /* convert and return parameter */
                     return( strtoimax( argv[er_parse], NULL, 10 ) );
 
-                /* Return default value */
+                /* return default value */
                 } else { return( er_default ); }
 
             }
 
         }
 
-        /* Return default value */
+        /* return default value */
         return( er_default );
 
     }
 
     uintmax_t lc_read_unsigned( int const argc, char ** argv, char const * const er_long, char const * const er_short, uintmax_t const er_default ) {
 
-        /* Parsing arguments and parameters */
+        /* parsing arguments and parameters */
         for ( int er_parse = 0; er_parse < argc; er_parse ++ ) {
 
-            /* Check argument short and long forms */
+            /* check argument short and long forms */
             if ( ( strcmp( argv[er_parse], er_long ) == 0 ) || ( strcmp( argv[er_parse], er_short ) == 0 ) ) {
 
-                /* Check consistency */
+                /* check consistency */
                 if ( ( ++ er_parse ) < argc ) {
 
-                    /* Convert and return parameter */
+                    /* convert and return parameter */
                     return( strtoumax( argv[er_parse], NULL, 10 ) );
 
-                /* Return default value */
+                /* return default value */
                 } else { return( er_default ); }
 
             }
 
         }
 
-        /* Return default value */
+        /* return default value */
         return( er_default );
 
     }
 
     double lc_read_double( int const argc, char ** argv, char const * const er_long, char const * const er_short, double er_default ) {
 
-        /* Parsing arguments and parameters */
+        /* parsing arguments and parameters */
         for( int er_parse = 0 ; er_parse < argc; er_parse ++ ) {
 
-            /* Check argument short and long forms */
+            /* check argument short and long forms */
             if ( ( strcmp( argv[er_parse], er_long ) == 0 ) || ( strcmp( argv[er_parse], er_short ) == 0 ) ) {
 
-                /* Check consistency */
+                /* check consistency */
                 if ( ( ++ er_parse ) < argc ) {
 
-                    /* Convert and return parameter */                    
+                    /* convert and return parameter */                    
                     return( atof( argv[er_parse] ) );
 
-                /* Return default value */            
+                /* return default value */            
                 } else { return( er_default ); }
 
             }
 
         }
 
-        /* Return default value */
+        /* return default value */
         return( er_default );
 
     }
