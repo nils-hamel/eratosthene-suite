@@ -247,9 +247,6 @@
 
     le_void_t er_client_loops_render( le_void_t ) {
 
-        /* ranges management */
-        er_client_calls_range();
-
         /* clear color and depth buffers */
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
@@ -314,11 +311,11 @@
     le_void_t er_client_proj_model( int er_width, int er_height ) {
 
         /* clipping plane variables */
-        le_real_t er_neac = er_geodesy_near( er_client.cl_view.vw_alt );
-        le_real_t er_farc = er_geodesy_far ( er_client.cl_view.vw_alt );
+        le_real_t er_neac = er_geodesy_near( er_view_get_alt( & er_client.cl_view ) );
+        le_real_t er_farc = er_geodesy_far ( er_view_get_alt( & er_client.cl_view ) );
 
         /* compute model scale factor */
-        er_client.cl_scale = er_geodesy_scale( er_client.cl_view.vw_alt );
+        er_client.cl_scale = er_geodesy_scale( er_view_get_alt( & er_client.cl_view ) );
 
         /* matrix mode to projection */
         glMatrixMode( GL_PROJECTION );
@@ -408,17 +405,6 @@
 
             } break;
 
-            /* point of view - key [r] */
-            case ( 0x72 ) : {
-
-                /* delete point of view */
-                er_view_delete( & er_client.cl_view );
-
-                /* create point of view */
-                er_client.cl_view = er_view_create();
-
-            } break;
-
             /* point of view - key [a] */
             case ( 0x61 ) : { 
 
@@ -485,7 +471,7 @@
         er_client.cl_y      = er_y;
 
         /* compute inertial factor */
-        er_client.cl_inertia = abs( er_client.cl_view.vw_alt - ER_ERA ) * ER_INB;
+        er_client.cl_inertia = abs( er_view_get_alt( & er_client.cl_view ) - ER_ERA ) * ER_INB;
 
         /* clamp inertial value */
         if ( er_client.cl_inertia < 5.0 ) er_client.cl_inertia = 5.0;
@@ -511,8 +497,8 @@
         } else {
 
             /* mouse event switch - update altitude */
-            if ( er_client.cl_button == 3 ) er_client.cl_view.vw_alt += er_client.cl_inertia;
-            if ( er_client.cl_button == 4 ) er_client.cl_view.vw_alt -= er_client.cl_inertia;
+            if ( er_client.cl_button == 3 ) er_view_set_alt( & er_client.cl_view, + er_client.cl_inertia );
+            if ( er_client.cl_button == 4 ) er_view_set_alt( & er_client.cl_view, - er_client.cl_inertia );
 
         }
 
@@ -527,32 +513,16 @@
         if ( er_client.cl_button == GLUT_LEFT_BUTTON ) {
 
             /* update longitude and latitude */
-            er_client.cl_view.vw_lon += ( er_y - er_client.cl_y ) * ( ER_INT * er_client.cl_inertia ) * sin( er_client.cl_view.vw_azm * ER_D2R );
-            er_client.cl_view.vw_lat += ( er_y - er_client.cl_y ) * ( ER_INT * er_client.cl_inertia ) * cos( er_client.cl_view.vw_azm * ER_D2R );
-            er_client.cl_view.vw_lon -= ( er_x - er_client.cl_x ) * ( ER_INT * er_client.cl_inertia ) * cos( er_client.cl_view.vw_azm * ER_D2R );
-            er_client.cl_view.vw_lat += ( er_x - er_client.cl_x ) * ( ER_INT * er_client.cl_inertia ) * sin( er_client.cl_view.vw_azm * ER_D2R );
+            er_view_set_plan( & er_client.cl_view, ( er_x - er_client.cl_x ) * ( ER_INT * er_client.cl_inertia ), ( er_y - er_client.cl_y ) * ( ER_INT * er_client.cl_inertia ) );
 
         } else 
         if ( er_client.cl_button == GLUT_RIGHT_BUTTON ) {
 
             /* update azimuth and gamma */
-            er_client.cl_view.vw_azm -= ( er_x - er_client.cl_x ) * ER_INR;
-            er_client.cl_view.vw_gam += ( er_y - er_client.cl_y ) * ER_INR;
+            er_view_set_azm( & er_client.cl_view, ( er_client.cl_x - er_x ) * ER_INR );
+            er_view_set_gam( & er_client.cl_view, ( er_y - er_client.cl_y ) * ER_INR );
 
         }
-
-    }
-
-    le_void_t er_client_calls_range() {
-
-        /* range clamping - cyclic */
-        er_client.cl_view.vw_lon = lc_angle( er_client.cl_view.vw_lon );
-        er_client.cl_view.vw_azm = lc_angle( er_client.cl_view.vw_azm );
-
-        /* range clamping - clamped */
-        er_client.cl_view.vw_lat = lc_clamp( er_client.cl_view.vw_lat,  -90.0,  +90.0 );
-        er_client.cl_view.vw_gam = lc_clamp( er_client.cl_view.vw_gam, -120.0, +120.0 );
-        er_client.cl_view.vw_alt = lc_clamp( er_client.cl_view.vw_alt, ER_ERL, ER_ERU );
 
     }
 

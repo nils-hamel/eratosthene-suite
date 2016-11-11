@@ -282,16 +282,7 @@
      *  \param er_y Mouse position
      */
 
-    le_void_t er_client_calls_move( int er_x, int er_y );    
-
-    /*! \brief engine callbacks - ranges
-     *
-     *  This function implements the range verification callback function. It
-     *  is typically called each time a model rendering starts. It verify that
-     *  point of view angle and distance remains in the determined ranges.
-     */
-
-    le_void_t er_client_calls_range();
+    le_void_t er_client_calls_move( int er_x, int er_y );
 
     le_void_t glutFinish( le_void_t );
 
