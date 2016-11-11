@@ -76,10 +76,19 @@
 
     }
 
-    le_real_t er_view_gat_gam( er_view_t const * const er_view ) {
+    le_real_t er_view_get_gam( er_view_t const * const er_view ) {
 
         /* return view value */
         return( er_view->vw_gam );
+
+    }
+
+    le_void_t er_view_get_pose( er_view_t const * const er_view, le_real_t * const er_pose ) {
+
+        /* assign position */
+        er_pose[0] = er_view->vw_lon * ER_D2R;
+        er_pose[1] = er_view->vw_lat * ER_D2R;
+        er_pose[2] = er_view->vw_alt;
 
     }
 

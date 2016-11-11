@@ -128,7 +128,7 @@
     source - mutator methods
  */
 
-    le_void_t er_model_set_update_cell( er_model_t * const er_model, le_address_t * const er_enum, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt ) {
+    le_void_t er_model_set_update_cell( er_model_t * const er_model, le_address_t * const er_enum, er_view_t const * const er_view ) {
 
         /* Enumerator size variables */
         le_size_t er_scale = le_address_get_size( er_enum );
@@ -152,10 +152,10 @@
             if ( er_scale > ER_MODEL_ENUM ) {
 
                 /* Compute distance */
-                er_dist = er_geodesy_distance( er_enum, er_lon, er_lat, er_alt );
+                er_dist = er_geodesy_distance( er_enum, er_view );
 
                 /* Check selection criterion */
-                if ( er_dist < er_geodesy_limit( er_alt ) ) {
+                if ( er_dist < er_geodesy_limit( er_view_get_alt( er_view ) ) ) {
 
                     /* Check depth criterion */
                     if ( fabs( er_geodesy_depth( er_dist, er_model->md_sparam, ER_MODEL_DEPTH ) - ( le_real_t ) er_scale ) < 1.0 ) {
@@ -189,7 +189,7 @@
                             if ( er_cell_io_query( er_model->md_cell, er_model->md_svip, er_model->md_port ) > 0 ) {
 
                                 /* Constrained enumeration */
-                                er_model_set_update_cell( er_model, er_enum, er_lon, er_lat, er_alt ); 
+                                er_model_set_update_cell( er_model, er_enum, er_view ); 
 
                             }
 
@@ -200,7 +200,7 @@
                 }
 
             /* Constraintless enumeration */
-            } else { er_model_set_update_cell( er_model, er_enum, er_lon, er_lat, er_alt ); }
+            } else { er_model_set_update_cell( er_model, er_enum, er_view ); }
 
         }
 
@@ -309,7 +309,11 @@
     source - model display methods
  */
 
-    le_void_t er_model_display_cell( er_model_t * const er_model, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt, le_real_t const er_azm, le_real_t const er_gam ) {
+    le_void_t er_model_display_cell( er_model_t const * const er_model, er_view_t const * const er_view ) {
+
+        /* view position variables */
+        le_real_t er_lon = er_view_get_lon( er_view );
+        le_real_t er_lat = er_view_get_lat( er_view );
 
         /* Optimisation variables */
         le_real_t er_cosl = cos( - er_lon * ER_D2R );
@@ -321,13 +325,13 @@
         le_real_t * er_edge = NULL;
 
         /* Motion management - tilt rotation */
-        glRotated( - er_gam, 1.0, 0.0, 0.0 );
+        glRotated( - er_view_get_gam( er_view ), 1.0, 0.0, 0.0 );
 
         /* Motion management - altimetric translation */
-        glTranslated( 0.0, 0.0, - er_alt + ER_ERA );
+        glTranslated( 0.0, 0.0, - er_view_get_alt( er_view ) + ER_ERA );
 
         /* Motion management - azimuth rotation */
-        glRotated( + er_azm, 0.0, 0.0, 1.0 );
+        glRotated( + er_view_get_azm( er_view ), 0.0, 0.0, 1.0 );
 
         /* Display model cells */
         for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
@@ -364,23 +368,23 @@
 
     }
 
-    le_void_t er_model_display_earth( le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt, le_real_t const er_azm, le_real_t const er_gam ) {
+    le_void_t er_model_display_earth( er_view_t const * const er_view ) {
 
         /* Motion management - tilt rotation */
-        glRotated( - er_gam, 1.0, 0.0, 0.0 );
+        glRotated( - er_view_get_gam( er_view ), 1.0, 0.0, 0.0 );
 
         /* Motion management - altimetric translation */
-        glTranslated( 0.0, 0.0, - er_alt + ER_ERA );
+        glTranslated( 0.0, 0.0, - er_view_get_alt( er_view ) + ER_ERA );
 
         /* Motion management - azimuth rotation */
-        glRotated( + er_azm, 0.0, 0.0, 1.0 );
+        glRotated( + er_view_get_azm( er_view ), 0.0, 0.0, 1.0 );
 
         /* Earth wireframe - centering */
         glTranslated( 0.0, 0.0, - ER_ERA );
 
         /* Motion management - planimetric rotation */
-        glRotated( + er_lat, 1.0, 0.0, 0.0 );
-        glRotated( - er_lon, 0.0, 1.0, 0.0 );
+        glRotated( + er_view_get_lat( er_view ), 1.0, 0.0, 0.0 );
+        glRotated( - er_view_get_lon( er_view ), 0.0, 1.0, 0.0 );
 
         /* Earth wireframe - orientation */
         glRotated( 90.0, 1.0, 0.0, 0.0 );

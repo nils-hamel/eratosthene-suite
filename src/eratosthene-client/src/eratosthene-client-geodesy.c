@@ -24,44 +24,41 @@
     source - distance methods
  */
 
-    le_real_t er_geodesy_distance( le_address_t const * const er_cell, le_real_t const er_lon, le_real_t er_lat, le_real_t er_alt ) {
+    le_real_t er_geodesy_distance( le_address_t const * const er_cell, er_view_t const * const er_view ) {
 
-        /* Static array variables */
-        static le_real_t er_pose[12] = { 0.0 };
+        /* computation array variables */
+        le_real_t er_pose[12] = { 0.0 };
 
-        /* Scale half variables */
-        le_real_t er_scale = _LE_SIZE_L( 1 ) << ( le_address_get_size( er_cell ) + 1 );;
+        /* half-cell distance variables */
+        le_real_t er_scale = ( le_real_t ) ( _LE_SIZE_L( 1 ) << ( le_address_get_size( er_cell ) + 1 ) );
 
-        /* Scale shift variables */
+        /* half-cell shift variables */
         le_real_t er_shift = LE_GEODESY_LRAN / er_scale;
 
-        /* Initialise array elements */
-        er_pose[3] = 0.0, er_pose[4] = 0.0, er_pose[5] = 0.0;
-
-        /* Initialise array elements */
-        er_pose[9] = er_lon, er_pose[10] = er_lat, er_pose[11] = er_alt;
-
-        /* Retrieve address edge */
+        /* retrieve address edge */
         le_address_get_pose( er_cell, er_pose + 3 );
 
-        /* Convert position to cartesian coordinates */
+        /* retrieve view position */
+        er_view_get_pose( er_view, er_pose + 9 );
+
+        /* convert cell position - ellipsoidal to cartesian */
         er_pose[1] = er_pose[ 5] + ER_ERA + ( ER_ERA * LE_2P ) / er_scale;
         er_pose[0] = er_pose[ 1] * cos( er_pose[ 4] += er_shift );
         er_pose[2] = er_pose[ 0] * cos( er_pose[ 3] += er_shift );
         er_pose[0] = er_pose[ 0] * sin( er_pose[ 3] );
         er_pose[1] = er_pose[ 1] * sin( er_pose[ 4] );
 
-        /* Convert position to cartesian coordinates */
+        /* convert view position - ellipsoidal to cartesian */
         er_pose[7] = er_pose[11];
         er_pose[6] = er_pose[ 7] * cos( er_pose[10] );
         er_pose[8] = er_pose[ 6] * cos( er_pose[ 9] );
         er_pose[6] = er_pose[ 6] * sin( er_pose[ 9] );
         er_pose[7] = er_pose[ 7] * sin( er_pose[10] );
-
-        /* Compute respective differences */
+        
+        /* compute dimensional differences */
         er_pose[2] -= er_pose[8], er_pose[0] -= er_pose[6], er_pose[1] -= er_pose[7];
 
-        /* Return distance */
+        /* return computed distance */
         return( sqrt( er_pose[2] * er_pose[2] + er_pose[0] * er_pose[0] + er_pose[1] * er_pose[1] ) );
 
     }

@@ -44,6 +44,7 @@
  */
 
     # include "eratosthene-client-common.h"
+    # include "eratosthene-client-view.h"
 
 /*
     header - external includes
@@ -67,10 +68,6 @@
     # define ER_IML ( 1.0 / 10.0 )
     # define ER_IMU ( 10.0 )
 
-    /* Define conversion factors */
-    # define ER_D2R ( 3.1415926535 / 180.0 )
-    # define ER_R2D ( 180.0 / 3.1415926535 )
-
 /*
     header - preprocessor macros
  */
@@ -87,7 +84,7 @@
     header - function prototypes
  */
 
-    le_real_t er_geodesy_distance( le_address_t const * const er_cell, le_real_t const er_lon, le_real_t er_lat, le_real_t er_alt );
+    le_real_t er_geodesy_distance( le_address_t const * const er_cell, er_view_t const * const er_view );
 
     le_real_t er_geodesy_limit( le_real_t const er_altitude );
 

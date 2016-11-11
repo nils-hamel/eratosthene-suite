@@ -98,7 +98,9 @@
 
     le_real_t er_view_get_azm( er_view_t const * const er_view );
 
-    le_real_t er_view_gat_gam( er_view_t const * const er_view );
+    le_real_t er_view_get_gam( er_view_t const * const er_view );
+
+    le_void_t er_view_get_pose( er_view_t const * const er_view, le_real_t * const er_pose );
 
     le_void_t er_view_set_weight( er_view_t * const er_view, le_real_t const er_weight, er_view_t const * const er_value );
 

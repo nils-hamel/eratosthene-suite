@@ -260,7 +260,7 @@
         glPushMatrix(); {
 
             /* display earth */
-            er_model_display_earth( er_client.cl_view.vw_lon, er_client.cl_view.vw_lat, er_client.cl_view.vw_alt, er_client.cl_view.vw_azm, er_client.cl_view.vw_gam );
+            er_model_display_earth( & er_client.cl_view );
 
         } glPopMatrix();
 
@@ -268,7 +268,7 @@
         glPushMatrix(); {
 
             /* display cells */
-            er_model_display_cell( & ( er_client.cl_model ), er_client.cl_view.vw_lon, er_client.cl_view.vw_lat, er_client.cl_view.vw_alt, er_client.cl_view.vw_azm, er_client.cl_view.vw_gam );
+            er_model_display_cell( & er_client.cl_model, & er_client.cl_view );
 
         } glPopMatrix();
 
@@ -297,7 +297,7 @@
         er_enum = er_times_get( & er_client.cl_times );
 
         /* update model cells */
-        er_model_set_update_cell( & er_client.cl_model, & er_enum, er_client.cl_view.vw_lon * ER_D2R, er_client.cl_view.vw_lat * ER_D2R, er_client.cl_view.vw_alt );
+        er_model_set_update_cell( & er_client.cl_model, & er_enum, & er_client.cl_view );
 
         /* server queries */
         er_model_set_update_query( & er_client.cl_model );
