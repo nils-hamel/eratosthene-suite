@@ -54,10 +54,10 @@
     header - preprocessor definitions
  */
 
-    /* Define pseudo-constructor */
+    /* define pseudo-constructor */
     # define ER_CELL_C     { _LE_FALSE, _LE_FALSE, LE_ADDRESS_C, LE_ADDRESS_C, 0, NULL, NULL, { 0.0 } }
 
-    /* Define cell array size */
+    /* define cell array size */
     # define ER_CELL_ARRAY ( 786432 )
 
 /*

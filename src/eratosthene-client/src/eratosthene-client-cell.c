@@ -26,32 +26,32 @@
 
     er_cell_t er_cell_create( le_void_t ) {
 
-        /* Created structure variables */
+        /* created structure variables */
         er_cell_t er_cell = ER_CELL_C;
 
-        /* Allocate geodetic array memory */
+        /* allocate geodetic array memory */
         er_cell.ce_pose = malloc( sizeof( le_real_t ) * ER_CELL_ARRAY );
 
-        /* Allocate colorimetric array memory */
+        /* allocate colorimetric array memory */
         er_cell.ce_data = malloc( sizeof( le_data_t ) * ER_CELL_ARRAY );
 
-        /* Return created structure */
+        /* return created structure */
         return( er_cell );
 
     }
 
     le_void_t er_cell_delete( er_cell_t * const er_cell ) {
 
-        /* Deleted structure variables */
+        /* deleted structure variables */
         er_cell_t er_reset = ER_CELL_C;
 
-        /* Check array state - memory unallocation */
+        /* check array state - memory unallocation */
         if ( er_cell->ce_pose != NULL ) free( er_cell->ce_pose );
 
-        /* Check array state - memory unallocation */
+        /* check array state - memory unallocation */
         if ( er_cell->ce_data != NULL ) free( er_cell->ce_data );
 
-        /* Delete structure */
+        /* delete structure */
         * ( er_cell ) = er_reset;
 
     }
@@ -62,56 +62,56 @@
 
     le_enum_t er_cell_get_flag( er_cell_t const * const er_cell ) {
 
-        /* Return cell flag */
+        /* return cell flag */
         return( er_cell->ce_flag );
 
     }
 
     le_enum_t er_cell_get_draw( er_cell_t const * const er_cell ) {
 
-        /* Return cell flag */
+        /* return cell flag */
         return( er_cell->ce_draw );
 
     }
 
     le_enum_t er_cell_get_push( er_cell_t const * const er_cell ) {
 
-        /* Return pushed address state */
+        /* return pushed address state */
         return( le_address_get_size( & er_cell->ce_push ) != 0 ? _LE_TRUE : _LE_FALSE );
 
     }
 
     le_enum_t er_cell_get_match( er_cell_t const * const er_addr, er_cell_t const * const er_push ) {
 
-        /* Return comparison result */
+        /* return comparison result */
         return( le_address_get_equal( & er_addr->ce_addr, & er_push->ce_push ) );
 
     }
 
     le_size_t er_cell_get_size( er_cell_t const * const er_cell ) {
 
-        /* Return cell size */
+        /* return cell size */
         return( er_cell->ce_size );
 
     }
 
     le_real_t * er_cell_get_pose( er_cell_t const * const er_cell ) {
 
-        /* Return cell geodetic array pointer */
+        /* return cell geodetic array pointer */
         return( ( le_real_t * ) er_cell->ce_pose );
 
     }
 
     le_data_t * er_cell_get_data( er_cell_t const * const er_cell ) {
 
-        /* Return cell colorimetric array pointer */
+        /* return cell colorimetric array pointer */
         return( ( le_data_t * ) er_cell->ce_data );
 
     }
 
     le_real_t * er_cell_get_edge( er_cell_t const * const er_cell ) {
 
-        /* Return cell edge array pointer */
+        /* return cell edge array pointer */
         return( ( le_real_t * ) er_cell->ce_edge );
 
     }
@@ -122,35 +122,35 @@
 
     le_void_t er_cell_set_flag( er_cell_t * const er_cell, le_enum_t const er_flag ) {
 
-        /* Assign cell flag */
+        /* assign cell flag */
         er_cell->ce_flag = er_flag;
 
     }
 
     le_void_t er_cell_set_draw( er_cell_t * const er_cell, le_enum_t const er_draw ) {
 
-        /* Assign cell flag */
+        /* assign cell flag */
         er_cell->ce_draw = er_draw;
 
     }
 
     le_void_t er_cell_set_push( er_cell_t * const er_cell, le_address_t const * const er_address ) {
 
-        /* Compute and assign cell address */
+        /* compute and assign cell address */
         er_cell->ce_push = * er_address;
 
     }
 
     le_void_t er_cell_set_pop( er_cell_t * const er_cell ) {
 
-        /* Clear pushed address */
+        /* clear pushed address */
         le_address_set_size( & er_cell->ce_push, 0 );
 
     }
 
     le_void_t er_cell_set_swap( er_cell_t * const er_addr, er_cell_t * const er_push ) {
 
-        /* Swap address and pushed address */
+        /* swap address and pushed address */
         er_addr->ce_addr = er_push->ce_push;
 
     }
@@ -161,111 +161,111 @@
 
     le_size_t er_cell_io_query( er_cell_t * const er_cell, le_char_t const * const er_ip, le_sock_t const er_port ) {
 
-        /* Returned value variables */
+        /* returned value variables */
         le_size_t er_return = 0;
 
-        /* Socket variables */
+        /* socket variables */
         le_sock_t er_socket = _LE_SOCK_NULL;
 
-        /* Check socket state */
+        /* check socket state */
         if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
 
-            /* Server/client handshake */
+            /* server/client handshake */
             if ( le_client_handshake( er_socket, LE_NETWORK_MODE_QMOD ) == LE_ERROR_SUCCESS ) {
 
-                /* Read cell from server */
+                /* read cell from server */
                 er_return = er_cell_io_read( er_cell, er_socket );
 
             } 
 
-            /* Delete client handle */
+            /* delete client handle */
             le_client_delete( er_socket );
 
         }
 
-        /* Send cell size */
+        /* send cell size */
         return( er_return );
 
     }
 
     le_size_t er_cell_io_read( er_cell_t * const er_cell, le_sock_t const er_socket ) {
 
-        /* Redundant reading variables */
+        /* redundant reading variables */
         le_size_t er_read = 0;
 
-        /* Reading variables */
+        /* reading variables */
         le_size_t er_parse = 0;
         le_size_t er_count = 0;
         le_size_t er_csize = 0;
         le_size_t er_track = 0;
 
-        /* Socket i/o bridge variables */
+        /* socket i/o bridge variables */
         le_size_t er_bridge = 0;
 
-        /* Array pointer variables */
+        /* array pointer variables */
         le_real_t * er_pap = NULL;
         le_data_t * er_dap = NULL;
 
-        /* Socket i/o buffer variables */
+        /* socket i/o buffer variables */
         static le_byte_t er_buffer[LE_NETWORK_SB_STRM] = LE_NETWORK_C;
 
-        /* Write query address on socket */
+        /* write query address on socket */
         le_address_io_write( & er_cell->ce_addr, er_socket );
 
-        /* Extract cell edge components */
+        /* extract cell edge components */
         le_address_get_pose( & er_cell->ce_addr, er_cell->ce_edge );
 
-        /* Compute edge cartesian coordinates */
+        /* compute edge cartesian coordinates */
         er_cell->ce_edge[2] = LE_GEODESY_WGS84_A * cos( er_cell->ce_edge[1] ) * cos( er_cell->ce_edge[0] );
         er_cell->ce_edge[0] = LE_GEODESY_WGS84_A * cos( er_cell->ce_edge[1] ) * sin( er_cell->ce_edge[0] );
         er_cell->ce_edge[1] = LE_GEODESY_WGS84_A * sin( er_cell->ce_edge[1] );
 
-        /* Reset cell array size */
+        /* reset cell array size */
         er_cell->ce_size = 0;
 
-        /* Reading query array */
+        /* reading query array */
         while ( er_read < _LE_USE_RETRY ) {
 
-            /* Read array from socket */
+            /* read array from socket */
             if ( ( er_count = read( er_socket, er_buffer + er_bridge, _LE_USE_MTU ) + er_bridge ) >= LE_ARRAY_RFL ) {
 
-                /* Check cell limitation */
+                /* check cell limitation */
                 if ( ( er_csize = er_cell->ce_size + ( er_count / LE_ARRAY_RFL ) * 3 ) < ER_CELL_ARRAY ) {
 
-                    /* Parsing received bloc */
+                    /* parsing received bloc */
                     for ( er_parse = 0; er_parse < ( er_count / LE_ARRAY_RFL ) * LE_ARRAY_RFL; er_track += 3, er_parse += LE_ARRAY_RFL ) {
 
-                        /* Compute array pointers */
+                        /* compute array pointers */
                         er_pap = ( le_real_t * ) ( er_buffer + er_parse );
                         er_dap = ( le_data_t * ) ( er_pap + 3 );
 
-                        /* Extract element data */
+                        /* extract element data */
                         er_cell->ce_data[er_track    ] = er_dap[0];
                         er_cell->ce_data[er_track + 1] = er_dap[1];
                         er_cell->ce_data[er_track + 2] = er_dap[2];                        
 
-                        /* Optimised element vertex extraction */
+                        /* optimised element vertex extraction */
                         er_cell->ce_pose[er_track + 1] = - er_cell->ce_edge[1] + sin( er_pap[1] ) * ( er_pap[2] += LE_GEODESY_WGS84_A );
                         er_cell->ce_pose[er_track    ] = - er_cell->ce_edge[0] + er_pap[2] * sin( er_pap[0] ) * ( er_pap[1] = cos( er_pap[1] ) );
                         er_cell->ce_pose[er_track + 2] = - er_cell->ce_edge[2] + er_pap[2] * er_pap[1] * cos( er_pap[0] );
 
                     }
 
-                    /* Cell size management */
+                    /* cell size management */
                     er_cell->ce_size = er_csize;
 
-                    /* Bridge management */
+                    /* bridge management */
                     if ( ( er_bridge = ( er_count % LE_ARRAY_RFL ) ) != 0 ) memcpy( er_buffer, er_buffer + ( er_count - er_bridge ), er_bridge );
 
-                /* Reset redundancy */
+                /* reset redundancy */
                 er_read = 0; } else { er_read = _LE_USE_RETRY; }
                 
-            /* Update redundancy */
+            /* update redundancy */
             } else { er_read ++; }
 
         }
 
-        /* Send cell size */
+        /* send cell size */
         return( er_cell->ce_size );
 
     }

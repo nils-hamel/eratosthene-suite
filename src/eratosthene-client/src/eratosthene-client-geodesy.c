@@ -69,30 +69,30 @@
 
     le_real_t er_geodesy_limit( le_real_t const er_altitude ) {
 
-        /* Computation variables */
+        /* computation variables */
         le_real_t er_normal = er_altitude / LE_GEODESY_WGS84_A - 1.0;
 
-        /* Return evaluation */
+        /* return evaluation */
         return( er_altitude * ( 1.0 - 0.75 * exp( - LE_2P * er_normal * er_normal ) ) );
 
     }
 
     le_real_t er_geodesy_depth( le_real_t const er_distance, le_size_t const er_sparam, le_size_t const er_depth ) {
 
-        /* Clamping variables */
+        /* clamping variables */
         le_real_t er_clamp = er_sparam - er_depth - 2;
 
-        /* Computation variables */
+        /* computation variables */
         le_real_t er_normal = log( ( LE_GEODESY_WGS84_A / 2.0 ) / ( er_distance * 30.0 ) ) / M_LN2 + 9.7; // 9.5
 
-        /* Return evaluation */
+        /* return evaluation */
         return( er_normal < 5 ? 5 : ( er_normal > er_clamp ? er_clamp : er_normal ) );
 
     }
 
     le_real_t er_geodesy_scale( le_real_t const er_altitude ) {
 
-        /* Computation variables */
+        /* computation variables */
         le_real_t er_normal = er_altitude / LE_GEODESY_WGS84_A - 1.0;
 
         /* Return evaluation */
@@ -102,20 +102,20 @@
 
     le_real_t er_geodesy_near( le_real_t const er_altitude ) {
 
-        /* Computation variables */
+        /* computation variables */
         le_real_t er_normal = pow( fabs( er_altitude - LE_GEODESY_WGS84_A ) / ( LE_GEODESY_WGS84_A * 2.0 ), 4 );
 
-        /* Return evaluation */
+        /* return evaluation */
         return( LE_GEODESY_WGS84_A * er_normal * er_geodesy_scale( er_altitude ) + 1.0 );
 
     }
 
     le_real_t er_geodesy_far( le_real_t const er_altitude ) {
 
-        /* Computation variables */
+        /* computation variables */
         le_real_t er_normal = er_geodesy_scale( er_altitude );
 
-        /* Return evaluation */
+        /* return evaluation */
         return( ( er_altitude - ( LE_GEODESY_WGS84_A / 2.0 ) - ( LE_GEODESY_WGS84_A / 2.5 ) * pow( er_normal, 20 ) ) * er_normal );
 
     }
