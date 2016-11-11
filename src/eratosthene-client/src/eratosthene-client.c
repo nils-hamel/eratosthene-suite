@@ -381,34 +381,91 @@
         /* switch on keycode */
         switch( er_keycode ) {
 
-            /* execution mode - exit */
-            case ( 0x1b ) : { er_client.cl_loops = ER_COMMON_EXIT; } break;
+            /* execution mode - key [esc] */
+            case ( 0x1b ) : { 
 
-            /* execution mode - movie */
-            case ( 0x70 ) : { er_client.cl_loops = ER_COMMON_MOVIE; } break;
+                /* update execution mode */
+                er_client.cl_loops = ER_COMMON_EXIT; 
 
-            /* update point size */
+            } break;
+
+            /* execution mode - key [p] */
+            case ( 0x70 ) : { 
+
+                /* update execution mode */
+                er_client.cl_loops = ER_COMMON_MOVIE; 
+
+            } break;
+
+            /* graphical options - key [1-4] */
             case ( 0x31 ) :
             case ( 0x32 ) :
             case ( 0x33 ) : 
-            case ( 0x34 ) : { glPointSize( er_keycode - 0x30 ); } break;
+            case ( 0x34 ) : { 
 
-            /* update point of view */
-            case ( 0x63 ) : { er_client.cl_view.vw_alt = ER_ERD; }
-            case ( 0x78 ) : { er_client.cl_view.vw_azm = 0.0; }
-            case ( 0x79 ) : { er_client.cl_view.vw_gam = 0.0; } break;
+                /* update opengl point size */
+                glPointSize( er_keycode - 0x30 );
 
-            /* update point of view */
-            case ( 0x61 ) : { er_times_set( & er_client.cl_times, 0 ); } break;
-            case ( 0x73 ) : { er_times_set( & er_client.cl_times, 1 ); } break;
+            } break;
 
-            /* update point of view */
-            case ( 0x71 ) : { er_times_set_reset( & er_client.cl_times, 0 ); } break;
-            case ( 0x77 ) : { er_times_set_reset( & er_client.cl_times, 1 ); } break;
+            /* point of view - key [r] */
+            case ( 0x72 ) : {
 
-            /* update movie stack */
-            case ( 0x69 ) : { er_movie_set_clear( & er_client.cl_movie ); } break;
-            case ( 0x6f ) : { er_movie_set( & er_client.cl_movie, & er_client.cl_view ); } break;
+                /* delete point of view */
+                er_view_delete( & er_client.cl_view );
+
+                /* create point of view */
+                er_client.cl_view = er_view_create();
+
+            } break;
+
+            /* point of view - key [a] */
+            case ( 0x61 ) : { 
+
+                /* set selected time */
+                er_times_set( & er_client.cl_times, 0 ); 
+
+            } break;
+
+            /* point of view - key [s] */
+            case ( 0x73 ) : { 
+
+                /* set selected time */
+                er_times_set( & er_client.cl_times, 1 );
+
+            } break;
+
+            /* point of view - key [q] */
+            case ( 0x71 ) : { 
+
+                /* reselect time */
+                er_times_set_reset( & er_client.cl_times, 0 ); 
+
+            } break;
+
+            /* point of view - key [w] */
+            case ( 0x77 ) : { 
+
+                /* reselect time */
+                er_times_set_reset( & er_client.cl_times, 1 ); 
+
+            } break;
+
+            /* movie creation - key [i] */
+            case ( 0x69 ) : { 
+
+                /* unstacking control points */
+                er_movie_set_clear( & er_client.cl_movie );
+
+            } break;
+
+            /* movie creation - key [o] */
+            case ( 0x6f ) : {
+
+                /* stack view as control point */
+                er_movie_set( & er_client.cl_movie, & er_client.cl_view );
+
+            } break;
 
         };
 
