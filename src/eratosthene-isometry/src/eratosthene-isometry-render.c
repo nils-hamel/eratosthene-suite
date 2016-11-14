@@ -81,7 +81,6 @@
         Window er_wroot = 0;
 
         /* display attribute variables */
-        //GLint er_vattrib[] = { GLX_RGBA, GLX_DEPTH_SIZE, 32, GLX_DOUBLEBUFFER, None };
         GLint er_vattrib[] = { GLX_RGBA, None };
 
         /* create display handle */
