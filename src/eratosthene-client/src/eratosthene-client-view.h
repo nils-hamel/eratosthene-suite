@@ -54,10 +54,10 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_VIEW_C { 0.0, 0.0, 0.0, 0.0, 0.0 }
+    # define ER_VIEW_C { 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0 }
 
     /* define pseudo-constructor - default point of view */
-    # define ER_VIEW_D { 12.335435, 45.438531, LE_GEODESY_WGS84_A * 1.5, 0.0, 0.0 }
+    # define ER_VIEW_D { 12.335435, 45.438531, LE_GEODESY_WGS84_A * 1.5, 0.0, 0.0, 1, 0, 950486422, 0, 31536000, 31536000 }
 
 /*
     header - preprocessor macros
@@ -77,7 +77,14 @@
         le_real_t vw_lat;
         le_real_t vw_alt;
         le_real_t vw_azm;
-        le_real_t vw_gam; 
+        le_real_t vw_gam;
+
+        le_enum_t vw_mod;
+        le_enum_t vw_act;
+        le_time_t vw_tia;
+        le_time_t vw_tib;
+        le_time_t vw_zta;
+        le_time_t vw_ztb;
 
     } er_view_t;
 
@@ -102,6 +109,16 @@
 
     le_void_t er_view_get_pose( er_view_t const * const er_view, le_real_t * const er_pose );
 
+    le_time_t er_view_get_time( er_view_t const * const er_view, le_enum_t const er_time );
+
+    le_address_t er_view_get_times( er_view_t const * const er_view );
+
+    le_time_t er_view_get_area( er_view_t const * const er_view, le_enum_t const er_time );
+
+    le_enum_t er_view_get_active( er_view_t const * const er_view );
+
+    le_enum_t er_view_get_mode( er_view_t const * const er_view );
+
     le_void_t er_view_set_plan( er_view_t * const er_view, le_real_t const er_xvalue, le_real_t const er_yvalue );
 
     le_void_t er_view_set_alt( er_view_t * const er_view, le_real_t const er_value );
@@ -113,6 +130,14 @@
     le_void_t er_view_set_weight( er_view_t * const er_view, le_real_t const er_weight, er_view_t const * const er_value );
 
     le_void_t er_view_set_devide( er_view_t * const er_view, le_real_t const er_value );
+
+    le_void_t er_view_set_time( er_view_t * const er_view, le_real_t const er_value );
+
+    le_void_t er_view_set_area( er_view_t * const er_view, le_real_t const er_value );
+
+    le_void_t er_view_set_swap( er_view_t * const er_view );
+
+    le_void_t er_view_set_mode( er_view_t * const er_view, le_enum_t const er_mode );
 
 /*
     header - C/C++ compatibility

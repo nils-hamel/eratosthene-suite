@@ -44,7 +44,7 @@
         }
 
         /* create client times */
-        if ( ( er_client.cl_times = er_times_create( er_ip, er_port ) )._status == _LE_FALSE ) {
+        if ( ( er_client.cl_times = er_times_create() )._status == _LE_FALSE ) {
 
             /* return created structure */
             return( er_client._status = _LE_FALSE, er_client );
@@ -279,7 +279,7 @@
         glPushMatrix(); {
 
             /* display interface */
-            er_times_display( & er_client.cl_times );
+            er_times_display( & er_client.cl_times, & er_client.cl_view );
 
         } glPopMatrix();
 
@@ -288,10 +288,7 @@
     le_void_t er_client_loops_update( le_void_t ) {
 
         /* address variables */
-        le_address_t er_enum = LE_ADDRESS_C;
-
-        /* compose query times */
-        er_enum = er_times_get( & er_client.cl_times );
+        le_address_t er_enum = er_view_get_times( & er_client.cl_view );
 
         /* update model cells */
         er_model_set_update_cell( & er_client.cl_model, & er_enum, & er_client.cl_view );
@@ -405,35 +402,35 @@
 
             } break;
 
-            /* point of view - key [a] */
-            case ( 0x61 ) : { 
+            /* time management - key [TAB] */
+            case ( 0x09 ) : {
 
-                /* set selected time */
-                er_times_set( & er_client.cl_times, 0 ); 
-
-            } break;
-
-            /* point of view - key [s] */
-            case ( 0x73 ) : { 
-
-                /* set selected time */
-                er_times_set( & er_client.cl_times, 1 );
+                /* swap active time */
+                er_view_set_swap( & er_client.cl_view );
 
             } break;
 
-            /* point of view - key [q] */
-            case ( 0x71 ) : { 
+            /* time management - key [q] */
+            case ( 0x71 ) : {
 
-                /* reselect time */
-                er_times_set_reset( & er_client.cl_times, 0 ); 
+                /* update time mode */
+                er_view_set_mode( & er_client.cl_view, 1 );
 
             } break;
 
-            /* point of view - key [w] */
-            case ( 0x77 ) : { 
+            /* time management - key [w] */
+            case ( 0x77 ) : {
 
-                /* reselect time */
-                er_times_set_reset( & er_client.cl_times, 1 ); 
+                /* update time mode */
+                er_view_set_mode( & er_client.cl_view, 2 );
+
+            } break;
+
+            /* time management - key [e] */
+            case ( 0x65 ) : {
+
+                /* update time mode */
+                er_view_set_mode( & er_client.cl_view, 3 );
 
             } break;
 
@@ -483,14 +480,14 @@
         if ( glutGetModifiers() == ( GLUT_ACTIVE_CTRL | GLUT_ACTIVE_ALT ) ) {
 
             /* mouse event switch - update time zoom */
-            if ( er_client.cl_button == 3 ) er_times_set_zoom( & er_client.cl_times, 1.0990 );
-            if ( er_client.cl_button == 4 ) er_times_set_zoom( & er_client.cl_times, 0.9099 );
+            if ( er_client.cl_button == 3 ) er_view_set_area( & er_client.cl_view, 1.0990 );
+            if ( er_client.cl_button == 4 ) er_view_set_area( & er_client.cl_view, 0.9099 );
 
         } else if ( glutGetModifiers() == GLUT_ACTIVE_ALT ) {
 
             /* mouse event switch - update time position */
-            if ( er_client.cl_button == 3 ) er_times_set_pose( & er_client.cl_times, + 0.02 );
-            if ( er_client.cl_button == 4 ) er_times_set_pose( & er_client.cl_times, - 0.02 );
+            if ( er_client.cl_button == 3 ) er_view_set_time( & er_client.cl_view, + 0.02 );
+            if ( er_client.cl_button == 4 ) er_view_set_time( & er_client.cl_view, - 0.02 );
 
         } else {
 

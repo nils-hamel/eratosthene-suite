@@ -92,6 +92,71 @@
 
     }
 
+    le_time_t er_view_get_time( er_view_t const * const er_view, le_enum_t const er_time ) {
+
+        /* check asked time */
+        if ( er_time == 0 ) {
+
+            /* return asked time */
+            return( er_view->vw_tia );
+
+        } else {
+
+            /* return asked time */
+            return( er_view->vw_tib );
+
+        }
+
+    }
+
+    le_address_t er_view_get_times( er_view_t const * const er_view ) {
+
+        /* returned structure variables */
+        le_address_t er_addr = LE_ADDRESS_C;
+
+        /* assign address mode */
+        le_address_set_mode( & er_addr, er_view->vw_mod );
+
+        /* assign address times */
+        le_address_set_time( & er_addr, 0, er_view->vw_tia );
+        le_address_set_time( & er_addr, 1, er_view->vw_tib );
+
+        /* return address structure */
+        return( er_addr );
+
+    }
+
+    le_time_t er_view_get_area( er_view_t const * const er_view, le_enum_t const er_time ) {
+
+        /* check asked zoom */
+        if ( er_time == 0 ) {
+
+            /* return asked zoom */
+            return( er_view->vw_zta );
+
+        } else {
+
+            /* return asked zoom */
+            return( er_view->vw_ztb );
+
+        }
+
+    }
+
+    le_enum_t er_view_get_active( er_view_t const * const er_view ) {
+
+        /* return active index */
+        return( er_view->vw_act );
+
+    }
+
+    le_enum_t er_view_get_mode( er_view_t const * const er_view ) {
+
+        /* return time mode */
+        return( er_view->vw_mod );
+
+    }
+
 /*
     source - mutator methods
  */
@@ -156,6 +221,54 @@
         er_view->vw_alt /= er_value;
         er_view->vw_azm /= er_value;
         er_view->vw_gam /= er_value;
+
+    }
+
+    le_void_t er_view_set_time( er_view_t * const er_view, le_real_t const er_value ) {
+
+        /* check active time */
+        if ( er_view->vw_act == 0 ) {
+
+            /* update time value */
+            er_view->vw_tia += ( le_real_t ) er_view->vw_zta * er_value;
+
+        } else {
+
+            /* update time value */
+            er_view->vw_tib += ( le_real_t ) er_view->vw_ztb * er_value;
+
+        }
+
+    }
+
+    le_void_t er_view_set_area( er_view_t * const er_view, le_real_t const er_value ) {
+
+        /* check active time */
+        if ( er_view->vw_act == 0 ) {
+
+            /* update zoom value */
+            er_view->vw_zta *= er_value;
+
+        } else {
+
+            /* update zoom value */
+            er_view->vw_ztb *= er_value;
+
+        }
+
+    }
+
+    le_void_t er_view_set_swap( er_view_t * const er_view ) {
+
+        /* swap active time */
+        er_view->vw_act = 1 - er_view->vw_act;
+
+    }
+
+    le_void_t er_view_set_mode( er_view_t * const er_view, le_enum_t const er_mode ) {
+
+        /* update mode */
+        er_view->vw_mod = er_mode;
 
     }
 

@@ -44,6 +44,7 @@
  */
 
     # include "eratosthene-client-common.h"
+    # include "eratosthene-client-view.h"
 
 /*
     header - external includes
@@ -54,36 +55,22 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_TIMES_C           { NULL, _LE_USE_PORT, _LE_TIME_NULL, LE_ARRAY_C, _LE_TIME_NULL, ER_TIMES_DAY * _LE_TIME_L( 365 ), 0, { _LE_SIZE_NULL, _LE_SIZE_NULL }, 0, NULL, _LE_TRUE }
-
-    /* define view count */
-    # define ER_TIMES_VIEW        ( 2 )
+    # define ER_TIMES_C          { 0, 0, 0, 0, NULL, _LE_TRUE }
 
     /* define standard intervalle */
-    # define ER_TIMES_DAY         ( _LE_TIME_L( 86400 ) )
-
-    /* define graduation configuration */
-    # define ER_TIMES_GRAD_SCALE  ( _LE_TIME_L( 1000000000 ) )
-    # define ER_TIMES_GRAP_DEPTH  ( 5 )
-
-    /* define zoom limitations */
-    # define ER_TIMES_ZOOM_MIN    ( ER_TIMES_DAY * _LE_TIME_L(     5 ) )
-    # define ER_TIMES_ZOOM_MAX    ( ER_TIMES_DAY * _LE_TIME_L( 91250 ) )
+    # define ER_TIMES_DAY        ( 86400 )
 
     /* define string justification flags */
-    # define ER_TIMES_JUST_LEFT   ( 0 )
-    # define ER_TIMES_JUST_RIGHT  ( 1 )
-    # define ER_TIMES_JUST_CENTER ( 2 )
+    # define ER_TIMES_LEFT       ( 0 )
+    # define ER_TIMES_RIGHT      ( 1 )
+    # define ER_TIMES_CENTER     ( 2 )
 
 /*
     header - preprocessor macros
  */
 
     /* define rounding macro */
-    # define ER_TIMES_ROUND(t,r)  ( ( ( t / r ) * r ) + r )
-
-    /* define SRTM macro (default) */
-    # define ER_TIMES_SRTM(t)     ( ( _LE_TIME_L( 950486422 ) / t ) * t )
+    # define ER_TIMES_ROUND(t,r) ( ( ( ( t ) / ( r ) ) * ( r ) ) + ( r ) )
 
 /*
     header - type definition
@@ -95,19 +82,12 @@
 
     typedef struct er_times_struct {
 
-        le_char_t * tm_svip;
-        le_sock_t   tm_port;
+        le_size_t   tm_width;
+        le_size_t   tm_height;
+        le_size_t   tm_length;
+        le_size_t   tm_offset;
 
-        le_time_t   tm_tparam;
-        le_array_t  tm_tarray;
-
-        le_time_t   tm_pose;
-        le_time_t   tm_zoom;
-        le_size_t   tm_near;
-        le_size_t   tm_view[ER_TIMES_VIEW];
-
-        le_size_t   tm_size;
-        le_time_t * tm_time;
+        le_byte_t * tm_buffer;
 
     le_enum_t _status; } er_times_t;
 
@@ -115,27 +95,13 @@
     header - function prototypes
  */
 
-    er_times_t er_times_create( le_char_t * const er_ip, le_sock_t const er_port );
+    er_times_t er_times_create( le_void_t );
 
     le_void_t er_times_delete( er_times_t * const er_times );
 
-    le_address_t er_times_get( er_times_t const * const er_times );
+    le_void_t er_times_display( er_times_t const * const er_times, er_view_t const * const er_view );
 
-    le_time_t er_times_get_time( er_times_t * const er_times, le_size_t const er_offset );
-
-    le_void_t er_times_set( er_times_t * const er_times, le_size_t const er_index );
-
-    le_void_t er_times_set_default( er_times_t * const er_times );
-
-    le_void_t er_times_set_nearest( er_times_t * const er_times );
-
-    le_void_t er_times_set_zoom( er_times_t * const er_times, le_real_t const er_factor );
-
-    le_void_t er_times_set_pose( er_times_t * const er_times, le_real_t const er_factor );
-
-    le_void_t er_times_set_reset( er_times_t * const er_times, le_size_t const er_index );
-
-    le_void_t er_times_display( er_times_t const * const er_times );
+    le_void_t er_times_display_text( le_char_t const * const er_text, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify );
 
     le_void_t er_times_display_date( le_time_t const er_time, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify );
 
