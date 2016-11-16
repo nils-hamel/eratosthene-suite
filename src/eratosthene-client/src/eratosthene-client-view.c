@@ -246,13 +246,19 @@
         /* check active time */
         if ( er_view->vw_act == 0 ) {
 
-            /* update zoom value */
+            /* update area value */
             er_view->vw_zta *= er_value;
+
+            /* clamp area value */
+            er_view->vw_zta = lc_clamp( er_view->vw_zta, 60, 32314982400 );
 
         } else {
 
-            /* update zoom value */
+            /* update area value */
             er_view->vw_ztb *= er_value;
+
+            /* clamp area value */
+            er_view->vw_ztb = lc_clamp( er_view->vw_ztb, 60, 32314982400 );
 
         }
 

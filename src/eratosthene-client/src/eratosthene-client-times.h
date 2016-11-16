@@ -57,10 +57,7 @@
     /* define pseudo-constructor */
     # define ER_TIMES_C          { 0, 0, 0, 0, NULL, _LE_TRUE }
 
-    /* define standard intervalle */
-    # define ER_TIMES_DAY        ( 86400 )
-
-    /* define string justification flags */
+    /* define string justification */
     # define ER_TIMES_LEFT       ( 0 )
     # define ER_TIMES_RIGHT      ( 1 )
     # define ER_TIMES_CENTER     ( 2 )
