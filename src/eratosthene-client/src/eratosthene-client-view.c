@@ -117,9 +117,31 @@
         /* assign address mode */
         le_address_set_mode( & er_addr, er_view->vw_mod );
 
-        /* assign address times */
-        le_address_set_time( & er_addr, 0, er_view->vw_tia );
-        le_address_set_time( & er_addr, 1, er_view->vw_tib );
+        /* check mode */
+        if ( ( er_view->vw_mod & 0x01 ) != 0 ) {
+
+            /* assign address times */
+            le_address_set_time( & er_addr, 0, er_view->vw_tia );
+
+        } else {
+
+            /* assign address null time */
+            le_address_set_time( & er_addr, 0, _LE_TIME_NULL );
+
+        }
+
+        /* check mode */
+        if ( ( er_view->vw_mod & 0x02 ) != 0 ) {
+
+            /* assign address time */
+            le_address_set_time( & er_addr, 1, er_view->vw_tib );
+
+        } else {
+
+            /* assign address null time */
+            le_address_set_time( & er_addr, 1, _LE_TIME_NULL );
+
+        }
 
         /* return address structure */
         return( er_addr );
