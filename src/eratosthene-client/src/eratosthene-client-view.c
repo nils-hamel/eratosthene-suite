@@ -92,6 +92,21 @@
 
     }
 
+    le_enum_t er_view_get_mode( er_view_t const * const er_view ) {
+
+        /* return time mode */
+        return( er_view->vw_mod );
+
+    }
+
+
+    le_enum_t er_view_get_active( er_view_t const * const er_view ) {
+
+        /* return active index */
+        return( er_view->vw_act );
+
+    }
+
     le_time_t er_view_get_time( er_view_t const * const er_view, le_enum_t const er_time ) {
 
         /* check asked time */
@@ -162,20 +177,6 @@
             return( er_view->vw_ztb );
 
         }
-
-    }
-
-    le_enum_t er_view_get_active( er_view_t const * const er_view ) {
-
-        /* return active index */
-        return( er_view->vw_act );
-
-    }
-
-    le_enum_t er_view_get_mode( er_view_t const * const er_view ) {
-
-        /* return time mode */
-        return( er_view->vw_mod );
 
     }
 
@@ -254,6 +255,20 @@
 
     }
 
+    le_void_t er_view_set_mode( er_view_t * const er_view, le_enum_t const er_mode ) {
+
+        /* update mode */
+        er_view->vw_mod = er_mode;
+
+    }
+
+    le_void_t er_view_set_swap( er_view_t * const er_view ) {
+
+        /* swap active time */
+        er_view->vw_act = 1 - er_view->vw_act;
+
+    }
+
     le_void_t er_view_set_time( er_view_t * const er_view, le_real_t const er_value ) {
 
         /* check active time */
@@ -291,20 +306,6 @@
             er_view->vw_ztb = lc_clamp( er_view->vw_ztb, 60, 32314982400 );
 
         }
-
-    }
-
-    le_void_t er_view_set_swap( er_view_t * const er_view ) {
-
-        /* swap active time */
-        er_view->vw_act = 1 - er_view->vw_act;
-
-    }
-
-    le_void_t er_view_set_mode( er_view_t * const er_view, le_enum_t const er_mode ) {
-
-        /* update mode */
-        er_view->vw_mod = er_mode;
 
     }
 

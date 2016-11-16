@@ -109,15 +109,15 @@
 
     le_void_t er_view_get_pose( er_view_t const * const er_view, le_real_t * const er_pose );
 
+    le_enum_t er_view_get_mode( er_view_t const * const er_view );
+
+    le_enum_t er_view_get_active( er_view_t const * const er_view );
+
     le_time_t er_view_get_time( er_view_t const * const er_view, le_enum_t const er_time );
 
     le_address_t er_view_get_times( er_view_t const * const er_view );
 
     le_time_t er_view_get_area( er_view_t const * const er_view, le_enum_t const er_time );
-
-    le_enum_t er_view_get_active( er_view_t const * const er_view );
-
-    le_enum_t er_view_get_mode( er_view_t const * const er_view );
 
     le_void_t er_view_set_plan( er_view_t * const er_view, le_real_t const er_xvalue, le_real_t const er_yvalue );
 
@@ -131,13 +131,13 @@
 
     le_void_t er_view_set_devide( er_view_t * const er_view, le_real_t const er_value );
 
-    le_void_t er_view_set_time( er_view_t * const er_view, le_real_t const er_value );
-
-    le_void_t er_view_set_area( er_view_t * const er_view, le_real_t const er_value );
+    le_void_t er_view_set_mode( er_view_t * const er_view, le_enum_t const er_mode );
 
     le_void_t er_view_set_swap( er_view_t * const er_view );
 
-    le_void_t er_view_set_mode( er_view_t * const er_view, le_enum_t const er_mode );
+    le_void_t er_view_set_time( er_view_t * const er_view, le_real_t const er_value );
+
+    le_void_t er_view_set_area( er_view_t * const er_view, le_real_t const er_value );
 
 /*
     header - C/C++ compatibility
