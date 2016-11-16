@@ -232,6 +232,10 @@
         er_view->vw_alt += er_weight * er_value->vw_alt;
         er_view->vw_azm += er_weight * er_value->vw_azm;
         er_view->vw_gam += er_weight * er_value->vw_gam;
+        er_view->vw_tia += er_weight * er_value->vw_tia;
+        er_view->vw_tib += er_weight * er_value->vw_tib;
+        er_view->vw_zta += er_weight * er_value->vw_zta;
+        er_view->vw_ztb += er_weight * er_value->vw_ztb;
 
     }
 
@@ -243,6 +247,10 @@
         er_view->vw_alt /= er_value;
         er_view->vw_azm /= er_value;
         er_view->vw_gam /= er_value;
+        er_view->vw_tia /= er_value;
+        er_view->vw_tib /= er_value;
+        er_view->vw_zta /= er_value;
+        er_view->vw_ztb /= er_value;
 
     }
 

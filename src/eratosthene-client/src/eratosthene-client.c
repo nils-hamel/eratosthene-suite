@@ -269,9 +269,6 @@
 
         } glPopMatrix();
 
-        /* check execution mode */
-        if ( er_client.cl_loops == ER_COMMON_MOVIE ) return;
-
         /* projection : interface */
         er_client_proj_interface( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
 

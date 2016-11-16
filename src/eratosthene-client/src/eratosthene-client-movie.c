@@ -71,7 +71,7 @@
     er_view_t er_movie_get( er_movie_t const * const er_movie ) {
 
         /* returned structure variables */
-        er_view_t er_view = ER_VIEW_C;
+        er_view_t er_view = er_movie->mv_views[er_movie->mv_parse];
 
         /* interpolation parameter variables */
         le_real_t er_param = 0.0;
