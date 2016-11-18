@@ -110,6 +110,9 @@
 
                 } else {
 
+                    /* read reduced address */
+                    le_address_io_read( & er_address, er_socket );
+
                     /* query on server */
                     if ( le_array_io_read( & er_array, er_socket ) != LE_ERROR_SUCCESS ) {
 

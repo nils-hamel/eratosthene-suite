@@ -213,6 +213,8 @@
 
     le_real_t * er_cell_get_edge( er_cell_t const * const er_cell );
 
+    le_address_t er_cell_get_addr( er_cell_t const * const er_cell );
+
     /*! \brief mutator methods
      *
      *  Sets the cell state flags.
@@ -224,6 +226,8 @@
     le_void_t er_cell_set_flag( er_cell_t * const er_cell, le_enum_t const er_flag );
 
     le_void_t er_cell_set_draw( er_cell_t * const er_cell, le_enum_t const er_draw );
+
+    le_void_t er_cell_set_addr( er_cell_t * const er_cell, le_address_t const * const er_address );
 
     /*! \brief mutator methods
      *

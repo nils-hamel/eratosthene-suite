@@ -139,6 +139,9 @@
         /* distance variables */
         le_real_t er_dist = 0.0;
 
+        /* push address variables */
+        le_address_t er_push = LE_ADDRESS_C;
+
         /* parsing scale digits */
         for ( le_size_t er_digit = 0; er_digit < er_base; er_digit ++ ) {
 
@@ -163,11 +166,20 @@
                         /* check cells stack */
                         if ( er_model->md_push < er_model->md_size ) {
 
-                            /* set address depth */
-                            le_address_set_depth( er_enum, ER_MODEL_DEPTH );
+                            /* set zero cell address */
+                            er_cell_set_addr( er_model->md_cell, er_enum );
 
-                            /* set cell address */
-                            er_cell_set_push( er_model->md_cell + ( er_model->md_push ++ ), er_enum );
+                            /* perform query for time reduction on zero cell */
+                            er_cell_io_query( er_model->md_cell, er_model->md_svip, er_model->md_port );
+
+                            /* retrieve time-reduced address from zero cell */
+                            er_push = er_cell_get_addr( er_model->md_cell );
+
+                            /* set address depth */
+                            le_address_set_depth( & er_push, ER_MODEL_DEPTH );
+                            
+                            /* address to push address stack */
+                            er_cell_set_push( er_model->md_cell + ( er_model->md_push ++ ), & er_push );
 
                         }
 
@@ -176,14 +188,8 @@
                         /* check enumeration boundary */
                         if ( ( er_scale + ER_MODEL_DEPTH + 2 ) < er_model->md_sparam ) {
 
-                            /* set address depth */
-                            le_address_set_depth( er_enum, 0 );
-
-                            /* set cell address */
-                            er_cell_set_push( er_model->md_cell, er_enum );
-
-                            /* swap addresses */
-                            er_cell_set_swap( er_model->md_cell, er_model->md_cell );
+                            /* set zero cell address */
+                            er_cell_set_addr( er_model->md_cell, er_enum );
 
                             /* check parent cell */
                             if ( er_cell_io_query( er_model->md_cell, er_model->md_svip, er_model->md_port ) > 0 ) {

@@ -116,6 +116,13 @@
 
     }
 
+    le_address_t er_cell_get_addr( er_cell_t const * const er_cell ) {
+
+        /* return cell address */
+        return( er_cell->ce_addr );
+
+    }
+
 /*
     source - mutator methods
  */
@@ -134,10 +141,17 @@
 
     }
 
+    le_void_t er_cell_set_addr( er_cell_t * const er_cell, le_address_t const * const er_address ) {
+
+        /* assign cell address */
+        er_cell->ce_addr = ( * er_address );
+
+    }
+
     le_void_t er_cell_set_push( er_cell_t * const er_cell, le_address_t const * const er_address ) {
 
         /* compute and assign cell address */
-        er_cell->ce_push = * er_address;
+        er_cell->ce_push = ( * er_address );
 
     }
 
@@ -211,6 +225,9 @@
 
         /* write query address on socket */
         le_address_io_write( & er_cell->ce_addr, er_socket );
+
+        /* read query address on socket */
+        le_address_io_read( & er_cell->ce_addr, er_socket );
 
         /* extract cell edge components */
         le_address_get_pose( & er_cell->ce_addr, er_cell->ce_edge );
