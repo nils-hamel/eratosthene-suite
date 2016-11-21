@@ -464,7 +464,7 @@
         er_client.cl_y = er_y;
 
         /* compute inertial coefficient */
-        er_client.cl_inertia = abs( er_view_get_alt( & er_client.cl_view ) - LE_GEODESY_WGS84_A ) * ER_COMMON_INE;
+        er_client.cl_inertia = abs( er_view_get_alt( & er_client.cl_view ) - LE_ADDRESS_WGSA ) * ER_COMMON_INE;
 
         /* clamp inertial coefficient */
         if ( er_client.cl_inertia < 5.0 ) er_client.cl_inertia = 5.0;

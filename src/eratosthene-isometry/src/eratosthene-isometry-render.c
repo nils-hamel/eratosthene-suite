@@ -236,8 +236,8 @@
                 glColor4f( er_data[0] / 255.0, er_data[1] / 255.0, er_data[2] / 255.0, 1.0 );
 
                 /* convert geographical coordinates to projection coordinates */
-                er_pose[0] = - er_cmid + ( er_pose[0] - er_render->re_edge[0] ) * LE_GEODESY_WGS84_A;
-                er_pose[1] = - er_cmid + ( er_pose[1] - er_render->re_edge[1] ) * LE_GEODESY_WGS84_A;
+                er_pose[0] = - er_cmid + ( er_pose[0] - er_render->re_edge[0] ) * LE_ADDRESS_WGSA;
+                er_pose[1] = - er_cmid + ( er_pose[1] - er_render->re_edge[1] ) * LE_ADDRESS_WGSA;
                 er_pose[2] = - er_cmid + ( er_pose[2] - er_render->re_edge[2] );
 
                 /* push element vertex */
@@ -343,7 +343,7 @@
         le_address_get_pose( & er_address, er_pose );
 
         /* compute equivalence class size */
-        return( ( LE_2P * LE_GEODESY_WGS84_A ) / pow( 2.0, le_address_get_size( & er_address ) ) );
+        return( ( LE_2P * LE_ADDRESS_WGSA ) / pow( 2.0, le_address_get_size( & er_address ) ) );
 
     }
 

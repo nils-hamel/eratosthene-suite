@@ -61,7 +61,7 @@
         le_real_t er_pose[3] = { 0.0 };
 
         /* address structure variables */
-        le_address_t er_addr = LE_ADDRESS_C_SIZE( lc_read_unsigned( argc, argv, "--scale", "-s", LE_GEODESY_ASYA ) );
+        le_address_t er_addr = LE_ADDRESS_C_SIZE( lc_read_unsigned( argc, argv, "--scale", "-s", LE_ADDRESS_SYNA ) );
 
         /* read position parameters */
         er_pose[0] = lc_read_double( argc, argv, "--longitude", "-l", 0.0 );

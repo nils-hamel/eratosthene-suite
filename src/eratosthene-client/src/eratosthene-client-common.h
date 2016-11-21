@@ -75,11 +75,11 @@
     # define ER_COMMON_IML   ( 1.0 / 10.0 )
     # define ER_COMMON_IMU   ( 10.0 )
     # define ER_COMMON_INR   ( 1.0 / 500.0 )
-    # define ER_COMMON_INP   ( 3.0 * LE_PI / ( LE_GEODESY_WGS84_A * 180.0 ) )
+    # define ER_COMMON_INP   ( 3.0 * LE_PI / ( LE_ADDRESS_WGSA * 180.0 ) )
 
     /* define altitude clamped range */
-    # define ER_COMMON_ALL   ( LE_GEODESY_WGS84_A * 0.75 )
-    # define ER_COMMON_ALU   ( LE_GEODESY_WGS84_A * 3.00 )
+    # define ER_COMMON_ALL   ( LE_ADDRESS_WGSA * 0.75 )
+    # define ER_COMMON_ALU   ( LE_ADDRESS_WGSA * 3.00 )
 
 /*
     header - preprocessor macros

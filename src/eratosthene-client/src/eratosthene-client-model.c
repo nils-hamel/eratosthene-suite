@@ -334,7 +334,7 @@
         glRotated( - er_view_get_gam( er_view ), 1.0, 0.0, 0.0 );
 
         /* motion management - altimetric translation */
-        glTranslated( 0.0, 0.0, - er_view_get_alt( er_view ) + LE_GEODESY_WGS84_A );
+        glTranslated( 0.0, 0.0, - er_view_get_alt( er_view ) + LE_ADDRESS_WGSA );
 
         /* motion management - azimuth rotation */
         glRotated( + er_view_get_azm( er_view ), 0.0, 0.0, 1.0 );
@@ -356,7 +356,7 @@
                     er_edge = er_cell_get_edge( er_model->md_cell + er_parse );
 
                     /* motion management - cell edge translation */
-                    glTranslated( er_cosl * er_edge[0] + er_sinl * er_edge[2], er_sina * er_sinl * er_edge[0] + er_cosa * er_edge[1] - er_sina * er_cosl * er_edge[2], er_cosa * er_cosl * er_edge[2] + er_sina * er_edge[1] - er_cosa * er_sinl * er_edge[0] - LE_GEODESY_WGS84_A );
+                    glTranslated( er_cosl * er_edge[0] + er_sinl * er_edge[2], er_sina * er_sinl * er_edge[0] + er_cosa * er_edge[1] - er_sina * er_cosl * er_edge[2], er_cosa * er_cosl * er_edge[2] + er_sina * er_edge[1] - er_cosa * er_sinl * er_edge[0] - LE_ADDRESS_WGSA );
 
                     /* motion management - planimetric rotation */
                     glRotated( + er_lat, 1.0, 0.0, 0.0 );
@@ -380,13 +380,13 @@
         glRotated( - er_view_get_gam( er_view ), 1.0, 0.0, 0.0 );
 
         /* motion management - altimetric translation */
-        glTranslated( 0.0, 0.0, - er_view_get_alt( er_view ) + LE_GEODESY_WGS84_A );
+        glTranslated( 0.0, 0.0, - er_view_get_alt( er_view ) + LE_ADDRESS_WGSA );
 
         /* motion management - azimuth rotation */
         glRotated( + er_view_get_azm( er_view ), 0.0, 0.0, 1.0 );
 
         /* earth wireframe - centering */
-        glTranslated( 0.0, 0.0, - LE_GEODESY_WGS84_A );
+        glTranslated( 0.0, 0.0, - LE_ADDRESS_WGSA );
 
         /* motion management - planimetric rotation */
         glRotated( + er_view_get_lat( er_view ), 1.0, 0.0, 0.0 );
@@ -405,7 +405,7 @@
         glColor3f( 0.18, 0.22, 0.28 );
 
         /* display quadric */
-        gluSphere( er_earth, LE_GEODESY_WGS84_A, 360, 180 );
+        gluSphere( er_earth, LE_ADDRESS_WGSA, 360, 180 );
 
         /* delete quadric */
         gluDeleteQuadric( er_earth );
