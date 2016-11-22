@@ -180,6 +180,33 @@
 
     }
 
+    er_view_t er_view_get_inter( er_view_t const * const er_views, le_size_t const er_index, le_real_t const er_param ) {
+
+        /* returned value variables */
+        er_view_t er_view = ER_VIEW_C;
+
+        /* compute interpolated values - linear interpolation */
+        er_view.vw_lon = er_param * ( er_views + er_index + 1 )->vw_lon + ( 1.0 - er_param ) * ( er_views + er_index )->vw_lon;
+        er_view.vw_lat = er_param * ( er_views + er_index + 1 )->vw_lat + ( 1.0 - er_param ) * ( er_views + er_index )->vw_lat;
+        er_view.vw_alt = er_param * ( er_views + er_index + 1 )->vw_alt + ( 1.0 - er_param ) * ( er_views + er_index )->vw_alt;
+        er_view.vw_azm = er_param * ( er_views + er_index + 1 )->vw_azm + ( 1.0 - er_param ) * ( er_views + er_index )->vw_azm;
+        er_view.vw_gam = er_param * ( er_views + er_index + 1 )->vw_gam + ( 1.0 - er_param ) * ( er_views + er_index )->vw_gam;
+
+        /* compute interpolated values - step interpolation */
+        er_view.vw_mod = ( er_views + er_index )->vw_mod;
+        er_view.vw_act = ( er_views + er_index )->vw_act;
+
+        /* compute interpolated values - linear interpolation */
+        er_view.vw_tia = er_param * ( er_views + er_index + 1 )->vw_tia + ( 1.0 - er_param ) * ( er_views + er_index )->vw_tia;
+        er_view.vw_tib = er_param * ( er_views + er_index + 1 )->vw_tib + ( 1.0 - er_param ) * ( er_views + er_index )->vw_tib;
+        er_view.vw_zta = er_param * ( er_views + er_index + 1 )->vw_zta + ( 1.0 - er_param ) * ( er_views + er_index )->vw_zta;
+        er_view.vw_ztb = er_param * ( er_views + er_index + 1 )->vw_ztb + ( 1.0 - er_param ) * ( er_views + er_index )->vw_ztb;
+
+        /* return computed view */
+        return( er_view );
+
+    }
+
 /*
     source - mutator methods
  */
@@ -222,36 +249,6 @@
         /* clamp gamma value */
         if ( er_view->vw_gam > + 120.0 ) er_view->vw_gam = + 120.0;
         if ( er_view->vw_gam < - 120.0 ) er_view->vw_gam = - 120.0;
-
-    }
-
-    le_void_t er_view_set_weight( er_view_t * const er_view, le_real_t const er_weight, er_view_t const * const er_value ) {
-
-        /* weighted view addition */
-        er_view->vw_lon += er_weight * er_value->vw_lon;
-        er_view->vw_lat += er_weight * er_value->vw_lat;
-        er_view->vw_alt += er_weight * er_value->vw_alt;
-        er_view->vw_azm += er_weight * er_value->vw_azm;
-        er_view->vw_gam += er_weight * er_value->vw_gam;
-        er_view->vw_tia += er_weight * er_value->vw_tia;
-        er_view->vw_tib += er_weight * er_value->vw_tib;
-        er_view->vw_zta += er_weight * er_value->vw_zta;
-        er_view->vw_ztb += er_weight * er_value->vw_ztb;
-
-    }
-
-    le_void_t er_view_set_devide( er_view_t * const er_view, le_real_t const er_value ) {
-
-        /* devide view parameters */
-        er_view->vw_lon /= er_value;
-        er_view->vw_lat /= er_value;
-        er_view->vw_alt /= er_value;
-        er_view->vw_azm /= er_value;
-        er_view->vw_gam /= er_value;
-        er_view->vw_tia /= er_value;
-        er_view->vw_tib /= er_value;
-        er_view->vw_zta /= er_value;
-        er_view->vw_ztb /= er_value;
 
     }
 

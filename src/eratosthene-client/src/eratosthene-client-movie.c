@@ -70,37 +70,8 @@
 
     er_view_t er_movie_get( er_movie_t const * const er_movie ) {
 
-        /* returned structure variables */
-        er_view_t er_view = er_movie->mv_views[er_movie->mv_parse];
-
-        /* interpolation parameter variables */
-        le_real_t er_param = 0.0;
-
-        /* interpolation weight variables */
-        le_real_t er_weight = 0.0;
-
-        /* weight accumulation variables */
-        le_real_t er_accum = 0.0;
-
-        /* parsing control points */
-        for ( le_size_t er_parse = 0; er_parse < er_movie->mv_stack; er_parse ++ ) {
-
-            /* compute interpolation parameter */
-            er_param = ( le_real_t ) er_parse - er_movie->mv_parse - er_movie->mv_param;
-
-            /* compute interpolation weight */
-            er_accum += ( er_weight = exp( - 3.0 * er_param * er_param ) );
-
-            /* accumulate view interpolation factor */
-            er_view_set_weight( & er_view, er_weight, & er_movie->mv_views[er_parse] );
-
-        }
-
-        /* compute interpolated view */
-        er_view_set_devide( & er_view, er_accum );
-
-        /* return computed structure */
-        return( er_view );
+        /* return computed view */
+        return( er_view_get_inter( er_movie->mv_views, er_movie->mv_parse, er_movie->mv_param ) );
 
     }
 
@@ -177,7 +148,7 @@
         er_movie->mv_param -= 1.0;
 
         /* update interpolation parameter */
-        if ( ( ++ er_movie->mv_parse ) < er_movie->mv_stack ) {
+        if ( ( ++ er_movie->mv_parse ) < ( er_movie->mv_stack - 1 ) ) {
 
             /* send message */
             return( ER_COMMON_MOVIE );
