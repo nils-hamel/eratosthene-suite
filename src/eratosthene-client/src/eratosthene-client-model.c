@@ -40,7 +40,7 @@
         er_model.md_port = er_port;
 
         /* query server configuration array */
-        if ( le_client_array( er_ip, er_port, LE_NETWORK_MODE_CMOD, & er_array ) != LE_ERROR_SUCCESS ) {
+        if ( le_client_array( er_ip, er_port, LE_MODE_CMOD, & er_array ) != LE_ERROR_SUCCESS ) {
 
             /* send message */
             return( er_model._status = _LE_FALSE, er_model );

@@ -31,7 +31,7 @@
         le_size_t er_write = 1;
 
         /* socket i/o buffer variables */
-        le_byte_t er_buffer[LE_NETWORK_SB_SYNC] = LE_NETWORK_C;
+        le_byte_t er_buffer[LE_BUFFER_SYNC] = LE_BUFFER_C;
 
         /* sending time on socket */
         if ( write( er_client, & er_time, sizeof( le_time_t ) ) != sizeof( le_time_t ) ) {
@@ -96,7 +96,7 @@
             } else {
 
                 /* client-server injection handshake */
-                if ( le_client_handshake( er_client, LE_NETWORK_MODE_IMOD ) != LE_ERROR_SUCCESS ) {
+                if ( le_client_handshake( er_client, LE_MODE_IMOD ) != LE_ERROR_SUCCESS ) {
 
                     /* display message */
                     fprintf( stderr, "eratosthene-suite : error : authorisation failed\n" );
