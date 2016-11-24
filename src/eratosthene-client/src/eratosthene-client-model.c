@@ -32,9 +32,6 @@
         /* array variables */
         le_array_t er_array = LE_ARRAY_C;
 
-        /* array access variables */
-        le_array_cf_t er_access = LE_ARRAY_CF_C;
-
         /* assign server network configuration */
         er_model.md_svip = er_ip;
         er_model.md_port = er_port;
@@ -47,12 +44,9 @@
 
         } else {
 
-            /* compute configuration array mapping */
-            le_array_cf( le_array_get_byte( & er_array ), 0, er_access );
-
             /* retrieve configuration */
-            er_model.md_sparam = er_access.as_size[0];
-            er_model.md_tparam = er_access.as_time[0];
+            er_model.md_sparam = le_array_dt_size( & er_array, 0 )[0];
+            er_model.md_tparam = le_array_dt_time( & er_array, 0 )[0];
 
         }
 
@@ -176,7 +170,7 @@
                             er_push = er_cell_get_addr( er_model->md_cell );
 
                             /* set address depth */
-                            le_address_set_depth( & er_push, ER_MODEL_DEPTH );
+                            le_address_set_span( & er_push, ER_MODEL_DEPTH );
                             
                             /* address to push address stack */
                             er_cell_set_push( er_model->md_cell + ( er_model->md_push ++ ), & er_push );

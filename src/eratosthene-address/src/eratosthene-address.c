@@ -95,7 +95,7 @@
             fprintf( stdout, "%c", le_address_get_digit( & er_addr, er_parse ) + 48 ); 
 
         /* output format */
-        } fprintf( stdout, ", %" _LE_SIZE_P "\n", le_address_get_size( & er_addr ) );
+        } fprintf( stdout, ", %" _LE_BYTE_P "\n", le_address_get_size( & er_addr ) );
 
     }
 

@@ -244,13 +244,13 @@
         while ( er_read < _LE_USE_RETRY ) {
 
             /* read array from socket */
-            if ( ( er_count = read( er_socket, er_buffer + er_bridge, _LE_USE_MTU ) + er_bridge ) >= LE_ARRAY_RFL ) {
+            if ( ( er_count = read( er_socket, er_buffer + er_bridge, _LE_USE_MTU ) + er_bridge ) >= LE_ARRAY_SD ) {
 
                 /* check cell limitation */
-                if ( ( er_csize = er_cell->ce_size + ( er_count / LE_ARRAY_RFL ) * 3 ) < ER_CELL_ARRAY ) {
+                if ( ( er_csize = er_cell->ce_size + ( er_count / LE_ARRAY_SD ) * 3 ) < ER_CELL_ARRAY ) {
 
                     /* parsing received bloc */
-                    for ( er_parse = 0; er_parse < ( er_count / LE_ARRAY_RFL ) * LE_ARRAY_RFL; er_track += 3, er_parse += LE_ARRAY_RFL ) {
+                    for ( er_parse = 0; er_parse < ( er_count / LE_ARRAY_SD ) * LE_ARRAY_SD; er_track += 3, er_parse += LE_ARRAY_SD ) {
 
                         /* compute array pointers */
                         er_pap = ( le_real_t * ) ( er_buffer + er_parse );
@@ -272,7 +272,7 @@
                     er_cell->ce_size = er_csize;
 
                     /* bridge management */
-                    if ( ( er_bridge = ( er_count % LE_ARRAY_RFL ) ) != 0 ) memcpy( er_buffer, er_buffer + ( er_count - er_bridge ), er_bridge );
+                    if ( ( er_bridge = ( er_count % LE_ARRAY_SD ) ) != 0 ) memcpy( er_buffer, er_buffer + ( er_count - er_bridge ), er_bridge );
 
                 /* reset redundancy */
                 er_read = 0; } else { er_read = _LE_USE_RETRY; }

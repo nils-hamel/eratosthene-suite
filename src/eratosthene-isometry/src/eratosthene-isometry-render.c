@@ -226,7 +226,7 @@
         glPointSize( er_render->re_thick ); glBegin( GL_POINTS ); {
 
             /* display points */
-            for ( le_size_t er_parse = 0; er_parse < le_array_get_size( er_array ); er_parse += LE_ARRAY_RFL ) {
+            for ( le_size_t er_parse = 0; er_parse < le_array_get_size( er_array ); er_parse += LE_ARRAY_SD ) {
 
                 /* compute line pointers */
                 er_pose = ( le_real_t * ) ( er_byte + er_parse );
