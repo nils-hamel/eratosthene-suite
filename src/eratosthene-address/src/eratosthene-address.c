@@ -31,16 +31,10 @@
             /* specialised method */
             er_address_time( argc, argv );
 
-            /* send message */
-            return( EXIT_SUCCESS );
-
         } else if ( lc_read_flag( argc, argv, "--space", "-s" ) == LC_TRUE ) {
 
             /* specialised method */
             er_address_space( argc, argv );
-
-            /* send message */
-            return( EXIT_SUCCESS );
 
         } else {
 
@@ -48,6 +42,9 @@
             return( EXIT_FAILURE );
 
         }
+
+        /* send message */
+        return( EXIT_SUCCESS );
 
     }
 
@@ -92,7 +89,7 @@
         for ( le_size_t er_parse = 0; er_parse < le_address_get_size( & er_addr ); er_parse ++ ) {
 
             /* display address digit */
-            fprintf( stdout, "%c", le_address_get_digit( & er_addr, er_parse ) + 48 ); 
+            fprintf( stdout, "%c", le_address_get_digit( & er_addr, er_parse ) + _LE_USE_ASCII_ITOA ); 
 
         /* output format */
         } fprintf( stdout, ", %" _LE_BYTE_P "\n", le_address_get_size( & er_addr ) );
