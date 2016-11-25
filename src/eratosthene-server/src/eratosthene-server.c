@@ -29,7 +29,7 @@
         /* server handle variables */
         le_server_t er_server = LE_SERVER_C;
 
-        /* create server handle */
+        /* create server */
         if ( ( er_server = le_server_create( lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT ), ( le_char_t * ) lc_read_string( argc, argv, "--path", "-p" ) ) )._status != LE_ERROR_SUCCESS ) {
 
             /* display message */
@@ -40,15 +40,15 @@
             /* display message */
             fprintf( stderr, "eratosthene-suite : state : server listening on TCP/IP\n" );
 
-            /* server connections management */
+            /* server process */
             le_server( & er_server );
 
-            /* delete server handle */
+            /* delete server */
             le_server_delete( & er_server );
 
         }
 
-        /* return to system */
+        /* send message */
         return( EXIT_SUCCESS );
 
     }
