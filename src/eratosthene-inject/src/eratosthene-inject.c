@@ -33,7 +33,7 @@
         /* socket i/o buffer variables */
         le_byte_t er_buffer[LE_BUFFER_SYNC] = LE_BUFFER_C;
 
-        /* sending time on socket */
+        /* send time on socket */
         if ( write( er_client, & er_time, sizeof( le_time_t ) ) != sizeof( le_time_t ) ) {
 
             /* send message */
@@ -70,10 +70,10 @@
 
     int main( int argc, char ** argv ) {
 
-        /* stream handle variables */
+        /* stream variables */
         FILE * er_stream = NULL;
 
-        /* socket handle variables */
+        /* socket variables */
         le_sock_t er_client = _LE_SOCK_NULL;
 
         /* time variables */
@@ -87,7 +87,7 @@
 
         } else {
 
-            /* create client handle */
+            /* create client socket */
             if ( ( er_client = le_client_create( ( le_char_t * ) lc_read_string( argc, argv, "--ip", "-i" ), lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT ) ) ) == _LE_SOCK_NULL ) {
 
                 /* display message */
@@ -113,7 +113,7 @@
 
                 }
 
-                /* delete client handle */
+                /* delete client socket */
                 er_client = le_client_delete( er_client );
 
             }
