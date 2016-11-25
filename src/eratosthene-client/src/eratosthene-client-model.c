@@ -45,8 +45,8 @@
         } else {
 
             /* retrieve configuration */
-            er_model.md_sparam = le_array_dt_size( & er_array, 0 )[0];
-            er_model.md_tparam = le_array_dt_time( & er_array, 0 )[0];
+            er_model.md_sparam = le_array_dt_size_a( & er_array, 0 )[0];
+            er_model.md_tparam = le_array_dt_time_a( & er_array, 0 )[0];
 
         }
 
