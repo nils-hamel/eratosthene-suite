@@ -55,10 +55,10 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_MOVIE_C     { { 0 }, 0, 0, NULL, 0, 0, 0.0, 0, { { 0.0 } }, _LE_TRUE }
+    # define ER_MOVIE_C     { 0, 0, NULL, 0, 0, 0.0, 0, { { 0.0 } }, _LE_TRUE }
 
     /* define stack size */
-    # define ER_MOVIE_STACK ( 32 )
+    # define ER_MOVIE_STACK ( 64 )
 
 /*
     header - preprocessor macros
@@ -73,8 +73,6 @@
  */
 
     typedef struct er_movie_struct {
-
-        le_char_t   mv_path[_LE_USE_STRING];
 
         le_size_t   mv_wbuffer;
         le_size_t   mv_hbuffer;

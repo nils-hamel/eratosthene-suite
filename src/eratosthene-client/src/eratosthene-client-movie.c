@@ -116,6 +116,9 @@
 
     le_enum_t er_movie( er_movie_t * const er_movie ) {
 
+        /* exportation path variables */
+        le_char_t er_path[_LE_USE_STRING] = { 0 };
+
         /* check control point stack */
         if ( er_movie->mv_stack < 2 ) {
 
@@ -124,17 +127,17 @@
 
         }
 
+        /* compose exportation path */
+        sprintf( ( char * ) er_path, "/tmp/era-%05" _LE_SIZE_P ".png", er_movie->mv_index ++ );
+
         /* opengl read buffer */
         glReadBuffer( GL_BACK );
 
         /* read buffer content */
         glReadPixels( 0, 0, er_movie->mv_wbuffer, er_movie->mv_hbuffer, GL_RGBA, GL_UNSIGNED_BYTE, er_movie->mv_pbuffer );
 
-        /* compose exportation path */
-        sprintf( ( char * ) er_movie->mv_path, "/tmp/era-%05" _LE_SIZE_P ".png", er_movie->mv_index ++ );
-
         /* buffer content exportation */
-        lc_image_png_write( ( char * ) er_movie->mv_path, er_movie->mv_wbuffer, er_movie->mv_hbuffer, LC_IMAGE_RGBA, er_movie->mv_pbuffer );
+        lc_image_png_write( ( char * ) er_path, er_movie->mv_wbuffer, er_movie->mv_hbuffer, LC_IMAGE_RGBA, er_movie->mv_pbuffer );
 
         /* update interpolation parameter */
         if ( ( er_movie->mv_param += 0.0025 ) < 1.0 ) {
