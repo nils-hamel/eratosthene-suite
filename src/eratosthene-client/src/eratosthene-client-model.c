@@ -36,35 +36,31 @@
         er_model.md_svip = er_ip;
         er_model.md_port = er_port;
 
-        /* query server configuration array */
+        /* query server configuration */
         if ( le_client_array( er_ip, er_port, LE_MODE_CMOD, & er_array ) != LE_ERROR_SUCCESS ) {
 
             /* send message */
             return( er_model._status = _LE_FALSE, er_model );
 
-        } else {
-
-            /* retrieve configuration */
-            er_model.md_sparam = le_array_dt_size_a( & er_array, 0 )[0];
-            er_model.md_tparam = le_array_dt_time_a( & er_array, 0 )[0];
-
         }
 
-        /* allocate cells stack memory */
-        if ( ( er_model.md_cell = ( er_cell_t * ) malloc( ( er_model.md_size = ER_MODEL_STACK ) * sizeof( er_cell_t ) ) ) == NULL ) {
+        /* retrieve server configuration */
+        er_model.md_sparam = le_array_dt_size_a( & er_array, 0 )[0];
+        er_model.md_tparam = le_array_dt_time_a( & er_array, 0 )[0];
+
+        /* allocate cells arry memory */
+        if ( ( er_model.md_cell = ( er_cell_t * ) malloc( er_model.md_size * sizeof( er_cell_t ) ) ) == NULL ) {
 
             /* send message */
             return( er_model._status = _LE_FALSE, er_model );
 
-        } else {
+        }
 
-            /* create model cells */
-            for ( le_size_t er_parse = 0; er_parse < er_model.md_size; er_parse ++ ) {
+        /* initialise model cells array */
+        for ( le_size_t er_parse = 0; er_parse < er_model.md_size; er_parse ++ ) {
 
-                /* initialise cell */
-                er_model.md_cell[er_parse] = er_cell_create();
-
-            }
+            /* create model cell */
+            er_model.md_cell[er_parse] = er_cell_create();
 
         }
 
@@ -76,26 +72,26 @@
     le_void_t er_model_delete( er_model_t * const er_model ) {
 
         /* deleted structure variables */
-        er_model_t er_reset = ER_MODEL_C;
+        er_model_t er_delete = ER_MODEL_C;
 
-        /* check stack state */
+        /* check cells array state */
         if ( er_model->md_cell != NULL ) {
 
             /* delete model cells */
             for ( le_size_t er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
 
-                /* delete cell */
+                /* delete model cell */
                 er_cell_delete( er_model->md_cell + er_parse );
 
             }
 
-            /* unallocate stack memory */
+            /* unallocate cells array memory */
             free( er_model->md_cell );
 
         }
 
         /* delete structure */
-        ( * er_model ) = er_reset;
+        ( * er_model ) = er_delete;
 
     }
 
@@ -105,15 +101,20 @@
 
     le_size_t er_model_get_cell( er_model_t const * const er_model ) {
 
-        /* parsing cells stack */
+        /* parsing cells array */
         for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
 
-            /* check cell state - return index */
-            if ( er_cell_get_flag( er_model->md_cell + er_parse ) == _LE_FALSE ) return( er_parse );
+            /* check model cell state flag */
+            if ( er_cell_get_flag( er_model->md_cell + er_parse ) == _LE_FALSE ) {
+
+                /* return cell index */
+                return( er_parse );
+
+            }
 
         }
 
-        /* return index */
+        /* return invalid index */
         return( er_model->md_size );
 
     }
@@ -146,7 +147,12 @@
             le_address_set_digit( er_enum, er_scale, er_digit );
 
             /* check enumeration constraint */
-            if ( er_scale > ER_MODEL_ENUM ) {
+            if ( er_scale <= ER_MODEL_ENUM ) {
+
+                /* constraintless enumeration */
+                er_model_set_update_cell( er_model, er_enum, er_view );
+
+            } else {
 
                 /* compute distance */
                 er_dist = er_geodesy_distance( er_enum, er_view );
@@ -155,7 +161,7 @@
                 if ( er_dist < er_geodesy_limit( er_view_get_alt( er_view ) ) ) {
 
                     /* check depth criterion */
-                    if ( fabs( er_geodesy_depth( er_dist, er_model->md_sparam, ER_MODEL_DEPTH ) - ( le_real_t ) er_scale ) < 1.0 ) {
+                    if ( fabs( er_geodesy_depth( er_dist, er_model->md_sparam, ER_MODEL_SPAN ) - ( le_real_t ) er_scale ) < 1.0 ) {
 
                         /* check cells stack */
                         if ( er_model->md_push < er_model->md_size ) {
@@ -170,7 +176,7 @@
                             er_push = er_cell_get_addr( er_model->md_cell );
 
                             /* set address depth */
-                            le_address_set_span( & er_push, ER_MODEL_DEPTH );
+                            le_address_set_span( & er_push, ER_MODEL_SPAN );
                             
                             /* address to push address stack */
                             er_cell_set_push( er_model->md_cell + ( er_model->md_push ++ ), & er_push );
@@ -180,15 +186,15 @@
                     } else {
 
                         /* check enumeration boundary */
-                        if ( ( er_scale + ER_MODEL_DEPTH + 2 ) < er_model->md_sparam ) {
+                        if ( ( er_scale + ER_MODEL_SPAN + 2 ) < er_model->md_sparam ) {
 
-                            /* set zero cell address */
+                            /* enumeration address to bootstrap cell */
                             er_cell_set_addr( er_model->md_cell, er_enum );
 
-                            /* check parent cell */
+                            /* check state of bootstrap cell */
                             if ( er_cell_io_query( er_model->md_cell, er_model->md_svip, er_model->md_port ) > 0 ) {
 
-                                /* constrained enumeration */
+                                /* continue enumeration as bootstrap cell contains elements */
                                 er_model_set_update_cell( er_model, er_enum, er_view ); 
 
                             }
@@ -199,8 +205,7 @@
 
                 }
 
-            /* constraintless enumeration */
-            } else { er_model_set_update_cell( er_model, er_enum, er_view ); }
+            }
 
         }
 
@@ -311,64 +316,11 @@
 
     le_void_t er_model_display_cell( er_model_t const * const er_model, er_view_t const * const er_view ) {
 
-        /* view position variables */
-        le_real_t er_lon = er_view_get_lon( er_view );
-        le_real_t er_lat = er_view_get_lat( er_view );
-
-        /* optimisation variables */
-        le_real_t er_cosl = cos( - er_lon * ER_COMMON_D2R );
-        le_real_t er_sinl = sin( - er_lon * ER_COMMON_D2R );
-        le_real_t er_cosa = cos( + er_lat * ER_COMMON_D2R );
-        le_real_t er_sina = sin( + er_lat * ER_COMMON_D2R );
+        /* translation array variables */
+        le_real_t er_trans[3] = { 0.0 };
 
         /* edge array variables */
         le_real_t * er_edge = NULL;
-
-        /* motion management - tilt rotation */
-        glRotated( - er_view_get_gam( er_view ), 1.0, 0.0, 0.0 );
-
-        /* motion management - altimetric translation */
-        glTranslated( 0.0, 0.0, - er_view_get_alt( er_view ) + LE_ADDRESS_WGSA );
-
-        /* motion management - azimuth rotation */
-        glRotated( + er_view_get_azm( er_view ), 0.0, 0.0, 1.0 );
-
-        /* display model cells */
-        for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
-
-            /* check cell state */
-            if ( er_cell_get_draw( er_model->md_cell + er_parse ) == _LE_TRUE ) {
-
-                /* vertex and color pointer assignation */
-                glVertexPointer( 3, ER_MODEL_VERTEX, ER_CELL_STRIDE, er_cell_get_pose( er_model->md_cell + er_parse ) );
-                glColorPointer ( 3, ER_MODEL_COLORS, ER_CELL_STRIDE, er_cell_get_data( er_model->md_cell + er_parse ) );
-
-                /* cell matrix */
-                glPushMatrix(); {
-
-                    /* retrieve edge array */
-                    er_edge = er_cell_get_edge( er_model->md_cell + er_parse );
-
-                    /* motion management - cell edge translation */
-                    glTranslated( er_cosl * er_edge[0] + er_sinl * er_edge[2], er_sina * er_sinl * er_edge[0] + er_cosa * er_edge[1] - er_sina * er_cosl * er_edge[2], er_cosa * er_cosl * er_edge[2] + er_sina * er_edge[1] - er_cosa * er_sinl * er_edge[0] - LE_ADDRESS_WGSA );
-
-                    /* motion management - planimetric rotation */
-                    glRotated( + er_lat, 1.0, 0.0, 0.0 );
-                    glRotated( - er_lon, 0.0, 1.0, 0.0 );
-
-                    /* display graphical primitives */
-                    glDrawArrays( GL_POINTS, 0, er_cell_get_size( er_model->md_cell + er_parse ) / 3 );
-
-                /* cell matrix */
-                } glPopMatrix();
-
-            }
-
-        }
-
-    }
-
-    le_void_t er_model_display_cell2( er_model_t const * const er_model, er_view_t const * const er_view ) {
 
         /* view position variables */
         le_real_t er_lon = er_view_get_lon( er_view );
@@ -380,9 +332,6 @@
         le_real_t er_cosa = cos( + er_lat * ER_COMMON_D2R );
         le_real_t er_sina = sin( + er_lat * ER_COMMON_D2R );
 
-        /* edge array variables */
-        le_real_t * er_edge = NULL;
-
         /* motion management - tilt rotation */
         glRotated( - er_view_get_gam( er_view ), 1.0, 0.0, 0.0 );
 
@@ -392,36 +341,43 @@
         /* motion management - azimuth rotation */
         glRotated( + er_view_get_azm( er_view ), 0.0, 0.0, 1.0 );
 
-        /* display model cells */
+        /* parsing model cells array */
         for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
 
-            /* check cell state */
-            if ( er_cell_get_draw( er_model->md_cell + er_parse ) == _LE_TRUE ) {
+            /* check cell drawing state - continue parsing */
+            if ( er_cell_get_draw( er_model->md_cell + er_parse ) == _LE_FALSE ) continue;
 
-                /* vertex and color pointer assignation */
-                glVertexPointer( 3, ER_MODEL_VERTEX, 0, er_cell_get_pose( er_model->md_cell + er_parse ) );
-                glColorPointer ( 3, ER_MODEL_COLORS, 0, er_cell_get_data( er_model->md_cell + er_parse ) );
+            /* vertex and color pointer assignation */
+            glVertexPointer( 3, ER_MODEL_VERTEX, ER_CELL_STRIDE, er_cell_get_pose( er_model->md_cell + er_parse ) );
+            glColorPointer ( 3, ER_MODEL_COLORS, ER_CELL_STRIDE, er_cell_get_data( er_model->md_cell + er_parse ) );
 
-                /* cell matrix */
-                glPushMatrix(); {
+            /* retrieve cell edge coordinates */
+            er_edge = er_cell_get_edge( er_model->md_cell + er_parse );
 
-                    /* retrieve edge array */
-                    er_edge = er_cell_get_edge( er_model->md_cell + er_parse );
+            /* cell matrix */
+            glPushMatrix(); {
 
-                    /* motion management - cell edge translation */
-                    glTranslated( er_cosl * er_edge[0] + er_sinl * er_edge[2], er_sina * er_sinl * er_edge[0] + er_cosa * er_edge[1] - er_sina * er_cosl * er_edge[2], er_cosa * er_cosl * er_edge[2] + er_sina * er_edge[1] - er_cosa * er_sinl * er_edge[0] - LE_ADDRESS_WGSA );
+                /* compute cell translation - step */
+                er_trans[0] = er_sinl * er_edge[0];
+                er_trans[1] = er_cosl * er_edge[2];
 
-                    /* motion management - planimetric rotation */
-                    glRotated( + er_lat, 1.0, 0.0, 0.0 );
-                    glRotated( - er_lon, 0.0, 1.0, 0.0 );
+                /* compute cell translation */
+                er_trans[2] = er_cosa * er_trans[1] + er_sina * er_edge[1] - er_cosa * er_trans[0];
+                er_trans[1] = er_sina * er_trans[0] + er_cosa * er_edge[1] - er_sina * er_trans[1];
+                er_trans[0] = er_cosl * er_edge[0] + er_sinl * er_edge[2];
 
-                    /* display graphical primitives */
-                    glDrawArrays( GL_POINTS, 0, er_cell_get_size( er_model->md_cell + er_parse ) / 3 );
+                /* motion management - cell translation */
+                glTranslated( er_trans[0], er_trans[1], er_trans[2] - LE_ADDRESS_WGSA );
 
-                /* cell matrix */
-                } glPopMatrix();
+                /* motion management - planimetric rotation */
+                glRotated( + er_lat, 1.0, 0.0, 0.0 );
+                glRotated( - er_lon, 0.0, 1.0, 0.0 );
 
-            }
+                /* display graphical primitives */
+                glDrawArrays( GL_POINTS, 0, er_cell_get_size( er_model->md_cell + er_parse ) / 3 );
+
+            /* cell matrix */
+            } glPopMatrix();
 
         }
 
@@ -455,10 +411,13 @@
         gluQuadricDrawStyle( er_earth, GLU_LINE );
 
         /* earth wireframe - color */
-        glColor3f( 0.18, 0.22, 0.28 );
+        glColor4f( 0.18, 0.22, 0.28, 1.00 );
 
         /* display quadric */
         gluSphere( er_earth, LE_ADDRESS_WGSA, 360, 180 );
+
+        /* configure quadric */
+        gluQuadricDrawStyle( er_earth, GLU_FILL );
 
         /* delete quadric */
         gluDeleteQuadric( er_earth );

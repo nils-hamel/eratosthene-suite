@@ -243,6 +243,7 @@
             er_comp[1] = - er_cell->ce_edge[0] + er_pose[2] * sin( er_pose[0] ) * ( er_pose[1] = cos( er_pose[1] ) );
             er_comp[2] = - er_cell->ce_edge[2] + er_pose[2] * er_pose[1] * cos( er_pose[0] );
 
+            /* assign converted coordinates */
             er_pose[1] = er_comp[0];
             er_pose[0] = er_comp[1];
             er_pose[2] = er_comp[2];

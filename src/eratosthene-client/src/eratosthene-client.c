@@ -253,19 +253,19 @@
         /* projection : model */
         er_client_proj_model( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
 
-        /* matrix - earth */
-        glPushMatrix(); {
-
-            /* display earth */
-            er_model_display_earth( & er_client.cl_view );
-
-        } glPopMatrix();
-
         /* matrix - cells */
         glPushMatrix(); {
 
             /* display cells */
             er_model_display_cell( & er_client.cl_model, & er_client.cl_view );
+
+        } glPopMatrix();
+
+        /* matrix - earth */
+        glPushMatrix(); {
+
+            /* display earth */
+            er_model_display_earth( & er_client.cl_view );
 
         } glPopMatrix();
 

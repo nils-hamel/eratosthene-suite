@@ -57,14 +57,14 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_MODEL_C      { NULL, _LE_USE_PORT, _LE_SIZE_NULL, _LE_TIME_NULL, 0, 1, NULL, _LE_TRUE }
+    # define ER_MODEL_C      { NULL, _LE_USE_PORT, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 1, NULL, _LE_TRUE }
 
     /* define model stack */
     # define ER_MODEL_STACK  ( 8192 )
 
     /* define model parameters */
     # define ER_MODEL_ENUM   ( 3 )
-    # define ER_MODEL_DEPTH  ( 7 )
+    # define ER_MODEL_SPAN   ( 7 )
 
     /* define display array types */
     # define ER_MODEL_VERTEX GL_DOUBLE
