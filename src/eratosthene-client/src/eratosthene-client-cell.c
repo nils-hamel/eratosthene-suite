@@ -46,7 +46,7 @@
         le_array_delete( & er_cell->ce_array );
 
         /* delete structure */
-        * ( er_cell ) = er_reset;
+        ( * er_cell ) = er_reset;
 
     }
 
@@ -99,7 +99,7 @@
     le_data_t * er_cell_get_data( er_cell_t const * const er_cell ) {
 
         /* return cell colorimetric array pointer */
-        return( ( le_data_t * ) ( le_array_get_byte( & er_cell->ce_array ) + ER_CELL_OFFSET ) );
+        return( ( le_data_t * ) ( le_array_get_byte( & er_cell->ce_array ) + LE_ARRAY_SD_1 ) );
 
     }
 

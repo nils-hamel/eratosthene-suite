@@ -348,8 +348,8 @@
             if ( er_cell_get_draw( er_model->md_cell + er_parse ) == _LE_FALSE ) continue;
 
             /* vertex and color pointer assignation */
-            glVertexPointer( 3, ER_MODEL_VERTEX, ER_CELL_STRIDE, er_cell_get_pose( er_model->md_cell + er_parse ) );
-            glColorPointer ( 3, ER_MODEL_COLORS, ER_CELL_STRIDE, er_cell_get_data( er_model->md_cell + er_parse ) );
+            glVertexPointer( 3, ER_MODEL_VERTEX, LE_ARRAY_SD, er_cell_get_pose( er_model->md_cell + er_parse ) );
+            glColorPointer ( 3, ER_MODEL_COLORS, LE_ARRAY_SD, er_cell_get_data( er_model->md_cell + er_parse ) );
 
             /* retrieve cell edge coordinates */
             er_edge = er_cell_get_edge( er_model->md_cell + er_parse );
