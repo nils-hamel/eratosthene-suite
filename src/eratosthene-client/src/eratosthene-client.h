@@ -86,7 +86,7 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_CLIENT_C { ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, 0, GLUT_UP, 0, 0, 1.0, 1.0, ER_VIEW_D, _LE_TRUE }
+    # define ER_CLIENT_C { ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, ER_VIEW_D, 0, GLUT_UP, 0, 0, 1.0, 1.0, _LE_TRUE }
 
 /*
     header - preprocessor macros
@@ -150,14 +150,14 @@
         er_times_t cl_times;
         er_movie_t cl_movie;
 
+        er_view_t  cl_view;
+
         le_enum_t  cl_button;
         le_enum_t  cl_state;
         le_diff_t  cl_x;
         le_diff_t  cl_y;
         le_real_t  cl_inertia;
         le_real_t  cl_scale;
-
-        er_view_t  cl_view;
 
     le_enum_t _status; } er_client_t;
 

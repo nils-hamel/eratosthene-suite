@@ -66,7 +66,7 @@
 
     le_void_t er_client_delete( er_client_t * const er_client ) {
 
-        /* Cleared structure variables */
+        /* deleted structure variables */
         er_client_t er_reset = ER_CLIENT_C;
 
         /* delete client movie */
@@ -78,7 +78,7 @@
         /* delete client model */
         er_model_delete( & er_client->cl_model );
 
-        /* delete client structure */
+        /* delete structure */
         ( * er_client ) = er_reset;
 
     }
@@ -132,7 +132,7 @@
         glFogfv( GL_FOG_COLOR  , er_color  );
         
         /* opengl blending configuration */
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
         /* declare client callback functions */
         glutKeyboardFunc     ( er_client_calls_keybd   );
@@ -329,8 +329,11 @@
         /* apply scale factor to projection matrix */
         glScaled( er_client.cl_scale, er_client.cl_scale, er_client.cl_scale );
 
-        /* adapt and enable fog feature */
-        glFogf( GL_FOG_START, er_farc * 0.85 ), glFogf( GL_FOG_END, er_farc ), glEnable( GL_FOG );
+        /* fog configuration */
+        glFogf( GL_FOG_START, er_farc * 0.85 ), glFogf( GL_FOG_END, er_farc );
+
+        /* enable fog features */
+        glEnable( GL_FOG );
 
     }
 
@@ -508,7 +511,7 @@
         /* mouse event switch */
         if ( er_client.cl_button == GLUT_LEFT_BUTTON ) {
 
-            /* apply inertial coefficients multipliers */
+            /* apply inertial coefficients and multipliers */
             er_mdx *= ER_COMMON_INP * er_client.cl_inertia;
             er_mdy *= ER_COMMON_INP * er_client.cl_inertia;
 
@@ -517,7 +520,7 @@
 
         } else if ( er_client.cl_button == GLUT_RIGHT_BUTTON ) {
 
-            /* apply inetrial coefficients multipliers */
+            /* apply inetrial coefficients and multipliers */
             er_mdx *= ER_COMMON_INR;
             er_mdy *= ER_COMMON_INR;
 
