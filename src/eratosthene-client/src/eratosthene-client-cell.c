@@ -29,11 +29,8 @@
         /* created structure variables */
         er_cell_t er_cell = ER_CELL_C;
 
-        /* allocate geodetic array memory */
-        er_cell.ce_pose = malloc( sizeof( le_real_t ) * ER_CELL_ARRAY );
-
-        /* allocate colorimetric array memory */
-        er_cell.ce_data = malloc( sizeof( le_data_t ) * ER_CELL_ARRAY );
+        /* create array structure */
+        er_cell.ce_array = le_array_create();
 
         /* return created structure */
         return( er_cell );
@@ -45,11 +42,8 @@
         /* deleted structure variables */
         er_cell_t er_reset = ER_CELL_C;
 
-        /* check array state - memory unallocation */
-        if ( er_cell->ce_pose != NULL ) free( er_cell->ce_pose );
-
-        /* check array state - memory unallocation */
-        if ( er_cell->ce_data != NULL ) free( er_cell->ce_data );
+        /* delete array structure */
+        le_array_delete( & er_cell->ce_array );
 
         /* delete structure */
         * ( er_cell ) = er_reset;
@@ -98,14 +92,14 @@
     le_real_t * er_cell_get_pose( er_cell_t const * const er_cell ) {
 
         /* return cell geodetic array pointer */
-        return( ( le_real_t * ) er_cell->ce_pose );
+        return( ( le_real_t * ) le_array_get_byte( & er_cell->ce_array ) );
 
     }
 
     le_data_t * er_cell_get_data( er_cell_t const * const er_cell ) {
 
         /* return cell colorimetric array pointer */
-        return( ( le_data_t * ) er_cell->ce_data );
+        return( ( le_data_t * ) ( le_array_get_byte( & er_cell->ce_array ) + ER_CELL_OFFSET ) );
 
     }
 
@@ -175,24 +169,24 @@
 
     le_size_t er_cell_io_query( er_cell_t * const er_cell, le_char_t const * const er_ip, le_sock_t const er_port ) {
 
-        /* returned value variables */
-        le_size_t er_return = 0;
-
         /* socket variables */
         le_sock_t er_socket = _LE_SOCK_NULL;
 
-        /* check socket state */
+        /* returned value variables */
+        le_size_t er_return = 0;
+
+        /* create client socket */
         if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
 
             /* server/client handshake */
             if ( le_client_handshake( er_socket, LE_MODE_QMOD ) == LE_ERROR_SUCCESS ) {
 
-                /* read cell from server */
+                /* reading server answer */
                 er_return = er_cell_io_read( er_cell, er_socket );
 
             } 
 
-            /* delete client handle */
+            /* delete client socket */
             le_client_delete( er_socket );
 
         }
@@ -204,24 +198,18 @@
 
     le_size_t er_cell_io_read( er_cell_t * const er_cell, le_sock_t const er_socket ) {
 
-        /* redundant reading variables */
-        le_size_t er_read = 0;
+        /* array size variables */
+        le_size_t er_size = 0;
 
-        /* reading variables */
-        le_size_t er_parse = 0;
-        le_size_t er_count = 0;
-        le_size_t er_csize = 0;
-        le_size_t er_track = 0;
+        /* array buffer variables */
+        le_byte_t * er_base = NULL;
+        le_real_t * er_pose = NULL;
 
-        /* socket i/o bridge variables */
-        le_size_t er_bridge = 0;
+        /* computation array variables */
+        le_real_t er_comp[3] = { 0.0 };
 
-        /* array pointer variables */
-        le_real_t * er_pap = NULL;
-        le_data_t * er_dap = NULL;
-
-        /* socket i/o buffer variables */
-        static le_byte_t er_buffer[LE_BUFFER_STRM] = LE_BUFFER_C;
+        /* empty cell and cell array */
+        le_array_set_size( & er_cell->ce_array, er_cell->ce_size = 0 );
 
         /* write query address on socket */
         le_address_io_write( & er_cell->ce_addr, er_socket );
@@ -229,61 +217,43 @@
         /* read query address on socket */
         le_address_io_read( & er_cell->ce_addr, er_socket );
 
-        /* extract cell edge components */
+        /* read streaming data */
+        le_array_io_read( & er_cell->ce_array, er_socket );
+
+        /* extract cell edge */
         le_address_get_pose( & er_cell->ce_addr, er_cell->ce_edge );
 
-        /* compute edge cartesian coordinates */
+        /* convert edge - cartesian coordinates */
         er_cell->ce_edge[2] = LE_ADDRESS_WGSA * cos( er_cell->ce_edge[1] ) * cos( er_cell->ce_edge[0] );
         er_cell->ce_edge[0] = LE_ADDRESS_WGSA * cos( er_cell->ce_edge[1] ) * sin( er_cell->ce_edge[0] );
         er_cell->ce_edge[1] = LE_ADDRESS_WGSA * sin( er_cell->ce_edge[1] );
 
-        /* reset cell array size */
-        er_cell->ce_size = 0;
+        /* retrieve array size and buffer pointer */
+        er_size = le_array_get_size( & er_cell->ce_array );
+        er_base = le_array_get_byte( & er_cell->ce_array );
 
-        /* reading query array */
-        while ( er_read < _LE_USE_RETRY ) {
+        /* parsing array elements */
+        for ( le_size_t er_parse = 0; er_parse < er_size; er_parse += LE_ARRAY_SD ) {
 
-            /* read array from socket */
-            if ( ( er_count = read( er_socket, er_buffer + er_bridge, _LE_USE_MTU ) + er_bridge ) >= LE_ARRAY_SD ) {
+            /* compute vertices offset */
+            er_pose = ( le_real_t * ) ( er_base + er_parse );
 
-                /* check cell limitation */
-                if ( ( er_csize = er_cell->ce_size + ( er_count / LE_ARRAY_SD ) * 3 ) < ER_CELL_ARRAY ) {
+            /* convert coordinates - ellipsoidal to cartesian */
+            er_comp[0] = - er_cell->ce_edge[1] + sin( er_pose[1] ) * ( er_pose[2] += LE_ADDRESS_WGSA );
+            er_comp[1] = - er_cell->ce_edge[0] + er_pose[2] * sin( er_pose[0] ) * ( er_pose[1] = cos( er_pose[1] ) );
+            er_comp[2] = - er_cell->ce_edge[2] + er_pose[2] * er_pose[1] * cos( er_pose[0] );
 
-                    /* parsing received bloc */
-                    for ( er_parse = 0; er_parse < ( er_count / LE_ARRAY_SD ) * LE_ARRAY_SD; er_track += 3, er_parse += LE_ARRAY_SD ) {
+            er_pose[1] = er_comp[0];
+            er_pose[0] = er_comp[1];
+            er_pose[2] = er_comp[2];
 
-                        /* compute array pointers */
-                        er_pap = ( le_real_t * ) ( er_buffer + er_parse );
-                        er_dap = ( le_data_t * ) ( er_pap + 3 );
-
-                        /* extract element data */
-                        er_cell->ce_data[er_track    ] = er_dap[0];
-                        er_cell->ce_data[er_track + 1] = er_dap[1];
-                        er_cell->ce_data[er_track + 2] = er_dap[2];                        
-
-                        /* optimised element vertex extraction */
-                        er_cell->ce_pose[er_track + 1] = - er_cell->ce_edge[1] + sin( er_pap[1] ) * ( er_pap[2] += LE_ADDRESS_WGSA );
-                        er_cell->ce_pose[er_track    ] = - er_cell->ce_edge[0] + er_pap[2] * sin( er_pap[0] ) * ( er_pap[1] = cos( er_pap[1] ) );
-                        er_cell->ce_pose[er_track + 2] = - er_cell->ce_edge[2] + er_pap[2] * er_pap[1] * cos( er_pap[0] );
-
-                    }
-
-                    /* cell size management */
-                    er_cell->ce_size = er_csize;
-
-                    /* bridge management */
-                    if ( ( er_bridge = ( er_count % LE_ARRAY_SD ) ) != 0 ) memcpy( er_buffer, er_buffer + ( er_count - er_bridge ), er_bridge );
-
-                /* reset redundancy */
-                er_read = 0; } else { er_read = _LE_USE_RETRY; }
-                
-            /* update redundancy */
-            } else { er_read ++; }
+            /* update cell size */
+            er_cell->ce_size += 3;
 
         }
 
-        /* send cell size */
-        return( er_cell->ce_size );
+        /* return cell size */
+        return( er_cell->ce_size );    
 
     }
 

@@ -55,10 +55,12 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_CELL_C     { _LE_FALSE, _LE_FALSE, LE_ADDRESS_C, LE_ADDRESS_C, 0, NULL, NULL, { 0.0 } }
+    # define ER_CELL_C      { _LE_FALSE, _LE_FALSE, LE_ADDRESS_C, LE_ADDRESS_C, 0, LE_ARRAY_C, { 0.0 } }
 
-    /* define cell array size */
-    # define ER_CELL_ARRAY ( 786432 )
+    /* define cell array offset and stride */
+    # define ER_CELL_OFFSET ( sizeof( le_real_t ) * 3 )
+    # define ER_CELL_STRIDE ( ( sizeof( le_real_t ) + sizeof( le_data_t ) ) * 3 )
+    
 
 /*
     header - preprocessor macros
@@ -110,10 +112,9 @@
         le_address_t ce_push;
 
         le_size_t    ce_size;
-        le_real_t *  ce_pose;
-        le_data_t *  ce_data;
+        le_array_t   ce_array;
 
-        le_real_t   ce_edge[3];
+        le_real_t    ce_edge[3];
         
     } er_cell_t;
 

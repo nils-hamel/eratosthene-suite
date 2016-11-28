@@ -340,6 +340,65 @@
             if ( er_cell_get_draw( er_model->md_cell + er_parse ) == _LE_TRUE ) {
 
                 /* vertex and color pointer assignation */
+                glVertexPointer( 3, ER_MODEL_VERTEX, ER_CELL_STRIDE, er_cell_get_pose( er_model->md_cell + er_parse ) );
+                glColorPointer ( 3, ER_MODEL_COLORS, ER_CELL_STRIDE, er_cell_get_data( er_model->md_cell + er_parse ) );
+
+                /* cell matrix */
+                glPushMatrix(); {
+
+                    /* retrieve edge array */
+                    er_edge = er_cell_get_edge( er_model->md_cell + er_parse );
+
+                    /* motion management - cell edge translation */
+                    glTranslated( er_cosl * er_edge[0] + er_sinl * er_edge[2], er_sina * er_sinl * er_edge[0] + er_cosa * er_edge[1] - er_sina * er_cosl * er_edge[2], er_cosa * er_cosl * er_edge[2] + er_sina * er_edge[1] - er_cosa * er_sinl * er_edge[0] - LE_ADDRESS_WGSA );
+
+                    /* motion management - planimetric rotation */
+                    glRotated( + er_lat, 1.0, 0.0, 0.0 );
+                    glRotated( - er_lon, 0.0, 1.0, 0.0 );
+
+                    /* display graphical primitives */
+                    glDrawArrays( GL_POINTS, 0, er_cell_get_size( er_model->md_cell + er_parse ) / 3 );
+
+                /* cell matrix */
+                } glPopMatrix();
+
+            }
+
+        }
+
+    }
+
+    le_void_t er_model_display_cell2( er_model_t const * const er_model, er_view_t const * const er_view ) {
+
+        /* view position variables */
+        le_real_t er_lon = er_view_get_lon( er_view );
+        le_real_t er_lat = er_view_get_lat( er_view );
+
+        /* optimisation variables */
+        le_real_t er_cosl = cos( - er_lon * ER_COMMON_D2R );
+        le_real_t er_sinl = sin( - er_lon * ER_COMMON_D2R );
+        le_real_t er_cosa = cos( + er_lat * ER_COMMON_D2R );
+        le_real_t er_sina = sin( + er_lat * ER_COMMON_D2R );
+
+        /* edge array variables */
+        le_real_t * er_edge = NULL;
+
+        /* motion management - tilt rotation */
+        glRotated( - er_view_get_gam( er_view ), 1.0, 0.0, 0.0 );
+
+        /* motion management - altimetric translation */
+        glTranslated( 0.0, 0.0, - er_view_get_alt( er_view ) + LE_ADDRESS_WGSA );
+
+        /* motion management - azimuth rotation */
+        glRotated( + er_view_get_azm( er_view ), 0.0, 0.0, 1.0 );
+
+        /* display model cells */
+        for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
+
+            /* check cell state */
+            if ( er_cell_get_draw( er_model->md_cell + er_parse ) == _LE_TRUE ) {
+
+                /* vertex and color pointer assignation */
                 glVertexPointer( 3, ER_MODEL_VERTEX, 0, er_cell_get_pose( er_model->md_cell + er_parse ) );
                 glColorPointer ( 3, ER_MODEL_COLORS, 0, er_cell_get_data( er_model->md_cell + er_parse ) );
 
