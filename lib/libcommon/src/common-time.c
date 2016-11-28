@@ -30,7 +30,7 @@
         struct tm lc_struct = * gmtime( & lc_time );
 
         /* compose date string */
-        strftime( ( char * ) lc_string, lc_limit, "%Y/%m/%d %H%M%S", & lc_struct );
+        strftime( ( char * ) lc_string, lc_limit, "%Y-%m-%d+%H:%M:%S", & lc_struct );
 
         /* return filled string */
         return( lc_string );

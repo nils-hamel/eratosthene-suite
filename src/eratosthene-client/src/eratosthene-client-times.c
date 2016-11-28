@@ -35,8 +35,18 @@
         /* assign buffer height */
         er_times.tm_height = 96;
 
-        /* assign buffer position */
+        /* assign buffer lower position */
         er_times.tm_offset = 64;
+
+        /* assign buffer upper position */
+        er_times.tm_upper = er_times.tm_offset + er_times.tm_height;
+
+        /* assign middle position */
+        er_times.tm_middle = er_times.tm_width >> 1;
+
+        /* assign gradudation lower position */
+        er_times.tm_lgrad = 30;
+        er_times.tm_ugrad = er_times.tm_height - 30;
 
         /* compute buffer size */
         er_times.tm_length = er_times.tm_width * er_times.tm_height * 4;
@@ -81,6 +91,12 @@
 
     le_void_t er_times_display( er_times_t const * const er_times, er_view_t const * const er_view ) {
 
+        /* interface text variables */
+        le_char_t * er_text[3] = { ( le_char_t * ) "< ONLY  ",  ( le_char_t * ) "  ONLY >", ( le_char_t * ) "< BOTH >" };
+
+        /* garduation display variables */
+        le_size_t er_grad = 0;
+
         /* view point variables */
         le_enum_t er_act = er_view_get_active( er_view );
 
@@ -88,28 +104,18 @@
         le_time_t er_time = er_view_get_time( er_view, er_act );
         le_time_t er_area = er_view_get_area( er_view, er_act );
 
-        /* garduation display variables */
-        le_size_t er_grad = 0;
-
         /* time boundaries variables */
         le_time_t er_timed = er_time - ( er_area >> 1 );
         le_time_t er_timeu = er_time + ( er_area >> 1 );
 
         /* scale boundaries variables */
         le_time_t er_scaled = pow( 10.0, floor( log( er_area * 0.02 ) / log( 10.0 ) ) );
-        le_time_t er_scaleu = pow( 10.0, floor( log( er_area * 0.75 ) / log( 10.0 ) ) );
+        le_time_t er_scaleu = pow( 10.0, floor( log( er_area * 0.85 ) / log( 10.0 ) ) );
 
-        /* position marker variables */
-        le_size_t er_midx = er_times->tm_width >> 1;
-        le_size_t er_topy = er_times->tm_offset + er_times->tm_height;
-
-        /* interface text variables */
-        le_char_t * er_text[3] = { ( le_char_t * ) "< only  ",  ( le_char_t * ) "  only >", ( le_char_t * ) "< both >" };
-
-        /* clear buffer memory */
+        /* reset buffer memory */
         for ( le_size_t er_parse = 3; er_parse < er_times->tm_length; er_parse += 4 ) {
 
-            /* reset alpha component */
+            /* reset buffer alpha component */
             er_times->tm_buffer[er_parse] = 200;
 
         }
@@ -120,14 +126,14 @@
         /* parsing graduation scales */
         for ( le_size_t er_scale = er_scaled; er_scale <= er_scaleu; er_scale *= 10 ) {
 
-            /* display graduation */
+            /* parsing graduation increments */
             for ( le_time_t er_parse = ER_TIMES_ROUND( er_timed, er_scale ); er_parse < er_timeu; er_parse += er_scale ) {
 
-                /* compute graduation position x-position */
+                /* compute graduation x-position */
                 er_grad = ( ( ( ( le_real_t ) er_parse ) - er_timed ) / er_area ) * er_times->tm_width;
 
                 /* display graduation increment */
-                for ( le_size_t er_pixel = 30; er_pixel < ( er_times->tm_height - 30 ); er_pixel ++ ) {
+                for ( le_size_t er_pixel = er_times->tm_lgrad; er_pixel < er_times->tm_ugrad; er_pixel ++ ) {
 
                     /* update interface buffer alpha channel */
                     er_times->tm_buffer[( ( er_grad + er_pixel * er_times->tm_width ) << 2 ) + 3] -= 32;
@@ -146,44 +152,29 @@
 
         }
 
+        /* specify text color */
+        glColor3f( 0.2, 0.2, 0.3 );
+
+        /* display mode text */
+        er_times_display_text( er_text[er_view_get_mode( er_view ) - 1], er_times->tm_middle, er_times->tm_upper - 4, ER_TIMES_CENTER );
+
         /* check activity - specify text color */
         if ( er_act == 0 ) glColor3f( 0.2, 0.2, 0.3 ); else glColor3f( 0.6, 0.6, 0.7 );
 
         /* display times */
-        er_times_display_date( er_view_get_time( er_view, 0 ), er_midx - 48, er_topy - 4, ER_TIMES_RIGHT );
+        er_times_display_date( er_view_get_time( er_view, 0 ), er_times->tm_middle - 48, er_times->tm_upper - 4, ER_TIMES_RIGHT );
 
         /* check activity - specify text color */
         if ( er_act == 1 ) glColor3f( 0.2, 0.2, 0.3 ); else glColor3f( 0.6, 0.6, 0.7 );;
 
         /* display times */
-        er_times_display_date( er_view_get_time( er_view, 1 ), er_midx + 48, er_topy - 4, ER_TIMES_LEFT  );
-
-        /* specify text color */
-        glColor3f( 0.2, 0.2, 0.3 );
-
-        /* display text mode */
-        er_times_display_text( er_text[er_view_get_mode( er_view ) - 1], er_midx, er_topy - 4, ER_TIMES_CENTER );
+        er_times_display_date( er_view_get_time( er_view, 1 ), er_times->tm_middle + 48, er_times->tm_upper - 4, ER_TIMES_LEFT  );
 
         /* assign buffer position */
         glRasterPos2i( 0, er_times->tm_offset );
 
         /* display buffer */
         glDrawPixels( er_times->tm_width, er_times->tm_height, GL_RGBA, GL_UNSIGNED_BYTE, er_times->tm_buffer );
-        
-
-    }
-
-    le_void_t er_times_display_text( le_char_t const * const er_text, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify ) {
-
-        /* check justification - assign shift */
-        if ( er_justify == ER_TIMES_RIGHT  ) er_x -= strlen( ( char * ) er_text ) * 8;
-        if ( er_justify == ER_TIMES_CENTER ) er_x -= strlen( ( char * ) er_text ) * 4;
-
-        /* assign string position */
-        glRasterPos2i( er_x, er_y - 13 );
-
-        /* display string */
-        glutBitmapString( GLUT_BITMAP_8_BY_13, er_text );
 
     }
 
@@ -195,8 +186,22 @@
         /* compose date string */
         lc_time_to_string( er_time, er_string, 32 );
 
-        /* display text */
+        /* display date text */
         er_times_display_text( er_string, er_x, er_y, er_justify );
+
+    }
+
+    le_void_t er_times_display_text( le_char_t const * const er_text, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify ) {
+
+        /* check justification - assign shift */
+        if ( er_justify == ER_TIMES_RIGHT  ) er_x -= strlen( ( char * ) er_text ) * 8;
+        if ( er_justify == ER_TIMES_CENTER ) er_x -= strlen( ( char * ) er_text ) * 4;
+
+        /* set string position */
+        glRasterPos2i( er_x, er_y - 13 );
+
+        /* display text */
+        glutBitmapString( GLUT_BITMAP_8_BY_13, er_text );
 
     }
 

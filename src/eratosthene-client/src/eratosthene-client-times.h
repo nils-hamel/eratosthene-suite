@@ -55,7 +55,7 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_TIMES_C          { 0, 0, 0, 0, NULL, _LE_TRUE }
+    # define ER_TIMES_C          { 0, 0, 0, 0, 0, 0, 0, 0, NULL, _LE_TRUE }
 
     /* define string justification */
     # define ER_TIMES_LEFT       ( 0 )
@@ -83,6 +83,10 @@
         le_size_t   tm_height;
         le_size_t   tm_length;
         le_size_t   tm_offset;
+        le_size_t   tm_middle;
+        le_size_t   tm_upper;
+        le_size_t   tm_lgrad;
+        le_size_t   tm_ugrad;
 
         le_byte_t * tm_buffer;
 
@@ -98,9 +102,9 @@
 
     le_void_t er_times_display( er_times_t const * const er_times, er_view_t const * const er_view );
 
-    le_void_t er_times_display_text( le_char_t const * const er_text, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify );
-
     le_void_t er_times_display_date( le_time_t const er_time, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify );
+
+    le_void_t er_times_display_text( le_char_t const * const er_text, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify );
 
 /*
     header - C/C++ compatibility
