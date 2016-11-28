@@ -30,7 +30,7 @@
         le_real_t er_pose[12] = { 0.0 };
 
         /* half-cell distance variables */
-        le_real_t er_scale = ( le_real_t ) ( _LE_SIZE_L( 1 ) << ( le_address_get_size( er_cell ) + 1 ) );
+        le_real_t er_scale = ( le_real_t ) ( 1 << ( le_address_get_size( er_cell ) + 1 ) );
 
         /* half-cell shift variables */
         le_real_t er_shift = LE_ADDRESS_RNGL / er_scale;
@@ -83,7 +83,7 @@
         le_real_t er_clamp = er_sparam - er_depth - 2;
 
         /* computation variables */
-        le_real_t er_normal = log( ( LE_ADDRESS_WGSA / 2.0 ) / ( er_distance * 30.0 ) ) / M_LN2 + 9.7; // 9.5
+        le_real_t er_normal = log( ( LE_ADDRESS_WGSA / 2.0 ) / ( er_distance * 30.0 ) ) / M_LN2 + 9.7;
 
         /* return evaluation */
         return( er_normal < 5 ? 5 : ( er_normal > er_clamp ? er_clamp : er_normal ) );
