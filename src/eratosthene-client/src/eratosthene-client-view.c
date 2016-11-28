@@ -107,23 +107,6 @@
 
     }
 
-    le_time_t er_view_get_time( er_view_t const * const er_view, le_enum_t const er_time ) {
-
-        /* check asked time */
-        if ( er_time == 0 ) {
-
-            /* return asked time */
-            return( er_view->vw_tia );
-
-        } else {
-
-            /* return asked time */
-            return( er_view->vw_tib );
-
-        }
-
-    }
-
     le_address_t er_view_get_times( er_view_t const * const er_view ) {
 
         /* returned structure variables */
@@ -160,6 +143,23 @@
 
         /* return address structure */
         return( er_addr );
+
+    }
+
+    le_time_t er_view_get_time( er_view_t const * const er_view, le_enum_t const er_time ) {
+
+        /* check asked time */
+        if ( er_time == 0 ) {
+
+            /* return asked time */
+            return( er_view->vw_tia );
+
+        } else {
+
+            /* return asked time */
+            return( er_view->vw_tib );
+
+        }
 
     }
 
@@ -213,7 +213,7 @@
 
     le_void_t er_view_set_plan( er_view_t * const er_view, le_real_t const er_xvalue, le_real_t const er_yvalue ) {
 
-        /* azimuthal anagles variables */
+        /* azimuthal angles variables */
         le_real_t er_cos = cos( er_view->vw_azm * ER_COMMON_D2R );
         le_real_t er_sin = sin( er_view->vw_azm * ER_COMMON_D2R );
 

@@ -113,9 +113,9 @@
 
     le_enum_t er_view_get_active( er_view_t const * const er_view );
 
-    le_time_t er_view_get_time( er_view_t const * const er_view, le_enum_t const er_time );
-
     le_address_t er_view_get_times( er_view_t const * const er_view );
+
+    le_time_t er_view_get_time( er_view_t const * const er_view, le_enum_t const er_time );
 
     le_time_t er_view_get_area( er_view_t const * const er_view, le_enum_t const er_time );
 
