@@ -180,17 +180,41 @@
 
     }
 
-    er_view_t er_view_get_inter( er_view_t const * const er_views, le_size_t const er_index, le_real_t const er_param ) {
+    er_view_t er_view_get_inter( er_view_t const * const er_views, le_size_t const er_size, le_size_t const er_index, le_real_t const er_param ) {
 
         /* returned value variables */
         er_view_t er_view = ER_VIEW_C;
 
-        /* compute interpolated values - linear interpolation */
-        er_view.vw_lon = er_param * ( er_views + er_index + 1 )->vw_lon + ( 1.0 - er_param ) * ( er_views + er_index )->vw_lon;
-        er_view.vw_lat = er_param * ( er_views + er_index + 1 )->vw_lat + ( 1.0 - er_param ) * ( er_views + er_index )->vw_lat;
-        er_view.vw_alt = er_param * ( er_views + er_index + 1 )->vw_alt + ( 1.0 - er_param ) * ( er_views + er_index )->vw_alt;
-        er_view.vw_azm = er_param * ( er_views + er_index + 1 )->vw_azm + ( 1.0 - er_param ) * ( er_views + er_index )->vw_azm;
-        er_view.vw_gam = er_param * ( er_views + er_index + 1 )->vw_gam + ( 1.0 - er_param ) * ( er_views + er_index )->vw_gam;
+        /* interpolation variables */
+        le_real_t er_value = 0.0;
+
+        /* accumulation variables */
+        le_real_t er_accum = 0.0;
+
+        /* parsing control points */
+        for ( le_size_t er_parse = 0; er_parse < er_size; er_parse ++ ) {
+
+            /* compute interpolation parameter */
+            er_value = ( ( le_real_t ) er_index + er_param ) - ( le_real_t ) er_parse;
+
+            /* compute interpolation weight - accumulate interpolation weight */
+            er_accum += ( er_value = exp( - 3.0 * er_value * er_value ) );
+
+            /* update interpolated values */
+            er_view.vw_lon += er_value * ( er_views + er_parse )->vw_lon;
+            er_view.vw_lat += er_value * ( er_views + er_parse )->vw_lat;
+            er_view.vw_alt += er_value * ( er_views + er_parse )->vw_alt;
+            er_view.vw_azm += er_value * ( er_views + er_parse )->vw_azm;
+            er_view.vw_gam += er_value * ( er_views + er_parse )->vw_gam;
+
+        }
+
+        /* compute interpolated values - simple smooth interpolation */
+        er_view.vw_lon /= er_accum;
+        er_view.vw_lat /= er_accum;
+        er_view.vw_alt /= er_accum;
+        er_view.vw_azm /= er_accum;
+        er_view.vw_gam /= er_accum;
 
         /* compute interpolated values - step interpolation */
         er_view.vw_mod = ( er_views + er_index )->vw_mod;

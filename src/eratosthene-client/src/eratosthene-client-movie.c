@@ -71,7 +71,7 @@
     er_view_t er_movie_get( er_movie_t const * const er_movie ) {
 
         /* return computed view */
-        return( er_view_get_inter( er_movie->mv_views, er_movie->mv_parse, er_movie->mv_param ) );
+        return( er_view_get_inter( er_movie->mv_views, er_movie->mv_stack, er_movie->mv_parse, er_movie->mv_param ) );
 
     }
 

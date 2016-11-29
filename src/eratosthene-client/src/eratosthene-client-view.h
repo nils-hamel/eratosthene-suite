@@ -119,7 +119,7 @@
 
     le_time_t er_view_get_area( er_view_t const * const er_view, le_enum_t const er_time );
 
-    er_view_t er_view_get_inter( er_view_t const * const er_views, le_size_t const er_index, le_real_t const er_param );
+    er_view_t er_view_get_inter( er_view_t const * const er_views, le_size_t const er_size, le_size_t const er_index, le_real_t const er_param );
 
     le_void_t er_view_set_plan( er_view_t * const er_view, le_real_t const er_xvalue, le_real_t const er_yvalue );
 
