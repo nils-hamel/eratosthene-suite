@@ -107,7 +107,7 @@
      *  \param er_stream Stream to file
      */
 
-    le_enum_t er_injection( le_sock_t const er_client, FILE * const er_stream, le_time_t const er_time );
+    le_enum_t er_inject_uf3( int argc, char ** argv );
 
     /*! \brief main function
      *

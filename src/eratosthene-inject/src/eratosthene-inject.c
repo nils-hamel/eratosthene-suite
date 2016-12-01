@@ -21,71 +21,53 @@
     # include "eratosthene-inject.h"
 
 /*
-    source - injection procedure
+    source - injection method - uf3
  */
 
-    le_enum_t er_injection( le_sock_t const er_client, FILE * const er_stream, le_time_t const er_time ) {
+    le_enum_t er_inject_uf3( int argc, char ** argv ) {
 
-        /* socket i/o count variables */
-        le_size_t er_fread = 1;
-        le_size_t er_write = 1;
-
-        /* socket i/o buffer variables */
-        le_byte_t er_buffer[LE_BUFFER_SYNC] = LE_BUFFER_C;
-
-        /* send time on socket */
-        if ( write( er_client, & er_time, sizeof( le_time_t ) ) != sizeof( le_time_t ) ) {
-
-            /* send message */
-            return( LE_ERROR_IO_WRITE );
-
-        }
-
-        /* stream data injection */
-        while ( ( er_fread > 0 ) && ( er_fread == er_write ) ) {
-
-            /* read stream elements */
-            if ( ( er_fread = fread( ( le_void_t * ) er_buffer, sizeof( le_byte_t ), _LE_USE_MTU, er_stream ) ) > 0 ) {
-
-                /* write buffer to socket */
-                if ( ( er_write = write( er_client, er_buffer, er_fread ) ) != er_fread ) {
-
-                    /* send message */
-                    return( LE_ERROR_IO_WRITE );
-
-                }
-
-            }
-
-        }
-
-        /* send message */
-        return( LE_ERROR_SUCCESS );
-
-    }
-
-/*
-    source - main function
- */
-
-    int main( int argc, char ** argv ) {
-
-        /* stream variables */
-        FILE * er_stream = NULL;
-
-        /* socket variables */
-        le_sock_t er_client = _LE_SOCK_NULL;
+        /* segment variables */
+        le_size_t er_count = 0;
 
         /* time variables */
         le_time_t er_time = lc_read_signed( argc, argv, "--time", "-t", time( NULL ) );
 
-        /* create input stream */
-        if ( ( er_stream = fopen( lc_read_string( argc, argv, "--file", "-f" ), "rb" ) ) == NULL ) {
+        /* stream variables */
+        le_file_t er_stream = NULL;
+
+        /* array variables */
+        le_array_t er_array = LE_ARRAY_C;
+
+        /* socket variables */
+        le_sock_t er_client = _LE_SOCK_NULL;
+
+        /* setting array size */
+        if ( le_array_set_size( & er_array, LE_ARRAY_SD * 1024 ) == _LE_FALSE ) {
 
             /* display message */
-            fprintf( stderr, "eratosthene-suite : error : unable to access file\n" );
+            fprintf( stderr, "eratosthene-suite : error : unable to allocate memory\n" );
 
-        } else {
+            /* send message */
+            return( EXIT_FAILURE );
+
+        }
+
+        /* create stream */
+        if ( ( er_stream = fopen( lc_read_string( argc, argv, "--uf3", "" ), "rb" ) ) == NULL ) {
+
+            /* display message */
+            fprintf( stderr, "eratosthene-suite : error : unable to access uf3 file\n" );
+
+            /* delete array */
+            le_array_delete( & er_array );
+
+            /* send message */
+            return( EXIT_FAILURE );
+
+        }
+
+        /* read stream by segment */
+        while ( ( er_count = fread( le_array_get_byte( & er_array ), sizeof( le_byte_t ), LE_ARRAY_SD * 1024, er_stream ) ) > 0 ) {
 
             /* create client socket */
             if ( ( er_client = le_client_create( ( le_char_t * ) lc_read_string( argc, argv, "--ip", "-i" ), lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT ) ) ) == _LE_SOCK_NULL ) {
@@ -93,38 +75,93 @@
                 /* display message */
                 fprintf( stderr, "eratosthene-suite : error : unable to connect to server\n" );
 
-            } else {
+                /* delete array */
+                le_array_delete( & er_array );
 
-                /* client-server injection handshake */
-                if ( le_client_handshake( er_client, LE_MODE_IMOD ) != LE_ERROR_SUCCESS ) {
-
-                    /* display message */
-                    fprintf( stderr, "eratosthene-suite : error : authorisation failed\n" );
-
-                } else {
-
-                    /* injection procedure */
-                    if ( er_injection( er_client, er_stream, er_time ) != LE_ERROR_SUCCESS ) {
-
-                        /* display message */
-                        fprintf( stderr, "eratosthene-suite : error : write on socket failure\n" );
-
-                    }
-
-                }
-
-                /* delete client socket */
-                er_client = le_client_delete( er_client );
+                /* send message */
+                return( EXIT_FAILURE );
 
             }
 
-            /* delete input stream */
-            fclose( er_stream );
+            /* client/server handshake */
+            if ( le_client_handshake( er_client, LE_MODE_IMOD ) != LE_ERROR_SUCCESS ) {
+
+                /* display message */
+                fprintf( stderr, "eratosthene-suite : error : server authorisation failed\n" );
+
+                /* delete array */
+                le_array_delete( & er_array );
+
+                /* send message */
+                return( EXIT_FAILURE );
+
+            }
+
+            /* write time on sokcet */
+            if ( write( er_client, & er_time, sizeof( le_time_t ) ) != sizeof( le_time_t ) ) {
+
+                /* display message */
+                fprintf( stderr, "eratosthene-suite : error : unable to write on socket\n" );
+
+                /* delete array */
+                le_array_delete( & er_array );
+
+                /* send message */
+                return( EXIT_FAILURE );
+
+            }
+
+            /* write array on socket */
+            if ( le_array_io_write( & er_array, er_client ) != LE_ERROR_SUCCESS ) {
+
+                /* display message */
+                fprintf( stderr, "eratosthene-suite : error : unable to write on socket\n" );
+
+                /* delete array */
+                le_array_delete( & er_array );
+
+                /* send message */
+                return( EXIT_FAILURE );
+
+            }
+
+            /* close client socket */
+            er_client = le_client_delete( er_client );
 
         }
 
-        /* return to system */
+        /* delete array */
+        le_array_delete( & er_array );
+
+        /* delete stream */
+        fclose( er_stream );
+
+        /* send message */
         return( EXIT_SUCCESS );
+
+    }
+
+/*
+    source - main method
+ */
+
+    int main( int argc, char ** argv ) {
+
+        /* detect input stream format */
+        if ( lc_read_flag( argc, argv, "--uf3", "" ) == LC_TRUE ) {
+
+            /* call specialised method */
+            return( er_inject_uf3( argc, argv ) );
+
+        } else {
+
+            /* display message */
+            fprintf( stderr, "eratosthene-suite : error : unsupported format\n" );
+
+            /* return to system */
+            return( EXIT_FAILURE );
+
+        }
 
     }
 
