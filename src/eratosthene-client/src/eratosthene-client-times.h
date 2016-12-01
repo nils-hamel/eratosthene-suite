@@ -55,7 +55,7 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_TIMES_C          { 0, 0, 0, 0, 0, 0, 0, 0, NULL, _LE_TRUE }
+    # define ER_TIMES_C          { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, _LE_TRUE }
 
     /* define string justification */
     # define ER_TIMES_LEFT       ( 0 )
@@ -83,10 +83,13 @@
         le_size_t   tm_height;
         le_size_t   tm_length;
         le_size_t   tm_offset;
+
+        le_size_t   tm_sh1;
+        le_size_t   tm_sh2;
+        le_size_t   tm_sh3;
+        le_size_t   tm_bh1;
+        le_size_t   tm_bh2;
         le_size_t   tm_middle;
-        le_size_t   tm_upper;
-        le_size_t   tm_lgrad;
-        le_size_t   tm_ugrad;
 
         le_byte_t * tm_buffer;
 
