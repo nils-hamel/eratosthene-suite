@@ -42,7 +42,7 @@
         le_sock_t er_client = _LE_SOCK_NULL;
 
         /* setting array size */
-        if ( le_array_set_size( & er_array, LE_ARRAY_SD * 1024 ) == _LE_FALSE ) {
+        if ( le_array_set_size( & er_array, LE_ARRAY_SD * ER_INJECT ) == _LE_FALSE ) {
 
             /* display message */
             fprintf( stderr, "eratosthene-suite : error : unable to allocate memory\n" );
@@ -58,28 +58,22 @@
             /* display message */
             fprintf( stderr, "eratosthene-suite : error : unable to access uf3 file\n" );
 
-            /* delete array */
-            le_array_delete( & er_array );
-
-            /* send message */
-            return( EXIT_FAILURE );
+            /* delete array - send message */
+            return( le_array_delete( & er_array ), EXIT_FAILURE );
 
         }
 
         /* read stream by segment */
-        while ( ( er_count = fread( le_array_get_byte( & er_array ), sizeof( le_byte_t ), LE_ARRAY_SD * 1024, er_stream ) ) > 0 ) {
+        while ( ( er_count = fread( le_array_get_byte( & er_array ), sizeof( le_byte_t ), LE_ARRAY_SD * ER_INJECT, er_stream ) ) > 0 ) {
 
-            /* create client socket */
+            /* create socket */
             if ( ( er_client = le_client_create( ( le_char_t * ) lc_read_string( argc, argv, "--ip", "-i" ), lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT ) ) ) == _LE_SOCK_NULL ) {
 
                 /* display message */
                 fprintf( stderr, "eratosthene-suite : error : unable to connect to server\n" );
 
-                /* delete array */
-                le_array_delete( & er_array );
-
-                /* send message */
-                return( EXIT_FAILURE );
+                /* delete array - send message */
+                return( le_array_delete( & er_array ), EXIT_FAILURE );
 
             }
 
@@ -89,11 +83,8 @@
                 /* display message */
                 fprintf( stderr, "eratosthene-suite : error : server authorisation failed\n" );
 
-                /* delete array */
-                le_array_delete( & er_array );
-
-                /* send message */
-                return( EXIT_FAILURE );
+                /* delete array - send message */
+                return( le_array_delete( & er_array ), EXIT_FAILURE );
 
             }
 
@@ -103,13 +94,13 @@
                 /* display message */
                 fprintf( stderr, "eratosthene-suite : error : unable to write on socket\n" );
 
-                /* delete array */
-                le_array_delete( & er_array );
-
-                /* send message */
-                return( EXIT_FAILURE );
+                /* delete array - send message */
+                return( le_array_delete( & er_array ), EXIT_FAILURE );
 
             }
+
+            /* update array size */
+            le_array_set_size( & er_array, er_count );
 
             /* write array on socket */
             if ( le_array_io_write( & er_array, er_client ) != LE_ERROR_SUCCESS ) {
@@ -117,16 +108,13 @@
                 /* display message */
                 fprintf( stderr, "eratosthene-suite : error : unable to write on socket\n" );
 
-                /* delete array */
-                le_array_delete( & er_array );
-
-                /* send message */
-                return( EXIT_FAILURE );
+                /* delete array - send message */
+                return( le_array_delete( & er_array ), EXIT_FAILURE );
 
             }
 
-            /* close client socket */
-            er_client = le_client_delete( er_client );
+            /* close socket */
+            le_client_delete( er_client );
 
         }
 

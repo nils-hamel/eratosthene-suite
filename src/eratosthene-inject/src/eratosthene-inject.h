@@ -80,6 +80,9 @@
     header - preprocessor definitions
  */
 
+    /* define segmentation size */
+    # define ER_INJECT ( 4096 )
+
 /*
     header - preprocessor macros
  */
