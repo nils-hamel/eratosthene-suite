@@ -139,10 +139,10 @@
         for ( le_size_t er_scale = er_scaled, er_reduce = 8; er_scale <= er_scaleu; er_scale *= 10, er_reduce -= 6 ) {
 
             /* parsing graduation increments */
-            for ( le_time_t er_parse = ER_TIMES_ROUND( er_timed, er_scale ); er_parse < er_timeu; er_parse += er_scale ) {
+            for ( le_time_t er_parse = er_times_rnd( er_timed, er_scale ); er_parse < er_timeu; er_parse += er_scale ) {
 
                 /* compute graduation x-position */
-                er_grad = ( ( ( ( le_real_t ) er_parse ) - er_timed ) / er_area ) * er_times->tm_width;
+                er_grad = ( ( ( ( le_real_t ) er_parse ) - er_time ) / er_area ) * er_times->tm_width + er_times->tm_middle;
 
                 /* display graduation increment */
                 for ( le_size_t er_pixel = er_times->tm_bh1 + er_reduce; er_pixel < er_times->tm_bh2; er_pixel ++ ) {
@@ -165,7 +165,7 @@
         }
 
         /* display middle marker text */
-        er_times_display_text( ( le_char_t * ) "^", er_times->tm_middle, er_times->tm_sh2, ER_TIMES_CENTER );
+        er_times_display_text( ( le_char_t * ) "^", er_times->tm_middle + 1, er_times->tm_sh2, ER_TIMES_CENTER );
 
         /* specify text color */
         glColor4f( 0.9, 0.9, 0.9, 1.0 );

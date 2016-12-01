@@ -55,19 +55,19 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_TIMES_C          { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, _LE_TRUE }
+    # define ER_TIMES_C           { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, _LE_TRUE }
 
     /* define string justification */
-    # define ER_TIMES_LEFT       ( 0 )
-    # define ER_TIMES_RIGHT      ( 1 )
-    # define ER_TIMES_CENTER     ( 2 )
+    # define ER_TIMES_LEFT        ( 0 )
+    # define ER_TIMES_RIGHT       ( 1 )
+    # define ER_TIMES_CENTER      ( 2 )
 
 /*
     header - preprocessor macros
  */
 
     /* define rounding macro */
-    # define ER_TIMES_ROUND(t,r) ( ( ( ( t ) / ( r ) ) * ( r ) ) + ( r ) )
+    # define er_times_rnd( t, r ) ( ( ( ( t ) / ( r ) ) * ( r ) ) + ( r ) )
 
 /*
     header - type definition
