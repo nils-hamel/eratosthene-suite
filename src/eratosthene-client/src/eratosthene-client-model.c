@@ -99,16 +99,22 @@
     source - accessor methods
  */
 
-    le_size_t er_model_get_cell( er_model_t const * const er_model ) {
+    le_size_t er_model_get_cell( er_model_t * const er_model ) {
 
-        /* parsing cells array */
+        /* parsing cell array */
         for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
 
-            /* check model cell state flag */
-            if ( er_cell_get_flag( er_model->md_cell + er_parse ) == _LE_FALSE ) {
+            /* update model cyclic index */
+            er_model->md_cycle = ( er_model->md_cycle + 1 ) % er_model->md_size;
+
+            /* avoid zero cell */
+            if ( er_model->md_cycle == 0 ) er_model->md_cycle ++;
+
+            /* check cell state flag */
+            if ( er_cell_get_flag( er_model->md_cell + er_model->md_cycle ) == _LE_FALSE ) {
 
                 /* return cell index */
-                return( er_parse );
+                return( er_model->md_cycle );
 
             }
 

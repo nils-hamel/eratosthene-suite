@@ -57,10 +57,10 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_MODEL_C      { NULL, _LE_USE_PORT, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 1, NULL, _LE_TRUE }
+    # define ER_MODEL_C      { NULL, _LE_USE_PORT, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 1, NULL, 0, _LE_TRUE }
 
     /* define model stack */
-    # define ER_MODEL_STACK  ( 8192 )
+    # define ER_MODEL_STACK  ( 4096 )
 
     /* define model parameters */
     # define ER_MODEL_ENUM   ( 3 )
@@ -128,6 +128,8 @@
         le_size_t   md_push;
         er_cell_t * md_cell;
 
+        le_size_t   md_cycle;
+
     le_enum_t _status; } er_model_t;
 
 /*
@@ -166,7 +168,7 @@
 
     le_void_t er_model_delete( er_model_t * const er_model );
 
-    le_size_t er_model_get_cell( er_model_t const * const er_model );
+    le_size_t er_model_get_cell( er_model_t * const er_model );
 
     le_void_t er_model_set_update_cell( er_model_t * const er_model, le_address_t * const er_enum, er_view_t const * const er_view );
 
