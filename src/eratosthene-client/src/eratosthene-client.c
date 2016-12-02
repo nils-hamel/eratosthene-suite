@@ -221,9 +221,6 @@
                     /* model update procedure */
                     er_client_loops_update();
 
-                    /* model update delay */
-                    usleep( 500 );
-
                 }
 
             /* thread idle mechanism */
