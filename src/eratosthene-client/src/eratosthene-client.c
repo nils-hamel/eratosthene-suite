@@ -456,15 +456,23 @@
 
     le_void_t er_client_calls_mouse( int er_button, int er_state, int er_x, int er_y ) {
 
-        /* check mouse state - return */
-        if ( ( er_client.cl_state = er_state ) != GLUT_DOWN ) return;
+        /* switch on button */
+        if ( ( er_button != ER_COMMON_WUP ) && ( er_button != ER_COMMON_WDOWN ) ) {
 
-        /* update client - mouse button */
-        er_client.cl_button = er_button;
+            /* assign state */
+            er_client.cl_state = er_state;
 
-        /* update client - mouse position */
-        er_client.cl_x = er_x;
-        er_client.cl_y = er_y;
+            /* assign button */
+            er_client.cl_button = er_button;
+
+            /* assign position */
+            er_client.cl_x = er_x;
+            er_client.cl_y = er_y;
+
+        }
+
+        /* check state - return */
+        if ( er_state != GLUT_DOWN ) return;
 
         /* compute inertial coefficient */
         er_client.cl_inertia = abs( er_view_get_alt( & er_client.cl_view ) - LE_ADDRESS_WGSA ) * ER_COMMON_INE;
@@ -472,28 +480,28 @@
         /* clamp inertial coefficient */
         if ( er_client.cl_inertia < 5.0 ) er_client.cl_inertia = 5.0;
 
-        /* apply inertial coefficient multipliers */
+        /* switch on modifiers - apply inertial coefficient */
         if ( glutGetModifiers() == GLUT_ACTIVE_CTRL  ) er_client.cl_inertia *= ER_COMMON_IMU;
         if ( glutGetModifiers() == GLUT_ACTIVE_SHIFT ) er_client.cl_inertia *= ER_COMMON_IML;
 
-        /* interface switch */
+        /* switch on modifiers */
         if ( glutGetModifiers() == ( GLUT_ACTIVE_CTRL | GLUT_ACTIVE_ALT ) ) {
 
-            /* mouse event switch - update time zoom */
-            if ( er_client.cl_button == 3 ) er_view_set_area( & er_client.cl_view, 1.0990 );
-            if ( er_client.cl_button == 4 ) er_view_set_area( & er_client.cl_view, 0.9099 );
+            /* switch on button - update time zoom */
+            if ( er_button == ER_COMMON_WUP   ) er_view_set_area( & er_client.cl_view, 1.0990 );
+            if ( er_button == ER_COMMON_WDOWN ) er_view_set_area( & er_client.cl_view, 0.9099 );
 
         } else if ( glutGetModifiers() == GLUT_ACTIVE_ALT ) {
 
-            /* mouse event switch - update time position */
-            if ( er_client.cl_button == 3 ) er_view_set_time( & er_client.cl_view, + 0.02 );
-            if ( er_client.cl_button == 4 ) er_view_set_time( & er_client.cl_view, - 0.02 );
+            /* switch on button - update time position */
+            if ( er_button == ER_COMMON_WUP   ) er_view_set_time( & er_client.cl_view, + 0.02 );
+            if ( er_button == ER_COMMON_WDOWN ) er_view_set_time( & er_client.cl_view, - 0.02 );
 
         } else {
 
-            /* mouse event switch - update altitude */
-            if ( er_client.cl_button == 3 ) er_view_set_alt( & er_client.cl_view, + er_client.cl_inertia );
-            if ( er_client.cl_button == 4 ) er_view_set_alt( & er_client.cl_view, - er_client.cl_inertia );
+            /* switch on button - update altitude */
+            if ( er_button == ER_COMMON_WUP   ) er_view_set_alt( & er_client.cl_view, + er_client.cl_inertia );
+            if ( er_button == ER_COMMON_WDOWN ) er_view_set_alt( & er_client.cl_view, - er_client.cl_inertia );
 
         }
 
@@ -501,14 +509,14 @@
 
     le_void_t er_client_calls_move( int er_x, int er_y ) {
 
-        /* coordinates differential variables */
+        /* displacement variables */
         le_real_t er_mdx = ( le_real_t ) er_x - er_client.cl_x;
         le_real_t er_mdy = ( le_real_t ) er_y - er_client.cl_y;
 
-        /* check mouse state - return */
+        /* check state - return */
         if ( er_client.cl_state != GLUT_DOWN ) return;
 
-        /* mouse event switch */
+        /* switch on button */
         if ( er_client.cl_button == GLUT_LEFT_BUTTON ) {
 
             /* apply inertial coefficients and multipliers */

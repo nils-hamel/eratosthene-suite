@@ -81,6 +81,10 @@
     # define ER_COMMON_ALL   ( LE_ADDRESS_WGSA * 0.75 )
     # define ER_COMMON_ALU   ( LE_ADDRESS_WGSA * 3.00 )
 
+    /* define mouse button */
+    # define ER_COMMON_WUP   ( 3 )
+    # define ER_COMMON_WDOWN ( 4 )
+
 /*
     header - preprocessor macros
  */
