@@ -54,7 +54,7 @@
         er_pose[8] = er_pose[ 6] * cos( er_pose[ 9] );
         er_pose[6] = er_pose[ 6] * sin( er_pose[ 9] );
         er_pose[7] = er_pose[ 7] * sin( er_pose[10] );
-        
+
         /* compute dimensional differences */
         er_pose[2] -= er_pose[8], er_pose[0] -= er_pose[6], er_pose[1] -= er_pose[7];
 

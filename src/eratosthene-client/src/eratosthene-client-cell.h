@@ -110,7 +110,7 @@
         le_array_t   ce_array;
 
         le_real_t    ce_edge[3];
-        
+
     } er_cell_t;
 
 /*
@@ -238,7 +238,7 @@
 
     /*! \brief mutator methods
      *
-     *  This function pops the pushed address of the provided cell. It simply   
+     *  This function pops the pushed address of the provided cell. It simply
      *  empty the string containing the pushed standard address.
      *
      *  \param er_cell Cell structure

@@ -183,7 +183,7 @@
 
                             /* set address depth */
                             le_address_set_span( & er_push, ER_MODEL_SPAN );
-                            
+
                             /* address to push address stack */
                             er_cell_set_push( er_model->md_cell + ( er_model->md_push ++ ), & er_push );
 
@@ -201,7 +201,7 @@
                             if ( er_cell_io_query( er_model->md_cell, er_model->md_svip, er_model->md_port ) > 0 ) {
 
                                 /* continue enumeration as bootstrap cell contains elements */
-                                er_model_set_update_cell( er_model, er_enum, er_view ); 
+                                er_model_set_update_cell( er_model, er_enum, er_view );
 
                             }
 

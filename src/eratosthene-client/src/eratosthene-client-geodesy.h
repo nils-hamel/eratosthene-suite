@@ -113,7 +113,7 @@
      */
 
     le_real_t er_geodesy_far( le_real_t const er_altitude );
-    
+
 /*
     header - C/C++ compatibility
  */

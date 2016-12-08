@@ -223,7 +223,7 @@
      *  \param er_lat   Point of view latitude
      *  \param er_alt   Point of view altitude
      *  \param er_azm   Point of view azimuth
-     *  \param er_gam   Point of view tilt  
+     *  \param er_gam   Point of view tilt
      */
 
     le_void_t er_model_display_earth( er_view_t const * const er_view );

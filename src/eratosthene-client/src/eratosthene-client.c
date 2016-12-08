@@ -130,7 +130,7 @@
         glFogf ( GL_FOG_MODE   , GL_LINEAR );
         glFogf ( GL_FOG_DENSITY, 0.3       );
         glFogfv( GL_FOG_COLOR  , er_color  );
-        
+
         /* opengl blending configuration */
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
@@ -168,7 +168,7 @@
             if ( er_client.cl_loops == ER_COMMON_VIEW ) {
 
                 /* principale execution loop */
-                while ( er_client.cl_loops == ER_COMMON_VIEW ) { 
+                while ( er_client.cl_loops == ER_COMMON_VIEW ) {
 
                     /* interface events procedure */
                     glutMainLoopEvent();
@@ -201,7 +201,7 @@
                     /* swap buffers */
                     glutSwapBuffers();
 
-                } 
+                }
 
             /* thread idle mechanism */
             } else { sleep( 1 ); }
@@ -216,7 +216,7 @@
             if ( er_client.cl_loops == ER_COMMON_VIEW ) {
 
                 /* principale execution loop */
-                while ( er_client.cl_loops == ER_COMMON_VIEW ) { 
+                while ( er_client.cl_loops == ER_COMMON_VIEW ) {
 
                     /* model update procedure */
                     er_client_loops_update();
@@ -284,11 +284,17 @@
 
     le_void_t er_client_loops_update( le_void_t ) {
 
+        /* check differential view */
+        if ( er_view_get_equal( & er_client.cl_push, & er_client.cl_view ) == _LE_TRUE ) return;
+
+        /* update pushed view */
+        er_client.cl_push = er_client.cl_view;
+
         /* address variables */
-        le_address_t er_enum = er_view_get_times( & er_client.cl_view );
+        le_address_t er_enum = er_view_get_times( & er_client.cl_push );
 
         /* update model cells */
-        er_model_set_update_cell( & er_client.cl_model, & er_enum, & er_client.cl_view );
+        er_model_set_update_cell( & er_client.cl_model, & er_enum, & er_client.cl_push );
 
         /* server queries */
         er_model_set_update_query( & er_client.cl_model );
@@ -376,26 +382,26 @@
         switch( er_keycode ) {
 
             /* execution mode - key [esc] */
-            case ( 0x1b ) : { 
+            case ( 0x1b ) : {
 
                 /* update execution mode */
-                er_client.cl_loops = ER_COMMON_EXIT; 
+                er_client.cl_loops = ER_COMMON_EXIT;
 
             } break;
 
             /* execution mode - key [p] */
-            case ( 0x70 ) : { 
+            case ( 0x70 ) : {
 
                 /* update execution mode */
-                er_client.cl_loops = ER_COMMON_MOVIE; 
+                er_client.cl_loops = ER_COMMON_MOVIE;
 
             } break;
 
             /* graphical options - key [1-4] */
             case ( 0x31 ) :
             case ( 0x32 ) :
-            case ( 0x33 ) : 
-            case ( 0x34 ) : { 
+            case ( 0x33 ) :
+            case ( 0x34 ) : {
 
                 /* update opengl point size */
                 glPointSize( er_keycode - 0x30 );
@@ -435,7 +441,7 @@
             } break;
 
             /* movie creation - key [i] */
-            case ( 0x69 ) : { 
+            case ( 0x69 ) : {
 
                 /* unstacking control points */
                 er_movie_set_clear( & er_client.cl_movie );

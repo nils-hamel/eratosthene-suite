@@ -157,7 +157,7 @@
             return( ER_COMMON_MOVIE );
 
         }
-        
+
         /* unstacking views */
         er_movie->mv_stack = 0;
 

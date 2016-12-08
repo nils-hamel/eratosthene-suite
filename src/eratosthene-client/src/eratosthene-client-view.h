@@ -97,6 +97,8 @@
 
     le_void_t er_view_delete( er_view_t * const er_view );
 
+    le_enum_t er_view_get_equal( er_view_t const * const er_viewa, er_view_t const * const er_viewb );
+
     le_real_t er_view_get_lon( er_view_t const * const er_view );
 
     le_real_t er_view_get_lat( er_view_t const * const er_view );

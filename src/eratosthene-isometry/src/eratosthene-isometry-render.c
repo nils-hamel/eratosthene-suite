@@ -158,7 +158,7 @@
         if ( er_render->re_display == NULL ) return;
 
         /* unselect rendering buffers */
-        glBindRenderbuffer( GL_RENDERBUFFER, 0 );        
+        glBindRenderbuffer( GL_RENDERBUFFER, 0 );
         glBindTexture     ( GL_TEXTURE_2D  , 0 );
         glBindFramebuffer ( GL_FRAMEBUFFER , 0 );
 
@@ -230,7 +230,7 @@
 
                 /* compute line pointers */
                 er_pose = ( le_real_t * ) ( er_byte + er_parse );
-                er_data = ( le_data_t * ) ( er_pose + 3 ); 
+                er_data = ( le_data_t * ) ( er_pose + 3 );
 
                 /* push element color */
                 glColor4f( er_data[0] / 255.0, er_data[1] / 255.0, er_data[2] / 255.0, 1.0 );
@@ -282,7 +282,7 @@
 
         /* primitive bloc */
         } glEnd();
-        
+
 
     }
 

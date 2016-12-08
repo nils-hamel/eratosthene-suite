@@ -136,7 +136,7 @@
                 /* delete array */
                 le_array_delete( & er_array );
 
-            }       
+            }
 
             /* close connection */
             le_client_delete( er_socket );

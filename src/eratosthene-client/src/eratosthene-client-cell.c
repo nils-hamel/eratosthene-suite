@@ -184,7 +184,7 @@
                 /* reading server answer */
                 er_return = er_cell_io_read( er_cell, er_socket );
 
-            } 
+            }
 
             /* delete client socket */
             le_client_delete( er_socket );
@@ -254,7 +254,7 @@
         }
 
         /* return cell size */
-        return( er_cell->ce_size );    
+        return( er_cell->ce_size );
 
     }
 

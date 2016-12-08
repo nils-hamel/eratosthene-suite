@@ -30,15 +30,15 @@
      *
      *  The _eratosthene-suite_ offers a front-end to the eratosthene indexation
      *  server implemented in the _liberatosthene_ library. It consists in a
-     *  software suite implementing front-ends to the functionality of the 
+     *  software suite implementing front-ends to the functionality of the
      *  indexation server.
      *
      *  The main software implements the server itself allowing to simply create
      *  instance of it. The suite also offers a front-end software for the data
-     *  injection in the servers storage structure. Finally, it also offers a 
+     *  injection in the servers storage structure. Finally, it also offers a
      *  graphical client allowing to browse the data contained in the servers
      *  storage structure through a 4 dimensional representation of earth.
-     * 
+     *
      *  \section Copyright and License
      *
      *  **eratosthene-suite** - Nils Hamel <br >
@@ -86,7 +86,7 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_CLIENT_C { ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, ER_VIEW_D, 0, GLUT_UP, 0, 0, 1.0, 1.0, _LE_TRUE }
+    # define ER_CLIENT_C { ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, ER_VIEW_D, ER_VIEW_C, 0, GLUT_UP, 0, 0, 1.0, 1.0, _LE_TRUE }
 
 /*
     header - preprocessor macros
@@ -137,7 +137,7 @@
      *  \var er_client_struct::cl_vgam
      *  Point of view tilt angle
      *  \var er_client_struct::cl_scale
-     *  Point of view scale factor 
+     *  Point of view scale factor
      *  \var er_client_struct::cl_vtim
      *  Point of view time
      */
@@ -151,6 +151,7 @@
         er_movie_t cl_movie;
 
         er_view_t  cl_view;
+        er_view_t  cl_push;
 
         le_enum_t  cl_button;
         le_enum_t  cl_state;

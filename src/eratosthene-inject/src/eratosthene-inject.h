@@ -30,15 +30,15 @@
      *
      *  The _eratosthene-suite_ offers a front-end to the eratosthene indexation
      *  server implemented in the _liberatosthene_ library. It consists in a
-     *  software suite implementing front-ends to the functionality of the 
+     *  software suite implementing front-ends to the functionality of the
      *  indexation server.
      *
      *  The main software implements the server itself allowing to simply create
      *  instance of it. The suite also offers a front-end software for the data
-     *  injection in the servers storage structure. Finally, it also offers a 
+     *  injection in the servers storage structure. Finally, it also offers a
      *  graphical client allowing to browse the data contained in the servers
      *  storage structure through a 4 dimensional representation of earth.
-     * 
+     *
      *  \section Copyright and License
      *
      *  **eratosthene-suite** - Nils Hamel <br >
@@ -102,7 +102,7 @@
     /*! \brief injection procedure
      *
      *  This function reads the content of the file described by the stream
-     *  parameter and sends it to the server using the provided socket 
+     *  parameter and sends it to the server using the provided socket
      *  descriptor. Both socket and stream descriptors have to be already
      *  created. The file stream is expected in binary read mode.
      *

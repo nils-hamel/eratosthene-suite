@@ -148,7 +148,7 @@
         GLuint       re_buffer;
         GLuint       re_bcolor;
         GLuint       re_bdepth;
-        
+
     } er_render_t;
 
 /*
@@ -182,7 +182,7 @@
      *
      *  \param  er_render Rendering structure
      *
-     *  \return Returns deleted rendering structure  
+     *  \return Returns deleted rendering structure
      */
 
     le_void_t er_render_delete( er_render_t * const er_render );
@@ -191,7 +191,7 @@
      *
      *  This function initialise the graphical context that is used by the
      *  rendering engine computing the projection.
-     *  
+     *
      *  \param  er_render Rendering structure
      *
      *  \return Returns _LE_TRUE on success, _LE_FALSE otherwise
@@ -212,7 +212,7 @@
 
     /*! \brief display methods
      *
-     *  This function compute and apply the projection parameters to use for the    
+     *  This function compute and apply the projection parameters to use for the
      *  rendering of the indexation server cell.
      *
      *  \param er_render Rendering structure

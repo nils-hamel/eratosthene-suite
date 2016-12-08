@@ -30,7 +30,7 @@
         le_server_t er_server = LE_SERVER_C;
 
         /* create server */
-        if ( ( er_server = le_server_create( lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT ), ( le_char_t * ) lc_read_string( argc, argv, "--path", "-p" ) ) )._status != LE_ERROR_SUCCESS ) {
+        if ( ( er_server = le_server_create( ( le_char_t * ) lc_read_string( argc, argv, "--path", "-p" ), lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT ) ) )._status != LE_ERROR_SUCCESS ) {
 
             /* display message */
             fprintf( stderr, "eratosthene-suite : error : unable to create server\n" );

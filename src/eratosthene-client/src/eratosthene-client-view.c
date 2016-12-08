@@ -48,6 +48,22 @@
     source - accessor methods
  */
 
+    le_enum_t er_view_get_equal( er_view_t const * const er_viewa, er_view_t const * const er_viewb ) {
+
+        /* check spatial components - return answer */
+        if ( er_viewa->vw_lon != er_viewb->vw_lon ) return( _LE_FALSE );
+        if ( er_viewa->vw_lat != er_viewb->vw_lat ) return( _LE_FALSE );
+        if ( er_viewa->vw_alt != er_viewb->vw_alt ) return( _LE_FALSE );
+
+        /* check temporal components - return answer */
+        if ( er_viewa->vw_tia != er_viewb->vw_tia ) return( _LE_FALSE );
+        if ( er_viewa->vw_tib != er_viewb->vw_tib ) return( _LE_FALSE );
+
+        /* return answer */
+        return( _LE_TRUE );
+
+    }
+
     le_real_t er_view_get_lon( er_view_t const * const er_view ) {
 
         /* return view value */
