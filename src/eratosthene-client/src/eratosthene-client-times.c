@@ -33,7 +33,7 @@
         er_times.tm_width = glutGet( GLUT_SCREEN_WIDTH );
 
         /* assign buffer height */
-        er_times.tm_height = 96-16;
+        er_times.tm_height = 96 - 16;
 
         /* assign buffer lower position */
         er_times.tm_offset = glutGet( GLUT_SCREEN_HEIGHT ) - er_times.tm_height - 64;
@@ -121,7 +121,7 @@
             if ( ( er_parse / ( er_times->tm_width << 2 ) ) == er_times->tm_bh2 ) {
 
                 /* reset buffer alpha component */
-                er_times->tm_buffer[er_parse] = 230 - 3 * 32;
+                er_times->tm_buffer[er_parse] = 0;
 
             } else {
 
@@ -133,10 +133,10 @@
         }
 
         /* specify text color */
-        glColor4f( 1.0, 1.0, 1.0, 0.9 - 0.375 );
+        glColor4f( 1.0, 1.0, 1.0, 0.0 );
 
         /* parsing graduation scales */
-        for ( le_size_t er_scale = er_scaled, er_reduce = 8; er_scale <= er_scaleu; er_scale *= 10, er_reduce -= 6 ) {
+        for ( le_size_t er_scale = er_scaled, er_reduce = 6; er_scale <= er_scaleu; er_scale *= 10, er_reduce -= 4 ) {
 
             /* parsing graduation increments */
             for ( le_time_t er_parse = er_times_rnd( er_timed, er_scale ); er_parse < er_timeu; er_parse += er_scale ) {
@@ -148,7 +148,7 @@
                 for ( le_size_t er_pixel = er_times->tm_bh1 + er_reduce; er_pixel < er_times->tm_bh2; er_pixel ++ ) {
 
                     /* update interface buffer alpha channel */
-                    er_times->tm_buffer[( ( er_grad + er_pixel * er_times->tm_width ) << 2 ) + 3] -= 32;
+                    er_times->tm_buffer[( ( er_grad + er_pixel * er_times->tm_width ) << 2 ) + 3] -= 56;
 
                 }
 
