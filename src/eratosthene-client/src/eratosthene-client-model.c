@@ -140,9 +140,6 @@
         /* distance variables */
         le_real_t er_dist = 0.0;
 
-        /* push address variables */
-        le_address_t er_push = LE_ADDRESS_C;
-
         /* parsing scale digits */
         for ( le_size_t er_digit = 0; er_digit < er_base; er_digit ++ ) {
 
@@ -153,7 +150,7 @@
             le_address_set_digit( er_enum, er_scale, er_digit );
 
             /* check enumeration constraint */
-            if ( er_scale <= ER_MODEL_ENUM ) {
+            if ( er_scale <= ER_COMMON_ENUM ) {
 
                 /* constraintless enumeration */
                 er_model_set_update_cell( er_model, er_enum, er_view );
@@ -167,41 +164,38 @@
                 if ( er_dist < er_geodesy_limit( er_view_get_alt( er_view ) ) ) {
 
                     /* check depth criterion */
-                    if ( fabs( er_geodesy_depth( er_dist, er_model->md_sparam, ER_MODEL_SPAN ) - ( le_real_t ) er_scale ) < 1.0 ) {
+                    if ( fabs( er_geodesy_depth( er_dist, er_model->md_sparam, ER_COMMON_SPAN ) - ( le_real_t ) er_scale ) < 1.0 ) {
 
                         /* check cells stack */
                         if ( er_model->md_push < er_model->md_size ) {
 
-                            /* set zero cell address */
+                            /* address to cell */
                             er_cell_set_addr( er_model->md_cell, er_enum );
 
-                            /* perform query for time reduction on zero cell */
-                            er_cell_io_query( er_model->md_cell, er_model->md_svip, er_model->md_port );
+                            /* reduce cell address */
+                            if ( er_cell_io_reduce( er_model->md_cell, er_model->md_svip, er_model->md_port ) > 0 ) {
 
-                            /* retrieve time-reduced address from zero cell */
-                            er_push = er_cell_get_addr( er_model->md_cell );
+                                /* push reduced address */
+                                er_cell_set_push( er_model->md_cell + ( er_model->md_push ++ ), er_model->md_cell );
 
-                            /* set address depth */
-                            le_address_set_span( & er_push, ER_MODEL_SPAN );
-
-                            /* address to push address stack */
-                            er_cell_set_push( er_model->md_cell + ( er_model->md_push ++ ), & er_push );
+                            }
 
                         }
 
                     } else {
 
                         /* check enumeration boundary */
-                        if ( ( er_scale + ER_MODEL_SPAN + 2 ) < er_model->md_sparam ) {
+                        if ( ( er_scale + ER_COMMON_SPAN + 2 ) < er_model->md_sparam ) {
 
-                            /* enumeration address to bootstrap cell */
+                            /* address to cell */
                             er_cell_set_addr( er_model->md_cell, er_enum );
 
-                            /* check state of bootstrap cell */
-                            if ( er_cell_io_query( er_model->md_cell, er_model->md_svip, er_model->md_port ) > 0 ) {
+                            /* reduce and check cell address */
+                            if ( er_cell_io_reduce( er_model->md_cell, er_model->md_svip, er_model->md_port ) > 0 ) {
 
-                                /* continue enumeration as bootstrap cell contains elements */
+                                /* continue address enumeration */
                                 er_model_set_update_cell( er_model, er_enum, er_view );
+
 
                             }
 

@@ -234,7 +234,7 @@
      *  \param er_address Address structure
      */
 
-    le_void_t er_cell_set_push( er_cell_t * const er_cell, le_address_t const * const er_address );
+    le_void_t er_cell_set_push( er_cell_t * const er_cell, er_cell_t const * const er_push );
 
     /*! \brief mutator methods
      *
@@ -257,9 +257,9 @@
 
     le_void_t er_cell_set_swap( er_cell_t * const er_addr, er_cell_t * const er_push );
 
-    le_size_t er_cell_io_query( er_cell_t * const er_cell, le_char_t const * const er_ip, le_sock_t const er_port );
+    le_size_t er_cell_io_reduce( er_cell_t * const er_cell, le_char_t const * const er_ip, le_sock_t const er_port );
 
-    le_size_t er_cell_io_read( er_cell_t * const er_cell, le_sock_t const er_socket );
+    le_size_t er_cell_io_query( er_cell_t * const er_cell, le_char_t const * const er_ip, le_sock_t const er_port );
 
     /*! \brief mutator methods
      *

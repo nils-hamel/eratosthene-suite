@@ -416,6 +416,14 @@
 
             } break;
 
+            /* time management - key [SPACE] */
+            case ( 0x20 ) : {
+
+                /* align times */
+                er_view_set_times( & er_client.cl_view );
+
+            } break;
+
             /* time management - key [q] */
             case ( 0x71 ) : {
 

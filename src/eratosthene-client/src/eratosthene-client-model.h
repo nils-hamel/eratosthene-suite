@@ -62,10 +62,6 @@
     /* define model stack */
     # define ER_MODEL_STACK  ( 4096 )
 
-    /* define model parameters */
-    # define ER_MODEL_ENUM   ( 3 )
-    # define ER_MODEL_SPAN   ( 7 )
-
     /* define display array types */
     # define ER_MODEL_VERTEX GL_DOUBLE
     # define ER_MODEL_COLORS GL_UNSIGNED_BYTE

@@ -135,6 +135,8 @@
 
     le_void_t er_view_set_swap( er_view_t * const er_view );
 
+    le_void_t er_view_set_times( er_view_t * const er_view );
+
     le_void_t er_view_set_time( er_view_t * const er_view, le_real_t const er_value );
 
     le_void_t er_view_set_area( er_view_t * const er_view, le_real_t const er_value );

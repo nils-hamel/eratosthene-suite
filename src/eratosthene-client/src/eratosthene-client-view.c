@@ -131,16 +131,14 @@
         /* assign address mode */
         le_address_set_mode( & er_addr, er_view->vw_mod );
 
+        /* set address span */
+        le_address_set_span( & er_addr, ER_COMMON_SPAN );
+
         /* check mode */
         if ( ( er_view->vw_mod & 0x01 ) != 0 ) {
 
             /* assign address times */
             le_address_set_time( & er_addr, 0, er_view->vw_tia );
-
-        } else {
-
-            /* assign address null time */
-            le_address_set_time( & er_addr, 0, _LE_TIME_NULL );
 
         }
 
@@ -149,11 +147,6 @@
 
             /* assign address time */
             le_address_set_time( & er_addr, 1, er_view->vw_tib );
-
-        } else {
-
-            /* assign address null time */
-            le_address_set_time( & er_addr, 1, _LE_TIME_NULL );
 
         }
 
@@ -303,6 +296,13 @@
 
         /* swap active time */
         er_view->vw_act = 1 - er_view->vw_act;
+
+    }
+
+    le_void_t er_view_set_times( er_view_t * const er_view ) {
+
+        /* secondary time alignement */
+        er_view->vw_tib = er_view->vw_tia;
 
     }
 
