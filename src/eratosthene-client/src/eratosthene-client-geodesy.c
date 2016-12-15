@@ -83,7 +83,7 @@
         le_real_t er_clamp = er_sparam - er_depth - 2;
 
         /* computation variables */
-        le_real_t er_normal = log( ( LE_ADDRESS_WGSA / 2.0 ) / ( er_distance * 30.0 ) ) / M_LN2 + 9.7;
+        le_real_t er_normal = log( ( LE_ADDRESS_WGSA / 2.0 ) / ( er_distance * 30.0 ) ) / M_LN2 + 9.5;
 
         /* return evaluation */
         return( er_normal < 5 ? 5 : ( er_normal > er_clamp ? er_clamp : er_normal ) );
