@@ -135,7 +135,7 @@
         le_size_t er_scale = le_address_get_size( er_enum );
 
         /* scale base variables */
-        le_size_t er_base = LE_ADDRESS_BASE( er_scale );
+        le_size_t er_base = le_address_base( er_scale );
 
         /* distance variables */
         le_real_t er_dist = 0.0;
