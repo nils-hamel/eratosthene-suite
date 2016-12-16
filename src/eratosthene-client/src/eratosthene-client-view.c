@@ -59,6 +59,9 @@
         if ( er_viewa->vw_tia != er_viewb->vw_tia ) return( _LE_FALSE );
         if ( er_viewa->vw_tib != er_viewb->vw_tib ) return( _LE_FALSE );
 
+        /* check mode component - return answer */
+        if ( er_viewa->vw_mod != er_viewb->vw_mod ) return( _LE_FALSE );
+
         /* return answer */
         return( _LE_TRUE );
 
