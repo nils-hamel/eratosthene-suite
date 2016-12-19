@@ -94,7 +94,7 @@
     le_void_t er_times_display( er_times_t const * const er_times, er_view_t const * const er_view ) {
 
         /* interface text variables */
-        le_char_t * er_text[3] = { ( le_char_t * ) "< ONLY  ",  ( le_char_t * ) "  ONLY >", ( le_char_t * ) "< BOTH >" };
+        le_char_t * er_text[5] = { ( le_char_t * ) "< ONLY  ",  ( le_char_t * ) "  ONLY >", ( le_char_t * ) "< OR >", ( le_char_t * ) "< AND >", ( le_char_t * ) "< XOR >" };
 
         /* garduation display variables */
         le_size_t er_grad = 0;

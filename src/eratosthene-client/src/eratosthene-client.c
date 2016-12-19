@@ -424,27 +424,43 @@
 
             } break;
 
-            /* time management - key [q] */
+            /* mode management - key [q] */
             case ( 0x71 ) : {
 
-                /* update time mode */
+                /* update mode */
                 er_view_set_mode( & er_client.cl_view, 1 );
 
             } break;
 
-            /* time management - key [w] */
+            /* mode management - key [w] */
             case ( 0x77 ) : {
 
-                /* update time mode */
+                /* update mode */
                 er_view_set_mode( & er_client.cl_view, 2 );
 
             } break;
 
-            /* time management - key [e] */
+            /* mode management - key [e] */
             case ( 0x65 ) : {
 
-                /* update time mode */
+                /* update mode */
                 er_view_set_mode( & er_client.cl_view, 3 );
+
+            } break;
+
+            /* mode management - key [r] */
+            case ( 0x72 ) : {
+
+                /* update mode */
+                er_view_set_mode( & er_client.cl_view, 4 );
+
+            } break;
+
+            /* mode management - key [t] */
+            case ( 0x74 ) : {
+
+                /* update mode */
+                er_view_set_mode( & er_client.cl_view, 5 );
 
             } break;
 
