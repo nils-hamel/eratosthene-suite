@@ -21,34 +21,6 @@
     # include "eratosthene-address.h"
 
 /*
-    source - main function
- */
-
-    int main( int argc, char ** argv ) {
-
-        if ( lc_read_flag( argc, argv, "--time", "-t" ) == LC_TRUE ) {
-
-            /* specialised method */
-            er_address_time( argc, argv );
-
-        } else if ( lc_read_flag( argc, argv, "--space", "-s" ) == LC_TRUE ) {
-
-            /* specialised method */
-            er_address_space( argc, argv );
-
-        } else {
-
-            /* send message */
-            return( EXIT_FAILURE );
-
-        }
-
-        /* send message */
-        return( EXIT_SUCCESS );
-
-    }
-
-/*
     source - space conversion methods
  */
 
@@ -124,6 +96,34 @@
 
         /* display result */
         fprintf( stdout, "%s\n%" _LE_TIME_P "\n", er_date, er_time );
+
+    }
+
+/*
+    source - main function
+ */
+
+    int main( int argc, char ** argv ) {
+
+        if ( lc_read_flag( argc, argv, "--time", "-t" ) == LC_TRUE ) {
+
+            /* specialised method */
+            er_address_time( argc, argv );
+
+        } else if ( lc_read_flag( argc, argv, "--space", "-s" ) == LC_TRUE ) {
+
+            /* specialised method */
+            er_address_space( argc, argv );
+
+        } else {
+
+            /* send message */
+            return( EXIT_FAILURE );
+
+        }
+
+        /* send message */
+        return( EXIT_SUCCESS );
 
     }
 

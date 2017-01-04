@@ -105,34 +105,20 @@
     header - function prototypes
  */
 
-    /*! \brief main function
-     *
-     *  The main function searches in the arguments and paremeter the execution
-     *  switches. Depending on the provdied switch, the main function calls the
-     *  specialised process.
-     *
-     *  \param argc Main function parameters
-     *  \param argv Main function parameters
-     *
-     *  \return Standard exit code
-     */
-
-    int main( int argc, char ** argv );
-
     /*! \brief space conversion methods
      *
      *  This function, that expects the standard main function parameters, reads
-     *  the provided geographic coordinates and the scale value. It then compute
-     *  the spatial index obtained using the geographic coordinates. Depending
-     *  on the scale value, it computes the geographic coordinates back from the
+     *  the provided geographic coordinates and the scale. It then computes the
+     *  spatial index obtained using the geographic coordinates. Considering the
+     *  provided scale, it computes the geographic coordinates back from the
      *  spatial index.
      *
      *  It then displays on the standard output the original coordinates, the
      *  computed spatial index and the coordinates obtiained by converting back
      *  the spatial index.
      *
-     *  The provided coordinate has to be given in decimal degrees in the usual
-     *  ranges : [-180,+180], [-90,+90]. The heights has to be given in metres
+     *  The provided coordinate have to be given in decimal degrees in the usual
+     *  ranges : [-180,+180], [-90,+90]. The heights have to be given in metres
      *  above the WGS84 ellipsoid.
      *
      *  \param argc Main function parameters
@@ -144,7 +130,7 @@
     /*! \brief time conversion methods
      *
      *  This function, that expects the standard main function parameters, reads
-     *  the provided date and converts it into a UTC UNIX timestamps. After the
+     *  the provided date and converts it into a UNIX timestamps. After the
      *  conversion, the function displays the result on the standard output.
      *
      *  The date has to be provided following the pattern : YYYY-MM-DD-hh-mm-ss
@@ -154,6 +140,20 @@
      */
 
     le_void_t er_address_time( int argc, char ** argv );
+
+    /*! \brief main function
+     *
+     *  The main function searches in the arguments and paremeters the execution
+     *  switches. Depending on the provdied switch, the main function calls the
+     *  related specialised process.
+     *
+     *  \param argc Main function parameters
+     *  \param argv Main function parameters
+     *
+     *  \return Standard exit code
+     */
+
+    int main( int argc, char ** argv );
 
 /*
     header - C/C++ compatibility
