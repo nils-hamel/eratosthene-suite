@@ -21,7 +21,7 @@
     /*! \file   eratosthene-inject.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  Eratosthene injection
+     *  eratosthene-suite inject
      */
 
     /*! \mainpage eratosthene-suite
@@ -75,7 +75,6 @@
 
     # include <stdio.h>
     # include <stdlib.h>
-    # include <time.h>
     # include <common-include.h>
     # include <eratosthene-include.h>
 
@@ -104,23 +103,33 @@
 
     /*! \brief injection procedure
      *
-     *  This function reads the content of the file described by the stream
-     *  parameter and sends it to the server using the provided socket
-     *  descriptor. Both socket and stream descriptors have to be already
-     *  created. The file stream is expected in binary read mode.
+     *  This function is responsible of data injection in the specified server
+     *  that come from a file of format uf3 (universal format 3-byte).
      *
-     *  \param er_client Client socket descriptor
-     *  \param er_stream Stream to file
+     *  The function reads the injection time parameter provided as standard
+     *  parameter. It the opens the uf3 input file using the path provided as
+     *  standard parameter.
+     *
+     *  The function then establish the connexion to the server using the tcp/ip
+     *  address and the port provided as standard parameters. It sends to the
+     *  server the injection handshake and, on success, starts to send the
+     *  content of the file by segments of size \b ER_INJECT. It ends injecting
+     *  the content as the end of the uf3 file is reached. The last data segment
+     *  size can be smaller than \b ER_INJECT.
+     *
+     *  \param argc Main function parameters
+     *  \param argv Main function parameters
+     *
+     *  \return Standard exit code
      */
 
     le_enum_t er_inject_uf3( int argc, char ** argv );
 
     /*! \brief main function
      *
-     *  The main function starts by reading the arguments and parameters and
-     *  opens the provided file containing the elements to inject in the
-     *  provided server. It then reads and sends the content of the file to the
-     *  server.
+     *  The main function searches in the arguments and parameters which switch
+     *  is provided. Depending on the found switch, the main function calls the
+     *  specialised injection process.
      *
      *  \param argc Main function parameters
      *  \param argv Main function parameters
