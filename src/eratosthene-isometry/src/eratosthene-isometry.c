@@ -2,7 +2,7 @@
  *  eratosthene-suite - eratosthene indexation server front-end
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016 EPFL CDH DHLAB
+ *      Copyright (c) 2016-2017 EPFL CDH DHLAB
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by

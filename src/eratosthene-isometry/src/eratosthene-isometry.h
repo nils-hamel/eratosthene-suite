@@ -2,7 +2,7 @@
  *  eratosthene-suite - eratosthene indexation server front-end
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016 EPFL CDH DHLAB
+ *      Copyright (c) 2016-2017 EPFL CDH DHLAB
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
  */
 
     /*! \file   eratosthene-isometry.h
-     *  \author Nils Hamel <n.hamel@bluewin.ch>
+     *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
      *  Eratosthene isometry
      */
@@ -30,19 +30,22 @@
      *
      *  The _eratosthene-suite_ offers a front-end to the eratosthene indexation
      *  server implemented in the _liberatosthene_ library. It consists in a
-     *  software suite implementing front-ends to the functionality of the
-     *  indexation server.
+     *  softwares suite offering front-end solutions to the functionalities of
+     *  the eratosthene library.
      *
-     *  The main software implements the server itself allowing to simply create
-     *  instance of it. The suite also offers a front-end software for the data
-     *  injection in the servers storage structure. Finally, it also offers a
-     *  graphical client allowing to browse the data contained in the servers
-     *  storage structure through a 4 dimensional representation of earth.
+     *  The principale software implements the server itself allowing to simply
+     *  create instances and maintain services. The suite also offers a front-end
+     *  software for the data injection in the available servers. It also offers
+     *  a graphical software allowing to browse the 4D worlds offered by the
+     *  available servers.
+     *
+     *  Other tools are also available as the isometric projection creation and
+     *  the address and time conversion softwares
      *
      *  \section Copyright and License
      *
      *  **eratosthene-suite** - Nils Hamel <br >
-     *  Copyright (c) 2016 EPFL CDH DHLAB
+     *  Copyright (c) 2016-2017 EPFL CDH DHLAB
      *
      *  This program is licensed under the terms of the GNU GPLv3.
      */

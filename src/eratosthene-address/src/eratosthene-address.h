@@ -2,7 +2,7 @@
  *  eratosthene-suite - eratosthene indexation server front-end
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016 EPFL CDH DHLAB
+ *      Copyright (c) 2016-2017 EPFL CDH DHLAB
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
  */
 
     /*! \file   eratosthene-address.h
-     *  \author Nils Hamel <n.hamel@bluewin.ch>
+     *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
      *  Eratosthene address - main module
      */
@@ -30,19 +30,22 @@
      *
      *  The _eratosthene-suite_ offers a front-end to the eratosthene indexation
      *  server implemented in the _liberatosthene_ library. It consists in a
-     *  software suite implementing front-ends to the functionality of the
-     *  indexation server.
+     *  softwares suite offering front-end solutions to the functionalities of
+     *  the eratosthene library.
      *
-     *  The main software implements the server itself allowing to simply create
-     *  instance of it. The suite also offers a front-end software for the data
-     *  injection in the servers storage structure. Finally, it also offers a
-     *  graphical client allowing to browse the data contained in the servers
-     *  storage structure through a 4 dimensional representation of earth.
+     *  The principale software implements the server itself allowing to simply
+     *  create instances and maintain services. The suite also offers a front-end
+     *  software for the data injection in the available servers. It also offers
+     *  a graphical software allowing to browse the 4D worlds offered by the
+     *  available servers.
+     *
+     *  Other tools are also available as the isometric projection creation and
+     *  the address and time conversion softwares
      *
      *  \section Copyright and License
      *
      *  **eratosthene-suite** - Nils Hamel <br >
-     *  Copyright (c) 2016 EPFL CDH DHLAB
+     *  Copyright (c) 2016-2017 EPFL CDH DHLAB
      *
      *  This program is licensed under the terms of the GNU GPLv3.
      */
@@ -104,14 +107,9 @@
 
     /*! \brief main function
      *
-     *  The main function simply reads the provided parameters, that are a scale
-     *  value and a geographic position, and converts it into indexation server
-     *  index. It then converts back the index into geographic coordinates to
-     *  show the effect of scale on the position precision.
-     *
-     *  Position have to be provided in decimal degrees and contained in the
-     *  ]-180,180] range for longitude and ]-90,90] for the latitude. Altitude
-     *  are always given in metres.
+     *  The main function searches in the arguments and paremeter the execution
+     *  switches. Depending on the provdied switch, the main function calls the
+     *  specialised process.
      *
      *  \param argc Main function parameters
      *  \param argv Main function parameters
@@ -121,7 +119,39 @@
 
     int main( int argc, char ** argv );
 
+    /*! \brief space conversion methods
+     *
+     *  This function, that expects the standard main function parameters, reads
+     *  the provided geographic coordinates and the scale value. It then compute
+     *  the spatial index obtained using the geographic coordinates. Depending
+     *  on the scale value, it computes the geographic coordinates back from the
+     *  spatial index.
+     *
+     *  It then displays on the standard output the original coordinates, the
+     *  computed spatial index and the coordinates obtiained by converting back
+     *  the spatial index.
+     *
+     *  The provided coordinate has to be given in decimal degrees in the usual
+     *  ranges : [-180,+180], [-90,+90]. The heights has to be given in metres
+     *  above the WGS84 ellipsoid.
+     *
+     *  \param argc Main function parameters
+     *  \param argv Main function parameters
+     */
+
     le_void_t er_address_space( int argc, char ** argv );
+
+    /*! \brief time conversion methods
+     *
+     *  This function, that expects the standard main function parameters, reads
+     *  the provided date and converts it into a UTC UNIX timestamps. After the
+     *  conversion, the function displays the result on the standard output.
+     *
+     *  The date has to be provided following the pattern : YYYY-MM-DD-HH-MM-SS
+     *
+     *  \param argc Main function parameters
+     *  \param argv Main function parameters
+     */
 
     le_void_t er_address_time( int argc, char ** argv );
 

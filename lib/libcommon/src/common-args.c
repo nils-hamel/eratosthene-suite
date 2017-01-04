@@ -2,7 +2,7 @@
  *  eratosthene-suite - geodetic system
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016 EPFL CDH DHLAB
+ *      Copyright (c) 2016-2017 EPFL CDH DHLAB
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@
 
             }
 
-        } 
+        }
 
         /* return answer */
         return( LC_FALSE );
@@ -49,7 +49,7 @@
  */
 
     char * lc_read_string( int const argc, char ** argv, char const * const er_long, char const * const er_short ) {
-        
+
         /* parsing arguments and parameters */
         for ( int er_parse = 0 ; er_parse < argc; er_parse ++ ) {
 
@@ -60,7 +60,7 @@
                 if ( ( ++ er_parse ) < argc ) {
 
                     /* return parameter */
-                    return( argv[er_parse] ); 
+                    return( argv[er_parse] );
 
                 /* return default value */
                 } else { return( NULL ); }
@@ -137,10 +137,10 @@
                 /* check consistency */
                 if ( ( ++ er_parse ) < argc ) {
 
-                    /* convert and return parameter */                    
+                    /* convert and return parameter */
                     return( atof( argv[er_parse] ) );
 
-                /* return default value */            
+                /* return default value */
                 } else { return( er_default ); }
 
             }
