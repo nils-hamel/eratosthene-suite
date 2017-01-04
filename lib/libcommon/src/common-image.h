@@ -75,11 +75,11 @@
 
     /*! \brief portable network graphics i/o function
      *
-     *  This function exports the image bytes provided by the \b lc_bytes
-     *  array in the specified portable network graphics file. It expects an
-     *  image stored using 8 bits per components.
+     *  This function exports the image provided through the bytes array in a
+     *  portable network graphic file.
      *
-     *  Two color format are accepted : LC_IMAGE_RGB and LC_IMAGE_RGBA.
+     *  The supported image format are the 24 bits RGB and the 32 bits RGBA
+     *  formats : LC_IMAGE_RGB and LC_IMAGE_RGBA.
      *
      *  \param  lc_path   Exportation file path
      *  \param  lc_width  Width, in pixels, of the image

@@ -69,7 +69,31 @@
     header - function prototypes
  */
 
+    /*! \brief conversion methods
+     *
+     *  This function converts the provided UNIX timestamps into humain readable
+     *  string. The format of the created string follows : YYYY-MM-DD-hh-mm-ss.
+     *
+     *  \param lc_time   UNIX timestamp
+     *  \param lc_string Composed string
+     *  \param lc_limit  Maximum length of composed string
+     *
+     *  \return Returns pointer to composed string
+     */
+
     unsigned char * lc_time_to_string( time_t const lc_time, unsigned char * const lc_string, size_t const lc_limit );
+
+    /*! \brief conversion methods
+     *
+     *  This function converts the provided human readable date string into a
+     *  UNIX timestamps. The format of the date string has to be given to the
+     *  function. See strptime() for more information.
+     *
+     *  \param lc_date   Date string
+     *  \param lc_format Date string format
+     *
+     *  \return Returns converted UNIX timestamps
+     */
 
     time_t lc_time_from_string( unsigned char * const lc_date, unsigned char * const lc_format );
 

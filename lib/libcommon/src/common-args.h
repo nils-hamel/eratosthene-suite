@@ -88,8 +88,7 @@
      *
      *  This function searches in the provided arguments list if the specified
      *  argument is present. As it is, the function returns the pointer to the
-     *  string containing the parameter of the found argument. The implicit
-     *  default value is NULL.
+     *  string containing the parameter of the found argument.
      *
      *  \param  argc     Main function parameters
      *  \param  argv     Main function parameters
@@ -145,7 +144,7 @@
      *
      *  This function searches in the provided argument list if the specified
      *  argument is present. As it is, the function converts the parameter into
-     *  the double type and returns it.
+     *  double type and returns it.
      *
      *  When the argument is not found in the list or on missing parameter, the
      *  function simply returns the provided default value.

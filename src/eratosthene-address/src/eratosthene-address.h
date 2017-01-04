@@ -147,7 +147,7 @@
      *  the provided date and converts it into a UTC UNIX timestamps. After the
      *  conversion, the function displays the result on the standard output.
      *
-     *  The date has to be provided following the pattern : YYYY-MM-DD-HH-MM-SS
+     *  The date has to be provided following the pattern : YYYY-MM-DD-hh-mm-ss
      *
      *  \param argc Main function parameters
      *  \param argv Main function parameters
