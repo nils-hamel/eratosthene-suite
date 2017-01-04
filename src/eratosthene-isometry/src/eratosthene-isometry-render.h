@@ -21,7 +21,7 @@
     /*! \file   eratosthene-isometry-render.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  Eratosthene isometry - rendering module
+     *  eratosthene-suite isometry - rendering module
      */
 
 /*

@@ -21,7 +21,7 @@
     /*! \file   eratosthene-client-common.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  Eratosthene client - common header
+     *  eratosthene-suite client - common header
      */
 
 /*

@@ -21,7 +21,7 @@
     /*! \file   eratosthene-server.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  Eratosthene server
+     *  eratosthene-suite server
      */
 
     /*! \mainpage eratosthene-suite
@@ -100,10 +100,14 @@
 
     /*! \brief main function
      *
-     *  The main function simply implements the liberatosthene server main
-     *  function. After arguments and parameters reading, it creates the server
-     *  instance that waits for clients queries. The server system is then
-     *  deleted and the execution ends.
+     *  The main function creates an instance of the eratosthene server. It
+     *  reads the storage path and the service port from the provided arguments
+     *  and parameters to create the server instance structure.
+     *
+     *  It then calls the server main function responsible of client connexions
+     *  management and dispatch to the different server functionnalities. As the
+     *  previous function gives the execution back to the main function, it
+     *  deletes the server structure and returns to system.
      *
      *  \param argc Main function parameters
      *  \param argv Main function parameters
