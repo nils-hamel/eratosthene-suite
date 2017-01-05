@@ -1,5 +1,5 @@
 /*
- *  eratosthene-suite - eratosthene indexation server front-end
+ *  eratosthene-suite - address
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016-2017 EPFL CDH DHLAB
