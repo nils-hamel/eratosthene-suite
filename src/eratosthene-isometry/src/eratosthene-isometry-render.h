@@ -21,7 +21,7 @@
     /*! \file   eratosthene-isometry-render.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  eratosthene-suite isometry - rendering module
+     *  eratosthene-suite isometry - render module
      */
 
 /*
@@ -78,42 +78,36 @@
     /*! \struct er_render_struct
      *  \brief Rendering structure
      *
-     *  This structure holds the configuration parameters required for the
-     *  computation, rendering and exportation of the isometric projections.
+     *  This structure is used to store the parameters required to compute the
+     *  isometric projection.
      *
-     *  \var er_render_struct::re_path
-     *  Path to the exportation file
-     *  \var er_render_struct::re_query
-     *  Indexation server query
-     *  \var er_render_struct::re_view
-     *  Isometric projection orientation
+     *  It holds the projection parameters in addition to the required values
+     *  and descriptors used to drive the computation of the projection through
+     *  opengl off-screen rendering.
+     *
      *  \var er_render_struct::re_azim
-     *  Orientation angle, deduced from re_view field
-     *  \var er_render_struct::re_azim
-     *  Isometric tilt angle
+     *  Azimuthal angle of the projection (NW, NE, SW, SE)
+     *  \var er_render_struct::re_tilt
+     *  Tilt angle of the projection in [-90,0]
      *  \var er_render_struct::re_xfac
-     *  Isometric projection width in x dimension
+     *  Isometric projection box size in x direction (opengl frame)
      *  \var er_render_struct::re_yfac
-     *  Isometric projection width in y dimension
+     *  Isometric projection box size in y direction (opengl frame)
      *  \var er_render_struct::re_zfac
-     *  Isometric projection width in z dimension
+     *  Isometric projection box size in z direction (opengl frame)
      *  \var er_render_struct::re_size
-     *  Indexation server rendered cell geodetic size in peseudo-metres
+     *  Size of the equivalence class provided by the data array (flat-metres)
      *  \var er_render_struct::re_edge
-     *  Indexation server rendered cell minimum corner
+     *  Geographic edge of the equivalence class provoded by the data array
      *  \var er_render_struct::re_thick
-     *  Isometric projection point and line size
+     *  Size, in pixels, of the projection frame and points
      *  \var er_render_struct::re_width
-     *  Isometric projection width in pixels
+     *  Width, in pixels, of the projection image
      *  \var er_render_struct::re_height
-     *  Isometric projection height in pixels
+     *  Height, in pixels, of the projection image
      *  \var er_render_struct::re_display
      *  Graphical context handle
-     *  \var er_render_struct::re_wroot
-     *  Graphical context handle
      *  \var er_render_struct::re_wdisp
-     *  Graphical context handle
-     *  \var er_render_struct::re_visual
      *  Graphical context handle
      *  \var er_render_struct::re_context
      *  Graphical context handle
@@ -157,18 +151,18 @@
 
     /*! \brief constructor/destructor methods
      *
-     *  This function creates the rendering structure required by the display
-     *  methods. It revieve and analyse the projection parameters and fills the
-     *  structure fields according to it. The created rendering structure is
-     *  then returned by the function.
+     *  This function creates and returns the rendering structure used to drive
+     *  to computation of the isometric projection.
      *
-     *  \param  er_path  Projection image exportation path
-     *  \param  er_query Indexation server query string
-     *  \param  er_view  Projection orientation
+     *  It assign the provided parameters and compute the required configuration
+     *  values used by the rendering functions. It also checks and clamp values
+     *  constrainted in specific ranges.
+     *
+     *  \param  er_query Query address string
+     *  \param  er_view  Projection azimuthal position
      *  \param  er_tilt  Projection tilt angle
-     *  \param  er_thick Projection point and line width
+     *  \param  er_thick Projection frame and points size, in pixels
      *  \param  er_width Projection image width, in pixels
-     *  \param  er_array Array containing the server data
      *
      *  \return Returns created rendering structure
      */
@@ -177,8 +171,7 @@
 
     /*! \brief constructor/destructor methods
      *
-     *  This function deletes the provided rendering structure. It expects a
-     *  structure created using er_render_create function.
+     *  This function deletes the provided rendering structure.
      *
      *  \param  er_render Rendering structure
      *
@@ -189,8 +182,8 @@
 
     /*! \brief display methods
      *
-     *  This function initialise the graphical context that is used by the
-     *  rendering engine computing the projection.
+     *  This function initialise the graphical context and framebuffers used to
+     *  compute the isometric projection.
      *
      *  \param  er_render Rendering structure
      *
@@ -201,9 +194,8 @@
 
     /*! \brief display methods
      *
-     *  This function uninitialise the graphical context prepared by the
-     *  render_prepare function. It has to be called after any call to the
-     *  render_prepare function that succeed.
+     *  This function deletes the graphical context and framebuffers used to
+     *  compute the isometric projection.
      *
      *  \param er_render Rendering structure
      */
@@ -212,8 +204,9 @@
 
     /*! \brief display methods
      *
-     *  This function compute and apply the projection parameters to use for the
-     *  rendering of the indexation server cell.
+     *  This function set the opengl projection matrix used for the computation
+     *  of the isometric projection. It uses the configuration values provided
+     *  by the rendering structure to realise the desired projection.
      *
      *  \param er_render Rendering structure
      */
@@ -222,32 +215,62 @@
 
     /*! \brief display methods
      *
-     *  This function simply draws the points contained in the provided array.
-     *  This array has to be already filled though a query to the indexation
-     *  server.
+     *  This function draws the graphical primitives using the coordinates and
+     *  colours provided by the data array. It also draws the projection box
+     *  frame.
      *
      *  \param er_render Rendering structure
+     *  \param er_array  Data array
      */
 
     le_void_t er_render_primivites( er_render_t * const er_render, le_array_t * const er_array );
 
     /*! \brief display methods
      *
-     *  This function exports the rendered isometric projection in the file
-     *  specified through the rendering structure.
+     *  This function exports the rendered isometric projection in the portable
+     *  network graphic file using the specified exportation path. The image
+     *  bytes of the projection are read from the texture framebuffer.
      *
-     *  \param  er_render Rendering structure
+     *  \param er_render Rendering structure
+     *  \param er_path   Projection image exportation path
      *
      *  \return Returns _LE_TRUE on success, _LE_FALSE otherwise
      */
 
     le_enum_t er_render_save( er_render_t * const er_render, char const * const er_path );
 
-    /*! \brief auxiliary functions
+    /*! \brief auxiliary methods
      *
+     *  This function converts the azimuthal angle string into the corresponding
+     *  decimal degrees angle.
+     *
+     *  Four strings are handled by the function that are : "ne" for north-east,
+     *  "nw" for north-west, "sw" for south-west and "se" for south-east. In
+     *  case another string is provided, the function returns by default the
+     *  angle corresponding to "nw" string.
+     *
+     *  \param er_view Azimuthal angle position string
      */
 
     le_real_t er_render_get_view( le_char_t const * const er_view );
+
+    /*! \brief auxiliary methods
+     *
+     *  This function computes two different type of values of the equivalence
+     *  class pointed by the provided address string.
+     *
+     *  In the first place, the function computes the geographic position of the
+     *  edge of the pointed equivalence class. It writes the three coordinates
+     *  of the edge in the \b er_pose array provided as parameter.
+     *
+     *  It then computes the size, in flat-metres, of the class pointed by the
+     *  address and returns it.
+     *
+     *  \param er_query Query address string
+     *  \param er_pose  Equivalence class edge coordinates
+     *
+     *  \return Size of the equivalence class, in flat-metres
+     */
 
     le_size_t er_render_get_edge( le_char_t const * const er_query, le_real_t * const er_pose );
 

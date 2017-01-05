@@ -102,16 +102,35 @@
 
     /*! \brief isometry function
      *
+     *  This function drives the rendering of the isometric projection of the
+     *  data contained in the array resulting of a query on a remote server.
+     *
+     *  It expects the main function standard parameters in addition to the data
+     *  array. It reads in the standard parameters the configuration of the
+     *  isometric projection and starts the rendering process.
+     *
+     *  It calls the rendering module functions that use opengl to draw the
+     *  projection and saves the result into a portable network graphics file.
+     *
+     *  \param argc     Main function parameters
+     *  \param argv     Main function parameters
+     *  \param er_array Query data array
+     *
+     *  \return Returns _LE_TRUE on success, _LE_FALSE otherwise
      */
 
     le_enum_t er_isometry( int argc, char ** argv, le_array_t * const er_array );
 
     /*! \brief main function
      *
-     *  The main function reads the arguments and parameters and opens a socket
-     *  toward the provided server address. It the performs the provided query
-     *  and stores the answer in order to compute a isometric projection of the
-     *  data contained in the query answer.
+     *  The main function establishes the connexion to the server using the
+     *  address and service port provided as standard parameters. It then sends
+     *  the client query handshake.
+     *
+     *  As the handshake succeeded, the main function sends the query address
+     *  provided as standard parameter. It then waits the server for reduced
+     *  address and data array. The array is then sent to the specialised
+     *  rendering function for isometry projection computation.
      *
      *  \param argc Main function parameters
      *  \param argv Main function parameters
