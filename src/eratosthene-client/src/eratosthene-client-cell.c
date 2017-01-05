@@ -110,13 +110,6 @@
 
     }
 
-    le_address_t er_cell_get_addr( er_cell_t const * const er_cell ) {
-
-        /* return cell address */
-        return( er_cell->ce_addr );
-
-    }
-
 /*
     source - mutator methods
  */

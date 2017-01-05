@@ -84,7 +84,7 @@
     }
 
 /*
-    source - main method/function
+    source - main method
  */
 
     int main( int argc, char ** argv ) {

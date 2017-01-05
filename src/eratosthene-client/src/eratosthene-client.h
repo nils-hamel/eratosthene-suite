@@ -104,45 +104,47 @@
  */
 
     /*! \struct er_client_struct
-     *  \brief Rendering engine handle
+     *  \brief Client structure
      *
-     *  This structure holds the rendering engine descriptor. It contains fields
-     *  for rendering configuration, client events and motions control. It also
-     *  contains the model descriptor that contains the information needed to
-     *  render the earth modelisation.
+     *  This structure holds the graphical client interface description. In
+     *  addition to the execution loop and point of view manegement, it also
+     *  holds structure of sub-modules.
      *
+     *  In addition to the execution loop management variables, it holds fields
+     *  dedicated to the manegement of the point of view, which includes mouse
+     *  event management and inertial factors applied during point of view
+     *  modification.
+     *
+     *  It also holds the structure of the sub-modules used by the software such
+     *  as the model management, time interface and movie creation.
+     *
+     *  This structure is the central structure of this graphical clients and
+     *  is used and modified by the main module functions.
+     *
+     *  \var er_client_struct::cl_loops
+     *  Execution loop mode
      *  \var er_client_struct::cl_model
-     *  Engine model descriptor
-     *  \var er_client_struct::cl_point
-     *  Engine rendering point size
+     *  Model management sub-system structure
+     *  \var er_client_struct::cl_times
+     *  Time interface sub-system structure
+     *  \var er_client_struct::cl_movie
+     *  Movie creation sub-system structure
+     *  \var er_client_struct::cl_view
+     *  Point of view structure
+     *  \var er_client_struct::cl_push
+     *  Point of view memory structure
      *  \var er_client_struct::cl_button
-     *  Event mouse button
+     *  Mouse button code
      *  \var er_client_struct::cl_state
-     *  Event mouse state
+     *  Mouse state code
      *  \var er_client_struct::cl_x
-     *  Event mouse position
+     *  Mouse x-position
      *  \var er_client_struct::cl_y
-     *  Event mouse position
-     *  \var er_client_struct::cl_u
-     *  Event mouse pushed position
-     *  \var er_client_struct::cl_v
-     *  Event mouse pushed position
+     *  Mouse y-position
      *  \var er_client_struct::cl_inertia
-     *  Point of view intertial factor
-     *  \var er_client_struct::cl_valt
-     *  Point of view altitude (radial components)
-     *  \var er_client_struct::cl_vlon
-     *  Point of view longitude
-     *  \var er_client_struct::cl_vlat
-     *  Point of view latitude
-     *  \var er_client_struct::cl_vazm
-     *  Point of view azimuthal angle
-     *  \var er_client_struct::cl_vgam
-     *  Point of view tilt angle
+     *  Point of view modification inertial factor
      *  \var er_client_struct::cl_scale
-     *  Point of view scale factor
-     *  \var er_client_struct::cl_vtim
-     *  Point of view time
+     *  Model dynamic scale factor
      */
 
     typedef struct er_client_struct {
@@ -171,39 +173,58 @@
 
     /*! \brief constructor/destructor methods
      *
-     *  This function creates and returns the rendering engine descriptor. In
-     *  addition to the initialisation of the fields, it also initialise the
-     *  graphical context and setup callbacks functions. It is also responsible
-     *  of the model descriptor creation.
+     *  This function creates the client structure and returns it. It mainly
+     *  invoque the sub-modules structure creation functions.
      *
-     *  \param er_stack Size of the model cells array
+     *  This function returning the created structure, the status is stored in
+     *  the structure itself using the reserved \b _status field.
+     *
      *  \param er_ip    Server ip address
      *  \param er_port  Server service port
      *
-     *  \return Returns _LE_TRUE on success, _LE_FALSE otherwise
+     *  \return Returns the created client structure
      */
 
     er_client_t er_client_create( le_char_t * const er_ip, le_sock_t const er_port );
 
     /*! \brief constructor/destructor methods
      *
-     *  This function deletes a rendering engine descriptor created by the
-     *  \b er_client_create function. In addition to model deletion, it also
-     *  uninitialise the graphical context and model descriptor.
+     *  This function deletes the provided client structure. It deletes the
+     *  sub-modules structure using their related deletion functions. It then
+     *  clears the structure fields.
      *
-     *  Note that, because of event management through callback functions, the
-     *  instance of the rendering engine descriptor is global :(
+     *  \param er_client Client structure
      */
 
     le_void_t er_client_delete( er_client_t * const er_client );
 
-    /*! \brief main function
+    /*! \brief main method
      *
-     *  The main function simply reads the arguments and parameters and creates
-     *  the client rendering engine descriptor. It then calls the rendering
-     *  engine main loop function to starts the graphical rendering. As the
-     *  engine exits its main loop, the main function deletes the rendering
-     *  engine descriptor and the execution stops.
+     *  The main function holds the principale execution code.
+     *
+     *  It starts by reading the server address and service port from the main
+     *  function standard parameters.
+     *
+     *  It then configurates the interface window and creates the graphical
+     *  context. It also set the configuration of the opengl rendering.
+     *
+     *  It creates the client structure and starts the execution loops. Two
+     *  threads are engaged and their behavoir is driven by the execution loop
+     *  mode hold in the client structure. The first thread is responsible of
+     *  the scene rendering and events capture. The second thread has the
+     *  responsability of the model update management.
+     *
+     *  Three execution modes are available : the exit mode that indicates the
+     *  threads loop to stop execution ; the view mode, which is the standard
+     *  mode, that indicates the graphical thread to render the scene and the
+     *  model thread to perform update depending on the point of view ; the
+     *  movie mode, used for the exportation of movie frames, tells the model
+     *  thread to suspend activity and indicate to the graphical thread that it
+     *  has to manage the point of view trajectory and model update in addition
+     *  to the scene rendering.
+     *
+     *  As the execution stop (exit mode), the main function deletes the client
+     *  structure and close the graphical context.
      *
      *  \param argc Main function parameters
      *  \param argv Main function parameters
@@ -213,36 +234,75 @@
 
     int main( int argc, char ** argv );
 
-    /*! \brief engine loop
+    /*! \brief loop methods
      *
-     *  This function holds the callback procedure for the model rendering.
+     *  This function is called by the main function graphical thread to trigger
+     *  scene rendering according to the point of view.
+     *
+     *  It starts by clearing buffers and, depending on the scene elements to
+     *  render, it calls the specific projection configuration functions.
+     *
+     *  The function render the model itself with simple wireframe model of the
+     *  earth used as reference and the time interface.
      */
 
     le_void_t er_client_loops_render( le_void_t );
 
-    /*! \brief engine loop
+    /*! \brief loop methods
      *
-     *  This function implements an infinit loop that contains the procedure
-     *  needed to update the model.
+     *  This function is called by the main function model thread to trigger
+     *  model update according to the point of view.
      *
-     *  \param er_null Null pointer
+     *  Using the previous point of view, the function starts by determining if
+     *  the point of view has changed. If not, the function ends.
      *
-     *  \return Null pointer
+     *  If the point of view has changed, the function starts the model update
+     *  procedure using the model module functions.
      */
 
     le_void_t er_client_loops_update( le_void_t );
 
+    /*! \brief projection methods
+     *
+     *  This function is used to set the rendering projection matrix for the
+     *  model display.
+     *
+     *  It applies a projection matrix with dynamic near and far planes driven
+     *  by specific functions of the geodesy module. Using the geodesy module
+     *  function, is also computes and applies the model scale factor.
+     *
+     *  This function also manage the dynamic configuration of the opengl fog
+     *  and enable it.
+     *
+     *  \param er_width  Screen width, in pixels
+     *  \param er_height Screen height, in pixels
+     */
+
     le_void_t er_client_proj_model( int er_width, int er_height );
+
+    /*! \brief projection methods
+     *
+     *  This function is used to set the rendering projection matrix for the
+     *  time interface display.
+     *
+     *  It applies an orthogonal projection matrix used by the time module to
+     *  render the time interface.
+     *
+     *  This function also disable the opengl fog.
+     *
+     *  \param er_width  Screen width, in pixels
+     *  \param er_height Screen height, in pixels
+     */
+
 
     le_void_t er_client_proj_interface( int er_width, int er_height );
 
-    /*! \brief engine callbacks - reshape
+    /*! \brief callback methods
      *
-     *  This function implements the reshape callback called on rendering
-     *  buffer reshape.
+     *  This function implements the reshape callback.
      *
-     *  This project requiering dynamic near and far planes, this function is
-     *  called each time a model rendering starts.
+     *  The function simply sets the opengl viewport according to the provided
+     *  parameters in order to occupy the entire screen.
      *
      *  \param er_width  Width, in pixel, of the rendering buffer
      *  \param er_height Height, in pixels, of the rendering buffer
@@ -250,41 +310,62 @@
 
     le_void_t er_client_calls_reshape( int er_width, int er_height );
 
-    /*! \brief engine callbacks - keyboard
+    /*! \brief callback methods
      *
-     *  This function implements the keyboard callback function called on
-     *  keyboard events.
+     *  This function implements the keyboard callback.
+     *
+     *  It implements a simple switch on the provided keycode. It then applies
+     *  the action attached to the pressed key.
      *
      *  \param er_keycode Keyboard key code
-     *  \param er_x       Mouse position at key press
-     *  \param er_y       Mouse position at key press
+     *  \param er_x       Mouse x-position at key press
+     *  \param er_y       Mouse y-position at key press
      */
 
     le_void_t er_client_calls_keybd( unsigned char er_keycode, int er_x, int er_y );
 
-    /*! \brief engine callbacks - mouse
+    /*! \brief callback methods
      *
-     *  This function implements the mouse click callback function called on
-     *  mouse click events.
+     *  This function implements the mouse callback.
+     *
+     *  Depending on the pressed button, while taking into account the keyboard
+     *  modifiers state, the function updates the point of view based on the
+     *  mouse event.
      *
      *  \param er_button Mouse button code
      *  \param er_state  Mouse button state
-     *  \param er_x      Mouse position at click
-     *  \param er_y      Mouse position at click
+     *  \param er_x      Mouse x-position at click
+     *  \param er_y      Mouse y-position at click
      */
 
     le_void_t er_client_calls_mouse( int er_button, int er_state, int er_x, int er_y );
 
-    /*! \brief engine callbacks - mouse
+    /*! \brief callback methods
      *
-     *  This function implements the mouse motion callback function called on
-     *  mouse motion events.
+     *  This function implements the motion callback.
      *
-     *  \param er_x Mouse position
-     *  \param er_y Mouse position
+     *  Depending on the pressed button and on the initial mouse position, while
+     *  taking into account the state of the keyboard modifiers, the function
+     *  updates the point of view.
+     *
+     *  \param er_x Mouse x-position
+     *  \param er_y Mouse y-position
      */
 
     le_void_t er_client_calls_move( int er_x, int er_y );
+
+    /*! \brief stability methods
+     *
+     *  This function implements a stability trick.
+     *
+     *  As the main function uses \b glutMainLoopEvent() to manage events, the
+     *  \b glutMainLoop() function is never used which causes the software to
+     *  trigger an exception at ends.
+     *
+     *  To address this issue, the function is called by the main function just
+     *  before to return. It simply calls the GLUT main loop function once in
+     *  order to properly (?) ends the graphical context.
+     */
 
     le_void_t glutFinish( le_void_t );
 
