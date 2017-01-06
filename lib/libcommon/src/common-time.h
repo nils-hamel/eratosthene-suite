@@ -71,7 +71,7 @@
 
     /*! \brief conversion methods
      *
-     *  This function converts the provided UNIX timestamps into humain readable
+     *  This function converts the provided UNIX timestamp into human readable
      *  string. The format of the created string follows : YYYY-MM-DD-hh-mm-ss.
      *
      *  \param lc_time   UNIX timestamp
@@ -86,13 +86,13 @@
     /*! \brief conversion methods
      *
      *  This function converts the provided human readable date string into a
-     *  UNIX timestamps. The format of the date string has to be given to the
+     *  UNIX timestamp. The format of the date string has to be given to the
      *  function. See strptime() for more information.
      *
      *  \param lc_date   Date string
      *  \param lc_format Date string format
      *
-     *  \return Returns converted UNIX timestamps
+     *  \return Returns converted UNIX timestamp
      */
 
     time_t lc_time_from_string( unsigned char * const lc_date, unsigned char * const lc_format );
