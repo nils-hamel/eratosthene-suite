@@ -79,37 +79,53 @@
  */
 
     /*! \struct er_model_struct
-     *  \brief model structure
+     *  \brief Model structure
      *
-     *  This structure holds the earth model descriptor. It contains the needed
-     *  information for client/server communication and server configuration.
+     *  This structure is responsible of maintaing the content of earth model
+     *  provided by the remote server. Its main role is to maintain the cells
+     *  stack. Each cell correspond to a query made to the remote server using
+     *  a single address. The model is constantly updated, follwing the model
+     *  point of view motion.
      *
-     *  It also holds fields necessary for the earth modelisation through a
-     *  simple cells array. In addition, it also stores the point of view
-     *  position at model update to detect model update necessity.
+     *  In the first place, the structure holds the remote server address and
+     *  service port as it is responsible of queries made to the remote server.
+     *
+     *  The structure holds also a copy of the remote server configuration
+     *  values that are the space and time parameters.
+     *
+     *  The main element of the structure is the cell stack. The stack has a
+     *  perdefined size (\b ER_MODEL_STACK) and the model has to be fitted in.
+     *  The size field holds a copy of the cell stack and has to be used by
+     *  the processes using the stack.
+     *
+     *  A field stores the model push index. It is used as the model is updated
+     *  following a modification of the point of view. Its role is to trace the
+     *  count of pushed addresses waiting for validation and query.
+     *
+     *  At the last place, the structure holds a cylcic parameter. It is used
+     *  by a specific function responsible of searching free stack cells during
+     *  model update. Its role is to ensure an homogeneous usage of the stack
+     *  and to increase the time a cell spends in the stack, and especially
+     *  inactive cells. This increases the probability for a cell to be reused
+     *  without a query to the remote server even if no more active in the
+     *  current model, reducing bandwidth usage.
      *
      *  \var er_model_struct::md_svip
      *  Server ip address
      *  \var er_model_struct::md_port
      *  Server service port
      *  \var er_model_struct::md_sparam
-     *  Server spatial indexation parameter
+     *  Server space parameter
      *  \var er_model_struct::md_tparam
-     *  Server time indexation parameter
-     *  \var er_model_struct::md_mtim
-     *  Model update time
-     *  \var er_model_struct::md_mlon
-     *  Model update longitude
-     *  \var er_model_struct::md_mlat
-     *  Model update latitude
-     *  \var er_model_struct::md_malt
-     *  Model update altitude
-     *  \var er_model_struct::md_push
-     *  Model update pushed cell
+     *  Server time parameter
      *  \var er_model_struct::md_size
-     *  Model active cells count
+     *  Cells stack size
+     *  \var er_model_struct::md_push
+     *  Cells stack push index
      *  \var er_model_struct::md_cell
-     *  Model cells descriptors array
+     *  Cells stack
+     *  \var er_model_struct::md_cycle
+     *  Cyclic search index
      */
 
     typedef struct er_model_struct {
@@ -134,17 +150,19 @@
 
     /*! \brief constructor/destructor methods
      *
-     *  This function creates and returns a model descriptor. It initialise
-     *  descriptor fields with default values and initialise network fields
-     *  according to parameters.
+     *  This function creates and returns a model structure. It initialises the
+     *  structure fields and assign the provided parameters.
      *
-     *  In addition, it also ask the remote server for the spatial and time
-     *  indexation parameters and allocate the cells array memory.
+     *  The function performs also a configuration query to the remote server
+     *  to retrieve the two space and time configuration values. A copy of the
+     *  two values are assigned to the structure.
      *
-     *  If the \b md_sparam or \b md_tparam parameters are respectively set to
-     *  _LE_SIZE_NULL or _LE_TIME_NULL, the descriptor creation failed.
+     *  This function is also responsible for allocating the cells stack memory
+     *  and for the initialisation of the stack cell structures.
      *
-     *  \param er_cells Cells array size
+     *  This function returning the created structure, the status is stored in
+     *  the structure itself using the reserved \b _status field.
+     *
      *  \param er_ip    Server ip address
      *  \param er_port  Server service port
      *
@@ -155,27 +173,99 @@
 
     /*! \brief constructor/destructor methods
      *
-     *  This function deletes a model descriptor created by the function
-     *  \b er_model_create. In addition to structure fields uninitisalisation,
-     *  it also unallocate cells array memory.
+     *  This function deletes the provided model structure. It deletes each
+     *  cell of the stack using their related function. It then release the
+     *  stack memory allocation and clears the structure fields.
      *
      *  \param er_model Model structure
      */
 
     le_void_t er_model_delete( er_model_t * const er_model );
 
+    /*! \brief accessor methods
+     *
+     *  This function searches in the cells stack for an inactive cell. If such
+     *  a free cell is found, its index is returned.
+     *
+     *  This function uses the model structure cyclic index to search for a free
+     *  cell. The cyclic index is used as a search index and its value remains
+     *  after searching. At next call, the function will starts to search for a
+     *  free cell with the index coming just after the last found free cell.
+     *
+     *  Using cyclic index to search free cell allows to increase the time a
+     *  cell spends in the stack. This allows to increase the probability for a
+     *  cell to be reused, even if it has been disabled during a previous model
+     *  update.
+     *
+     *  \param er_model Model structure
+     *
+     *  \return Returns free cell stack index on success, stack size otherwise
+     */
+
     le_size_t er_model_get_cell( er_model_t * const er_model );
+
+    /*! \brief mutator methods
+     *
+     *  This function is part of the model update process.
+     *
+     *  Its role is to enumerates all possible cells and to select the ones that
+     *  are relevant accroding to the position of the point of view. A recursive
+     *  enumeration strategy based on the provided address structure is applied.
+     *
+     *  Starting at scale zero, the possible digits are enumerated. The size of
+     *  the address (zero at the begining) is increased by one. On the first
+     *  \b ER_COMMON_ENUM + 1 scales, the function simply calls itself passing
+     *  the updated address as parameter. Otherwise, the function tests two
+     *  element : the distance of the cell to the point of view and the display
+     *  relevance of the cell.
+     *
+     *  If the cell is juged to far away from the point of view, it is simply
+     *  discared and no recursion occurs (all the cell dauthers are discared at
+     *  the same time). If the cell is close enough and relevant for display,
+     *  the function pushes the enumeration address to the stack. If the cell
+     *  is not relevant for display, the function calls itself with the updated
+     *  enumeration address and the process continues.
+     *
+     *  In addition, as a cell is juged not relevant for display, the function
+     *  checks if the cell contains data before to calls itself to continue
+     *  the enumeration. Indeed, if a cell is empty all its daughters are also
+     *  empty and then not relevant for enumeration. The same test is made
+     *  before to push the enumeration address on the stack when a cell is juged
+     *  relevant for display.
+     *
+     *  The function tests if cells are empty before to push them on the stack
+     *  by making a time-reduction query to the remote server. In addition to
+     *  avoid pushing empty cell, these queries allows to reduce the time values
+     *  hold by the enumeration address. It follows that any pushed address
+     *  contains implicitly reduced times. This allows sub-sequent model update
+     *  function to properly compare pushed addresses with addresses already in
+     *  the stack.
+     *
+     *  \param er_model Model structure
+     *  \param er_enum  Address structure
+     *  \param er_view  Point of view structure
+     */
 
     le_void_t er_model_set_update_cell( er_model_t * const er_model, le_address_t * const er_enum, er_view_t const * const er_view );
 
     /*! \brief mutator methods
      *
-     *  This function is part of the model update procedure.
+     *  This function is part of the model update process.
      *
-     *  This function is responsible of detecting which cells selected by the
-     *  functions \b er_model_set_update_model and \b er_model_set_update_cells
-     *  are already in the model cells array in order to only perform server
-     *  query for true new cells.
+     *  It is responsible of analysing the pushed addresses in order to perform
+     *  the required queries to the remote server.
+     *
+     *  In the first place, the function parses the pushed addresses and checks
+     *  if a cell in the stack already holds the data corresponding to the
+     *  pushed address. In this case, the cell is reactivated using its flag and
+     *  the pushed address is erased. The drawable flag of the cell is also set
+     *  to true as it can be directly considered.
+     *
+     *  In the second place, the function parses the remaining pushed addresses
+     *  and performs the query to the remote server. For each remaining pushed
+     *  address, a free cell is asked by the function and is used to receive the
+     *  remote server answer to the query. The flag of the new cell is set and
+     *  is drawable flag is also set to true.
      *
      *  \param er_model Model structure
      */
@@ -184,42 +274,72 @@
 
     /*! \brief mutator methods
      *
-     *  This function is part of the model update procedure.
+     *  This function is part of the model update process.
      *
-     *  This function is respsonsible of emptying the unused cells remaining
-     *  after the model update procedure. It is then the last function called
-     *  during model update procedure.
+     *  It is responsible of terminating the model update process. It parses the
+     *  cells stack to check cells flag.
+     *
+     *  If the cell has its flag set, the function simply unset it. If the cell
+     *  has its flag already unset, the function ensure that its drawable flag
+     *  is set to false.
+     *
+     *  The function also resets the pushed addresses index to make the model
+     *  structure ready for a new model update.
      *
      *  \param er_model Model structure
      */
 
     le_void_t er_model_set_update_terminate( er_model_t * const er_model );
 
-    /*! \brief model display methods
+    /*! \brief display methods
      *
-     *  This function is responsible of the display of the active cells in the
-     *  model cells array.
+     *  This function displays the earth model hold in the stack. It searches
+     *  in the stack the cells that have their drawable flag set.
+     *
+     *  The earth-attached cartesian coordinates set [x_e,y_e,z_e] is associated
+     *  to the opengl cartesian coordinates set [x_g,y_g,z_g] in the following
+     *  way :
+     *
+     *      x_e = z_g
+     *      y_e = x_g
+     *      z_e = y_g
+     *
+     *  allowing to keep a natural view of earth without additional rotation.
+     *
+     *  The display strategy consist in keeping the deepest and nearest (point
+     *  of view) cells as near as possible to the opengl frame origin. This
+     *  allows to keep small values for the most relevant (point of view)
+     *  points. This follows the strategy that consists in shifting the cell
+     *  points to a frame that keep their coordinates small. The objective is
+     *  to address single precision saturation issue. This strategy allows to
+     *  consider millimetric model of earth within a single homogeneous model.
+     *
+     *  First, the longitute and latitude angle are used to rotate the cell
+     *  points. A specific translation has to be computed then : as the points
+     *  of the cell are expressed in the frame of the cell itself, the position
+     *  of this frame origin in the model has to be computed in order to
+     *  correctly place the cell points : the translation is obtained by
+     *  applying the longitude and latitude rotation to the cell frame origin.
+     *  The azimuthal angle is then applied to the points and the entire earth
+     *  is shifted backward to keep the earth surface below the point of view
+     *  near the opengl (0,0,0) point. Finally, the tilt (gamma) angle is
+     *  applied.
      *
      *  \param er_model Model structure
-     *  \param er_lon   Point of view longitude
-     *  \param er_lat   Point of view latitude
-     *  \param er_alt   Point of view altitude
-     *  \param er_azm   Point of view azimuth
-     *  \param er_gam   Point of view tilt
+     *  \param er_view  View structure
      */
 
     le_void_t er_model_display_cell( er_model_t const * const er_model, er_view_t const * const er_view );
 
-    /*! \brief model display methods
+    /*! \brief display methods
      *
-     *  This function is responsible for the display of the five degree of arc
-     *  wireframe model of the earth.
+     *  This function displays a simple wireframe model of earth to provide a
+     *  permanant visual reference.
      *
-     *  \param er_lon   Point of view longitude
-     *  \param er_lat   Point of view latitude
-     *  \param er_alt   Point of view altitude
-     *  \param er_azm   Point of view azimuth
-     *  \param er_gam   Point of view tilt
+     *  More information on the earth display strategy are available on the
+     *  documentation of \b er_model_display_cell() function.
+     *
+     *  \param er_view View structure
      */
 
     le_void_t er_model_display_earth( er_view_t const * const er_view );

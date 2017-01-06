@@ -311,7 +311,7 @@
     }
 
 /*
-    source - model display methods
+    source - display methods
  */
 
     le_void_t er_model_display_cell( er_model_t const * const er_model, er_view_t const * const er_view ) {
