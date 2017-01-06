@@ -76,7 +76,7 @@
     }
 
 /*
-    source - manipulator methods
+    source - mutator methods
  */
 
     le_void_t er_movie_set( er_movie_t * const er_movie, er_view_t const * const er_view ) {
