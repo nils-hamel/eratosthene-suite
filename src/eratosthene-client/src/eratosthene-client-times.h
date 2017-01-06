@@ -104,7 +104,7 @@
      *  \var er_times_struct::tm_length
      *  Size, in bytes, of the time interface buffer
      *  \var er_times_struct::tm_offset
-     *  Vertical position of the time inferface buffer - screen position
+     *  Vertical position of the time interface buffer - screen position
      *  \var er_times_struct::tm_buffer
      *  Time interface buffer bytes
      *  \var er_times_struct::tm_sh1
@@ -162,7 +162,7 @@
 
     /*! \brief constructor/destructor methods
      *
-     *  This function deletes the provided time interface structure. It realeses
+     *  This function deletes the provided time interface structure. It releases
      *  the interface buffer memory allocation and clears the structure fields.
      *
      *  \param er_times Time interface structure

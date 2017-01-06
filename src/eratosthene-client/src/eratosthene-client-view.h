@@ -93,7 +93,7 @@
      *      mode = 4 : first time (logical and) second time
      *      mode = 5 : first time (logical xor) second time
      *
-     *  These modes allow to emphasize the similarities and differences through
+     *  These modes allow to emphasise the similarities and differences through
      *  time of the earth model.
      *
      *  As two different times can be browsed the time interface, that allows
@@ -253,7 +253,7 @@
      *
      *  This function copies the point of view position of the provided view
      *  structure to the provided position array. In addition to the copy, it
-     *  also converts the two parametric angles from degrees to radians.
+     *  also converts the two parametric angles from degrees to radian.
      *
      *  \param  er_view View structure
      *  \param  er_pose Position array
@@ -296,7 +296,7 @@
      *  only). The second time is copied as the mode value is not 1 (first time
      *  only).
      *
-     *  In addition, the function also sets the address additionnal depth (span)
+     *  In addition, the function also sets the address additional depth (span)
      *  using the graphical client default value \b ER_COMMON_SPAN.
      *
      *  This function is usually used by the model update process to initialise
@@ -398,7 +398,7 @@
 
     /*! \brief mutator methods
      *
-     *  This function adds the provided motion amplitude value to the azimthal
+     *  This function adds the provided motion amplitude value to the azimuthal
      *  angle of the provided view structure.
      *
      *  \param er_view  View structure
@@ -474,7 +474,7 @@
      *  of the provided view structure. As for \b er_view_set_time() function,
      *  this function uses the structure focus to choose the time. In other
      *  words, this function only allows to set the time area size of the active
-     *  time (from the time inteface point of view).
+     *  time (from the time interface point of view).
      *
      *  \param er_view  View structure
      *  \param er_value Time area size value

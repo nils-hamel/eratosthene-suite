@@ -81,10 +81,10 @@
     /*! \struct er_model_struct
      *  \brief Model structure
      *
-     *  This structure is responsible of maintaing the content of earth model
+     *  This structure is responsible of maintaining the content of earth model
      *  provided by the remote server. Its main role is to maintain the cells
      *  stack. Each cell correspond to a query made to the remote server using
-     *  a single address. The model is constantly updated, follwing the model
+     *  a single address. The model is constantly updated, following the model
      *  point of view motion.
      *
      *  In the first place, the structure holds the remote server address and
@@ -94,7 +94,7 @@
      *  values that are the space and time parameters.
      *
      *  The main element of the structure is the cell stack. The stack has a
-     *  perdefined size (\b ER_MODEL_STACK) and the model has to be fitted in.
+     *  predefined size (\b ER_MODEL_STACK) and the model has to be fitted in.
      *  The size field holds a copy of the cell stack and has to be used by
      *  the processes using the stack.
      *
@@ -102,7 +102,7 @@
      *  following a modification of the point of view. Its role is to trace the
      *  count of pushed addresses waiting for validation and query.
      *
-     *  At the last place, the structure holds a cylcic parameter. It is used
+     *  At the last place, the structure holds a cyclic parameter. It is used
      *  by a specific function responsible of searching free stack cells during
      *  model update. Its role is to ensure an homogeneous usage of the stack
      *  and to increase the time a cell spends in the stack, and especially
@@ -209,36 +209,36 @@
      *  This function is part of the model update process.
      *
      *  Its role is to enumerates all possible cells and to select the ones that
-     *  are relevant accroding to the position of the point of view. A recursive
+     *  are relevant according to the position of the point of view. A recursive
      *  enumeration strategy based on the provided address structure is applied.
      *
      *  Starting at scale zero, the possible digits are enumerated. The size of
-     *  the address (zero at the begining) is increased by one. On the first
+     *  the address (zero at the beginning) is increased by one. On the first
      *  \b ER_COMMON_ENUM + 1 scales, the function simply calls itself passing
      *  the updated address as parameter. Otherwise, the function tests two
      *  element : the distance of the cell to the point of view and the display
      *  relevance of the cell.
      *
      *  If the cell is juged to far away from the point of view, it is simply
-     *  discared and no recursion occurs (all the cell dauthers are discared at
-     *  the same time). If the cell is close enough and relevant for display,
+     *  discarded and no recursion occurs (all the cell daughters are discarded
+     *  at the same time). If the cell is close enough and relevant for display,
      *  the function pushes the enumeration address to the stack. If the cell
      *  is not relevant for display, the function calls itself with the updated
      *  enumeration address and the process continues.
      *
-     *  In addition, as a cell is juged not relevant for display, the function
+     *  In addition, as a cell is judged not relevant for display, the function
      *  checks if the cell contains data before to calls itself to continue
      *  the enumeration. Indeed, if a cell is empty all its daughters are also
      *  empty and then not relevant for enumeration. The same test is made
-     *  before to push the enumeration address on the stack when a cell is juged
-     *  relevant for display.
+     *  before to push the enumeration address on the stack when a cell is
+     *  judged relevant for display.
      *
      *  The function tests if cells are empty before to push them on the stack
      *  by making a time-reduction query to the remote server. In addition to
      *  avoid pushing empty cell, these queries allows to reduce the time values
      *  hold by the enumeration address. It follows that any pushed address
-     *  contains implicitly reduced times. This allows sub-sequent model update
-     *  function to properly compare pushed addresses with addresses already in
+     *  contains implicitly reduced times. This allows subsequent model update
+     *  functions to properly compare pushed addresses with addresses already in
      *  the stack.
      *
      *  \param er_model Model structure
@@ -296,8 +296,8 @@
      *  This function displays the earth model hold in the stack. It searches
      *  in the stack the cells that have their drawable flag set.
      *
-     *  The earth-attached cartesian coordinates set [x_e,y_e,z_e] is associated
-     *  to the opengl cartesian coordinates set [x_g,y_g,z_g] in the following
+     *  The earth-attached Cartesian coordinates set [x_e,y_e,z_e] is associated
+     *  to the opengl Cartesian coordinates set [x_g,y_g,z_g] in the following
      *  way :
      *
      *      x_e = z_g
@@ -334,7 +334,7 @@
     /*! \brief display methods
      *
      *  This function displays a simple wireframe model of earth to provide a
-     *  permanant visual reference.
+     *  permanent visual reference.
      *
      *  More information on the earth display strategy are available on the
      *  documentation of \b er_model_display_cell() function.

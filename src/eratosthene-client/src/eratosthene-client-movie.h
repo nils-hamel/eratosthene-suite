@@ -141,7 +141,7 @@
      *  structure fields and retrieve the screen sizes.
      *
      *  Using the obtained screen resolution, the function allocate the memory
-     *  of the colour buffer that revieves the opengl colour buffer. The buffer
+     *  of the colour buffer that receives the opengl colour buffer. The buffer
      *  is used to export movie frames.
      *
      *  This function returning the created structure, the status is stored in
@@ -188,7 +188,7 @@
      *  The function checks also the size of the stack for interpolation values
      *  management. As the stack is of size zero, the function resets the two
      *  interpolation parameters. This allows the movie structure to be easily
-     *  reseted by emptying the points of view stack.
+     *  reset by emptying the points of view stack.
      *
      *  \param er_movie Movie structure
      *  \param er_view  View structure
@@ -223,13 +223,13 @@
      *  determine if interpolation is complete. This indicates the function to
      *  return the \b ER_COMMON_MOVIE execution mode to tell the main function
      *  loop to continue movie frame computation ; the \b ER_COMMON_VIEW code
-     *  is returned to tell the main function loop to retun back to the model
+     *  is returned to tell the main function loop to return back to the model
      *  view execution mode, the movie frames being computed.
      *
      *  The function also checks if the points of view stacks contains at least
-     *  two points of view, allowing intgerpolation to take place. Otherwise,
-     *  the function returns the \b ER_COMMON_VIEW execution mode to tell the
-     *  main loop to abort movie frames computation.
+     *  two points of view, allowing interpolation to take place. Otherwise, the
+     *  function returns the \b ER_COMMON_VIEW execution mode to tell the main
+     *  loop to abort movie frames computation.
      *
      *  \param  er_movie Movie structure
      *

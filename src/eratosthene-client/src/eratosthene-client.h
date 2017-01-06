@@ -107,11 +107,11 @@
      *  \brief Client structure
      *
      *  This structure holds the graphical client interface description. In
-     *  addition to the execution loop and point of view manegement, it also
+     *  addition to the execution loop and point of view management, it also
      *  holds structure of sub-modules.
      *
      *  In addition to the execution loop management variables, it holds fields
-     *  dedicated to the manegement of the point of view, which includes mouse
+     *  dedicated to the management of the point of view, which includes mouse
      *  event management and inertial factors applied during point of view
      *  modification.
      *
@@ -174,7 +174,7 @@
     /*! \brief constructor/destructor methods
      *
      *  This function creates the client structure and returns it. It mainly
-     *  invoque the sub-modules structure creation functions.
+     *  calls the sub-modules structure creation functions.
      *
      *  This function returning the created structure, the status is stored in
      *  the structure itself using the reserved \b _status field.
@@ -200,7 +200,7 @@
 
     /*! \brief main method
      *
-     *  The main function holds the principale execution code.
+     *  The main function holds the principal execution code.
      *
      *  It starts by reading the server address and service port from the main
      *  function standard parameters.
@@ -209,10 +209,10 @@
      *  context. It also set the configuration of the opengl rendering.
      *
      *  It creates the client structure and starts the execution loops. Two
-     *  threads are engaged and their behavoir is driven by the execution loop
+     *  threads are engaged and their behaviour is driven by the execution loop
      *  mode hold in the client structure. The first thread is responsible of
      *  the scene rendering and events capture. The second thread has the
-     *  responsability of the model update management.
+     *  responsibility of the model update management.
      *
      *  Three execution modes are available : the exit mode that indicates the
      *  threads loop to stop execution ; the view mode, which is the standard

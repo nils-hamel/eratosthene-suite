@@ -76,9 +76,9 @@
      *  provided as parameter to the pseudo-center of the provided cell.
      *
      *  To compute the distance, the function considers the spatial index hold
-     *  by the cell address. It determines the parametric center of the cell and
-     *  converts it into earth-attached cartesian coordinates. The coordinates
-     *  of the point of view are also converted in cartesian coordinates.
+     *  by the cell address. It determines the parametric centre of the cell and
+     *  converts it into earth-attached Cartesian coordinates. The coordinates
+     *  of the point of view are also converted in Cartesian coordinates.
      *
      *  The distance is then computed between these two points using a simple
      *  euclidian distance. The distance, expressed in metres, is then returned
@@ -110,9 +110,9 @@
 
     /*! \brief model methods
      *
-     *  This function computes, accroding to the distance between the cell and
+     *  This function computes, according to the distance between the cell and
      *  the point of view, the ideal scale (i.e. the ideal number of digits of
-     *  is address statial index) at which a cell is relevant to display. The
+     *  is address spatial index) at which a cell is relevant to display. The
      *  two other provided values are used to clamp the result.
      *
      *  This function is mainly used by the model update process. As it parses
@@ -122,7 +122,7 @@
      *
      *  \param er_distance Distance between the cell and the point of view
      *  \param er_scale    Server maximum number of scale (space parameter)
-     *  \param er_depth    Cell address additionnal depth (span)
+     *  \param er_depth    Cell address additional depth (span)
      *
      *  \return Returns the ideal depth value
      */

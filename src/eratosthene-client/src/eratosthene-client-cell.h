@@ -85,7 +85,7 @@
      *
      *  The second address is used by the model update process to push the cells
      *  that are part of the updated model. It is done so in order to keep the
-     *  pervious model unchanged during update. This allows the update process
+     *  previous model unchanged during update. This allows the update process
      *  to checks in the previous model if cells can be reused as they are in
      *  the updated model, reducing the bandwidth requirements between the
      *  server and the client.
@@ -98,7 +98,7 @@
      *  frame in which points are expressed. This technique is used because this
      *  graphical client has to render a worldwide model. This allows to keep
      *  the coordinates of the points of the cell as small as possible, most of
-     *  GPU being only able to consider single precision flaoting point values,
+     *  GPU being only able to consider single precision floating point values,
      *
      *  \var er_cell_struct::ce_flag
      *  Cell state flag
@@ -232,8 +232,8 @@
      *
      *  This function returns the base pointer to the cell colour array. One has
      *  to take into account that colours are interlaced with points coordinates
-     *  in the cell data arry. A stride value has to be considered to jumps from
-     *  colour to colour.
+     *  in the cell data array. A stride value has to be considered to jumps
+     *  from colour to colour.
      *
      *  \param er_cell Cell structure
      *
@@ -348,16 +348,16 @@
      *  the address of the cell. The answer of the server is stored in the cell
      *  data array.
      *
-     *  In addition, the function converts the recieved points from geographic
-     *  coordinates to earth attached cartersian coordinates. It then shifts the
+     *  In addition, the function converts the received points from geographic
+     *  coordinates to earth attached Cartesian coordinates. It then shifts the
      *  points coordinates in a frame with origin given by the queried class
      *  low edge position. This allows to keep points coordinates near zeros.
      *
      *  The server always answer points in geographic coordinates that are
      *  longitude (radian), latitude (radian) and height above WGS84 ellipsoid
      *  (metres), in this order. These coordinates are converted by the function
-     *  to obtain cartesian coordinates. Considering the opengl frame, the
-     *  geographic cartesian coordinates are associated the the opengl one in
+     *  to obtain Cartesian coordinates. Considering the opengl frame, the
+     *  geographic Cartesian coordinates are associated the the opengl one in
      *  the following way :
      *
      *      x_geographic -> z_opengl (0->2)
@@ -370,7 +370,7 @@
      *  \param  er_ip   Server ip address
      *  \param  er_port Server service port
      *
-     *  \return Returns cell amount of recieved points
+     *  \return Returns cell amount of received points
      */
 
     le_size_t er_cell_io_query( er_cell_t * const er_cell, le_char_t const * const er_ip, le_sock_t const er_port );
