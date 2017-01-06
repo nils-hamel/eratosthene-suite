@@ -154,6 +154,8 @@
      *  initialise its content. As the elements of the time interface are drawn
      *  through the alpha components of the buffer, the initialisation of the
      *  RGB components made by the function stands during the whole execution.
+     *
+     *  \return Returns the constructed time interface structure
      */
 
     er_times_t er_times_create( le_void_t );
