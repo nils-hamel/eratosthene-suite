@@ -67,13 +67,24 @@
     source - model methods
  */
 
-    le_real_t er_geodesy_limit( le_real_t const er_altitude ) {
+
+    le_real_t er_geodesy_face( le_real_t const er_altitude ) {
 
         /* computation variables */
         le_real_t er_normal = er_altitude / LE_ADDRESS_WGSA - 1.0;
 
         /* return evaluation */
-        return( er_altitude * ( 1.0 - 0.75 * exp( - LE_2P * er_normal * er_normal ) ) );
+        return( er_altitude * ( 1.0 - 0.75 * exp( - LE_PI * er_normal * er_normal ) ) );
+
+    }
+
+    le_real_t er_geodesy_radius( le_real_t const er_altitude ) {
+
+        /* computation variables */
+        le_real_t er_normal = er_altitude / LE_ADDRESS_WGSA - 1.0;
+
+        /* return evaluation */
+        return( er_altitude * ( 1.0 - 0.98 * exp( - LE_2P * 32.0 * er_normal * er_normal ) ) );
 
     }
 
@@ -113,10 +124,16 @@
     le_real_t er_geodesy_far( le_real_t const er_altitude ) {
 
         /* computation variables */
-        le_real_t er_normal = er_geodesy_scale( er_altitude );
+        le_real_t er_scale = er_geodesy_scale( er_altitude );
+
+        /* computation vairbales */
+        le_real_t er_plane = er_scale * er_geodesy_radius( er_altitude );
+
+        /* computation variables */
+        le_real_t er_clamp = er_scale * er_geodesy_face( er_altitude );
 
         /* return evaluation */
-        return( ( er_altitude - ( LE_ADDRESS_WGSA / 2.0 ) - ( LE_ADDRESS_WGSA / 2.5 ) * pow( er_normal, 20 ) ) * er_normal );
+        return( er_plane >= er_clamp ? er_clamp : er_plane );
 
     }
 

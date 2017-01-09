@@ -106,7 +106,9 @@
      *  \return Returns cell maximum distance
      */
 
-    le_real_t er_geodesy_limit( le_real_t const er_altitude );
+    le_real_t er_geodesy_face( le_real_t const er_altitude );
+
+    le_real_t er_geodesy_radius( le_real_t const er_altitude );
 
     /*! \brief model methods
      *
@@ -170,6 +172,10 @@
      *  point of view height that drives the model scale factor. These two
      *  planes are adapted to the scale factor and earth size to decrease as
      *  much as possible the precision load applied on the depth buffer.
+     *
+     *  In addition, the far plane position computation is linked to the model
+     *  cell display limit as the altitude of the point of view goes toward
+     *  zeros. This allows to fade (fog) the model view at limit of display.
      *
      *  \param er_altitude Point of view height above WGS84 ellipsoid
      *

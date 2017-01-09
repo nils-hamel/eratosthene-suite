@@ -160,23 +160,28 @@
                 /* compute distance */
                 er_dist = er_geodesy_distance( er_enum, er_view );
 
-                /* check selection criterion */
-                if ( er_dist < er_geodesy_limit( er_view_get_alt( er_view ) ) ) {
+                /* earth-scale selection criterion */
+                if ( er_dist < er_geodesy_face( er_view_get_alt( er_view ) ) ) {
 
                     /* check depth criterion */
                     if ( fabs( er_geodesy_depth( er_dist, er_model->md_sparam, ER_COMMON_SPAN ) - ( le_real_t ) er_scale ) < 1.0 ) {
 
-                        /* check cells stack */
-                        if ( er_model->md_push < er_model->md_size ) {
+                        /* local-scale selection criterion */
+                        if ( er_dist < er_geodesy_radius( er_view_get_alt( er_view ) ) ) {
 
-                            /* address to cell */
-                            er_cell_set_addr( er_model->md_cell, er_enum );
+                            /* check cells stack */
+                            if ( er_model->md_push < er_model->md_size ) {
 
-                            /* reduce cell address */
-                            if ( er_cell_io_reduce( er_model->md_cell, er_model->md_svip, er_model->md_port ) > 0 ) {
+                                /* address to cell */
+                                er_cell_set_addr( er_model->md_cell, er_enum );
 
-                                /* push reduced address */
-                                er_cell_set_push( er_model->md_cell + ( er_model->md_push ++ ), er_model->md_cell );
+                                /* reduce cell address */
+                                if ( er_cell_io_reduce( er_model->md_cell, er_model->md_svip, er_model->md_port ) > 0 ) {
+
+                                    /* push reduced address */
+                                    er_cell_set_push( er_model->md_cell + ( er_model->md_push ++ ), er_model->md_cell );
+
+                                }
 
                             }
 
