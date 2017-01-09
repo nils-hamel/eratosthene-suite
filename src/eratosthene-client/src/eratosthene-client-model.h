@@ -215,16 +215,27 @@
      *  Starting at scale zero, the possible digits are enumerated. The size of
      *  the address (zero at the beginning) is increased by one. On the first
      *  \b ER_COMMON_ENUM + 1 scales, the function simply calls itself passing
-     *  the updated address as parameter. Otherwise, the function tests two
-     *  element : the distance of the cell to the point of view and the display
-     *  relevance of the cell.
+     *  the updated address as parameter. Otherwise, the function checks if the
+     *  cell belong to the earth face (relevant portion of earth surface for
+     *  display according to point of view position).
      *
-     *  If the cell is juged to far away from the point of view, it is simply
-     *  discarded and no recursion occurs (all the cell daughters are discarded
-     *  at the same time). If the cell is close enough and relevant for display,
-     *  the function pushes the enumeration address to the stack. If the cell
-     *  is not relevant for display, the function calls itself with the updated
-     *  enumeration address and the process continues.
+     *  If the cell does not belong to the earth face, it is simply discarded
+     *  and no recursion occurs (all the cell daughters are discarded at the
+     *  same time). If the cell belong to earth face, the function checks if it
+     *  is relevant for display according to the point of view. If it is and its
+     *  distance to point of view satisfy the criterion, the enumeration address
+     *  is pushed on the stack. If the cell is judge not relevant for display,
+     *  the function calls itself to continue enumeration with the updated
+     *  address.
+     *
+     *  To be selected during enumeration, the cell has to be judged relevant
+     *  for display, in terms of size and point density, and has to pass through
+     *  two distance tests. Despite the two distance tests look similar, one is
+     *  performed before relevance test while the second is made after. This is
+     *  so for the following reason : if the second test replaces the first one,
+     *  a cell can be discarded as judge to far always while its an effect of
+     *  its large size. This would discard all its daughters cells that could
+     *  have satisfied the criterion at their own scale.
      *
      *  In addition, as a cell is judged not relevant for display, the function
      *  checks if the cell contains data before to calls itself to continue

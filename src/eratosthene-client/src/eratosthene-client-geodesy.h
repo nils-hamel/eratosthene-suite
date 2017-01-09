@@ -94,19 +94,47 @@
 
     /*! \brief model methods
      *
-     *  This function computes and returns the highest distance around the point
-     *  of view beyond that a cell is not considered by the model.
+     *  This function computes and returns the distance to the point of view at
+     *  which earth surface elements have to be considered. It then defines, for
+     *  any altitude, which portion of earth surface is to be considered as
+     *  earth face seen by the user at the point of view.
      *
-     *  The computation is made considering only the height of the point of view
-     *  following the logic : as the height gets greater, the view limit of cell
-     *  has to be increased.
+     *  As the altitude of the point of view decreases, the earth face is formed
+     *  of a smaller portion of earth surface. This allows to take into account
+     *  that far elements become irrelevant, from the display point of view, as
+     *  the point of view gets closer to earth.
+     *
+     *  This function is both used to drive to position of the opengl far plane
+     *  and to preselect earth model cells during cells enumeration at model
+     *  update.
      *
      *  \param er_altitude Point of view height above WGS84 ellipsoid
      *
-     *  \return Returns cell maximum distance
+     *  \return Returns earth face render distance
      */
 
     le_real_t er_geodesy_face( le_real_t const er_altitude );
+
+    /*! \brief model methods
+     *
+     *  This function, similar to the \b er_geodesy_face() function, computes
+     *  and returns the maximum render distance of cells according to the height
+     *  of the point of view.
+     *
+     *  As the point of view height decreases, the cell render distance becomes
+     *  smaller. This allows to take into account that distant cells are not
+     *  relevant for display as the point of view get closer to the earth
+     *  surface.
+     *
+     *  This function is both used to drive to position of the opengl far plane
+     *  and also during model update. As a cell is detected relevant for display
+     *  this function is called to discard cells that are too far away according
+     *  to point of view height.
+     *
+     *  \param er_altitude Point of view height above WGS84 ellipsoid
+     *
+     *  \return Returns cells render distance
+     */
 
     le_real_t er_geodesy_radius( le_real_t const er_altitude );
 
@@ -174,7 +202,7 @@
      *  much as possible the precision load applied on the depth buffer.
      *
      *  In addition, the far plane position computation is linked to the model
-     *  cell display limit as the altitude of the point of view goes toward
+     *  cells render limit as the altitude of the point of view goes toward
      *  zeros. This allows to fade (fog) the model view at limit of display.
      *
      *  \param er_altitude Point of view height above WGS84 ellipsoid
