@@ -1,5 +1,5 @@
 /*
- *  eratosthene-suite - geodetic system
+ *  eratosthene-suite
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016-2017 EPFL CDH DHLAB
@@ -21,7 +21,7 @@
     /*! \file   common.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  Common header
+     *  Common module
      */
 
     /*! \mainpage eratosthene-suite
