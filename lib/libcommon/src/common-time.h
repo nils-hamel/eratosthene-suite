@@ -1,5 +1,5 @@
 /*
- *  eratosthene-suite
+ *  eratosthene-suite - common library
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016-2017 EPFL CDH DHLAB
@@ -21,7 +21,7 @@
     /*! \file   common-time.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  Time module
+     *  eratosthene-suite common library - time module
      */
 
 /*
