@@ -8,7 +8,7 @@ Other tools are also available as the isometric projection creation and the addr
 
 ## Dependencies
 
-The _eratosthene-suite_ comes with the following package dependencies (Ubuntu 14.04 LTS) :
+The _eratosthene-suite_ comes with the following package dependencies (Ubuntu 16.04 LTS) :
 
 * build-essential
 * mesa-common-dev
