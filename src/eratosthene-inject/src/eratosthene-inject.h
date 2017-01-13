@@ -21,7 +21,7 @@
     /*! \file   eratosthene-inject.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  eratosthene-suite inject
+     *  eratosthene-suite - inject
      */
 
     /*! \mainpage eratosthene-suite

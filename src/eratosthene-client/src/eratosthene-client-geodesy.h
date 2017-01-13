@@ -21,7 +21,7 @@
     /*! \file   eratosthene-client-geodesy.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  eratosthene-suite client - goedesy module
+     *  eratosthene-suite - client - goedesic module
      */
 
 /*

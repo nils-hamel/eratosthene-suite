@@ -21,7 +21,7 @@
     /*! \file   common-args.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  eratosthene-suite common library - arguments and parameters module
+     *  eratosthene-suite - common library - arguments and parameters module
      */
 
 /*

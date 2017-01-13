@@ -21,7 +21,7 @@
     /*! \file   eratosthene-client-movie.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  eratosthene-suite client - movie module
+     *  eratosthene-suite - client - movie module
      */
 
 /*

@@ -21,7 +21,7 @@
     /*! \file   eratosthene-isometry.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  eratosthene-suite isometry
+     *  eratosthene-suite - isometry
      */
 
     /*! \mainpage eratosthene-suite

@@ -21,7 +21,7 @@
     /*! \file   common-image.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  eratosthene-suite common library - images module
+     *  eratosthene-suite - common library - images module
      */
 
 /*

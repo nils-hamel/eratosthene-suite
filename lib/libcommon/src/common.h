@@ -21,7 +21,7 @@
     /*! \file   common.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  eratosthene-suite common library
+     *  eratosthene-suite - common library
      */
 
     /*! \mainpage eratosthene-suite

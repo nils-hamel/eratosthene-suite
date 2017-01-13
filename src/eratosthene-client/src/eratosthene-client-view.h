@@ -21,7 +21,7 @@
     /*! \file   eratosthene-client-view.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  eratosthene-suite client - view module
+     *  eratosthene-suite - client - views module
      */
 
 /*

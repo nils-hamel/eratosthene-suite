@@ -21,7 +21,7 @@
     /*! \file   eratosthene-address.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  eratosthene-suite address
+     *  eratosthene-suite - address
      */
 
     /*! \mainpage eratosthene-suite

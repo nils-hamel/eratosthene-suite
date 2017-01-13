@@ -21,7 +21,7 @@
     /*! \file   eratosthene-client-times.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  eratosthene-suite client - times module
+     *  eratosthene-suite - client - times module
      */
 
 /*
