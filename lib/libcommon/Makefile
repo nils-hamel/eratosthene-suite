@@ -14,8 +14,8 @@
     MAKE_LIBRAR:=lib
     MAKE_OBJECT:=obj
     MAKE_SOURCE:=src
-    MAKE_BNPATH:=/usr/lib
-    MAKE_HDPATH:=/usr/include
+    MAKE_BNPATH:=/media/dhlab-linux/lib
+    MAKE_HDPATH:=/media/dhlab-linux/usr/include
     MAKE_CMCOPY:=cp
     MAKE_CMRMFL:=rm -f
     MAKE_CMRMRF:=rm -rf
