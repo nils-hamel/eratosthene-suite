@@ -36,6 +36,12 @@
         er_model.md_svip = er_ip;
         er_model.md_port = er_port;
 
+        //// creating client socket (permanent)
+
+        //// sending handshake for configuration
+
+        //// recieving configuration array
+
         /* query server configuration */
         if ( le_client_array( er_ip, er_port, LE_MODE_CMOD, & er_array ) != LE_ERROR_SUCCESS ) {
 
@@ -89,6 +95,10 @@
             free( er_model->md_cell );
 
         }
+
+        //// send client connection resiliation
+
+        //// delete client connection
 
         /* delete structure */
         ( * er_model ) = er_delete;
@@ -175,6 +185,8 @@
                                 /* address to cell */
                                 er_cell_set_addr( er_model->md_cell, er_enum );
 
+                                //// function prototype (socket only)
+
                                 /* reduce cell address */
                                 if ( er_cell_io_reduce( er_model->md_cell, er_model->md_svip, er_model->md_port ) > 0 ) {
 
@@ -194,6 +206,8 @@
 
                             /* address to cell */
                             er_cell_set_addr( er_model->md_cell, er_enum );
+
+                            //// function prototype (socket only)
 
                             /* reduce and check cell address */
                             if ( er_cell_io_reduce( er_model->md_cell, er_model->md_svip, er_model->md_port ) > 0 ) {
@@ -269,6 +283,8 @@
 
                     /* swap address and pushed address */
                     er_cell_set_swap( er_model->md_cell + er_found, er_model->md_cell + er_parse );
+
+                    //// function prototype (socket only)
 
                     /* update cell array */
                     er_cell_io_query( er_model->md_cell + er_found, er_model->md_svip, er_model->md_port );

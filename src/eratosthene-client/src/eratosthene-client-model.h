@@ -130,6 +130,10 @@
 
     typedef struct er_model_struct {
 
+        //// removing port and ip management
+
+        //// adding client socket (created during model creation)
+
         le_char_t * md_svip;
         le_sock_t   md_port;
 

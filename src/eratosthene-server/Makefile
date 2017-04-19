@@ -27,7 +27,7 @@
     MAKE_DOCBLD:=doxygen
 
     BUILD_FLAGS:=-Wall -funsigned-char -pedantic -O3 -D _BSD_SOURCE
-    BUILD_LINKD:=-lm
+    BUILD_LINKD:=-lm -lpthread
     BUILD_SUBMD:=$(MAKE_LIBRAR)/libcommon $(MAKE_LIBRAR)/liberatosthene
 
 #

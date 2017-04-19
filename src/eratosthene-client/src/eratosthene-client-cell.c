@@ -160,6 +160,10 @@
     source - i/o methods
  */
 
+    //// er_cell_io_reduce( er_cell, er_client_socket )
+
+    //// remove socket creation/deletion
+
     le_size_t er_cell_io_reduce( er_cell_t * const er_cell, le_char_t const * const er_ip, le_sock_t const er_port ) {
 
         /* socket variables */
@@ -194,6 +198,10 @@
         return( 0 );
 
     }
+
+    //// er_cell_io_query( er_cell, er_client_socket )
+
+    //// remove socket creation/deletion
 
     le_size_t er_cell_io_query( er_cell_t * const er_cell, le_char_t const * const er_ip, le_sock_t const er_port ) {
 
