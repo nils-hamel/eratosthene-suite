@@ -160,53 +160,31 @@
     source - i/o methods
  */
 
-    //// er_cell_io_reduce( er_cell, er_client_socket )
+    le_size_t er_cell_io_reduce( er_cell_t * const er_cell, le_sock_t const er_socket ) {
 
-    //// remove socket creation/deletion
+        /* client/server handshake */
+        if ( le_client_handshake( er_socket, LE_MODE_RMOD ) == LE_ERROR_SUCCESS ) {
 
-    le_size_t er_cell_io_reduce( er_cell_t * const er_cell, le_char_t const * const er_ip, le_sock_t const er_port ) {
+            /* write cell address */
+            le_address_io_write( & er_cell->ce_addr, er_socket );
 
-        /* socket variables */
-        le_sock_t er_socket = _LE_SOCK_NULL;
+            /* read cell address */
+            le_address_io_read( & er_cell->ce_addr, er_socket );
 
-        /* create client socket */
-        if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
+            /* check address time - send reduction */
+            if ( le_address_get_time( & er_cell->ce_addr, 0 ) != _LE_TIME_NULL ) return( 1 );
 
-            /* server/client handshake */
-            if ( le_client_handshake( er_socket, LE_MODE_RMOD ) == LE_ERROR_SUCCESS ) {
-
-                /* write cell address */
-                le_address_io_write( & er_cell->ce_addr, er_socket );
-
-                /* read cell address */
-                le_address_io_read( & er_cell->ce_addr, er_socket );
-
-            }
-
-            /* delete client socket */
-            le_client_delete( er_socket );
+            /* check address time - send reduction */
+            if ( le_address_get_time( & er_cell->ce_addr, 1 ) != _LE_TIME_NULL ) return( 1 );
 
         }
 
-        /* check address time - return answer */
-        if ( le_address_get_time( & er_cell->ce_addr, 0 ) != _LE_TIME_NULL ) return( 1 );
-
-        /* check address time - return answer */
-        if ( le_address_get_time( & er_cell->ce_addr, 1 ) != _LE_TIME_NULL ) return( 1 );
-
-        /* return answer */
+        /* send reduction */
         return( 0 );
 
     }
 
-    //// er_cell_io_query( er_cell, er_client_socket )
-
-    //// remove socket creation/deletion
-
-    le_size_t er_cell_io_query( er_cell_t * const er_cell, le_char_t const * const er_ip, le_sock_t const er_port ) {
-
-        /* socket variables */
-        le_sock_t er_socket = _LE_SOCK_NULL;
+    le_size_t er_cell_io_query( er_cell_t * const er_cell, le_sock_t const er_socket ) {
 
         /* array variables */
         le_byte_t * er_base = NULL;
@@ -218,61 +196,56 @@
         /* computation variables */
         le_real_t er_comp[3] = { 0.0 };
 
-        /* create client socket */
-        if ( ( er_socket = le_client_create( er_ip, er_port ) ) != _LE_SOCK_NULL ) {
+        /* server/client handshake */
+        if ( le_client_handshake( er_socket, LE_MODE_QMOD ) != LE_ERROR_SUCCESS ) {
 
-            /* server/client handshake */
-            if ( le_client_handshake( er_socket, LE_MODE_QMOD ) == LE_ERROR_SUCCESS ) {
+            /* return cell size */
+            return( 0 );
 
-                /* write cell address */
-                le_address_io_write( & er_cell->ce_addr, er_socket );
+        }
 
-                /* read cell address */
-                le_address_io_read( & er_cell->ce_addr, er_socket );
+        /* write cell address */
+        le_address_io_write( & er_cell->ce_addr, er_socket );
 
-                /* release content */
-                le_array_set_size( & er_cell->ce_array, er_cell->ce_size = 0 );
+        /* read cell address */
+        le_address_io_read( & er_cell->ce_addr, er_socket );
 
-                /* read streaming data */
-                le_array_io_read( & er_cell->ce_array, er_socket );
+        /* release content */
+        le_array_set_size( & er_cell->ce_array, er_cell->ce_size = 0 );
 
-                /* extract cell edge */
-                le_address_get_pose( & er_cell->ce_addr, er_cell->ce_edge );
+        /* read streaming data */
+        le_array_io_read( & er_cell->ce_array, er_socket );
 
-                /* convert edge - cartesian coordinates */
-                er_cell->ce_edge[2] = LE_ADDRESS_WGSA * cos( er_cell->ce_edge[1] ) * cos( er_cell->ce_edge[0] );
-                er_cell->ce_edge[0] = LE_ADDRESS_WGSA * cos( er_cell->ce_edge[1] ) * sin( er_cell->ce_edge[0] );
-                er_cell->ce_edge[1] = LE_ADDRESS_WGSA * sin( er_cell->ce_edge[1] );
+        /* extract cell edge */
+        le_address_get_pose( & er_cell->ce_addr, er_cell->ce_edge );
 
-                /* retrieve array size and buffer pointer */
-                er_size = le_array_get_size( & er_cell->ce_array );
-                er_base = le_array_get_byte( & er_cell->ce_array );
+        /* convert edge - cartesian coordinates */
+        er_cell->ce_edge[2] = LE_ADDRESS_WGSA * cos( er_cell->ce_edge[1] ) * cos( er_cell->ce_edge[0] );
+        er_cell->ce_edge[0] = LE_ADDRESS_WGSA * cos( er_cell->ce_edge[1] ) * sin( er_cell->ce_edge[0] );
+        er_cell->ce_edge[1] = LE_ADDRESS_WGSA * sin( er_cell->ce_edge[1] );
 
-                /* parsing array elements */
-                for ( le_size_t er_parse = 0; er_parse < er_size; er_parse += LE_ARRAY_SD ) {
+        /* retrieve array size and buffer pointer */
+        er_size = le_array_get_size( & er_cell->ce_array );
+        er_base = le_array_get_byte( & er_cell->ce_array );
 
-                    /* compute vertice offset */
-                    er_pose = ( le_real_t * ) ( er_base + er_parse );
+        /* parsing array elements */
+        for ( le_size_t er_parse = 0; er_parse < er_size; er_parse += LE_ARRAY_SD ) {
 
-                    /* convert coordinates - ellipsoidal to cartesian */
-                    er_comp[0] = - er_cell->ce_edge[1] + sin( er_pose[1] ) * ( er_pose[2] += LE_ADDRESS_WGSA );
-                    er_comp[1] = - er_cell->ce_edge[0] + er_pose[2] * sin( er_pose[0] ) * ( er_pose[1] = cos( er_pose[1] ) );
-                    er_comp[2] = - er_cell->ce_edge[2] + er_pose[2] * er_pose[1] * cos( er_pose[0] );
+            /* compute vertice offset */
+            er_pose = ( le_real_t * ) ( er_base + er_parse );
 
-                    /* assign converted coordinates */
-                    er_pose[1] = er_comp[0];
-                    er_pose[0] = er_comp[1];
-                    er_pose[2] = er_comp[2];
+            /* convert coordinates - ellipsoidal to cartesian */
+            er_comp[0] = - er_cell->ce_edge[1] + sin( er_pose[1] ) * ( er_pose[2] += LE_ADDRESS_WGSA );
+            er_comp[1] = - er_cell->ce_edge[0] + er_pose[2] * sin( er_pose[0] ) * ( er_pose[1] = cos( er_pose[1] ) );
+            er_comp[2] = - er_cell->ce_edge[2] + er_pose[2] * er_pose[1] * cos( er_pose[0] );
 
-                    /* update cell size */
-                    er_cell->ce_size += 3;
+            /* assign converted coordinates */
+            er_pose[1] = er_comp[0];
+            er_pose[0] = er_comp[1];
+            er_pose[2] = er_comp[2];
 
-                }
-
-            }
-
-            /* delete client socket */
-            le_client_delete( er_socket );
+            /* update cell size */
+            er_cell->ce_size += 3;
 
         }
 

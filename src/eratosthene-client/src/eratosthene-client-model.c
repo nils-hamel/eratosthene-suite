@@ -24,53 +24,56 @@
     source - constructor/destructor methods
  */
 
-    er_model_t er_model_create( le_char_t * const er_ip, le_sock_t const er_port ) {
+    er_model_t er_model_create( le_sock_t const er_socket ) {
 
         /* created structure variables */
         er_model_t er_model = ER_MODEL_C;
 
-        /* array variables */
+        /* array structure variables */
         le_array_t er_array = LE_ARRAY_C;
 
-        /* assign server network configuration */
-        er_model.md_svip = er_ip;
-        er_model.md_port = er_port;
+        /* assign model socket */
+        er_model.md_socket = er_socket;
 
-        //// creating client socket (permanent)
+        /* handshake for configuration */
+        if ( le_client_handshake( er_model.md_socket, LE_MODE_CMOD ) != LE_ERROR_SUCCESS ) {
 
-        //// sending handshake for configuration
-
-        //// recieving configuration array
-
-        /* query server configuration */
-        if ( le_client_array( er_ip, er_port, LE_MODE_CMOD, & er_array ) != LE_ERROR_SUCCESS ) {
-
-            /* send message */
+            /* return created structure */
             return( er_model._status = _LE_FALSE, er_model );
 
         }
 
-        /* retrieve server configuration */
+        /* read server array */
+        if ( le_array_io_read( & er_array, er_model.md_socket ) != LE_ERROR_SUCCESS ) {
+
+            /* return created structure */
+            return( er_model._status = _LE_FALSE, er_model );
+
+        }
+
+        /* read server configuration array */
         er_model.md_sparam = le_array_dt_size_a( & er_array, 0 )[0];
         er_model.md_tparam = le_array_dt_time_a( & er_array, 0 )[0];
 
-        /* allocate cells arry memory */
+        /* allocate model cells */
         if ( ( er_model.md_cell = ( er_cell_t * ) malloc( er_model.md_size * sizeof( er_cell_t ) ) ) == NULL ) {
 
-            /* send message */
-            return( er_model._status = _LE_FALSE, er_model );
+            /* returne created structure */
+            return( er_model._status = _LE_TRUE, er_model );
+
+        } else {
+
+            /* initialise model cells */
+            for ( le_size_t er_parse = 0; er_parse < er_model.md_size; er_parse ++ ) {
+
+                /* create cell structure */
+                er_model.md_cell[er_parse] = er_cell_create();
+
+            }
 
         }
 
-        /* initialise model cells array */
-        for ( le_size_t er_parse = 0; er_parse < er_model.md_size; er_parse ++ ) {
-
-            /* create model cell */
-            er_model.md_cell[er_parse] = er_cell_create();
-
-        }
-
-        /* return created model */
+        /* return created structure */
         return( er_model );
 
     }
@@ -95,10 +98,6 @@
             free( er_model->md_cell );
 
         }
-
-        //// send client connection resiliation
-
-        //// delete client connection
 
         /* delete structure */
         ( * er_model ) = er_delete;
@@ -185,10 +184,8 @@
                                 /* address to cell */
                                 er_cell_set_addr( er_model->md_cell, er_enum );
 
-                                //// function prototype (socket only)
-
                                 /* reduce cell address */
-                                if ( er_cell_io_reduce( er_model->md_cell, er_model->md_svip, er_model->md_port ) > 0 ) {
+                                if ( er_cell_io_reduce( er_model->md_cell, er_model->md_socket ) > 0 ) {
 
                                     /* push reduced address */
                                     er_cell_set_push( er_model->md_cell + ( er_model->md_push ++ ), er_model->md_cell );
@@ -207,10 +204,8 @@
                             /* address to cell */
                             er_cell_set_addr( er_model->md_cell, er_enum );
 
-                            //// function prototype (socket only)
-
                             /* reduce and check cell address */
-                            if ( er_cell_io_reduce( er_model->md_cell, er_model->md_svip, er_model->md_port ) > 0 ) {
+                            if ( er_cell_io_reduce( er_model->md_cell, er_model->md_socket ) > 0 ) {
 
                                 /* continue address enumeration */
                                 er_model_set_update_cell( er_model, er_enum, er_view );
@@ -284,10 +279,8 @@
                     /* swap address and pushed address */
                     er_cell_set_swap( er_model->md_cell + er_found, er_model->md_cell + er_parse );
 
-                    //// function prototype (socket only)
-
                     /* update cell array */
-                    er_cell_io_query( er_model->md_cell + er_found, er_model->md_svip, er_model->md_port );
+                    er_cell_io_query( er_model->md_cell + er_found, er_model->md_socket );
 
                     /* update cell flag */
                     er_cell_set_flag( er_model->md_cell + er_found, _LE_TRUE );

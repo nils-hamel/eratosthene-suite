@@ -89,7 +89,7 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_CLIENT_C { ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, ER_VIEW_D, ER_VIEW_C, 0, GLUT_UP, 0, 0, 1.0, 1.0, _LE_TRUE }
+    # define ER_CLIENT_C { _LE_SOCK_NULL, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, ER_VIEW_D, ER_VIEW_C, 0, GLUT_UP, 0, 0, 1.0, 1.0, _LE_TRUE }
 
 /*
     header - preprocessor macros
@@ -149,6 +149,7 @@
 
     typedef struct er_client_struct {
 
+        le_sock_t  cl_socket;
         le_enum_t  cl_loops;
 
         er_model_t cl_model;

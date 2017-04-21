@@ -35,8 +35,30 @@
         /* created structure variables */
         er_client_t er_client = ER_CLIENT_C;
 
+        /* create client socket */
+        if ( ( er_client.cl_socket = le_client_create( er_ip, er_port ) ) == _LE_SOCK_NULL ) {
+
+            /* return created structure */
+            return( er_client._status = _LE_FALSE, er_client );
+
+        }
+
+        /* client/server connection handshake */
+        if ( le_client_handshake( er_client.cl_socket, LE_MODE_AMOD ) != LE_ERROR_SUCCESS ) {
+
+            /* delete client socket */
+            le_client_delete( er_client.cl_socket );
+
+            /* return created structure */
+            return( er_client._status = _LE_FALSE, er_client );
+
+        }
+
         /* create client model */
-        if ( ( er_client.cl_model = er_model_create( er_ip, er_port ) )._status == _LE_FALSE ) {
+        if ( ( er_client.cl_model = er_model_create( er_client.cl_socket ) )._status == _LE_FALSE ) {
+
+            /* delete client socket */
+            le_client_delete( er_client.cl_socket );
 
             /* return created structure */
             return( er_client._status = _LE_FALSE, er_client );
@@ -46,6 +68,9 @@
         /* create client times */
         if ( ( er_client.cl_times = er_times_create() )._status == _LE_FALSE ) {
 
+            /* delete client socket */
+            le_client_delete( er_client.cl_socket );
+
             /* return created structure */
             return( er_client._status = _LE_FALSE, er_client );
 
@@ -53,6 +78,9 @@
 
         /* create client movie */
         if ( ( er_client.cl_movie = er_movie_create() )._status == _LE_FALSE ) {
+
+            /* delete client socket */
+            le_client_delete( er_client.cl_socket );
 
             /* return created structure */
             return( er_client._status = _LE_FALSE, er_client );
@@ -67,7 +95,7 @@
     le_void_t er_client_delete( er_client_t * const er_client ) {
 
         /* deleted structure variables */
-        er_client_t er_reset = ER_CLIENT_C;
+        er_client_t er_delete = ER_CLIENT_C;
 
         /* delete client movie */
         er_movie_delete( & er_client->cl_movie );
@@ -78,8 +106,14 @@
         /* delete client model */
         er_model_delete( & er_client->cl_model );
 
+        /* client/server disconnection handshake */
+        le_client_handshake( er_client->cl_socket, LE_MODE_BMOD );
+
+        /* delete client socket */
+        le_client_delete( er_client->cl_socket );
+
         /* delete structure */
-        ( * er_client ) = er_reset;
+        ( * er_client ) = er_delete;
 
     }
 

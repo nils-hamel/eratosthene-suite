@@ -57,7 +57,7 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_MODEL_C      { NULL, _LE_USE_PORT, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 1, NULL, 0, _LE_TRUE }
+    # define ER_MODEL_C      { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 1, NULL, 0, _LE_TRUE }
 
     /* define model stack */
     # define ER_MODEL_STACK  ( 4096 )
@@ -130,12 +130,7 @@
 
     typedef struct er_model_struct {
 
-        //// removing port and ip management
-
-        //// adding client socket (created during model creation)
-
-        le_char_t * md_svip;
-        le_sock_t   md_port;
+        le_sock_t   md_socket;
 
         le_size_t   md_sparam;
         le_time_t   md_tparam;
@@ -173,7 +168,7 @@
      *  \return Created model structure
      */
 
-    er_model_t er_model_create( le_char_t * const er_ip, le_sock_t const er_port );
+    er_model_t er_model_create( le_sock_t const er_socket );
 
     /*! \brief constructor/destructor methods
      *

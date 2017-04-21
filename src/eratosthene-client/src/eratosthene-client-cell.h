@@ -340,7 +340,7 @@
      *  \return Return the time reduction status
      */
 
-    le_size_t er_cell_io_reduce( er_cell_t * const er_cell, le_char_t const * const er_ip, le_sock_t const er_port );
+    le_size_t er_cell_io_reduce( er_cell_t * const er_cell, le_sock_t const er_socket );
 
     /*! \brief i/o methods
      *
@@ -373,7 +373,7 @@
      *  \return Returns cell amount of received points
      */
 
-    le_size_t er_cell_io_query( er_cell_t * const er_cell, le_char_t const * const er_ip, le_sock_t const er_port );
+    le_size_t er_cell_io_query( er_cell_t * const er_cell, le_sock_t const er_socket );
 
 /*
     header - C/C++ compatibility
