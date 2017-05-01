@@ -93,7 +93,7 @@
 
         /* return cell geodetic array pointer */
         //return( ( le_real_t * ) le_array_get_byte( & er_cell->ce_array ) );
-        return( ( le_real_t * ) ( le_array_get_byte( & er_cell->ce_array ) + LE_BUFFER_ADDR ) );
+        return( ( le_real_t * ) ( le_array_get_byte( & er_cell->ce_array ) + LE_ARRAY_ADDR ) );
 
     }
 
@@ -101,7 +101,7 @@
 
         /* return cell colorimetric array pointer */
         //return( ( le_data_t * ) ( le_array_get_byte( & er_cell->ce_array ) + LE_ARRAY_SD_1 ) );
-        return( ( le_data_t * ) ( le_array_get_byte( & er_cell->ce_array )  + LE_BUFFER_ADDR + LE_ARRAY_SD_1 ) );
+        return( ( le_data_t * ) ( le_array_get_byte( & er_cell->ce_array )  + LE_ARRAY_ADDR + LE_ARRAY_SD_1 ) );
 
     }
 
@@ -167,7 +167,7 @@
     le_size_t er_cell_io_reduce( er_cell_t * const er_cell, le_sock_t const er_socket ) {
 
         /* array size management */
-        le_array_set_size( & er_cell->ce_array, LE_BUFFER_ADDR );
+        le_array_set_size( & er_cell->ce_array, LE_ARRAY_ADDR );
 
         /* serialise address */
         le_address_serial( & er_cell->ce_addr, & er_cell->ce_array, 0, _LE_SET );
@@ -207,7 +207,7 @@
         le_real_t er_comp[3] = { 0.0 };
 
         /* socket-array size management */
-        le_array_set_size( & er_cell->ce_array, LE_BUFFER_ADDR );
+        le_array_set_size( & er_cell->ce_array, LE_ARRAY_ADDR );
 
         /* serialise address */
         le_address_serial( & er_cell->ce_addr, & er_cell->ce_array, 0, _LE_SET );
@@ -233,8 +233,8 @@
         er_cell->ce_size = 0;
 
         /* socket-array data segment */
-        er_size = le_array_get_size( & er_cell->ce_array ) - LE_BUFFER_ADDR;
-        er_head = le_array_get_byte( & er_cell->ce_array ) + LE_BUFFER_ADDR;
+        er_size = le_array_get_size( & er_cell->ce_array ) - LE_ARRAY_ADDR;
+        er_head = le_array_get_byte( & er_cell->ce_array ) + LE_ARRAY_ADDR;
 
         /* parsing socket-array */
         for ( le_size_t er_parse = 0; er_parse < er_size; er_parse += LE_ARRAY_SD ) {

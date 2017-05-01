@@ -36,7 +36,7 @@
         le_array_t er_array = LE_ARRAY_C;
 
         /* agreement variables */
-        le_size_t er_agree = LE_AGREE_CLIENT;
+        le_size_t er_agree = LE_AGRT_QUER;
 
         /* server configuration variables */
         le_size_t er_space = 0;
@@ -93,7 +93,7 @@
         er_head = le_array_serial( & er_array, & er_times, sizeof( le_time_t ), er_head, _LE_GET );
 
         /* check agreement value */
-        if ( er_agree != LE_AGREE_SERVER ) {
+        if ( er_agree != LE_AGRT_AUTH ) {
 
             /* delete client socket */
             le_client_delete( er_client.cl_socket );
