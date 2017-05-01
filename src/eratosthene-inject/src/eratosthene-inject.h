@@ -83,7 +83,7 @@
  */
 
     /* define segmentation size */
-    # define ER_INJECT ( 4096 )
+    # define ER_INJECT ( 38836 )
 
 /*
     header - preprocessor macros

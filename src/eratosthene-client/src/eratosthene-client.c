@@ -32,6 +32,19 @@
 
     er_client_t er_client_create( le_char_t * const er_ip, le_sock_t const er_port ) {
 
+        /* array variables */
+        le_array_t er_array = LE_ARRAY_C;
+
+        /* agreement variables */
+        le_size_t er_agree = LE_AGREE_CLIENT;
+
+        /* server configuration variables */
+        le_size_t er_space = 0;
+        le_time_t er_times = 0;
+
+        /* serialisation variables */
+        le_size_t er_head = 0;
+
         /* created structure variables */
         er_client_t er_client = ER_CLIENT_C;
 
@@ -43,8 +56,44 @@
 
         }
 
-        /* client/server connection handshake */
-        if ( le_client_handshake( er_client.cl_socket, LE_MODE_AMOD ) != LE_ERROR_SUCCESS ) {
+        /* socket-array size */
+        le_array_set_size( & er_array, sizeof( le_size_t ) );
+
+        /* compose socket-array  */
+        le_array_serial( & er_array, & er_agree, sizeof( le_size_t ), 0, _LE_SET );
+
+        /* write socket-array - agreement */
+        le_array_io_write( & er_array, LE_MODE_AUTH, er_client.cl_socket );
+
+        /* read socket-array */
+        if ( le_array_io_read( & er_array, er_client.cl_socket ) != LE_MODE_AUTH ) {
+
+            /* delete client socket */
+            le_client_delete( er_client.cl_socket );
+
+            /* return created structure */
+            return( er_client._status = _LE_FALSE, er_client );
+
+        }
+
+        /* check array consistency */
+        if ( le_array_get_size( & er_array ) != LE_ARRAY_AUTH ) {
+
+            /* delete client socket */
+            le_client_delete( er_client.cl_socket );
+
+            /* return created structure */
+            return( er_client._status = _LE_FALSE, er_client );
+
+        }
+
+        /* decompose socket-array */
+        er_head = le_array_serial( & er_array, & er_agree, sizeof( le_size_t ), er_head, _LE_GET );
+        er_head = le_array_serial( & er_array, & er_space, sizeof( le_size_t ), er_head, _LE_GET );
+        er_head = le_array_serial( & er_array, & er_times, sizeof( le_time_t ), er_head, _LE_GET );
+
+        /* check agreement value */
+        if ( er_agree != LE_AGREE_SERVER ) {
 
             /* delete client socket */
             le_client_delete( er_client.cl_socket );
@@ -55,7 +104,7 @@
         }
 
         /* create client model */
-        if ( ( er_client.cl_model = er_model_create( er_client.cl_socket ) )._status == _LE_FALSE ) {
+        if ( ( er_client.cl_model = er_model_create( er_client.cl_socket, er_space, er_times ) )._status == _LE_FALSE ) {
 
             /* delete client socket */
             le_client_delete( er_client.cl_socket );
@@ -94,6 +143,9 @@
 
     le_void_t er_client_delete( er_client_t * const er_client ) {
 
+        /* socket-array variables */
+        le_array_t er_array = LE_ARRAY_C;
+
         /* deleted structure variables */
         er_client_t er_delete = ER_CLIENT_C;
 
@@ -106,8 +158,11 @@
         /* delete client model */
         er_model_delete( & er_client->cl_model );
 
-        /* client/server disconnection handshake */
-        le_client_handshake( er_client->cl_socket, LE_MODE_BMOD );
+        /* socket-array size */
+        le_array_set_size( & er_array, 0 );
+
+        /* write socket-array - resiliation */
+        le_array_io_write( & er_array, LE_MODE_RESI, er_client->cl_socket );
 
         /* delete client socket */
         le_client_delete( er_client->cl_socket );

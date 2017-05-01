@@ -24,42 +24,24 @@
     source - constructor/destructor methods
  */
 
-    er_model_t er_model_create( le_sock_t const er_socket ) {
+    //er_model_t er_model_create( le_sock_t const er_socket ) {
+    er_model_t er_model_create( le_sock_t const er_socket, le_size_t const er_scfg, le_time_t const er_tcfg ) {
 
         /* created structure variables */
         er_model_t er_model = ER_MODEL_C;
 
-        /* array structure variables */
-        le_array_t er_array = LE_ARRAY_C;
-
         /* assign model socket */
         er_model.md_socket = er_socket;
 
-        /* handshake for configuration */
-        if ( le_client_handshake( er_model.md_socket, LE_MODE_CMOD ) != LE_ERROR_SUCCESS ) {
-
-            /* return created structure */
-            return( er_model._status = _LE_FALSE, er_model );
-
-        }
-
-        /* read server array */
-        if ( le_array_io_read( & er_array, er_model.md_socket ) != LE_ERROR_SUCCESS ) {
-
-            /* return created structure */
-            return( er_model._status = _LE_FALSE, er_model );
-
-        }
-
-        /* read server configuration array */
-        er_model.md_sparam = le_array_dt_size_a( & er_array, 0 )[0];
-        er_model.md_tparam = le_array_dt_time_a( & er_array, 0 )[0];
+        /* assign model server configuration */
+        er_model.md_scfg = er_scfg;
+        er_model.md_tcfg = er_tcfg;
 
         /* allocate model cells */
         if ( ( er_model.md_cell = ( er_cell_t * ) malloc( er_model.md_size * sizeof( er_cell_t ) ) ) == NULL ) {
 
             /* returne created structure */
-            return( er_model._status = _LE_TRUE, er_model );
+            return( er_model._status = _LE_FALSE, er_model );
 
         } else {
 
@@ -173,7 +155,7 @@
                 if ( er_dist < er_geodesy_face( er_view_get_alt( er_view ) ) ) {
 
                     /* check depth criterion */
-                    if ( fabs( er_geodesy_depth( er_dist, er_model->md_sparam, ER_COMMON_SPAN ) - ( le_real_t ) er_scale ) < 1.0 ) {
+                    if ( fabs( er_geodesy_depth( er_dist, er_model->md_scfg, ER_COMMON_SPAN ) - ( le_real_t ) er_scale ) < 1.0 ) {
 
                         /* local-scale selection criterion */
                         if ( er_dist < er_geodesy_radius( er_view_get_alt( er_view ) ) ) {
@@ -199,7 +181,7 @@
                     } else {
 
                         /* check enumeration boundary */
-                        if ( ( er_scale + ER_COMMON_SPAN + 2 ) < er_model->md_sparam ) {
+                        if ( ( er_scale + ER_COMMON_SPAN + 2 ) < er_model->md_scfg ) {
 
                             /* address to cell */
                             er_cell_set_addr( er_model->md_cell, er_enum );

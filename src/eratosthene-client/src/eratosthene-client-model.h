@@ -114,9 +114,9 @@
      *  Server ip address
      *  \var er_model_struct::md_port
      *  Server service port
-     *  \var er_model_struct::md_sparam
+     *  \var er_model_struct::md_scfg
      *  Server space parameter
-     *  \var er_model_struct::md_tparam
+     *  \var er_model_struct::md_tcfg
      *  Server time parameter
      *  \var er_model_struct::md_size
      *  Cells stack size
@@ -132,8 +132,8 @@
 
         le_sock_t   md_socket;
 
-        le_size_t   md_sparam;
-        le_time_t   md_tparam;
+        le_size_t   md_scfg;
+        le_time_t   md_tcfg;
 
         le_size_t   md_size;
         le_size_t   md_push;
@@ -168,7 +168,8 @@
      *  \return Created model structure
      */
 
-    er_model_t er_model_create( le_sock_t const er_socket );
+    //er_model_t er_model_create( le_sock_t const er_socket );
+    er_model_t er_model_create( le_sock_t const er_socket, le_size_t const er_scfg, le_time_t const er_tcfg );
 
     /*! \brief constructor/destructor methods
      *
