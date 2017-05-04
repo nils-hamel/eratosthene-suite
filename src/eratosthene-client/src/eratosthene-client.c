@@ -383,13 +383,10 @@
         le_address_t er_enum = er_view_get_times( & er_client.cl_push );
 
         /* update model cells */
-        er_model_set_update_cell( & er_client.cl_model, & er_enum, & er_client.cl_push );
+        er_model_set_enum( & er_client.cl_model, & er_enum, 0, & er_client.cl_push );
 
         /* server queries */
-        er_model_set_update_query( & er_client.cl_model );
-
-        /* terminate model update */
-        er_model_set_update_terminate( & er_client.cl_model );
+        er_model_set_query( & er_client.cl_model );
 
     }
 

@@ -83,6 +83,9 @@
 
     /* define model parameters */
     # define ER_COMMON_ENUM  ( 3 )
+
+    # define ER_COMMON_ENUM_ ( 4 )
+
     # define ER_COMMON_SPAN  ( 7 )
 
     /* define mouse button */

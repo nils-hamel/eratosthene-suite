@@ -24,34 +24,24 @@
     source - constructor/destructor methods
  */
 
-    //er_model_t er_model_create( le_sock_t const er_socket ) {
     er_model_t er_model_create( le_sock_t const er_socket, le_size_t const er_scfg, le_time_t const er_tcfg ) {
 
         /* created structure variables */
-        er_model_t er_model = ER_MODEL_C;
+        er_model_t er_model = ER_MODEL_I( er_socket, er_scfg, er_tcfg );
 
-        /* assign model socket */
-        er_model.md_socket = er_socket;
-
-        /* assign model server configuration */
-        er_model.md_scfg = er_scfg;
-        er_model.md_tcfg = er_tcfg;
-
-        /* allocate model cells */
+        /* create model cells */
         if ( ( er_model.md_cell = ( er_cell_t * ) malloc( er_model.md_size * sizeof( er_cell_t ) ) ) == NULL ) {
 
-            /* returne created structure */
+            /* return created structure */
             return( er_model._status = _LE_FALSE, er_model );
 
-        } else {
+        }
 
-            /* initialise model cells */
-            for ( le_size_t er_parse = 0; er_parse < er_model.md_size; er_parse ++ ) {
+        /* initialise model cells */
+        for ( le_size_t er_parse = 0; er_parse < er_model.md_size; er_parse ++ ) {
 
-                /* create cell structure */
-                er_model.md_cell[er_parse] = er_cell_create();
-
-            }
+            /* create cell structure */
+            er_model.md_cell[er_parse] = er_cell_create();
 
         }
 
@@ -65,18 +55,18 @@
         /* deleted structure variables */
         er_model_t er_delete = ER_MODEL_C;
 
-        /* check cells array state */
+        /* model cells state */
         if ( er_model->md_cell != NULL ) {
 
             /* delete model cells */
             for ( le_size_t er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
 
-                /* delete model cell */
+                /* delete cell structure */
                 er_cell_delete( er_model->md_cell + er_parse );
 
             }
 
-            /* unallocate cells array memory */
+            /* delete model cells */
             free( er_model->md_cell );
 
         }
@@ -87,113 +77,50 @@
     }
 
 /*
-    source - accessor methods
- */
-
-    le_size_t er_model_get_cell( er_model_t * const er_model ) {
-
-        /* parsing cell array */
-        for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
-
-            /* update model cyclic index */
-            er_model->md_cycle = ( er_model->md_cycle + 1 ) % er_model->md_size;
-
-            /* avoid zero cell */
-            if ( er_model->md_cycle == 0 ) er_model->md_cycle ++;
-
-            /* check cell state flag */
-            if ( er_cell_get_flag( er_model->md_cell + er_model->md_cycle ) == _LE_FALSE ) {
-
-                /* return cell index */
-                return( er_model->md_cycle );
-
-            }
-
-        }
-
-        /* return invalid index */
-        return( er_model->md_size );
-
-    }
-
-/*
     source - mutator methods
  */
 
-    le_void_t er_model_set_update_cell( er_model_t * const er_model, le_address_t * const er_enum, er_view_t const * const er_view ) {
-
-        /* enumerator size variables */
-        le_size_t er_scale = le_address_get_size( er_enum );
+    le_void_t er_model_set_enum( er_model_t * const er_model, le_address_t * const er_enum, le_size_t const er_scale, er_view_t const * const er_view ) {
 
         /* scale base variables */
         le_size_t er_base = le_address_base( er_scale );
 
         /* distance variables */
-        le_real_t er_dist = 0.0;
+        le_real_t er_line = 0.0;
 
-        /* parsing scale digits */
+        /* scale digit enumeration */
         for ( le_size_t er_digit = 0; er_digit < er_base; er_digit ++ ) {
 
-            /* update enumerator size */
+            /* update address size */
             le_address_set_size( er_enum, er_scale + 1 );
 
-            /* assign enumerator digit */
+            /* assign address digit */
             le_address_set_digit( er_enum, er_scale, er_digit );
 
-            /* check enumeration constraint */
-            if ( er_scale <= ER_COMMON_ENUM ) {
+            /* enumeration constraint */
+            if ( er_scale < ER_COMMON_ENUM_ ) {
 
-                /* constraintless enumeration */
-                er_model_set_update_cell( er_model, er_enum, er_view );
+                /* continue enumeration */
+                er_model_set_enum( er_model, er_enum, er_scale + 1, er_view );
 
             } else {
 
-                /* compute distance */
-                er_dist = er_geodesy_distance( er_enum, er_view );
+                /* compute and check distance */
+                if ( ( er_line = er_geodesy_distance( er_enum, er_view ) ) < er_geodesy_face( er_view_get_alt( er_view ) ) ) {
 
-                /* earth-scale selection criterion */
-                if ( er_dist < er_geodesy_face( er_view_get_alt( er_view ) ) ) {
+                    /* check selection criterion *** integrate the scale in the parameters */
+                    if ( fabs( er_geodesy_depth( er_line, er_model->md_scfg, ER_COMMON_SPAN ) - (le_real_t)er_scale ) < 1.0 ) {
 
-                    /* check depth criterion */
-                    if ( fabs( er_geodesy_depth( er_dist, er_model->md_scfg, ER_COMMON_SPAN ) - ( le_real_t ) er_scale ) < 1.0 ) {
-
-                        /* local-scale selection criterion */
-                        if ( er_dist < er_geodesy_radius( er_view_get_alt( er_view ) ) ) {
-
-                            /* check cells stack */
-                            if ( er_model->md_push < er_model->md_size ) {
-
-                                /* address to cell */
-                                er_cell_set_addr( er_model->md_cell, er_enum );
-
-                                /* reduce cell address */
-                                if ( er_cell_io_reduce( er_model->md_cell, er_model->md_socket ) > 0 ) {
-
-                                    /* push reduced address */
-                                    er_cell_set_push( er_model->md_cell + ( er_model->md_push ++ ), er_model->md_cell );
-
-                                }
-
-                            }
-
-                        }
+                        /* push address */
+                        er_model_set_push( er_model, er_enum );
 
                     } else {
 
                         /* check enumeration boundary */
-                        if ( ( er_scale + ER_COMMON_SPAN + 2 ) < er_model->md_scfg ) {
+                        if ( ( er_scale + 2 + ER_COMMON_SPAN ) < er_model->md_scfg ) {
 
-                            /* address to cell */
-                            er_cell_set_addr( er_model->md_cell, er_enum );
-
-                            /* reduce and check cell address */
-                            if ( er_cell_io_reduce( er_model->md_cell, er_model->md_socket ) > 0 ) {
-
-                                /* continue address enumeration */
-                                er_model_set_update_cell( er_model, er_enum, er_view );
-
-
-                            }
+                            /* continue enumeration */
+                            er_model_set_enum( er_model, er_enum, er_scale + 1, er_view );
 
                         }
 
@@ -207,102 +134,81 @@
 
     }
 
-    le_void_t er_model_set_update_query( er_model_t * const er_model ) {
+    le_void_t er_model_set_push( er_model_t * const er_model, le_address_t * const er_addr ) {
 
         /* parsing variables */
-        le_size_t er_parse = 0;
-        le_size_t er_inner = 0;
+        le_diff_t er_parse = er_model->md_tail + er_model->md_size - 1;
 
-        /* searching variables */
-        le_size_t er_found  = 0;
+        /* congruence variables */
+        le_diff_t er_cycle = 0;
 
-        /* parsing model cells */
-        for ( er_parse = 1; er_parse < er_model->md_push; er_parse ++ ) {
+        /* search address */
+        while ( er_parse >= er_model->md_head ) {
 
-            /* check pushed address */
-            if ( er_cell_get_push( er_model->md_cell + er_parse ) == _LE_TRUE ) {
+            /* compute congruence */
+            er_cycle = er_parse % er_model->md_size;
 
-                /* reset cell search */
-                er_inner = 1, er_found = er_model->md_size;
+            /* check address matching */
+            if ( er_cell_get_match_( er_model->md_cell + er_cycle, er_addr ) == _LE_TRUE ) {
 
-                /* searching allocation */
-                while ( ( er_inner < er_model->md_size ) && ( er_found == er_model->md_size ) ) {
+                /* update states */
+                er_cell_set_flag_( er_model->md_cell + er_cycle, ER_CELL_QRY | ER_CELL_DIS );
 
-                    /* compare address and pushed address */
-                    if ( er_cell_get_match( er_model->md_cell + er_inner, er_model->md_cell + er_parse ) == _LE_TRUE ) {
-
-                        /* reset pushed address */
-                        er_cell_set_pop( er_model->md_cell + er_parse );
-
-                        /* update cell flag */
-                        er_cell_set_flag( er_model->md_cell + er_inner, _LE_TRUE );
-
-                        /* update cell flag */
-                        er_cell_set_draw( er_model->md_cell + er_inner, _LE_TRUE );
-
-                    /* update cell search */
-                    er_found = er_inner; } else { er_inner ++; }
-
-                }
-
-            }
+            /* abort addres push */
+            return; } else { er_parse --; }
 
         }
 
-        /* parsing model cells */
-        for ( er_parse = 1; er_parse < er_model->md_push; er_parse ++ ) {
+        /* compute congruence */
+        er_cycle = ( er_model->md_head ++ ) % er_model->md_size;
 
-            /* check pushed address */
-            if ( er_cell_get_push( er_model->md_cell + er_parse ) == _LE_TRUE ) {
-
-                /* check search results */
-                if ( ( er_found = er_model_get_cell( er_model ) ) != er_model->md_size ) {
-
-                    /* swap address and pushed address */
-                    er_cell_set_swap( er_model->md_cell + er_found, er_model->md_cell + er_parse );
-
-                    /* update cell array */
-                    er_cell_io_query( er_model->md_cell + er_found, er_model->md_socket );
-
-                    /* update cell flag */
-                    er_cell_set_flag( er_model->md_cell + er_found, _LE_TRUE );
-
-                    /* update cell state */
-                    er_cell_set_draw( er_model->md_cell + er_found, _LE_TRUE );
-
-                }
-
-                /* reset pused address */
-                er_cell_set_pop( er_model->md_cell + er_parse );
-
-            }
-
-        }
+        /* push address */
+        er_cell_set_push_( er_model->md_cell + er_cycle, er_addr );
 
     }
 
-    le_void_t er_model_set_update_terminate( er_model_t * const er_model ) {
+    le_void_t er_model_set_query( er_model_t * const er_model ) {
 
-        /* parsing model cells */
-        for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
+        /* congruence variables */
+        le_diff_t er_cycle = 0;
 
-            /* check cell flag */
-            if ( er_cell_get_flag( er_model->md_cell + er_parse ) == _LE_FALSE ) {
+        /* parsing pushed cells */
+        for ( le_diff_t er_parse = er_model->md_head; er_parse >= er_model->md_tail; er_parse -- ) {
 
-                /* update cell state */
-                er_cell_set_draw( er_model->md_cell + er_parse, _LE_FALSE );
+            /* compute congurence */
+            er_cycle = er_parse % er_model->md_size;
+
+            /* update states */
+            er_cell_set_clear_( er_model->md_cell + er_cycle, ER_CELL_DIS );
+
+            /* query *** replace by push on stack */
+            er_cell_io_query( er_model->md_cell + er_cycle, er_model->md_socket );
+
+            /* update states */
+            er_cell_set_flag_( er_model->md_cell + er_cycle, ER_CELL_QRY | ER_CELL_DIS );
+
+        }
+
+        /* parsing model */
+        for ( le_size_t er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
+
+            /* check states */
+            if ( er_cell_get_flag_( er_model->md_cell + er_parse, ER_CELL_QRY ) == 0 ) {
+
+                /* update states */
+                er_cell_set_clear_( er_model->md_cell + er_parse, ER_CELL_DIS );
 
             } else {
 
-                /* reset cell state */
-                er_cell_set_flag( er_model->md_cell + er_parse, _LE_FALSE );
+                /* update states */
+                er_cell_set_clear_( er_model->md_cell + er_parse, ER_CELL_QRY );
 
             }
 
         }
 
-        /* reset update index */
-        er_model->md_push = 1;
+        /* update model head and tail */
+        er_model->md_tail = ( er_model->md_head %= er_model->md_size );
 
     }
 
@@ -313,7 +219,10 @@
     le_void_t er_model_display_cell( er_model_t const * const er_model, er_view_t const * const er_view ) {
 
         /* translation array variables */
-        le_real_t er_trans[3] = { 0.0 };
+        le_real_t er_tran[3] = { 0.0 };
+
+        /* size variables */
+        le_size_t er_size = 0;
 
         /* edge array variables */
         le_real_t * er_edge = NULL;
@@ -338,10 +247,13 @@
         glRotated( + er_view_get_azm( er_view ), 0.0, 0.0, 1.0 );
 
         /* parsing model cells array */
-        for ( le_size_t er_parse = 1; er_parse < er_model->md_size; er_parse ++ ) {
+        for ( le_size_t er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
 
             /* check cell drawing state - continue parsing */
-            if ( er_cell_get_draw( er_model->md_cell + er_parse ) == _LE_FALSE ) continue;
+            if ( er_cell_get_flag_( er_model->md_cell + er_parse, ER_CELL_DIS ) == 0 ) continue;
+
+            /* check cell size - continue parsing */
+            if ( ( er_size = er_cell_get_size( er_model->md_cell + er_parse ) ) == 0 ) continue;
 
             /* vertex and color pointer assignation */
             glVertexPointer( 3, ER_MODEL_VERTEX, LE_ARRAY_SD, er_cell_get_pose( er_model->md_cell + er_parse ) );
@@ -354,23 +266,23 @@
             glPushMatrix(); {
 
                 /* compute cell translation - step */
-                er_trans[0] = er_sinl * er_edge[0];
-                er_trans[1] = er_cosl * er_edge[2];
+                er_tran[0] = er_sinl * er_edge[0];
+                er_tran[1] = er_cosl * er_edge[2];
 
                 /* compute cell translation */
-                er_trans[2] = er_cosa * er_trans[1] + er_sina * er_edge[1] - er_cosa * er_trans[0];
-                er_trans[1] = er_sina * er_trans[0] + er_cosa * er_edge[1] - er_sina * er_trans[1];
-                er_trans[0] = er_cosl * er_edge[0] + er_sinl * er_edge[2];
+                er_tran[2] = er_cosa * er_tran[1] + er_sina * er_edge[1] - er_cosa * er_tran[0];
+                er_tran[1] = er_sina * er_tran[0] + er_cosa * er_edge[1] - er_sina * er_tran[1];
+                er_tran[0] = er_cosl * er_edge[0] + er_sinl * er_edge[2];
 
                 /* motion management - cell translation */
-                glTranslated( er_trans[0], er_trans[1], er_trans[2] - LE_ADDRESS_WGSA );
+                glTranslated( er_tran[0], er_tran[1], er_tran[2] - LE_ADDRESS_WGSA );
 
                 /* motion management - planimetric rotation */
                 glRotated( + er_lat, 1.0, 0.0, 0.0 );
                 glRotated( - er_lon, 0.0, 1.0, 0.0 );
 
                 /* display graphical primitives */
-                glDrawArrays( GL_POINTS, 0, er_cell_get_size( er_model->md_cell + er_parse ) / 3 );
+                glDrawArrays( GL_POINTS, 0, er_size / 3 );
 
             /* cell matrix */
             } glPopMatrix();

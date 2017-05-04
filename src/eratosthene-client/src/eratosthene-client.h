@@ -249,7 +249,7 @@
 
     le_void_t er_client_loops_render( le_void_t );
 
-    /*! \brief loop methods
+    /*! \brief loop methods ***
      *
      *  This function is called by the main function model thread to trigger
      *  model update according to the point of view.

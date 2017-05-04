@@ -55,7 +55,11 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_CELL_C { _LE_FALSE, _LE_FALSE, LE_ADDRESS_C, LE_ADDRESS_C, 0, LE_ARRAY_C, { 0.0 } }
+    # define ER_CELL_C   { 0, LE_ADDRESS_C, 0, LE_ARRAY_C, { 0.0 } }
+
+    /* define flags */
+    # define ER_CELL_QRY ( 0x01 << 0 )
+    # define ER_CELL_DIS ( 0x01 << 1 )
 
 /*
     header - preprocessor macros
@@ -118,14 +122,11 @@
 
     typedef struct er_cell_struct {
 
-        le_enum_t    ce_flag;
-        le_enum_t    ce_draw;
-
+        le_byte_t    ce_flag;
         le_address_t ce_addr;
-        le_address_t ce_push;
 
         le_size_t    ce_size;
-        le_array_t   ce_array;
+        le_array_t   ce_data;
 
         le_real_t    ce_edge[3];
 
@@ -155,52 +156,13 @@
 
     le_void_t er_cell_delete( er_cell_t * const er_cell );
 
-    /*! \brief accessor methods
-     *
-     *  This function returns the provided cell state flag.
-     *
-     *  \param er_cell Cell structure
-     *
-     *  \return Cell state flag
-     */
+    /* *** */
 
-    le_enum_t er_cell_get_flag( er_cell_t const * const er_cell );
+    le_byte_t er_cell_get_flag_( er_cell_t const * const er_cell, le_byte_t const er_state );
 
-    /*! \brief accessor methods
-     *
-     *  This function returns the provided cell drawable flag.
-     *
-     *  \param er_cell Cell structure
-     *
-     *  \return Cell drawable flag
-     */
+    /* *** */
 
-    le_enum_t er_cell_get_draw( er_cell_t const * const er_cell );
-
-    /*! \brief accessor methods
-     *
-     *  This function checks if the provided cell has a pushed address and
-     *  returns the answer.
-     *
-     *  \param er_cell Cell structure
-     *
-     *  \return Returns _LE_TRUE if an address is pushed, _LE_FALSE otherwise
-     */
-
-    le_enum_t er_cell_get_push( er_cell_t const * const er_cell );
-
-    /*! \brief accessor methods
-     *
-     *  This function checks if the pushed address of the \b er_push cell is
-     *  identical to the address of the \b er_addr cell and returns the answer.
-     *
-     *  \param er_addr Cell structure
-     *  \param er_push Cell structure
-     *
-     *  \return Returns _LE_TRUE on matching, _LE_FALSE otherwise
-     */
-
-    le_enum_t er_cell_get_match( er_cell_t const * const er_addr, er_cell_t const * const er_push );
+    le_enum_t er_cell_get_match_( er_cell_t const * const er_cell, le_address_t const * const er_addr );
 
     /*! \brief accessor methods
      *
@@ -255,69 +217,16 @@
 
     le_real_t * er_cell_get_edge( er_cell_t const * const er_cell );
 
-    /*! \brief mutator methods
-     *
-     *  This function sets the cell state flag using the provided value.
-     *
-     *  \param er_cell Cell structure
-     *  \param er_flag Cell state flag
-     */
+    /* *** */
 
-    le_void_t er_cell_set_flag( er_cell_t * const er_cell, le_enum_t const er_flag );
+    le_void_t er_cell_set_flag_( er_cell_t * const er_cell, le_byte_t const er_state );
 
-    /*! \brief mutator methods
-     *
-     *  This function sets the cell drawable flag using the provided value.
-     *
-     *  \param er_cell Cell structure
-     *  \param er_draw Cell drawable flag
-     */
+    /* *** */
+    le_void_t er_cell_set_clear_( er_cell_t * const er_cell, le_byte_t const er_state );
 
-    le_void_t er_cell_set_draw( er_cell_t * const er_cell, le_enum_t const er_draw );
+    /* *** */
 
-    /*! \brief mutator methods
-     *
-     *  This function erases the cell address field using the provided address
-     *  structure.
-     *
-     *  \param er_cell    Cell structure
-     *  \param er_address Address structure
-     */
-
-    le_void_t er_cell_set_addr( er_cell_t * const er_cell, le_address_t const * const er_address );
-
-    /*! \brief mutator methods
-     *
-     *  This function erases the cell pushed address field using the address
-     *  provided as parameter.
-     *
-     *  \param er_cell Cell structure
-     *  \param er_push Cell structure
-     */
-
-    le_void_t er_cell_set_push( er_cell_t * const er_cell, er_cell_t const * const er_push );
-
-    /*! \brief mutator methods
-     *
-     *  This function erases the cell pushed address. Practically, the function
-     *  simply sets the pushed address size to zero, indicating to other process
-     *  that the address structure is empty.
-     *
-     *  \param er_cell Cell structure
-     */
-
-    le_void_t er_cell_set_pop( er_cell_t * const er_cell );
-
-    /*! \brief mutator methods
-     *
-     *  This function erase the address of the \b er_addr cell using the pushed
-     *  address of the \b er_push cell.
-     *
-     *  \param er_addr Cell structure
-     *  \param er_push Cell structure
-     */
-
-    le_void_t er_cell_set_swap( er_cell_t * const er_addr, er_cell_t * const er_push );
+    le_void_t er_cell_set_push_( er_cell_t * const er_cell, le_address_t const * const er_addr );
 
     /*! \brief i/o methods
      *

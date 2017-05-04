@@ -57,14 +57,17 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_MODEL_C      { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 1, NULL, 0, _LE_TRUE }
+    # define ER_MODEL_C        { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 0, 0, NULL, _LE_TRUE }
+
+    /* define pseudo-initialiser */
+    # define ER_MODEL_I(s,p,t) { s, p, t, ER_MODEL_STACK, 0, 0, NULL, _LE_TRUE }
 
     /* define model stack */
-    # define ER_MODEL_STACK  ( 4096 )
+    # define ER_MODEL_STACK    ( 4096 )
 
     /* define display array types */
-    # define ER_MODEL_VERTEX GL_DOUBLE
-    # define ER_MODEL_COLORS GL_UNSIGNED_BYTE
+    # define ER_MODEL_VERTEX   ( GL_DOUBLE )
+    # define ER_MODEL_COLORS   ( GL_UNSIGNED_BYTE )
 
 /*
     header - preprocessor macros
@@ -136,10 +139,9 @@
         le_time_t   md_tcfg;
 
         le_size_t   md_size;
-        le_size_t   md_push;
+        le_diff_t   md_head;
+        le_diff_t   md_tail;
         er_cell_t * md_cell;
-
-        le_size_t   md_cycle;
 
     le_enum_t _status; } er_model_t;
 
@@ -181,28 +183,6 @@
      */
 
     le_void_t er_model_delete( er_model_t * const er_model );
-
-    /*! \brief accessor methods
-     *
-     *  This function searches in the cells stack for an inactive cell. If such
-     *  a free cell is found, its index is returned.
-     *
-     *  This function uses the model structure cyclic index to search for a free
-     *  cell. The cyclic index is used as a search index and its value remains
-     *  after searching. At next call, the function will starts to search for a
-     *  free cell with the index coming just after the last found free cell.
-     *
-     *  Using cyclic index to search free cell allows to increase the time a
-     *  cell spends in the stack. This allows to increase the probability for a
-     *  cell to be reused, even if it has been disabled during a previous model
-     *  update.
-     *
-     *  \param er_model Model structure
-     *
-     *  \return Returns free cell stack index on success, stack size otherwise
-     */
-
-    le_size_t er_model_get_cell( er_model_t * const er_model );
 
     /*! \brief mutator methods
      *
@@ -257,7 +237,11 @@
      *  \param er_view  Point of view structure
      */
 
-    le_void_t er_model_set_update_cell( er_model_t * const er_model, le_address_t * const er_enum, er_view_t const * const er_view );
+    le_void_t er_model_set_enum( er_model_t * const er_model, le_address_t * const er_enum, le_size_t const er_scale, er_view_t const * const er_view );
+
+    /* *** */
+
+    le_void_t er_model_set_push( er_model_t * const er_model, le_address_t * const er_addr );
 
     /*! \brief mutator methods
      *
@@ -281,7 +265,7 @@
      *  \param er_model Model structure
      */
 
-    le_void_t er_model_set_update_query( er_model_t * const er_model );
+    le_void_t er_model_set_query( er_model_t * const er_model );
 
     /*! \brief mutator methods
      *
@@ -300,7 +284,7 @@
      *  \param er_model Model structure
      */
 
-    le_void_t er_model_set_update_terminate( er_model_t * const er_model );
+    //le_void_t er_model_set_reset( er_model_t * const er_model );
 
     /*! \brief display methods
      *
