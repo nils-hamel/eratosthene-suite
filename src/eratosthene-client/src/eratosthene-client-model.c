@@ -98,7 +98,7 @@
             le_address_set_digit( er_enum, er_scale, er_digit );
 
             /* enumeration constraint */
-            if ( er_scale < ER_COMMON_ENUM_ ) {
+            if ( er_scale < ER_COMMON_ENUM ) {
 
                 /* continue enumeration */
                 er_model_set_enum( er_model, er_enum, er_scale + 1, er_view );
@@ -149,21 +149,38 @@
             er_cycle = er_parse % er_model->md_size;
 
             /* check address matching */
-            if ( er_cell_get_match_( er_model->md_cell + er_cycle, er_addr ) == _LE_TRUE ) {
+            if ( er_cell_get_match( er_model->md_cell + er_cycle, er_addr ) == _LE_TRUE ) {
 
                 /* update states */
-                er_cell_set_flag_( er_model->md_cell + er_cycle, ER_CELL_QRY | ER_CELL_DIS );
+                er_cell_set_flag( er_model->md_cell + er_cycle, ER_CELL_QRY | ER_CELL_DIS );
 
-            /* abort addres push */
+            /* abort or continue push */
             return; } else { er_parse --; }
 
         }
 
-        /* compute congruence */
-        er_cycle = ( er_model->md_head ++ ) % er_model->md_size;
+        /* compute stack limit */
+        er_parse = er_model->md_tail + er_model->md_size;
 
-        /* push address */
-        er_cell_set_push_( er_model->md_cell + er_cycle, er_addr );
+        /* searching pushable cell */
+        while ( er_model->md_head < er_parse ) {
+
+            /* compute congruence */
+            er_cycle = er_model->md_head % er_model->md_size;
+
+            /* check state */
+            if ( er_cell_get_flag( er_model->md_cell + er_cycle, ER_CELL_QRY ) == 0 ) {
+
+                /* push address */
+                er_cell_set_push( er_model->md_cell + er_cycle, er_addr );
+
+                /* update head */
+                er_model->md_head ++;
+
+            /* abort or continue push */
+            return; } else { er_model->md_head ++; }
+
+        }
 
     }
 
@@ -179,13 +196,13 @@
             er_cycle = er_parse % er_model->md_size;
 
             /* update states */
-            er_cell_set_clear_( er_model->md_cell + er_cycle, ER_CELL_DIS );
+            er_cell_set_clear( er_model->md_cell + er_cycle, ER_CELL_DIS );
 
             /* query *** replace by push on stack */
             er_cell_io_query( er_model->md_cell + er_cycle, er_model->md_socket );
 
             /* update states */
-            er_cell_set_flag_( er_model->md_cell + er_cycle, ER_CELL_QRY | ER_CELL_DIS );
+            er_cell_set_flag( er_model->md_cell + er_cycle, ER_CELL_QRY | ER_CELL_DIS );
 
         }
 
@@ -193,15 +210,15 @@
         for ( le_size_t er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
 
             /* check states */
-            if ( er_cell_get_flag_( er_model->md_cell + er_parse, ER_CELL_QRY ) == 0 ) {
+            if ( er_cell_get_flag( er_model->md_cell + er_parse, ER_CELL_QRY ) == 0 ) {
 
                 /* update states */
-                er_cell_set_clear_( er_model->md_cell + er_parse, ER_CELL_DIS );
+                er_cell_set_clear( er_model->md_cell + er_parse, ER_CELL_DIS );
 
             } else {
 
                 /* update states */
-                er_cell_set_clear_( er_model->md_cell + er_parse, ER_CELL_QRY );
+                er_cell_set_clear( er_model->md_cell + er_parse, ER_CELL_QRY );
 
             }
 
@@ -250,7 +267,7 @@
         for ( le_size_t er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
 
             /* check cell drawing state - continue parsing */
-            if ( er_cell_get_flag_( er_model->md_cell + er_parse, ER_CELL_DIS ) == 0 ) continue;
+            if ( er_cell_get_flag( er_model->md_cell + er_parse, ER_CELL_DIS ) == 0 ) continue;
 
             /* check cell size - continue parsing */
             if ( ( er_size = er_cell_get_size( er_model->md_cell + er_parse ) ) == 0 ) continue;

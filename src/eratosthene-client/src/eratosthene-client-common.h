@@ -82,10 +82,7 @@
     # define ER_COMMON_ALU   ( LE_ADDRESS_WGSA * 3.00 )
 
     /* define model parameters */
-    # define ER_COMMON_ENUM  ( 3 )
-
-    # define ER_COMMON_ENUM_ ( 4 )
-
+    # define ER_COMMON_ENUM  ( 4 )
     # define ER_COMMON_SPAN  ( 7 )
 
     /* define mouse button */
@@ -95,6 +92,9 @@
 /*
     header - preprocessor macros
  */
+
+    /* define time macro */
+    # define ER_COMMON_TIME(a)   { struct timespec __t; clock_gettime( CLOCK_REALTIME, & __t ); a = ( le_real_t ) __t.tv_sec + ( le_real_t ) __t.tv_nsec * 1e-9; }
 
 /*
     header - type definition

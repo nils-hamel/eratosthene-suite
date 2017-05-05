@@ -55,7 +55,7 @@
  */
 
     /* new */
-    le_byte_t er_cell_get_flag_( er_cell_t const * const er_cell, le_byte_t const er_state ) {
+    le_byte_t er_cell_get_flag( er_cell_t const * const er_cell, le_byte_t const er_state ) {
 
         /* return state */
         return( er_cell->ce_flag & er_state );
@@ -63,7 +63,7 @@
     }
 
     /* new */
-    le_enum_t er_cell_get_match_( er_cell_t const * const er_cell, le_address_t const * const er_addr ) {
+    le_enum_t er_cell_get_match( er_cell_t const * const er_cell, le_address_t const * const er_addr ) {
 
         /* compare address */
         return( le_address_get_equal( & er_cell->ce_addr, er_addr ) );
@@ -103,14 +103,14 @@
  */
 
     /* new */
-    le_void_t er_cell_set_flag_( er_cell_t * const er_cell, le_byte_t const er_state ) {
+    le_void_t er_cell_set_flag( er_cell_t * const er_cell, le_byte_t const er_state ) {
 
         /* update state */
         er_cell->ce_flag |= er_state;
 
     }
 
-    le_void_t er_cell_set_clear_( er_cell_t * const er_cell, le_byte_t const er_state ) {
+    le_void_t er_cell_set_clear( er_cell_t * const er_cell, le_byte_t const er_state ) {
 
         /* update state */
         er_cell->ce_flag &= ( ~ er_state );
@@ -118,7 +118,7 @@
     }
 
     /* new */
-    le_void_t er_cell_set_push_( er_cell_t * const er_cell, le_address_t const * const er_addr ) {
+    le_void_t er_cell_set_push( er_cell_t * const er_cell, le_address_t const * const er_addr ) {
 
         /* assign address */
         er_cell->ce_addr = ( * er_addr );
@@ -186,7 +186,7 @@
         le_array_io_read( & er_cell->ce_data, er_socket );
 
         /* serialise address */
-        le_address_serial( & er_cell->ce_addr, & er_cell->ce_data, 0, _LE_GET );
+        //le_address_serial( & er_cell->ce_addr, & er_cell->ce_data, 0, _LE_GET );
 
         /* compute cell edge */
         le_address_get_pose( & er_cell->ce_addr, er_cell->ce_edge );

@@ -373,11 +373,47 @@
 
     le_void_t er_client_loops_update( le_void_t ) {
 
-        /* check differential view */
-        if ( er_view_get_equal( & er_client.cl_push, & er_client.cl_view ) == _LE_TRUE ) return;
+        /* motion detection */
+        if ( er_view_get_equal( & er_client.cl_push, & er_client.cl_view ) == _LE_TRUE ) {
 
-        /* update pushed view */
-        er_client.cl_push = er_client.cl_view;
+            /* check motion */
+            if ( er_client.cl_motion == _LE_TRUE ) {
+
+                /* stopwatch mark */
+                ER_COMMON_TIME( er_client.cl_mtimeb );
+
+                /* check stopwatch - abort update */
+                if ( ( er_client.cl_mtimeb - er_client.cl_mtimea ) >= 0.4 ) {
+
+                    /* update triggered - reset motion */
+                    er_client.cl_motion = _LE_FALSE;
+
+                /* abort update */
+                } else { return; }
+
+            /* abort update */
+            } else { return; }
+
+        } else {
+
+            /* stopwatch mark */
+            ER_COMMON_TIME( er_client.cl_mtimea );
+
+            /* update push view */
+            er_client.cl_push = er_client.cl_view;
+
+            /* check motion */
+            if ( er_client.cl_motion == _LE_FALSE ) {
+
+                /* set motion */
+                er_client.cl_motion = _LE_TRUE;
+
+            }
+
+            /* abort update */
+            return;
+
+        }
 
         /* address variables */
         le_address_t er_enum = er_view_get_times( & er_client.cl_push );

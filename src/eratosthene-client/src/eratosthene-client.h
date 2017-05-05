@@ -89,7 +89,7 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_CLIENT_C { _LE_SOCK_NULL, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, ER_VIEW_D, ER_VIEW_C, 0, GLUT_UP, 0, 0, 1.0, 1.0, _LE_TRUE }
+    # define ER_CLIENT_C { _LE_SOCK_NULL, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, ER_VIEW_D, ER_VIEW_C, 0, GLUT_UP, 0, 0, 1.0, 1.0, 0.0, 0.0, _LE_TRUE, _LE_TRUE }
 
 /*
     header - preprocessor macros
@@ -165,6 +165,10 @@
         le_diff_t  cl_y;
         le_real_t  cl_inertia;
         le_real_t  cl_scale;
+
+        le_real_t  cl_mtimea;
+        le_real_t  cl_mtimeb;
+        le_enum_t  cl_motion;
 
     le_enum_t _status; } er_client_t;
 
@@ -294,7 +298,6 @@
      *  \param er_width  Screen width, in pixels
      *  \param er_height Screen height, in pixels
      */
-
 
     le_void_t er_client_proj_interface( int er_width, int er_height );
 
