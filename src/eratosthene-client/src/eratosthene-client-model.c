@@ -189,19 +189,42 @@
         /* congruence variables */
         le_diff_t er_cycle = 0;
 
+        /* serialisation variables */
+        le_size_t er_serial = 0;
+
+        /* array variables */
+        le_array_t er_array = LE_ARRAY_C;
+
         /* parsing pushed cells */
         for ( le_diff_t er_parse = er_model->md_head; er_parse >= er_model->md_tail; er_parse -- ) {
 
             /* compute congurence */
             er_cycle = er_parse % er_model->md_size;
 
-            /* update states */
+            /* update array size */
+            le_array_set( & er_array, LE_ARRAY_ADDR );
+
+            /* serialise address */
+            er_serial = er_cell_get_serial( er_model->md_cell + er_cycle, er_serial, & er_array );
+
+        }
+
+        /* write query array */
+        le_array_io_write( & er_array, LE_MODE_QUER, er_model->md_socket );
+
+        /* parsing pushed cell */
+        for ( le_diff_t er_parse = er_model->md_head; er_parse >= er_model->md_tail; er_parse -- ) {
+
+            /* compute congruence */
+            er_cycle = er_parse % er_model->md_size;
+
+            /* update state */
             er_cell_set_clear( er_model->md_cell + er_cycle, ER_CELL_DIS );
 
-            /* query *** replace by push on stack */
-            er_cell_io_query( er_model->md_cell + er_cycle, er_model->md_socket );
+            /* receive cell content */
+            er_cell_io_read( er_model->md_cell + er_cycle, er_model->md_socket );
 
-            /* update states */
+            /* update state */
             er_cell_set_flag( er_model->md_cell + er_cycle, ER_CELL_QRY | ER_CELL_DIS );
 
         }

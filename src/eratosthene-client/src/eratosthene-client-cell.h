@@ -219,6 +219,10 @@
 
     /* *** */
 
+    le_size_t er_cell_get_serial( er_cell_t * const er_cell, le_size_t const er_serial, le_array_t * const er_array );
+
+    /* *** */
+
     le_void_t er_cell_set_flag( er_cell_t * const er_cell, le_byte_t const er_state );
 
     /* *** */
@@ -282,7 +286,7 @@
      *  \return Returns cell amount of received points
      */
 
-    le_size_t er_cell_io_query( er_cell_t * const er_cell, le_sock_t const er_socket );
+    le_size_t er_cell_io_read( er_cell_t * const er_cell, le_sock_t const er_socket );
 
 /*
     header - C/C++ compatibility

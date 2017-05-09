@@ -170,7 +170,6 @@
      *  \return Created model structure
      */
 
-    //er_model_t er_model_create( le_sock_t const er_socket );
     er_model_t er_model_create( le_sock_t const er_socket, le_size_t const er_scfg, le_time_t const er_tcfg );
 
     /*! \brief constructor/destructor methods

@@ -54,7 +54,6 @@
     source - accessor methods
  */
 
-    /* new */
     le_byte_t er_cell_get_flag( er_cell_t const * const er_cell, le_byte_t const er_state ) {
 
         /* return state */
@@ -62,7 +61,6 @@
 
     }
 
-    /* new */
     le_enum_t er_cell_get_match( er_cell_t const * const er_cell, le_address_t const * const er_addr ) {
 
         /* compare address */
@@ -80,14 +78,14 @@
     le_real_t * er_cell_get_pose( er_cell_t const * const er_cell ) {
 
         /* return cell geodetic array pointer */
-        return( ( le_real_t * ) ( le_array_get_byte( & er_cell->ce_data ) + LE_ARRAY_ADDR ) );
+        return( ( le_real_t * ) le_array_get_byte( & er_cell->ce_data ) );
 
     }
 
     le_data_t * er_cell_get_data( er_cell_t const * const er_cell ) {
 
         /* return cell colorimetric array pointer */
-        return( ( le_data_t * ) ( le_array_get_byte( & er_cell->ce_data )  + LE_ARRAY_ADDR + LE_ARRAY_SD_1 ) );
+        return( ( le_data_t * ) ( le_array_get_byte( & er_cell->ce_data ) + LE_ARRAY_SD_1 ) );
 
     }
 
@@ -98,11 +96,17 @@
 
     }
 
+    le_size_t er_cell_get_serial( er_cell_t * const er_cell, le_size_t const er_serial, le_array_t * const er_array ) {
+
+        /* serialise cell address */
+        return( le_address_serial( & er_cell->ce_addr, er_array, er_serial, _LE_SET ) );
+
+    }
+
 /*
     source - mutator methods
  */
 
-    /* new */
     le_void_t er_cell_set_flag( er_cell_t * const er_cell, le_byte_t const er_state ) {
 
         /* update state */
@@ -117,7 +121,6 @@
 
     }
 
-    /* new */
     le_void_t er_cell_set_push( er_cell_t * const er_cell, le_address_t const * const er_addr ) {
 
         /* assign address */
@@ -129,37 +132,61 @@
     source - i/o methods
  */
 
-    /* resize array at structure creation - will only grow up */
+    le_size_t er_cell_io_read( er_cell_t * const er_cell, le_sock_t const er_socket ) {
 
-    le_size_t er_cell_io_reduce( er_cell_t * const er_cell, le_sock_t const er_socket ) {
+        /* socket-array variables */
+        le_byte_t * er_head = NULL;
+        le_real_t * er_pose = NULL;
 
-        /* array size management */
-        le_array_set_size( & er_cell->ce_data, LE_ARRAY_ADDR );
+        /* parsing variables */
+        le_size_t er_size = 0;
 
-        /* serialise address */
-        le_address_serial( & er_cell->ce_addr, & er_cell->ce_data, 0, _LE_SET );
-
-        /* write socket-array */
-        le_array_io_write( & er_cell->ce_data, LE_MODE_REDU, er_socket );
+        /* optimisation variables */
+        le_real_t er_comp[3] = { 0.0 };
 
         /* read socket-array */
         le_array_io_read( & er_cell->ce_data, er_socket );
 
-        /* serialise address */
-        le_address_serial( & er_cell->ce_addr, & er_cell->ce_data, 0, _LE_GET );
+        /* compute cell edge */
+        le_address_get_pose( & er_cell->ce_addr, er_cell->ce_edge );
 
-        /* check reduction results */
-        if ( le_address_get_time( & er_cell->ce_addr, 0 ) != _LE_TIME_NULL ) return( 1 );
+        /* convert edge coordinates - geographic to cartesian */
+        er_cell->ce_edge[2] = LE_ADDRESS_WGSA * cos( er_cell->ce_edge[1] ) * cos( er_cell->ce_edge[0] );
+        er_cell->ce_edge[0] = LE_ADDRESS_WGSA * cos( er_cell->ce_edge[1] ) * sin( er_cell->ce_edge[0] );
+        er_cell->ce_edge[1] = LE_ADDRESS_WGSA * sin( er_cell->ce_edge[1] );
 
-        /* check reduction results */
-        if ( le_address_get_time( & er_cell->ce_addr, 1 ) != _LE_TIME_NULL ) return( 1 );
+        /* empty cell size */
+        er_cell->ce_size = 0;
 
-        /* send results */
-        return( 0 );
+        /* socket-array data segment */
+        er_size = le_array_get_size( & er_cell->ce_data );
+        er_head = le_array_get_byte( & er_cell->ce_data );
+
+        /* parsing socket-array */
+        for ( le_size_t er_parse = 0; er_parse < er_size; er_parse += LE_ARRAY_SD ) {
+
+            /* compute data pointer */
+            er_pose = ( le_real_t * ) ( er_head + er_parse );
+
+            /* convert coordinates - geographic to cartesian */
+            er_comp[0] = - er_cell->ce_edge[1] + sin( er_pose[1] ) * ( er_pose[2] += LE_ADDRESS_WGSA );
+            er_comp[1] = - er_cell->ce_edge[0] + er_pose[2] * sin( er_pose[0] ) * ( er_pose[1] = cos( er_pose[1] ) );
+            er_comp[2] = - er_cell->ce_edge[2] + er_pose[2] * er_pose[1] * cos( er_pose[0] );
+
+            /* assign converted coordinates */
+            er_pose[1] = er_comp[0];
+            er_pose[0] = er_comp[1];
+            er_pose[2] = er_comp[2];
+
+            /* update cell size */
+            er_cell->ce_size += 3;
+
+        }
+
+        /* return cell size */
+        return( er_cell->ce_size );
 
     }
-
-    /* resize array at structure creation - will only grow up */
 
     le_size_t er_cell_io_query( er_cell_t * const er_cell, le_sock_t const er_socket ) {
 
