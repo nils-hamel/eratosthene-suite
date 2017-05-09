@@ -234,29 +234,6 @@
 
     /*! \brief i/o methods
      *
-     *  Thus function is used to reduce the time of the address of the cell by
-     *  making a time reduction query to the remote server.
-     *
-     *  The function analyses the times of the reduced address. If at least one
-     *  of them is different than \b _LE_TIME_NULL, the function returns 1, 0
-     *  otherwise.
-     *
-     *  This function is mainly used during model update to check, as cells are
-     *  enumerated, if any content is available. This function is also used on
-     *  pushed addresses in order to be able to compare them to the address of
-     *  the cells already in the stack.
-     *
-     *  \param  er_cell Cell structure
-     *  \param  er_ip   Server ip address
-     *  \param  er_port Server service port
-     *
-     *  \return Return the time reduction status
-     */
-
-    le_size_t er_cell_io_reduce( er_cell_t * const er_cell, le_sock_t const er_socket );
-
-    /*! \brief i/o methods
-     *
      *  This function is used to perform the query to the remote server using
      *  the address of the cell. The answer of the server is stored in the cell
      *  data array.
