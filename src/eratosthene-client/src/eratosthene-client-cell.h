@@ -55,7 +55,7 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_CELL_C   { 0, LE_ADDRESS_C, 0, LE_ARRAY_C, { 0.0 } }
+    # define ER_CELL_C   { 0, LE_ADDRESS_C, LE_ARRAY_C, { 0.0 } }
 
     /* define flags */
     # define ER_CELL_QRY ( 0x01 << 0 )
@@ -124,8 +124,6 @@
 
         le_byte_t    ce_flag;
         le_address_t ce_addr;
-
-        le_size_t    ce_size;
         le_array_t   ce_data;
 
         le_real_t    ce_edge[3];
@@ -174,7 +172,7 @@
      *  \return Cell points count
      */
 
-    le_size_t er_cell_get_size( er_cell_t const * const er_cell );
+    le_size_t er_cell_get_count( er_cell_t const * const er_cell );
 
     /*! \brief accessor methods
      *
@@ -188,7 +186,7 @@
      *  \return Cell points coordinates array pointer
      */
 
-    le_real_t * er_cell_get_pose( er_cell_t const * const er_cell );
+    le_real_t * er_cell_get_pose( er_cell_t * const er_cell );
 
     /*! \brief accessor methods
      *
@@ -202,7 +200,7 @@
      *  \return Cell points colours array pointer
      */
 
-    le_data_t * er_cell_get_data( er_cell_t const * const er_cell );
+    le_data_t * er_cell_get_data( er_cell_t * const er_cell );
 
     /*! \brief accessor methods
      *
@@ -263,7 +261,7 @@
      *  \return Returns cell amount of received points
      */
 
-    le_size_t er_cell_io_read( er_cell_t * const er_cell, le_sock_t const er_socket );
+    le_void_t er_cell_io_read( er_cell_t * const er_cell, le_sock_t const er_socket );
 
 /*
     header - C/C++ compatibility

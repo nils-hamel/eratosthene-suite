@@ -68,24 +68,24 @@
 
     }
 
-    le_size_t er_cell_get_size( er_cell_t const * const er_cell ) {
+    le_size_t er_cell_get_count( er_cell_t const * const er_cell ) {
 
-        /* return cell size */
-        return( er_cell->ce_size );
+        /* return cell point count */
+        return( le_array_get_size( & er_cell->ce_data ) / LE_ARRAY_UF3 );
 
     }
 
-    le_real_t * er_cell_get_pose( er_cell_t const * const er_cell ) {
+    le_real_t * er_cell_get_pose( er_cell_t * const er_cell ) {
 
         /* return cell geodetic array pointer */
         return( ( le_real_t * ) le_array_get_byte( & er_cell->ce_data ) );
 
     }
 
-    le_data_t * er_cell_get_data( er_cell_t const * const er_cell ) {
+    le_data_t * er_cell_get_data( er_cell_t * const er_cell ) {
 
         /* return cell colorimetric array pointer */
-        return( ( le_data_t * ) ( le_array_get_byte( & er_cell->ce_data ) + LE_ARRAY_SD_1 ) );
+        return( ( le_data_t * ) ( le_array_get_byte( & er_cell->ce_data ) + LE_ARRAY_UF3_POSE ) );
 
     }
 
@@ -132,7 +132,7 @@
     source - i/o methods
  */
 
-    le_size_t er_cell_io_read( er_cell_t * const er_cell, le_sock_t const er_socket ) {
+    le_void_t er_cell_io_read( er_cell_t * const er_cell, le_sock_t const er_socket ) {
 
         /* socket-array variables */
         le_byte_t * er_head = NULL;
@@ -147,6 +147,9 @@
         /* read socket-array */
         le_array_io_read( & er_cell->ce_data, er_socket );
 
+        /* decode socket-array */
+        le_array_uf3_decode( & er_cell->ce_data );
+
         /* compute cell edge */
         le_address_get_pose( & er_cell->ce_addr, er_cell->ce_edge );
 
@@ -155,15 +158,12 @@
         er_cell->ce_edge[0] = LE_ADDRESS_WGSA * cos( er_cell->ce_edge[1] ) * sin( er_cell->ce_edge[0] );
         er_cell->ce_edge[1] = LE_ADDRESS_WGSA * sin( er_cell->ce_edge[1] );
 
-        /* empty cell size */
-        er_cell->ce_size = 0;
-
         /* socket-array data segment */
         er_size = le_array_get_size( & er_cell->ce_data );
         er_head = le_array_get_byte( & er_cell->ce_data );
 
         /* parsing socket-array */
-        for ( le_size_t er_parse = 0; er_parse < er_size; er_parse += LE_ARRAY_SD ) {
+        for ( le_size_t er_parse = 0; er_parse < er_size; er_parse += LE_ARRAY_UF3 ) {
 
             /* compute data pointer */
             er_pose = ( le_real_t * ) ( er_head + er_parse );
@@ -178,13 +178,7 @@
             er_pose[0] = er_comp[1];
             er_pose[2] = er_comp[2];
 
-            /* update cell size */
-            er_cell->ce_size += 3;
-
         }
-
-        /* return cell size */
-        return( er_cell->ce_size );
 
     }
 

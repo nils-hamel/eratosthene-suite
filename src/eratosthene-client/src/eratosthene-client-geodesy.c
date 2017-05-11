@@ -88,16 +88,19 @@
 
     }
 
-    le_real_t er_geodesy_depth( le_real_t const er_distance, le_size_t const er_sparam, le_size_t const er_depth ) {
+    le_enum_t er_geodesy_select( le_real_t const er_distance, le_real_t const er_scfg, le_real_t const er_scale ) {
 
         /* clamping variables */
-        le_real_t er_clamp = er_sparam - er_depth - 2;
+        le_real_t er_clamp = er_scfg - ER_COMMON_SPAN - 2;
 
         /* computation variables */
         le_real_t er_normal = log( ( LE_ADDRESS_WGSA / 2.0 ) / ( er_distance * 30.0 ) ) / M_LN2 + 9.5;
 
-        /* return evaluation */
-        return( er_normal < 5 ? 5 : ( er_normal > er_clamp ? er_clamp : er_normal ) );
+        /* check range */
+        er_normal = ( er_normal < 5.0 ? 5.0 : ( er_normal > er_clamp ? er_clamp : er_normal ) );
+
+        /* check selection condition */
+        return( er_normal - er_scale < 1.0 ? _LE_TRUE : _LE_FALSE );
 
     }
 

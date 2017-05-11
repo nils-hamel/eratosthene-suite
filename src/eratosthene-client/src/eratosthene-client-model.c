@@ -108,8 +108,8 @@
                 /* compute and check distance */
                 if ( ( er_line = er_geodesy_distance( er_enum, er_view ) ) < er_geodesy_face( er_view_get_alt( er_view ) ) ) {
 
-                    /* check selection criterion *** integrate the scale in the parameters */
-                    if ( fabs( er_geodesy_depth( er_line, er_model->md_scfg, ER_COMMON_SPAN ) - (le_real_t)er_scale ) < 1.0 ) {
+                    /* check selection criterion */
+                    if ( er_geodesy_select( er_line, er_model->md_scfg, er_scale ) == _LE_TRUE ) {
 
                         /* push address */
                         er_model_set_push( er_model, er_enum );
@@ -293,11 +293,11 @@
             if ( er_cell_get_flag( er_model->md_cell + er_parse, ER_CELL_DIS ) == 0 ) continue;
 
             /* check cell size - continue parsing */
-            if ( ( er_size = er_cell_get_size( er_model->md_cell + er_parse ) ) == 0 ) continue;
+            if ( ( er_size = er_cell_get_count( er_model->md_cell + er_parse ) ) == 0 ) continue;
 
             /* vertex and color pointer assignation */
-            glVertexPointer( 3, ER_MODEL_VERTEX, LE_ARRAY_SD, er_cell_get_pose( er_model->md_cell + er_parse ) );
-            glColorPointer ( 3, ER_MODEL_COLORS, LE_ARRAY_SD, er_cell_get_data( er_model->md_cell + er_parse ) );
+            glVertexPointer( 3, ER_MODEL_VERTEX, LE_ARRAY_UF3, er_cell_get_pose( er_model->md_cell + er_parse ) );
+            glColorPointer ( 3, ER_MODEL_COLORS, LE_ARRAY_UF3, er_cell_get_data( er_model->md_cell + er_parse ) );
 
             /* retrieve cell edge coordinates */
             er_edge = er_cell_get_edge( er_model->md_cell + er_parse );
@@ -322,7 +322,7 @@
                 glRotated( - er_lon, 0.0, 1.0, 0.0 );
 
                 /* display graphical primitives */
-                glDrawArrays( GL_POINTS, 0, er_size / 3 );
+                glDrawArrays( GL_POINTS, 0, er_size );
 
             /* cell matrix */
             } glPopMatrix();

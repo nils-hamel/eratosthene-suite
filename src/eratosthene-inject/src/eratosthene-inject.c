@@ -56,7 +56,7 @@
         }
 
         /* create socket-array */
-        if ( le_array_set_size( & er_array, LE_ARRAY_SD * ER_INJECT + sizeof( le_time_t ) ) == _LE_FALSE ) {
+        if ( le_array_set_size( & er_array, LE_ARRAY_UF3 * ER_INJECT + sizeof( le_time_t ) ) == _LE_FALSE ) {
 
             /* display message */
             fprintf( stderr, "eratosthene-suite : error : memory allocation\n" );
@@ -95,7 +95,7 @@
             er_base = le_array_get_byte( & er_array ) + sizeof( le_time_t );
 
             /* read stream */
-            while ( ( er_read = fread( er_base, sizeof( le_byte_t ), LE_ARRAY_SD * ER_INJECT, er_stream ) ) > 0 ) {
+            while ( ( er_read = fread( er_base, sizeof( le_byte_t ), LE_ARRAY_UF3 * ER_INJECT, er_stream ) ) > 0 ) {
 
                 /* update socket-array size */
                 le_array_set_size( & er_array, er_read + sizeof( le_time_t ) );

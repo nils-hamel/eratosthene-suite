@@ -157,7 +157,7 @@
      *  \return Returns the ideal depth value
      */
 
-    le_real_t er_geodesy_depth( le_real_t const er_distance, le_size_t const er_scale, le_size_t const er_depth );
+    le_enum_t er_geodesy_select( le_real_t const er_distance, le_real_t const er_scfg, le_real_t const er_scale );
 
     /*! \brief model functions
      *
