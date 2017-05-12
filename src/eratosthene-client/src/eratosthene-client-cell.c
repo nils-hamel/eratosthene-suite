@@ -89,17 +89,10 @@
 
     }
 
-    le_real_t * er_cell_get_edge( er_cell_t const * const er_cell ) {
+    le_real_t * er_cell_get_edge( er_cell_t * const er_cell ) {
 
         /* return cell edge array pointer */
-        return( ( le_real_t * ) er_cell->ce_edge );
-
-    }
-
-    le_size_t er_cell_get_serial( er_cell_t * const er_cell, le_size_t const er_serial, le_array_t * const er_array ) {
-
-        /* serialise cell address */
-        return( le_address_serial( & er_cell->ce_addr, er_array, er_serial, _LE_SET ) );
+        return( er_cell->ce_edge );
 
     }
 
@@ -129,20 +122,32 @@
     }
 
 /*
+    source - serialisation method
+ */
+
+    le_size_t er_cell_serial( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset ) {
+
+        /* serialise cell address */
+        return( le_address_serial( & er_cell->ce_addr, er_array, er_offset, _LE_SET ) );
+
+    }
+
+/*
     source - i/o methods
  */
 
     le_void_t er_cell_io_read( er_cell_t * const er_cell, le_sock_t const er_socket ) {
 
-        /* socket-array variables */
+        /* pointer variables */
         le_byte_t * er_head = NULL;
-        le_real_t * er_pose = NULL;
+        le_byte_t * er_base = NULL;
 
-        /* parsing variables */
+        /* size variables */
         le_size_t er_size = 0;
 
         /* optimisation variables */
-        le_real_t er_comp[3] = { 0.0 };
+        le_real_t er_opta = 0.0;
+        le_real_t er_optb = 0.0;
 
         /* read socket-array */
         le_array_io_read( & er_cell->ce_data, er_socket );
@@ -150,33 +155,41 @@
         /* decode socket-array */
         le_array_uf3_decode( & er_cell->ce_data );
 
-        /* compute cell edge */
-        le_address_get_pose( & er_cell->ce_addr, er_cell->ce_edge );
+        /* check array state - abort processing */
+        if ( ( er_size = le_array_get_size( & er_cell->ce_data ) ) == 0 ) return;
 
-        /* convert edge coordinates - geographic to cartesian */
-        er_cell->ce_edge[2] = LE_ADDRESS_WGSA * cos( er_cell->ce_edge[1] ) * cos( er_cell->ce_edge[0] );
-        er_cell->ce_edge[0] = LE_ADDRESS_WGSA * cos( er_cell->ce_edge[1] ) * sin( er_cell->ce_edge[0] );
-        er_cell->ce_edge[1] = LE_ADDRESS_WGSA * sin( er_cell->ce_edge[1] );
+        /* create array pointers */
+        er_head = ( er_base = le_array_get_byte( & er_cell->ce_data ) );
 
-        /* socket-array data segment */
-        er_size = le_array_get_size( & er_cell->ce_data );
-        er_head = le_array_get_byte( & er_cell->ce_data );
+        /* coordinates conversion - edge */
+        er_cell->ce_edge[2] = ( ( le_real_t * ) er_head )[2] + LE_ADDRESS_WGSA;
 
-        /* parsing socket-array */
-        for ( le_size_t er_parse = 0; er_parse < er_size; er_parse += LE_ARRAY_UF3 ) {
+        /* coordinates conversion - edge */
+        er_cell->ce_edge[1] = er_cell->ce_edge[2] * sin( ( ( le_real_t * ) er_head )[1] );
+        er_cell->ce_edge[2] = er_cell->ce_edge[2] * cos( ( ( le_real_t * ) er_head )[1] );
+        er_cell->ce_edge[0] = er_cell->ce_edge[2] * sin( ( ( le_real_t * ) er_head )[0] );
+        er_cell->ce_edge[2] = er_cell->ce_edge[2] * cos( ( ( le_real_t * ) er_head )[0] );
 
-            /* compute data pointer */
-            er_pose = ( le_real_t * ) ( er_head + er_parse );
+        /* inital points coordinates */
+        ( ( le_real_t * ) er_head )[0] = 0.0;
+        ( ( le_real_t * ) er_head )[1] = 0.0;
+        ( ( le_real_t * ) er_head )[2] = 0.0;
 
-            /* convert coordinates - geographic to cartesian */
-            er_comp[0] = - er_cell->ce_edge[1] + sin( er_pose[1] ) * ( er_pose[2] += LE_ADDRESS_WGSA );
-            er_comp[1] = - er_cell->ce_edge[0] + er_pose[2] * sin( er_pose[0] ) * ( er_pose[1] = cos( er_pose[1] ) );
-            er_comp[2] = - er_cell->ce_edge[2] + er_pose[2] * er_pose[1] * cos( er_pose[0] );
+        /* parsing socket array */
+        while ( ( ( er_head += LE_ARRAY_UF3 ) - er_base ) < er_size ) {
 
-            /* assign converted coordinates */
-            er_pose[1] = er_comp[0];
-            er_pose[0] = er_comp[1];
-            er_pose[2] = er_comp[2];
+            /* coordinates conversion - points */
+            ( ( le_real_t * ) er_head )[2] += LE_ADDRESS_WGSA;
+
+            /* coordinates conversion - points */
+            er_opta = ( ( le_real_t * ) er_head )[0];
+            er_optb = ( ( le_real_t * ) er_head )[1];
+
+            /* coordinates conversion - points */
+            ( ( le_real_t * ) er_head )[1] = ( ( le_real_t * ) er_head )[2] * sin( er_optb ) - er_cell->ce_edge[1];
+            ( ( le_real_t * ) er_head )[2] = ( ( le_real_t * ) er_head )[2] * cos( er_optb );
+            ( ( le_real_t * ) er_head )[0] = ( ( le_real_t * ) er_head )[2] * sin( er_opta ) - er_cell->ce_edge[0];
+            ( ( le_real_t * ) er_head )[2] = ( ( le_real_t * ) er_head )[2] * cos( er_opta ) - er_cell->ce_edge[2];
 
         }
 

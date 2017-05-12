@@ -205,7 +205,7 @@
             le_array_set( & er_array, LE_ARRAY_ADDR );
 
             /* serialise address */
-            er_serial = er_cell_get_serial( er_model->md_cell + er_cycle, er_serial, & er_array );
+            er_serial = er_cell_serial( er_model->md_cell + er_cycle, & er_array, er_serial );
 
         }
 

@@ -213,11 +213,7 @@
      *  \return Pointer to the array of cell frame origin
      */
 
-    le_real_t * er_cell_get_edge( er_cell_t const * const er_cell );
-
-    /* *** */
-
-    le_size_t er_cell_get_serial( er_cell_t * const er_cell, le_size_t const er_serial, le_array_t * const er_array );
+    le_real_t * er_cell_get_edge( er_cell_t * const er_cell );
 
     /* *** */
 
@@ -229,6 +225,10 @@
     /* *** */
 
     le_void_t er_cell_set_push( er_cell_t * const er_cell, le_address_t const * const er_addr );
+
+    /* *** */
+
+    le_size_t er_cell_serial( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset );
 
     /*! \brief i/o methods
      *
