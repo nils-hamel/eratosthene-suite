@@ -137,10 +137,10 @@
     le_void_t er_model_set_push( er_model_t * const er_model, le_address_t * const er_addr ) {
 
         /* parsing variables */
-        le_diff_t er_parse = er_model->md_tail + er_model->md_size - 1;
+        le_size_t er_parse = er_model->md_tail + er_model->md_size - 1;
 
         /* congruence variables */
-        le_diff_t er_cycle = 0;
+        le_size_t er_cycle = 0;
 
         /* search address */
         while ( er_parse >= er_model->md_head ) {
@@ -187,7 +187,7 @@
     le_void_t er_model_set_query( er_model_t * const er_model ) {
 
         /* congruence variables */
-        le_diff_t er_cycle = 0;
+        le_size_t er_cycle = 0;
 
         /* serialisation variables */
         le_size_t er_serial = 0;
@@ -196,7 +196,7 @@
         le_array_t er_array = LE_ARRAY_C;
 
         /* parsing pushed cells */
-        for ( le_diff_t er_parse = er_model->md_head; er_parse >= er_model->md_tail; er_parse -- ) {
+        for ( le_size_t er_parse = er_model->md_head; er_parse >= er_model->md_tail; er_parse -- ) {
 
             /* compute congurence */
             er_cycle = er_parse % er_model->md_size;
@@ -213,7 +213,7 @@
         le_array_io_write( & er_array, LE_MODE_QUER, er_model->md_socket );
 
         /* parsing pushed cell */
-        for ( le_diff_t er_parse = er_model->md_head; er_parse >= er_model->md_tail; er_parse -- ) {
+        for ( le_size_t er_parse = er_model->md_head; er_parse >= er_model->md_tail; er_parse -- ) {
 
             /* compute congruence */
             er_cycle = er_parse % er_model->md_size;

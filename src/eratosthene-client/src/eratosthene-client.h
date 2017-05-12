@@ -161,8 +161,8 @@
 
         le_enum_t  cl_button;
         le_enum_t  cl_state;
-        le_diff_t  cl_x;
-        le_diff_t  cl_y;
+        le_size_t  cl_x;
+        le_size_t  cl_y;
         le_real_t  cl_inertia;
         le_real_t  cl_scale;
 

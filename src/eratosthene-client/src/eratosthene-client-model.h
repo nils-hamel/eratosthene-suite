@@ -139,8 +139,8 @@
         le_time_t   md_tcfg;
 
         le_size_t   md_size;
-        le_diff_t   md_head;
-        le_diff_t   md_tail;
+        le_size_t   md_head;
+        le_size_t   md_tail;
         er_cell_t * md_cell;
 
     le_enum_t _status; } er_model_t;
