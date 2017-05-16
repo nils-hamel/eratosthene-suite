@@ -153,7 +153,8 @@
         le_array_io_read( & er_cell->ce_data, er_socket );
 
         /* decode socket-array */
-        le_array_uf3_decode( & er_cell->ce_data );
+        //le_array_uf3_decode( & er_cell->ce_data );
+        le_array_uf3_rec_decode( & er_cell->ce_data );
 
         /* check array state - abort processing */
         if ( ( er_size = le_array_get_size( & er_cell->ce_data ) ) == 0 ) return;
