@@ -261,7 +261,7 @@
      *  \return Returns cell amount of received points
      */
 
-    le_void_t er_cell_io_read( er_cell_t * const er_cell, le_sock_t const er_socket );
+    le_void_t er_cell_io_read( er_cell_t * const er_cell, le_array_t * const er_array );
 
 /*
     header - C/C++ compatibility

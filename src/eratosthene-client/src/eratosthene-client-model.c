@@ -209,7 +209,7 @@
 
         }
 
-        /* write query array */
+        /* write query pack */
         le_array_io_write( & er_array, LE_MODE_QUER, er_model->md_socket );
 
         /* parsing pushed cell */
@@ -221,8 +221,11 @@
             /* update state */
             er_cell_set_clear( er_model->md_cell + er_cycle, ER_CELL_DIS );
 
+            /* read socket-array */
+            le_array_io_read( & er_model->md_read, er_model->md_socket );
+
             /* receive cell content */
-            er_cell_io_read( er_model->md_cell + er_cycle, er_model->md_socket );
+            er_cell_io_read( er_model->md_cell + er_cycle, & er_model->md_read );
 
             /* update state */
             er_cell_set_flag( er_model->md_cell + er_cycle, ER_CELL_QRY | ER_CELL_DIS );

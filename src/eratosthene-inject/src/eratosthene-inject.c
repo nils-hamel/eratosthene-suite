@@ -38,11 +38,13 @@
         /* reading variables */
         le_size_t er_read = 0;
 
-        /* socket-array variables */
-        le_array_t er_array = LE_ARRAY_C;
-
         /* array pointer variables */
         le_byte_t * er_base = NULL;
+
+        /* socket-array variables */
+        le_array_t er_head = LE_ARRAY_C;
+        le_array_t er_data = LE_ARRAY_C;
+        le_array_t er_dual = LE_ARRAY_C;
 
         /* check consistency */
         if ( er_time == _LE_TIME_NULL ) {
@@ -56,7 +58,18 @@
         }
 
         /* create socket-array */
-        if ( le_array_set_size( & er_array, LE_ARRAY_UF3 * ER_INJECT + sizeof( le_time_t ) ) == _LE_FALSE ) {
+        if ( le_array_set_size( & er_head, LE_ARRAY_INJE_HEAD ) == _LE_FALSE ) {
+
+            /* display message */
+            fprintf( stderr, "eratosthene-suite : error : memory allocation\n" );
+
+            /* send message */
+            return( EXIT_FAILURE );
+
+        }
+
+        /* create socket-array */
+        if ( le_array_set_size( & er_data, LE_ARRAY_STEP ) == _LE_FALSE ) {
 
             /* display message */
             fprintf( stderr, "eratosthene-suite : error : memory allocation\n" );
@@ -86,35 +99,41 @@
             /* send message */
             return( EXIT_FAILURE );
 
-        } else {
+        }
 
-            /* serialise injection time */
-            le_array_serial( & er_array, & er_time, sizeof( le_time_t ), 0, _LE_SET );
+        /* serialise time */
+        le_array_serial( & er_head, & er_time, sizeof( le_time_t ), 0, _LE_SET );
 
-            /* compute socket-array base */
-            er_base = le_array_get_byte( & er_array ) + sizeof( le_time_t );
+        /* retreive array pointer */
+        er_base = le_array_get_byte( & er_data );
 
-            /* read stream */
-            while ( ( er_read = fread( er_base, sizeof( le_byte_t ), LE_ARRAY_UF3 * ER_INJECT, er_stream ) ) > 0 ) {
+        /* read stream */
+        while ( ( er_read = fread( er_base, sizeof( le_byte_t ), ER_INJECT * LE_ARRAY_UF3, er_stream ) ) > 0 ) {
 
-                /* update socket-array size */
-                le_array_set_size( & er_array, er_read + sizeof( le_time_t ) );
+            /* write socket-array - injection head */
+            le_array_io_write( & er_head, LE_MODE_INJE, er_socket );
 
-                /* write socket-array */
-                le_array_io_write( & er_array, LE_MODE_INJE, er_socket );
+            /* update array size */
+            le_array_set_size( & er_data, er_read );
 
-            }
+            /* encode socket-array */
+            le_array_uf3_encode( & er_data, & er_dual );
 
-            /* delete stream */
-            fclose( er_stream );
+            /* write socket array */
+            le_array_io_write( & er_dual, LE_MODE_INJE, er_socket );
 
         }
+
+        /* delete stream */
+        fclose( er_stream );
 
         /* delete client socket */
         le_client_delete( er_socket );
 
         /* delete socket-array */
-        le_array_delete( & er_array );
+        le_array_delete( & er_head );
+        le_array_delete( & er_data );
+        le_array_delete( & er_dual );
 
         /* send message */
         return( EXIT_SUCCESS );

@@ -136,7 +136,7 @@
     source - i/o methods
  */
 
-    le_void_t er_cell_io_read( er_cell_t * const er_cell, le_sock_t const er_socket ) {
+    le_void_t er_cell_io_read( er_cell_t * const er_cell, le_array_t * const er_array ) {
 
         /* pointer variables */
         le_byte_t * er_head = NULL;
@@ -149,12 +149,8 @@
         le_real_t er_opta = 0.0;
         le_real_t er_optb = 0.0;
 
-        /* read socket-array */
-        le_array_io_read( & er_cell->ce_data, er_socket );
-
         /* decode socket-array */
-        //le_array_uf3_decode( & er_cell->ce_data );
-        le_array_uf3_rec_decode( & er_cell->ce_data );
+        le_array_uf3_decode( er_array, & er_cell->ce_data );
 
         /* check array state - abort processing */
         if ( ( er_size = le_array_get_size( & er_cell->ce_data ) ) == 0 ) return;
