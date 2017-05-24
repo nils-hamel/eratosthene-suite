@@ -62,39 +62,39 @@
  */
 
     /* define execution modes */
-    # define ER_COMMON_EXIT  ( 0x00 )
-    # define ER_COMMON_VIEW  ( 0x01 )
-    # define ER_COMMON_MOVIE ( 0x02 )
+    # define ER_COMMON_EXIT    ( 0x00 )
+    # define ER_COMMON_VIEW    ( 0x01 )
+    # define ER_COMMON_MOVIE   ( 0x02 )
 
     /* define trigonometric factors */
-    # define ER_COMMON_D2R   ( 3.1415926535 / 180.0 )
-    # define ER_COMMON_R2D   ( 180.0 / 3.1415926535 )
+    # define ER_COMMON_D2R     ( 3.1415926535 / 180.0 )
+    # define ER_COMMON_R2D     ( 180.0 / 3.1415926535 )
 
     /* define inertial coefficients */
-    # define ER_COMMON_INE   ( 1.0 / 100.0 )
-    # define ER_COMMON_IML   ( 1.0 / 10.0 )
-    # define ER_COMMON_IMU   ( 10.0 )
-    # define ER_COMMON_INR   ( 1.0 / 500.0 )
-    # define ER_COMMON_INP   ( 3.0 * LE_PI / ( LE_ADDRESS_WGSA * 180.0 ) )
+    # define ER_COMMON_INE     ( 1.0 / 100.0 )
+    # define ER_COMMON_IML     ( 1.0 / 10.0 )
+    # define ER_COMMON_IMU     ( 10.0 )
+    # define ER_COMMON_INR     ( 1.0 / 500.0 )
+    # define ER_COMMON_INP     ( 3.0 * LE_PI / ( LE_ADDRESS_WGSA * 180.0 ) )
 
     /* define altitude clamped range */
-    # define ER_COMMON_ALL   ( LE_ADDRESS_WGSA * 0.75 )
-    # define ER_COMMON_ALU   ( LE_ADDRESS_WGSA * 3.00 )
+    # define ER_COMMON_ALL     ( LE_ADDRESS_WGSA * 0.75 )
+    # define ER_COMMON_ALU     ( LE_ADDRESS_WGSA * 3.00 )
 
     /* define model parameters */
-    # define ER_COMMON_ENUM  ( 4 )
-    # define ER_COMMON_SPAN  ( 7 )
+    # define ER_COMMON_ENUM    ( 4 )
+    # define ER_COMMON_SPAN    ( 7 )
 
     /* define mouse button */
-    # define ER_COMMON_WUP   ( 3 )
-    # define ER_COMMON_WDOWN ( 4 )
+    # define ER_COMMON_WUP     ( 3 )
+    # define ER_COMMON_WDOWN   ( 4 )
 
 /*
     header - preprocessor macros
  */
 
     /* define time macro */
-    # define ER_COMMON_TIME(a)   { struct timespec __t; clock_gettime( CLOCK_REALTIME, & __t ); a = ( le_real_t ) __t.tv_sec + ( le_real_t ) __t.tv_nsec * 1e-9; }
+    # define ER_COMMON_TIME(a) { struct timespec __t; clock_gettime( CLOCK_REALTIME, & __t ); a = ( le_real_t ) __t.tv_sec + ( le_real_t ) __t.tv_nsec * 1e-9; }
 
 /*
     header - type definition
