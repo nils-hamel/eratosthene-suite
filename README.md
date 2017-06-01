@@ -1,4 +1,4 @@
-## eratosthene-suite
+## Overview
 
 The _eratosthene-suite_ offers a front-end to the eratosthene indexation server implemented in the _liberatosthene_ library. It consists in a softwares suite offering front-end solutions to the functionalities of the eratosthene library.
 
