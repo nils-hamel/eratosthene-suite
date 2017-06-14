@@ -20,7 +20,7 @@ The _eratosthene-suite_ comes with the following package dependencies (Ubuntu 16
 
 * build-essential
 * mesa-common-dev
-* libglew-dev:
+* libglew-dev
 * freeglut3-dev
 * libpng12-dev
 
