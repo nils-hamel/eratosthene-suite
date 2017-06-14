@@ -36,3 +36,21 @@ The code documentation is built using Doxygen.
 Copyright (c) 2016-2017 EPFL CDH DHLAB
 
 This program is licensed under the terms of the GNU GPLv3.
+
+## Compilation
+
+To build sub-modules and binaries with make, use the command :
+
+    $ make clean-all && make
+
+To rebuild the binaries without rebuilding sub-modules :
+
+    $ make clean && make build
+
+To rebuild sub-modules only, use the command :
+
+    $ make clean-modules && make modules
+
+To generate the documentation, use the command :
+
+    $ make clean-documentation && make documentation
