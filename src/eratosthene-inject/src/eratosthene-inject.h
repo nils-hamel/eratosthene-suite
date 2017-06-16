@@ -84,6 +84,7 @@
 
     /* define segmentation size */
     # define ER_INJECT ( LE_ARRAY_STEP / LE_ARRAY_UF3 )
+    # define ER_INJECT_ ( 1048576 )
 
 /*
     header - preprocessor macros
@@ -123,7 +124,7 @@
      *  \return Standard exit code
      */
 
-    le_enum_t er_inject_uf3( int argc, char ** argv );
+    le_enum_t er_inject_uf3( char const * const er_path, le_time_t er_time, le_sock_t const er_socket );
 
     /*! \brief main function
      *
