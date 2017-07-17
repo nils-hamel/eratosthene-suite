@@ -83,6 +83,9 @@
             /* write socket array */
             le_array_io_write( & er_dual, LE_MODE_INJE, er_socket );
 
+            /* read delay array */
+            le_array_io_read( & er_data, er_socket );
+
         }
 
         /* delete socket array */
