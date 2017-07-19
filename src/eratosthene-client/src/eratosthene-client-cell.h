@@ -57,6 +57,8 @@
     /* define pseudo-constructor */
     # define ER_CELL_C   { 0, LE_ADDRESS_C, LE_ARRAY_C, { 0.0 } }
 
+    # define ER_CELL_C_  { 0, LE_ADDRESS_C, LE_ARRAY_C, { 0.0 } }
+
     /* define flags */
     # define ER_CELL_QRY ( 0x01 << 0 )
     # define ER_CELL_DIS ( 0x01 << 1 )
@@ -129,6 +131,16 @@
         le_real_t    ce_edge[3];
 
     } er_cell_t;
+
+    typedef struct er_cell_struct_ {
+
+        le_byte_t    ce_flag;
+        le_address_t ce_addr;
+        le_array_t   ce_data;
+
+        le_real_t    ce_edge[3];
+
+    } er_cell_t_;
 
 /*
     header - function prototypes
