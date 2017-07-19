@@ -59,10 +59,12 @@
     /* define pseudo-constructor */
     # define ER_MODEL_C        { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 0, 0, NULL, LE_ARRAY_C, _LE_TRUE }
 
-    # define LE_MODEL_C_       { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 0, NULL, NULL }
+    # define ER_MODEL_C_       { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 0, NULL, NULL, _LE_TRUE }
 
     /* define pseudo-initialiser */
     # define ER_MODEL_I(s,p,t) { s, p, t, ER_MODEL_STACK, 0, 0, NULL, LE_ARRAY_C, _LE_TRUE }
+
+    # define ER_MODEL_I_(s,p,t) { s, p, t, ER_MODEL_STACK, 0, NULL, NULL, _LE_TRUE }
 
     /* define model stack */
     # define ER_MODEL_STACK    ( 4096 )
@@ -158,7 +160,7 @@
 
         le_size_t    md_size;
         le_size_t    md_sync;
-        er_cell_t_ * md_disp;
+        er_cell_t_ * md_cell;
         er_cell_t_ * md_targ;
 
     le_enum_t _status; } er_model_t_;
@@ -190,6 +192,8 @@
 
     er_model_t er_model_create( le_sock_t const er_socket, le_size_t const er_scfg, le_time_t const er_tcfg );
 
+    er_model_t_ er_model_create_( le_sock_t const er_socket, le_size_t const er_scfg, le_time_t const er_tcfg );
+
     /*! \brief constructor/destructor methods
      *
      *  This function deletes the provided model structure. It deletes each
@@ -200,6 +204,8 @@
      */
 
     le_void_t er_model_delete( er_model_t * const er_model );
+
+    le_void_t er_model_delete_( er_model_t_ * const er_model );
 
     /*! \brief mutator methods
      *

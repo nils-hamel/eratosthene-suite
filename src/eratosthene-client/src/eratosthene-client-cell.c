@@ -37,6 +37,19 @@
 
     }
 
+    er_cell_t_ er_cell_create_( le_void_t ) {
+
+        /* created structure variables */
+        er_cell_t_ er_cell = ER_CELL_C_;
+
+        /* create array structure */
+        er_cell.ce_data = le_array_create();
+
+        /* return created structure */
+        return( er_cell );
+
+    }
+
     le_void_t er_cell_delete( er_cell_t * const er_cell ) {
 
         /* deleted structure variables */
@@ -47,6 +60,19 @@
 
         /* delete structure */
         ( * er_cell ) = er_reset;
+
+    }
+
+    le_void_t er_cell_delete_( er_cell_t_ * const er_cell ) {
+
+        /* deleted structure variables */
+        er_cell_t_ er_delete = ER_CELL_C_;
+
+        /* delete array structure */
+        le_array_delete( & er_cell->ce_data );
+
+        /* delete structure */
+        ( * er_cell ) = er_delete;
 
     }
 

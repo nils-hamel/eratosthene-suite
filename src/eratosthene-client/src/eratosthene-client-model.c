@@ -50,6 +50,38 @@
 
     }
 
+    er_model_t_ er_model_create_( le_sock_t const er_socket, le_size_t const er_scfg, le_time_t const er_tcfg ) {
+
+        /* created structure variables */
+        er_model_t_ er_model = ER_MODEL_I_( er_socket, er_scfg, er_tcfg );
+
+        /* array size variables */
+        le_size_t er_size = er_model.md_size * 2;
+
+        /* create cell arrays */
+        if ( ( er_model.md_cell = ( er_cell_t_ * ) malloc( er_size * sizeof( er_cell_t_ ) ) ) == NULL ) {
+
+            /* return created structure */
+            return( er_model._status = _LE_FALSE, er_model );
+
+        }
+
+        /* initialise arrays cells */
+        for ( le_size_t er_parse = 0; er_parse < er_size; er_parse ++ ) {
+
+            /* initialise cell */
+            er_model.md_cell[er_parse] = er_cell_create_();
+
+        }
+
+        /* assign secondary cache */
+        er_model.md_targ = er_model.md_cell + er_model.md_size;
+
+        /* return created structure */
+        return( er_model );
+
+    }
+
     le_void_t er_model_delete( er_model_t * const er_model ) {
 
         /* deleted structure variables */
@@ -67,6 +99,32 @@
             }
 
             /* delete model cells */
+            free( er_model->md_cell );
+
+        }
+
+        /* delete structure */
+        ( * er_model ) = er_delete;
+
+    }
+
+    le_void_t er_model_delete_( er_model_t_ * const er_model ) {
+
+        /* deleted structure variables */
+        er_model_t_ er_delete = ER_MODEL_C_;
+
+        /* check cell array */
+        if ( er_model->md_cell != NULL ) {
+
+            /* delete arrays cells */
+            for ( le_size_t er_parse = 0; er_parse < ( er_model->md_size * 2 ); er_parse ++ ) {
+
+                /* delete cell */
+                er_cell_delete_( er_model->md_cell + er_parse );
+
+            }
+
+            /* release arrays memory */
             free( er_model->md_cell );
 
         }

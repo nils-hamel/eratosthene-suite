@@ -156,6 +156,8 @@
 
     er_cell_t er_cell_create( le_void_t );
 
+    er_cell_t_ er_cell_create_( le_void_t );
+
     /*! \brief constructor/destructor methods
      *
      *  This function deletes the cell structure provided as parameter. It
@@ -165,6 +167,8 @@
      */
 
     le_void_t er_cell_delete( er_cell_t * const er_cell );
+
+    le_void_t er_cell_delete_( er_cell_t_ * const er_cell );
 
     /* *** */
 
