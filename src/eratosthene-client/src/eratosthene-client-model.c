@@ -141,6 +141,99 @@
     source - mutator methods
  */
 
+    /* need reset of push value */
+
+    le_void_t er_model_set_enum_( er_model_t_ * const er_model, le_address_t * const er_enum, le_size_t const er_scale, er_view_t const * const er_view ) {
+
+        /* scale base variables */
+        le_size_t er_base = le_address_base( er_scale );
+
+        /* distance variables */
+        le_real_t er_line = 0.0;
+
+        /* scale digit enumeration */
+        for ( le_size_t er_digit = 0; er_digit < er_base; er_digit ++ ) {
+
+            /* update address size */
+            le_address_set_size( er_enum, er_scale + 1 );
+
+            /* assign address digit */
+            le_address_set_digit( er_enum, er_scale, er_digit );
+
+            /* enumeration constraint */
+            if ( er_scale < ER_COMMON_ENUM ) {
+
+                /* continue enumeration */
+                er_model_set_enum_( er_model, er_enum, er_scale + 1, er_view );
+
+            } else {
+
+                /* compute and check distance */
+                if ( ( er_line = er_geodesy_distance( er_enum, er_view ) ) < er_geodesy_face( er_view_get_alt( er_view ) ) ) {
+
+                    /* check selection criterion */
+                    if ( er_geodesy_select( er_line, er_model->md_scfg, er_scale ) == _LE_TRUE ) {
+
+                        /* check target size */
+                        if ( er_model->md_push < er_model->md_size ) {
+
+                            /* push address */
+                            er_cell_set_push_( er_model->md_targ + er_model->md_push, er_enum );
+
+                            /* update push value */
+                            er_model->md_push ++;
+
+                        }
+
+                    } else {
+
+                        /* check enumeration boundary */
+                        if ( ( er_scale + 2 + ER_COMMON_SPAN ) < er_model->md_scfg ) {
+
+                            /* continue enumeration */
+                            er_model_set_enum_( er_model, er_enum, er_scale + 1, er_view );
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+    le_void_t er_model_set_fast_( er_model_t_ * const er_model ) {
+
+        /* parsing d-cells array */
+        for ( le_size_t er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
+
+            /* check d-cell size */
+            if ( er_cell_get_count_( er_model->md_cell + er_parse ) > 0 ) {
+
+                /* parsing t-cell array */
+                for ( le_size_t er_index = 0; er_parse < er_model->md_size; er_index ++ ) {
+
+                    /* check address identity */
+                    if ( er_cell_get_equal_( er_model->md_cell + er_parse, er_model->md_targ + er_index ) == _LE_TRUE ) {
+
+                        /* set cell synchronisation flag */
+                        er_cell_set_flag_( er_model->md_cell + er_parse, ER_CELL_SYN_ );
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+    le_void_t er_model_set_sync_( er_model_t_ * const er_model ) { }
+
     le_void_t er_model_set_enum( er_model_t * const er_model, le_address_t * const er_enum, le_size_t const er_scale, er_view_t const * const er_view ) {
 
         /* scale base variables */

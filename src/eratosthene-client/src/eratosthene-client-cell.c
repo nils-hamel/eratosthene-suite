@@ -94,7 +94,21 @@
 
     }
 
+    le_enum_t er_cell_get_equal_( er_cell_t_ const * const er_cell, er_cell_t_ const * const er_targ ) {
+
+        /* compare address */
+        return( le_address_get_equal( & er_cell->ce_addr, & er_targ->ce_addr ) );
+
+    }
+
     le_size_t er_cell_get_count( er_cell_t const * const er_cell ) {
+
+        /* return cell point count */
+        return( le_array_get_size( & er_cell->ce_data ) / LE_ARRAY_UF3 );
+
+    }
+
+    le_size_t er_cell_get_count_( er_cell_t_ const * const er_cell ) {
 
         /* return cell point count */
         return( le_array_get_size( & er_cell->ce_data ) / LE_ARRAY_UF3 );
@@ -133,6 +147,13 @@
 
     }
 
+    le_void_t er_cell_set_flag_( er_cell_t_ * const er_cell, le_byte_t const er_state ) {
+
+        /* update cell state */
+        er_cell->ce_flag |= er_state;
+
+    }
+
     le_void_t er_cell_set_clear( er_cell_t * const er_cell, le_byte_t const er_state ) {
 
         /* update state */
@@ -141,6 +162,13 @@
     }
 
     le_void_t er_cell_set_push( er_cell_t * const er_cell, le_address_t const * const er_addr ) {
+
+        /* assign address */
+        er_cell->ce_addr = ( * er_addr );
+
+    }
+
+    le_void_t er_cell_set_push_( er_cell_t_ * const er_cell, le_address_t const * const er_addr ) {
 
         /* assign address */
         er_cell->ce_addr = ( * er_addr );

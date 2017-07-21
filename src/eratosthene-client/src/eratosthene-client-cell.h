@@ -63,6 +63,9 @@
     # define ER_CELL_QRY ( 0x01 << 0 )
     # define ER_CELL_DIS ( 0x01 << 1 )
 
+    # define ER_CELL_SYN_ ( 0x01 << 1 )
+    # define ER_CELL_DIS_ ( 0x01 << 2 )
+
 /*
     header - preprocessor macros
  */
@@ -178,6 +181,8 @@
 
     le_enum_t er_cell_get_match( er_cell_t const * const er_cell, le_address_t const * const er_addr );
 
+    le_enum_t er_cell_get_equal_( er_cell_t_ const * const er_cell, er_cell_t_ const * const er_targ );
+
     /*! \brief accessor methods
      *
      *  This function returns the number of points contained in the cell data
@@ -189,6 +194,8 @@
      */
 
     le_size_t er_cell_get_count( er_cell_t const * const er_cell );
+
+    le_size_t er_cell_get_count_( er_cell_t_ const * const er_cell );
 
     /*! \brief accessor methods
      *
@@ -235,12 +242,16 @@
 
     le_void_t er_cell_set_flag( er_cell_t * const er_cell, le_byte_t const er_state );
 
+    le_void_t er_cell_set_flag_( er_cell_t_ * const er_cell, le_byte_t const er_state );
+
     /* *** */
     le_void_t er_cell_set_clear( er_cell_t * const er_cell, le_byte_t const er_state );
 
     /* *** */
 
     le_void_t er_cell_set_push( er_cell_t * const er_cell, le_address_t const * const er_addr );
+
+    le_void_t er_cell_set_push_( er_cell_t_ * const er_cell, le_address_t const * const er_addr );
 
     /* *** */
 

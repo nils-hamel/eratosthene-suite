@@ -59,12 +59,12 @@
     /* define pseudo-constructor */
     # define ER_MODEL_C        { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 0, 0, NULL, LE_ARRAY_C, _LE_TRUE }
 
-    # define ER_MODEL_C_       { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 0, NULL, NULL, _LE_TRUE }
+    # define ER_MODEL_C_       { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 0, 0, NULL, NULL, _LE_TRUE }
 
     /* define pseudo-initialiser */
     # define ER_MODEL_I(s,p,t) { s, p, t, ER_MODEL_STACK, 0, 0, NULL, LE_ARRAY_C, _LE_TRUE }
 
-    # define ER_MODEL_I_(s,p,t) { s, p, t, ER_MODEL_STACK, 0, NULL, NULL, _LE_TRUE }
+    # define ER_MODEL_I_(s,p,t) { s, p, t, ER_MODEL_STACK, 0, 0, NULL, NULL, _LE_TRUE }
 
     /* define model stack */
     # define ER_MODEL_STACK    ( 4096 )
@@ -159,6 +159,7 @@
         le_time_t    md_tcfg;
 
         le_size_t    md_size;
+        le_size_t    md_push;
         le_size_t    md_sync;
         er_cell_t_ * md_cell;
         er_cell_t_ * md_targ;
@@ -261,6 +262,12 @@
      */
 
     le_void_t er_model_set_enum( er_model_t * const er_model, le_address_t * const er_enum, le_size_t const er_scale, er_view_t const * const er_view );
+
+    le_void_t er_model_set_enum_( er_model_t_ * const er_model, le_address_t * const er_enum, le_size_t const er_scale, er_view_t const * const er_view );
+
+    le_void_t er_model_set_fast_( er_model_t_ * const er_model );
+
+    le_void_t er_model_set_sync_( er_model_t_ * const er_model );
 
     /* *** */
 
