@@ -56,7 +56,7 @@
         er_model_t_ er_model = ER_MODEL_I_( er_socket, er_scfg, er_tcfg );
 
         /* array size variables */
-        le_size_t er_size = er_model.md_size * 2;
+        le_size_t er_size = er_model.md_size << 1;
 
         /* create cell arrays */
         if ( ( er_model.md_cell = ( er_cell_t_ * ) malloc( er_size * sizeof( er_cell_t_ ) ) ) == NULL ) {
@@ -116,8 +116,11 @@
         /* check cell array */
         if ( er_model->md_cell != NULL ) {
 
+            /* assign double-array size */
+            er_model->md_size <<= 1;
+
             /* delete arrays cells */
-            for ( le_size_t er_parse = 0; er_parse < ( er_model->md_size * 2 ); er_parse ++ ) {
+            for ( le_size_t er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
 
                 /* delete cell */
                 er_cell_delete_( er_model->md_cell + er_parse );
