@@ -136,6 +136,13 @@
 
     }
 
+    le_real_t * er_cell_get_pose_( er_cell_t_ * const er_cell ) {
+
+        /* return cell position pointer */
+        return( ( le_real_t * ) le_array_get_byte( & er_cell->ce_data ) );
+
+    }
+
     le_data_t * er_cell_get_data( er_cell_t * const er_cell ) {
 
         /* return cell colorimetric array pointer */
@@ -143,9 +150,23 @@
 
     }
 
+    le_data_t * er_cell_get_data_( er_cell_t_ * const er_cell ) {
+
+        /* return cell data pointer */
+        return( ( le_data_t * ) ( le_array_get_byte( & er_cell->ce_data ) + LE_ARRAY_UF3_POSE ) );
+
+    }
+
     le_real_t * er_cell_get_edge( er_cell_t * const er_cell ) {
 
         /* return cell edge array pointer */
+        return( er_cell->ce_edge );
+
+    }
+
+    le_real_t * er_cell_get_edge_( er_cell_t_ * const er_cell ) {
+
+        /* return cell edge pointer */
         return( er_cell->ce_edge );
 
     }

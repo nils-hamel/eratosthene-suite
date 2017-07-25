@@ -255,6 +255,8 @@
 
     le_void_t er_client_loops_render( le_void_t );
 
+    le_void_t er_client_loops_render_( le_void_t );
+
     /*! \brief loop methods ***
      *
      *  This function is called by the main function model thread to trigger

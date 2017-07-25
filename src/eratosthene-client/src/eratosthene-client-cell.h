@@ -63,8 +63,8 @@
     # define ER_CELL_QRY ( 0x01 << 0 )
     # define ER_CELL_DIS ( 0x01 << 1 )
 
-    # define ER_CELL_SYN_ ( 0x01 << 1 )
-    # define ER_CELL_DIS_ ( 0x01 << 2 )
+    # define ER_CELL_SYN_ ( 0x01 << 0 )
+    # define ER_CELL_DIS_ ( 0x01 << 1 )
 
 /*
     header - preprocessor macros
@@ -217,6 +217,8 @@
 
     le_real_t * er_cell_get_pose( er_cell_t * const er_cell );
 
+    le_real_t * er_cell_get_pose_( er_cell_t_ * const er_cell );
+
     /*! \brief accessor methods
      *
      *  This function returns the base pointer to the cell colour array. One has
@@ -231,6 +233,8 @@
 
     le_data_t * er_cell_get_data( er_cell_t * const er_cell );
 
+    le_data_t * er_cell_get_data_( er_cell_t_ * const er_cell );
+
     /*! \brief accessor methods
      *
      *  This function returns a pointer to the 3-array holding the coordinates
@@ -243,6 +247,8 @@
      */
 
     le_real_t * er_cell_get_edge( er_cell_t * const er_cell );
+
+    le_real_t * er_cell_get_edge_( er_cell_t_ * const er_cell );
 
     /* *** */
 

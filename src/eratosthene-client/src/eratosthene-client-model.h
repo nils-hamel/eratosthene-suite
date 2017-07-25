@@ -360,6 +360,8 @@
 
     le_void_t er_model_display_cell( er_model_t const * const er_model, er_view_t const * const er_view );
 
+    le_void_t er_model_display_cell_( er_model_t_ const * const er_model, er_view_t const * const er_view );
+
     /*! \brief display methods
      *
      *  This function displays a simple wireframe model of earth to provide a
