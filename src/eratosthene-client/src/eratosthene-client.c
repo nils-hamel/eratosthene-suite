@@ -426,6 +426,36 @@
 
     }
 
+    le_void_t er_client_loops_update_( le_void_t ) {
+
+        /* address variables */
+        le_address_t er_enum = LE_ADDRESS_C;
+
+        /* motion detection */
+        if ( er_view_get_equal( & er_client.cl_push, & er_client.cl_view ) == _LE_FALSE ) {
+
+            /* retreive address times */
+            er_enum = er_view_get_times( & er_client.cl_view );
+
+            /* prepare model update */
+            er_model_set_prep_( & er_client.cl_model_ );
+
+            /* update model target */
+            er_model_set_enum_( & er_client.cl_model_, & er_enum, 0, & er_client.cl_view );
+
+            /* model/target fast synchronisation */
+            er_model_set_fast_( & er_client.cl_model_ );
+
+            /* push considered view */
+            er_client.cl_push = er_client.cl_view;
+
+        }
+
+        /* synchronisation process */
+        er_model_set_sync_( & er_client.cl_model_ );
+
+    }
+
 /*
     source - projection methods
  */
