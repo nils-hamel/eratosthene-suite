@@ -251,8 +251,6 @@
      *  earth used as reference and the time interface.
      */
 
-    le_void_t er_client_loops_render( le_void_t );
-
     le_void_t er_client_loops_render_( le_void_t );
 
     /*! \brief loop methods ***
@@ -266,8 +264,6 @@
      *  If the point of view has changed, the function starts the model update
      *  procedure using the model module functions.
      */
-
-    le_void_t er_client_loops_update( le_void_t );
 
     le_void_t er_client_loops_update_( le_void_t );
 
