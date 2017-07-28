@@ -57,13 +57,9 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_MODEL_C        { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 0, 0, NULL, LE_ARRAY_C, _LE_TRUE }
-
     # define ER_MODEL_C_       { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 0, 0, NULL, NULL, LE_ARRAY_C, _LE_TRUE }
 
     /* define pseudo-initialiser */
-    # define ER_MODEL_I(s,p,t) { s, p, t, ER_MODEL_STACK, 0, 0, NULL, LE_ARRAY_C, _LE_TRUE }
-
     # define ER_MODEL_I_(s,p,t) { s, p, t, ER_MODEL_STACK, 0, 0, NULL, NULL, LE_ARRAY_C, _LE_TRUE }
 
     /* define model stack */
@@ -134,22 +130,6 @@
      *  \var er_model_struct::md_cycle
      *  Cyclic search index
      */
-
-    typedef struct er_model_struct {
-
-        le_sock_t   md_socket;
-
-        le_size_t   md_scfg;
-        le_time_t   md_tcfg;
-
-        le_size_t   md_size;
-        le_size_t   md_head;
-        le_size_t   md_tail;
-        er_cell_t * md_cell;
-
-        le_array_t  md_read;
-
-    le_enum_t _status; } er_model_t;
 
     typedef struct er_model_struct_ {
 
