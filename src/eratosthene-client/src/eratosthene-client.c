@@ -104,8 +104,7 @@
         }
 
         /* create client model */
-        //if ( ( er_client.cl_model = er_model_create( er_client.cl_socket, er_space, er_times ) )._status == _LE_FALSE ) {
-        if ( ( er_client.cl_model_ = er_model_create_( er_client.cl_socket, er_space, er_times ) )._status == _LE_FALSE ) {
+        if ( ( er_client.cl_model = er_model_create_( er_client.cl_socket, er_space, er_times ) )._status == _LE_FALSE ) {
 
             /* delete client socket */
             le_client_delete( er_client.cl_socket );
@@ -158,7 +157,7 @@
 
         /* delete client model */
         //er_model_delete( & er_client->cl_model );
-        er_model_delete_( & er_client->cl_model_ );
+        er_model_delete_( & er_client->cl_model );
 
         /* socket-array size */
         le_array_set_size( & er_array, 0 );
@@ -265,7 +264,6 @@
                     glutMainLoopEvent();
 
                     /* model display procedure */
-                    //er_client_loops_render();
                     er_client_loops_render_();
 
                     /* swap buffers */
@@ -282,10 +280,10 @@
                     er_client.cl_view = er_movie_get( & er_client.cl_movie );
 
                     /* model update procedure */
-                    er_client_loops_update();
+                    er_client_loops_update_();
 
                     /* model display procedure */
-                    er_client_loops_render();
+                    er_client_loops_render_();
 
                     /* movie procedure */
                     er_client.cl_loops = er_movie( & er_client.cl_movie );
@@ -338,43 +336,6 @@
     source - loop methods
  */
 
-    le_void_t er_client_loops_render( le_void_t ) {
-
-        /* clear color and depth buffers */
-        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-        /* projection : model */
-        er_client_proj_model( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
-
-        /* matrix - cells */
-        glPushMatrix(); {
-
-            /* display cells */
-            er_model_display_cell( & er_client.cl_model, & er_client.cl_view );
-
-        } glPopMatrix();
-
-        /* matrix - earth */
-        glPushMatrix(); {
-
-            /* display earth */
-            er_model_display_earth( & er_client.cl_view );
-
-        } glPopMatrix();
-
-        /* projection : interface */
-        er_client_proj_interface( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
-
-        /* matrix - interface */
-        glPushMatrix(); {
-
-            /* display interface */
-            er_times_display( & er_client.cl_times, & er_client.cl_view );
-
-        } glPopMatrix();
-
-    }
-
     le_void_t er_client_loops_render_( le_void_t ) {
 
         /* clear color and depth buffers */
@@ -387,7 +348,7 @@
         glPushMatrix(); {
 
             /* display cells */
-            er_model_display_cell_( & er_client.cl_model_, & er_client.cl_view );
+            er_model_display_cell_( & er_client.cl_model, & er_client.cl_view );
 
         } glPopMatrix();
 
@@ -409,61 +370,6 @@
             er_times_display( & er_client.cl_times, & er_client.cl_view );
 
         } glPopMatrix();
-
-    }
-
-    le_void_t er_client_loops_update( le_void_t ) {
-
-        /* motion detection */
-        if ( er_view_get_equal( & er_client.cl_push, & er_client.cl_view ) == _LE_TRUE ) {
-
-            /* check motion */
-            if ( er_client.cl_motion == _LE_TRUE ) {
-
-                /* stopwatch mark */
-                ER_COMMON_TIME( er_client.cl_mtimeb );
-
-                /* check stopwatch - abort update */
-                if ( ( er_client.cl_mtimeb - er_client.cl_mtimea ) >= 0.4 ) {
-
-                    /* update triggered - reset motion */
-                    er_client.cl_motion = _LE_FALSE;
-
-                /* abort update */
-                } else { return; }
-
-            /* abort update */
-            } else { return; }
-
-        } else {
-
-            /* stopwatch mark */
-            ER_COMMON_TIME( er_client.cl_mtimea );
-
-            /* update push view */
-            er_client.cl_push = er_client.cl_view;
-
-            /* check motion */
-            if ( er_client.cl_motion == _LE_FALSE ) {
-
-                /* set motion */
-                er_client.cl_motion = _LE_TRUE;
-
-            }
-
-            /* abort update */
-            return;
-
-        }
-
-        /* address variables */
-        le_address_t er_enum = er_view_get_times( & er_client.cl_push );
-
-        /* update model cells */
-        er_model_set_enum( & er_client.cl_model, & er_enum, 0, & er_client.cl_push );
-
-        /* server queries */
-        er_model_set_query( & er_client.cl_model );
 
     }
 
@@ -479,13 +385,13 @@
             er_enum = er_view_get_times( & er_client.cl_view );
 
             /* prepare model update */
-            er_model_set_prep_( & er_client.cl_model_ );
+            er_model_set_prep_( & er_client.cl_model );
 
             /* update model target */
-            er_model_set_enum_( & er_client.cl_model_, & er_enum, 0, & er_client.cl_view );
+            er_model_set_enum_( & er_client.cl_model, & er_enum, 0, & er_client.cl_view );
 
             /* model/target fast synchronisation */
-            er_model_set_fast_( & er_client.cl_model_ );
+            er_model_set_fast_( & er_client.cl_model );
 
             /* push considered view */
             er_client.cl_push = er_client.cl_view;
@@ -493,7 +399,7 @@
         }
 
         /* synchronisation process */
-        er_model_set_sync_( & er_client.cl_model_ );
+        er_model_set_sync_( & er_client.cl_model );
 
     }
 
