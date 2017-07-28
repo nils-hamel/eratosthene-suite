@@ -55,14 +55,9 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_CELL_C   { 0, LE_ADDRESS_C, LE_ARRAY_C, { 0.0 } }
-
     # define ER_CELL_C_  { 0, LE_ADDRESS_C, LE_ARRAY_C, { 0.0 } }
 
     /* define flags */
-    # define ER_CELL_QRY ( 0x01 << 0 )
-    # define ER_CELL_DIS ( 0x01 << 1 )
-
     # define ER_CELL_SYN_ ( 0x01 << 0 )
     # define ER_CELL_DIS_ ( 0x01 << 1 )
 
@@ -124,16 +119,6 @@
      *  \var er_cell_struct::ce_edge
      *  Cell frame origin point coordinates
      */
-
-    typedef struct er_cell_struct {
-
-        le_byte_t    ce_flag;
-        le_address_t ce_addr;
-        le_array_t   ce_data;
-
-        le_real_t    ce_edge[3];
-
-    } er_cell_t;
 
     typedef struct er_cell_struct_ {
 
