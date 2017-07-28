@@ -57,10 +57,10 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_MODEL_C_       { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 0, 0, NULL, NULL, LE_ARRAY_C, _LE_TRUE }
+    # define ER_MODEL_C        { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 0, 0, NULL, NULL, LE_ARRAY_C, _LE_TRUE }
 
     /* define pseudo-initialiser */
-    # define ER_MODEL_I_(s,p,t) { s, p, t, ER_MODEL_STACK, 0, 0, NULL, NULL, LE_ARRAY_C, _LE_TRUE }
+    # define ER_MODEL_I(s,p,t) { s, p, t, ER_MODEL_STACK, 0, 0, NULL, NULL, LE_ARRAY_C, _LE_TRUE }
 
     /* define model stack */
     # define ER_MODEL_STACK    ( 4096 )
@@ -133,20 +133,20 @@
 
     typedef struct er_model_struct_ {
 
-        le_sock_t    md_sock;
+        le_sock_t   md_sock;
 
-        le_size_t    md_scfg;
-        le_time_t    md_tcfg;
+        le_size_t   md_scfg;
+        le_time_t   md_tcfg;
 
-        le_size_t    md_size;
-        le_size_t    md_push;
-        le_size_t    md_sync;
-        er_cell_t_ * md_cell;
-        er_cell_t_ * md_targ;
+        le_size_t   md_size;
+        le_size_t   md_push;
+        le_size_t   md_sync;
+        er_cell_t * md_cell;
+        er_cell_t * md_targ;
 
-        le_array_t   md_read;
+        le_array_t  md_read;
 
-    le_enum_t _status; } er_model_t_;
+    le_enum_t _status; } er_model_t;
 
 /*
     header - function prototypes
@@ -173,7 +173,7 @@
      *  \return Created model structure
      */
 
-    er_model_t_ er_model_create_( le_sock_t const er_socket, le_size_t const er_scfg, le_time_t const er_tcfg );
+    er_model_t er_model_create( le_sock_t const er_socket, le_size_t const er_scfg, le_time_t const er_tcfg );
 
     /*! \brief constructor/destructor methods
      *
@@ -184,11 +184,11 @@
      *  \param er_model Model structure
      */
 
-    le_void_t er_model_delete_( er_model_t_ * const er_model );
+    le_void_t er_model_delete( er_model_t * const er_model );
 
     /* *** */
 
-    le_void_t er_model_set_prep_( er_model_t_ * const er_model );
+    le_void_t er_model_set_prep( er_model_t * const er_model );
 
     /*! \brief mutator methods
      *
@@ -243,11 +243,11 @@
      *  \param er_view  Point of view structure
      */
 
-    le_void_t er_model_set_enum_( er_model_t_ * const er_model, le_address_t * const er_enum, le_size_t const er_scale, er_view_t const * const er_view );
+    le_void_t er_model_set_enum( er_model_t * const er_model, le_address_t * const er_enum, le_size_t const er_scale, er_view_t const * const er_view );
 
-    le_void_t er_model_set_fast_( er_model_t_ * const er_model );
+    le_void_t er_model_set_fast( er_model_t * const er_model );
 
-    le_void_t er_model_set_sync_( er_model_t_ * const er_model );
+    le_void_t er_model_set_sync( er_model_t * const er_model );
 
     /*! \brief display methods
      *
@@ -287,7 +287,7 @@
      *  \param er_view  View structure
      */
 
-    le_void_t er_model_display_cell_( er_model_t_ const * const er_model, er_view_t const * const er_view );
+    le_void_t er_model_display_cell( er_model_t const * const er_model, er_view_t const * const er_view );
 
     /*! \brief display methods
      *

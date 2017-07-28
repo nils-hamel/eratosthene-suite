@@ -55,11 +55,11 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_CELL_C_  { 0, LE_ADDRESS_C, LE_ARRAY_C, { 0.0 } }
+    # define ER_CELL_C   { 0, LE_ADDRESS_C, LE_ARRAY_C, { 0.0 } }
 
     /* define flags */
-    # define ER_CELL_SYN_ ( 0x01 << 0 )
-    # define ER_CELL_DIS_ ( 0x01 << 1 )
+    # define ER_CELL_SYN ( 0x01 << 0 )
+    # define ER_CELL_DIS ( 0x01 << 1 )
 
 /*
     header - preprocessor macros
@@ -128,7 +128,7 @@
 
         le_real_t    ce_edge[3];
 
-    } er_cell_t_;
+    } er_cell_t;
 
 /*
     header - function prototypes
@@ -142,7 +142,7 @@
      *  \return Returns the created cell structure
      */
 
-    er_cell_t_ er_cell_create_( le_void_t );
+    er_cell_t er_cell_create( le_void_t );
 
     /*! \brief constructor/destructor methods
      *
@@ -152,15 +152,15 @@
      *  \param er_cell Cell structure
      */
 
-    le_void_t er_cell_delete_( er_cell_t_ * const er_cell );
+    le_void_t er_cell_delete( er_cell_t * const er_cell );
 
     /* *** */
 
-    le_byte_t er_cell_get_flag_( er_cell_t_ const * const er_cell, le_byte_t const er_state );
+    le_byte_t er_cell_get_flag( er_cell_t const * const er_cell, le_byte_t const er_state );
 
     /* *** */
 
-    le_enum_t er_cell_get_equal_( er_cell_t_ const * const er_cell, er_cell_t_ const * const er_targ );
+    le_enum_t er_cell_get_equal( er_cell_t const * const er_cell, er_cell_t const * const er_targ );
 
     /*! \brief accessor methods
      *
@@ -172,11 +172,11 @@
      *  \return Cell points count
      */
 
-    le_size_t er_cell_get_count_( er_cell_t_ const * const er_cell );
+    le_size_t er_cell_get_count( er_cell_t const * const er_cell );
 
     /* *** */
 
-    le_size_t er_cell_get_size_( er_cell_t_ const * const er_cell );
+    le_size_t er_cell_get_size( er_cell_t const * const er_cell );
 
     /*! \brief accessor methods
      *
@@ -190,7 +190,7 @@
      *  \return Cell points coordinates array pointer
      */
 
-    le_real_t * er_cell_get_pose_( er_cell_t_ * const er_cell );
+    le_real_t * er_cell_get_pose( er_cell_t * const er_cell );
 
     /*! \brief accessor methods
      *
@@ -204,7 +204,7 @@
      *  \return Cell points colours array pointer
      */
 
-    le_data_t * er_cell_get_data_( er_cell_t_ * const er_cell );
+    le_data_t * er_cell_get_data( er_cell_t * const er_cell );
 
     /*! \brief accessor methods
      *
@@ -217,27 +217,27 @@
      *  \return Pointer to the array of cell frame origin
      */
 
-    le_real_t * er_cell_get_edge_( er_cell_t_ * const er_cell );
+    le_real_t * er_cell_get_edge( er_cell_t * const er_cell );
 
     /* *** */
 
-    le_void_t er_cell_set_flag_( er_cell_t_ * const er_cell, le_byte_t const er_state );
+    le_void_t er_cell_set_flag( er_cell_t * const er_cell, le_byte_t const er_state );
 
     /* *** */
 
-    le_void_t er_cell_set_clear_( er_cell_t_ * const er_cell, le_byte_t const er_state );
+    le_void_t er_cell_set_clear( er_cell_t * const er_cell, le_byte_t const er_state );
 
     /* *** */
 
-    le_void_t er_cell_set_push_( er_cell_t_ * const er_cell, le_address_t const * const er_addr );
+    le_void_t er_cell_set_push( er_cell_t * const er_cell, le_address_t const * const er_addr );
 
     /* *** */
 
-    le_void_t er_cell_set_sync_( er_cell_t_ * const er_cell, er_cell_t_ const * const er_targ );
+    le_void_t er_cell_set_sync( er_cell_t * const er_cell, er_cell_t const * const er_targ );
 
     /* *** */
 
-    le_size_t er_cell_serial_( er_cell_t_ * const er_cell, le_array_t * const er_array, le_size_t const er_offset );
+    le_size_t er_cell_serial( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset );
 
     /*! \brief i/o methods
      *
@@ -270,7 +270,7 @@
      *  \return Returns cell amount of received points
      */
 
-    le_void_t er_cell_io_read_( er_cell_t_ * const er_cell, le_array_t * const er_array );
+    le_void_t er_cell_io_read( er_cell_t * const er_cell, le_array_t * const er_array );
 
 /*
     header - C/C++ compatibility

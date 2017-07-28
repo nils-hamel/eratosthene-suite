@@ -104,7 +104,7 @@
         }
 
         /* create client model */
-        if ( ( er_client.cl_model = er_model_create_( er_client.cl_socket, er_space, er_times ) )._status == _LE_FALSE ) {
+        if ( ( er_client.cl_model = er_model_create( er_client.cl_socket, er_space, er_times ) )._status == _LE_FALSE ) {
 
             /* delete client socket */
             le_client_delete( er_client.cl_socket );
@@ -156,8 +156,7 @@
         er_times_delete( & er_client->cl_times );
 
         /* delete client model */
-        //er_model_delete( & er_client->cl_model );
-        er_model_delete_( & er_client->cl_model );
+        er_model_delete( & er_client->cl_model );
 
         /* socket-array size */
         le_array_set_size( & er_array, 0 );
@@ -264,7 +263,7 @@
                     glutMainLoopEvent();
 
                     /* model display procedure */
-                    er_client_loops_render_();
+                    er_client_loops_render();
 
                     /* swap buffers */
                     glutSwapBuffers();
@@ -280,10 +279,10 @@
                     er_client.cl_view = er_movie_get( & er_client.cl_movie );
 
                     /* model update procedure */
-                    er_client_loops_update_();
+                    er_client_loops_update();
 
                     /* model display procedure */
-                    er_client_loops_render_();
+                    er_client_loops_render();
 
                     /* movie procedure */
                     er_client.cl_loops = er_movie( & er_client.cl_movie );
@@ -309,8 +308,7 @@
                 while ( er_client.cl_loops == ER_COMMON_VIEW ) {
 
                     /* model update procedure */
-                    //er_client_loops_update();
-                    er_client_loops_update_();
+                    er_client_loops_update();
 
                 }
 
@@ -336,7 +334,7 @@
     source - loop methods
  */
 
-    le_void_t er_client_loops_render_( le_void_t ) {
+    le_void_t er_client_loops_render( le_void_t ) {
 
         /* clear color and depth buffers */
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -348,7 +346,7 @@
         glPushMatrix(); {
 
             /* display cells */
-            er_model_display_cell_( & er_client.cl_model, & er_client.cl_view );
+            er_model_display_cell( & er_client.cl_model, & er_client.cl_view );
 
         } glPopMatrix();
 
@@ -373,7 +371,7 @@
 
     }
 
-    le_void_t er_client_loops_update_( le_void_t ) {
+    le_void_t er_client_loops_update( le_void_t ) {
 
         /* address variables */
         le_address_t er_enum = LE_ADDRESS_C;
@@ -385,13 +383,13 @@
             er_enum = er_view_get_times( & er_client.cl_view );
 
             /* prepare model update */
-            er_model_set_prep_( & er_client.cl_model );
+            er_model_set_prep( & er_client.cl_model );
 
             /* update model target */
-            er_model_set_enum_( & er_client.cl_model, & er_enum, 0, & er_client.cl_view );
+            er_model_set_enum( & er_client.cl_model, & er_enum, 0, & er_client.cl_view );
 
             /* model/target fast synchronisation */
-            er_model_set_fast_( & er_client.cl_model );
+            er_model_set_fast( & er_client.cl_model );
 
             /* push considered view */
             er_client.cl_push = er_client.cl_view;
@@ -399,7 +397,7 @@
         }
 
         /* synchronisation process */
-        er_model_set_sync_( & er_client.cl_model );
+        er_model_set_sync( & er_client.cl_model );
 
     }
 
