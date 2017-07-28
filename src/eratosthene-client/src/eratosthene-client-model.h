@@ -193,8 +193,6 @@
      *  \return Created model structure
      */
 
-    er_model_t er_model_create( le_sock_t const er_socket, le_size_t const er_scfg, le_time_t const er_tcfg );
-
     er_model_t_ er_model_create_( le_sock_t const er_socket, le_size_t const er_scfg, le_time_t const er_tcfg );
 
     /*! \brief constructor/destructor methods
@@ -206,9 +204,9 @@
      *  \param er_model Model structure
      */
 
-    le_void_t er_model_delete( er_model_t * const er_model );
-
     le_void_t er_model_delete_( er_model_t_ * const er_model );
+
+    /* *** */
 
     le_void_t er_model_set_prep_( er_model_t_ * const er_model );
 
@@ -265,60 +263,11 @@
      *  \param er_view  Point of view structure
      */
 
-    le_void_t er_model_set_enum( er_model_t * const er_model, le_address_t * const er_enum, le_size_t const er_scale, er_view_t const * const er_view );
-
     le_void_t er_model_set_enum_( er_model_t_ * const er_model, le_address_t * const er_enum, le_size_t const er_scale, er_view_t const * const er_view );
 
     le_void_t er_model_set_fast_( er_model_t_ * const er_model );
 
     le_void_t er_model_set_sync_( er_model_t_ * const er_model );
-
-    /* *** */
-
-    le_void_t er_model_set_push( er_model_t * const er_model, le_address_t * const er_addr );
-
-    /*! \brief mutator methods
-     *
-     *  This function is part of the model update process.
-     *
-     *  It is responsible of analysing the pushed addresses in order to perform
-     *  the required queries to the remote server.
-     *
-     *  In the first place, the function parses the pushed addresses and checks
-     *  if a cell in the stack already holds the data corresponding to the
-     *  pushed address. In this case, the cell is reactivated using its flag and
-     *  the pushed address is erased. The drawable flag of the cell is also set
-     *  to true as it can be directly considered.
-     *
-     *  In the second place, the function parses the remaining pushed addresses
-     *  and performs the query to the remote server. For each remaining pushed
-     *  address, a free cell is asked by the function and is used to receive the
-     *  remote server answer to the query. The flag of the new cell is set and
-     *  is drawable flag is also set to true.
-     *
-     *  \param er_model Model structure
-     */
-
-    le_void_t er_model_set_query( er_model_t * const er_model );
-
-    /*! \brief mutator methods
-     *
-     *  This function is part of the model update process.
-     *
-     *  It is responsible of terminating the model update process. It parses the
-     *  cells stack to check cells flag.
-     *
-     *  If the cell has its flag set, the function simply unset it. If the cell
-     *  has its flag already unset, the function ensure that its drawable flag
-     *  is set to false.
-     *
-     *  The function also resets the pushed addresses index to make the model
-     *  structure ready for a new model update.
-     *
-     *  \param er_model Model structure
-     */
-
-    //le_void_t er_model_set_reset( er_model_t * const er_model );
 
     /*! \brief display methods
      *
@@ -357,8 +306,6 @@
      *  \param er_model Model structure
      *  \param er_view  View structure
      */
-
-    le_void_t er_model_display_cell( er_model_t const * const er_model, er_view_t const * const er_view );
 
     le_void_t er_model_display_cell_( er_model_t_ const * const er_model, er_view_t const * const er_view );
 
