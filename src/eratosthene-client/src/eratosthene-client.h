@@ -358,21 +358,6 @@
 
     le_void_t er_client_calls_move( int er_x, int er_y );
 
-    /*! \brief stability methods
-     *
-     *  This function implements a stability trick.
-     *
-     *  As the main function uses \b glutMainLoopEvent() to manage events, the
-     *  \b glutMainLoop() function is never used which causes the software to
-     *  trigger an exception at ends.
-     *
-     *  To address this issue, the function is called by the main function just
-     *  before to return. It simply calls the GLUT main loop function once in
-     *  order to properly (?) ends the graphical context.
-     */
-
-    le_void_t glutFinish( le_void_t );
-
 /*
     header - C/C++ compatibility
  */

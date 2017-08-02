@@ -323,11 +323,8 @@
         /* delete client */
         er_client_delete( & er_client );
 
-        /* uninitialise glut - see stability methods */
-        glutFinish();
-
-        /* send message */
-        return( EXIT_SUCCESS );
+        /* stability mechanism (?) - send message */
+        return( glutIdleFunc( glutLeaveMainLoop ), glutMainLoop(), EXIT_SUCCESS );
 
     }
 
@@ -677,10 +674,4 @@
         }
 
     }
-
-/*
-    source - stability methods
- */
-
-    le_void_t glutFinish( le_void_t ) { glutIdleFunc( glutLeaveMainLoop ), glutMainLoop(); }
 
