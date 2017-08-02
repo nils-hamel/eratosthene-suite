@@ -247,7 +247,7 @@
 
     le_void_t er_model_set_fast( er_model_t * const er_model );
 
-    le_void_t er_model_set_sync( er_model_t * const er_model );
+    le_enum_t er_model_set_sync( er_model_t * const er_model );
 
     /*! \brief display methods
      *

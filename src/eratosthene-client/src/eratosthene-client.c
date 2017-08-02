@@ -284,15 +284,15 @@
                     /* model display procedure */
                     er_client_loops_render();
 
-                    /* movie procedure */
-                    er_client.cl_loops = er_movie( & er_client.cl_movie );
-
                     /* swap buffers */
                     glutSwapBuffers();
 
+                    /* movie procedure */
+                    er_client.cl_loops = er_movie( & er_client.cl_movie );
+
                 }
 
-            /* thread idle mechanism */
+            /* thread idle */
             } else { sleep( 1 ); }
 
         }
@@ -312,11 +312,12 @@
 
                 }
 
-            /* thread idle mechanism */
+            /* thread idle */
             } else { sleep( 1 ); }
 
         }
 
+        /* execution threads */
         }
 
         /* delete client */
@@ -396,8 +397,18 @@
 
         }
 
-        /* synchronisation process */
-        er_model_set_sync( & er_client.cl_model );
+        /* check exectution mode */
+        if ( er_client.cl_loops == ER_COMMON_MOVIE ) {
+
+            /* synchronisation process - full-process */
+            while ( er_model_set_sync( & er_client.cl_model ) == _LE_FALSE );
+
+        } else {
+
+            /* synchronisation process - step-process */
+            er_model_set_sync( & er_client.cl_model );
+
+        }
 
     }
 

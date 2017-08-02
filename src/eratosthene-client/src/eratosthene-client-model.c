@@ -198,7 +198,7 @@
 
     }
 
-    le_void_t er_model_set_sync( er_model_t * const er_model ) {
+    le_enum_t er_model_set_sync( er_model_t * const er_model ) {
 
         /* serialisation variables */
         le_size_t er_serial = 0;
@@ -229,6 +229,9 @@
                 }
 
             }
+
+            /* send message */
+            return( _LE_TRUE );
 
         } else {
 
@@ -299,6 +302,9 @@
 
             /* update synchronisation level */
             er_model->md_sync = er_model->md_sync + 1;
+
+            /* send message */
+            return( _LE_FALSE );
 
         }
 
