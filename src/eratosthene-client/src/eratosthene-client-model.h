@@ -134,7 +134,6 @@
     typedef struct er_model_struct_ {
 
         le_sock_t   md_sock;
-
         le_size_t   md_scfg;
         le_time_t   md_tcfg;
 
@@ -142,9 +141,9 @@
         le_size_t   md_push;
         le_size_t   md_sync;
         er_cell_t * md_cell;
-        er_cell_t * md_targ;
+        er_cell_t * md_virt;
 
-        le_array_t  md_read;
+        le_array_t  md_iosa;
 
     le_enum_t _status; } er_model_t;
 

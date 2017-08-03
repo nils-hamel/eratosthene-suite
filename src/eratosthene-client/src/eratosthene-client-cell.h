@@ -125,7 +125,7 @@
         le_byte_t    ce_flag;
         le_address_t ce_addr;
         le_array_t   ce_data;
-        le_real_t    ce_edge[3];
+        le_real_t    ce_edge[6];
 
     } er_cell_t;
 
