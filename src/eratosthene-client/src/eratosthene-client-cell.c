@@ -136,22 +136,14 @@
 
     }
 
-/*
-    source - serialisation methods
- */
+    le_void_t er_cell_set_empty( er_cell_t * const er_cell ) {
 
-    le_size_t er_cell_serial( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset ) {
-
-        /* serialise cell address */
-        return( le_address_serial( & er_cell->ce_addr, er_array, er_offset, _LE_SET ) );
+        /* empty cell array */
+        le_array_set_size( & er_cell->ce_data, 0 );
 
     }
 
-/*
-    source - i/o methods
- */
-
-    le_void_t er_cell_io_read( er_cell_t * const er_cell, le_array_t * const er_array ) {
+    le_void_t er_cell_set_data( er_cell_t * const er_cell, le_array_t * const er_array ) {
 
         /* pointer variables */
         le_byte_t * er_head = NULL;
@@ -167,11 +159,11 @@
         /* decode socket-array */
         le_array_uf3_decode( er_array, & er_cell->ce_data );
 
-        /* check array state - abort processing */
-        if ( ( er_size = le_array_get_size( & er_cell->ce_data ) ) == 0 ) return;
+        /* retrieve array size */
+        er_size = le_array_get_size( & er_cell->ce_data );
 
-        /* create array pointers */
-        er_head = ( er_base = le_array_get_byte( & er_cell->ce_data ) );
+        /* retrieve array pointer */
+        er_head = er_base = le_array_get_byte( & er_cell->ce_data );
 
         /* coordinates conversion - edge */
         er_cell->ce_edge[2] = ( ( le_real_t * ) er_head )[2] + LE_ADDRESS_WGSA;
@@ -204,6 +196,17 @@
             ( ( le_real_t * ) er_head )[2] = ( ( le_real_t * ) er_head )[2] * cos( er_opta ) - er_cell->ce_edge[2];
 
         }
+
+    }
+
+/*
+    source - serialisation methods
+ */
+
+    le_size_t er_cell_serial( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset ) {
+
+        /* serialise cell address */
+        return( le_address_serial( & er_cell->ce_addr, er_array, er_offset, _LE_SET ) );
 
     }
 

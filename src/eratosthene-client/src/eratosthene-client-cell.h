@@ -236,7 +236,7 @@
 
     /* *** */
 
-    le_size_t er_cell_serial( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset );
+    le_void_t er_cell_set_empty( er_cell_t * const er_cell );
 
     /*! \brief i/o methods
      *
@@ -269,7 +269,11 @@
      *  \return Returns cell amount of received points
      */
 
-    le_void_t er_cell_io_read( er_cell_t * const er_cell, le_array_t * const er_array );
+    le_void_t er_cell_set_data( er_cell_t * const er_cell, le_array_t * const er_array );
+
+    /* *** */
+
+    le_size_t er_cell_serial( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset );
 
 /*
     header - C/C++ compatibility
