@@ -101,8 +101,8 @@
         for ( le_size_t er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
 
             /* clear d-cell/t-cell synchronisation flag */
-            er_cell_set_clear( er_model->md_cell + er_parse, ER_CELL_SYN );
-            er_cell_set_clear( er_model->md_targ + er_parse, ER_CELL_SYN );
+            er_cell_set_zero( er_model->md_cell + er_parse, ER_CELL_SYN );
+            er_cell_set_zero( er_model->md_targ + er_parse, ER_CELL_SYN );
 
         }
 
@@ -222,7 +222,7 @@
                     if ( er_cell_get_flag( er_model->md_cell + er_parse, ER_CELL_SYN ) != ER_CELL_SYN ) {
 
                         /* update d-cell display state */
-                        er_cell_set_clear( er_model->md_cell + er_parse, ER_CELL_DIS );
+                        er_cell_set_zero( er_model->md_cell + er_parse, ER_CELL_DIS );
 
                     }
 
@@ -275,7 +275,7 @@
                             while ( er_cell_get_flag( er_model->md_cell + er_search, ER_CELL_SYN ) == ER_CELL_SYN ) er_search ++;
 
                             /* update d-cell state */
-                            er_cell_set_clear( er_model->md_cell + er_search, ER_CELL_DIS );
+                            er_cell_set_zero( er_model->md_cell + er_search, ER_CELL_DIS );
 
                             /* read socket-array */
                             le_array_io_read( & er_model->md_read, er_model->md_sock );
@@ -351,7 +351,7 @@
             if ( er_cell_get_flag( er_model->md_cell + er_parse, ER_CELL_DIS ) == 0 ) continue;
 
             /* check cell size - continue parsing */
-            if ( ( er_size = er_cell_get_count( er_model->md_cell + er_parse ) ) == 0 ) continue;
+            if ( ( er_size = er_cell_get_record( er_model->md_cell + er_parse ) ) == 0 ) continue;
 
             /* vertex and color pointer assignation */
             glVertexPointer( 3, ER_MODEL_VERTEX, LE_ARRAY_UF3, er_cell_get_pose( er_model->md_cell + er_parse ) );

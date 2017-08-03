@@ -64,42 +64,42 @@
 
     le_enum_t er_cell_get_equal( er_cell_t const * const er_cell, er_cell_t const * const er_targ ) {
 
-        /* compare address */
+        /* compare addresses */
         return( le_address_get_equal( & er_cell->ce_addr, & er_targ->ce_addr ) );
 
     }
 
-    le_size_t er_cell_get_count( er_cell_t const * const er_cell ) {
+    le_size_t er_cell_get_record( er_cell_t const * const er_cell ) {
 
-        /* return cell point count */
+        /* return number of uf3 records */
         return( le_array_get_size( & er_cell->ce_data ) / LE_ARRAY_UF3 );
 
     }
 
     le_size_t er_cell_get_size( er_cell_t const * const er_cell ) {
 
-        /* return cell address length */
+        /* return address length */
         return( le_address_get_size( & er_cell->ce_addr ) );
 
     }
 
     le_real_t * er_cell_get_pose( er_cell_t * const er_cell ) {
 
-        /* return cell position pointer */
+        /* return position pointer */
         return( ( le_real_t * ) le_array_get_byte( & er_cell->ce_data ) );
 
     }
 
     le_data_t * er_cell_get_data( er_cell_t * const er_cell ) {
 
-        /* return cell data pointer */
+        /* return data pointer */
         return( ( le_data_t * ) ( le_array_get_byte( & er_cell->ce_data ) + LE_ARRAY_UF3_POSE ) );
 
     }
 
     le_real_t * er_cell_get_edge( er_cell_t * const er_cell ) {
 
-        /* return cell edge pointer */
+        /* return edge pointer */
         return( er_cell->ce_edge );
 
     }
@@ -115,10 +115,10 @@
 
     }
 
-    le_void_t er_cell_set_clear( er_cell_t * const er_cell, le_byte_t const er_state ) {
+    le_void_t er_cell_set_zero( er_cell_t * const er_cell, le_byte_t const er_state ) {
 
         /* update cell state */
-        er_cell->ce_flag &= ( ~ er_state );
+        er_cell->ce_flag &= ~ er_state;
 
     }
 
@@ -131,13 +131,13 @@
 
     le_void_t er_cell_set_sync( er_cell_t * const er_cell, er_cell_t const * const er_targ ) {
 
-        /* synchronise cell address */
+        /* synchronise address */
         er_cell->ce_addr = er_targ->ce_addr;
 
     }
 
 /*
-    source - serialisation method
+    source - serialisation methods
  */
 
     le_size_t er_cell_serial( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset ) {

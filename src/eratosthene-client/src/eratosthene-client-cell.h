@@ -125,7 +125,6 @@
         le_byte_t    ce_flag;
         le_address_t ce_addr;
         le_array_t   ce_data;
-
         le_real_t    ce_edge[3];
 
     } er_cell_t;
@@ -172,7 +171,7 @@
      *  \return Cell points count
      */
 
-    le_size_t er_cell_get_count( er_cell_t const * const er_cell );
+    le_size_t er_cell_get_record( er_cell_t const * const er_cell );
 
     /* *** */
 
@@ -225,7 +224,7 @@
 
     /* *** */
 
-    le_void_t er_cell_set_clear( er_cell_t * const er_cell, le_byte_t const er_state );
+    le_void_t er_cell_set_zero( er_cell_t * const er_cell, le_byte_t const er_state );
 
     /* *** */
 
