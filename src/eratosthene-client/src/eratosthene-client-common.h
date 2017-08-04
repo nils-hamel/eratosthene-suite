@@ -93,9 +93,6 @@
     header - preprocessor macros
  */
 
-    /* define time macro */
-    # define ER_COMMON_TIME(a) { struct timespec __t; clock_gettime( CLOCK_REALTIME, & __t ); a = ( le_real_t ) __t.tv_sec + ( le_real_t ) __t.tv_nsec * 1e-9; }
-
 /*
     header - type definition
  */
