@@ -166,7 +166,7 @@
         er_head = er_base = le_array_get_byte( & er_cell->ce_data );
 
         /* coordinates conversion - edge */
-        er_cell->ce_edge[2] = ( ( le_real_t * ) er_head )[2] + LE_ADDRESS_WGSA;
+        er_cell->ce_edge[2] = ( ( le_real_t * ) er_head )[2] + LE_ADDRESS_WGS_A;
 
         /* coordinates conversion - edge */
         er_cell->ce_edge[1] = er_cell->ce_edge[2] * sin( ( ( le_real_t * ) er_head )[1] );
@@ -183,7 +183,7 @@
         while ( ( ( er_head += LE_ARRAY_UF3 ) - er_base ) < er_size ) {
 
             /* coordinates conversion - points */
-            ( ( le_real_t * ) er_head )[2] += LE_ADDRESS_WGSA;
+            ( ( le_real_t * ) er_head )[2] += LE_ADDRESS_WGS_A;
 
             /* coordinates conversion - points */
             er_opta = ( ( le_real_t * ) er_head )[0];

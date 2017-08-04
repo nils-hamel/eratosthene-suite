@@ -33,7 +33,7 @@
         le_real_t er_scale = ( le_real_t ) ( 1 << ( le_address_get_size( er_cell ) + 1 ) );
 
         /* half-cell shift variables */
-        le_real_t er_shift = LE_ADDRESS_RNGL / er_scale;
+        le_real_t er_shift = LE_ADDRESS_RAN_L / er_scale;
 
         /* retrieve address edge */
         le_address_get_pose( er_cell, er_pose + 3 );
@@ -42,7 +42,7 @@
         er_view_get_pose( er_view, er_pose + 9 );
 
         /* convert cell position - ellipsoidal to cartesian */
-        er_pose[1] = er_pose[ 5] + LE_ADDRESS_WGSA + ( LE_ADDRESS_WGSA * LE_2P ) / er_scale;
+        er_pose[1] = er_pose[ 5] + LE_ADDRESS_WGS_A + ( LE_ADDRESS_WGS_A * LE_2P ) / er_scale;
         er_pose[0] = er_pose[ 1] * cos( er_pose[ 4] += er_shift );
         er_pose[2] = er_pose[ 0] * cos( er_pose[ 3] += er_shift );
         er_pose[0] = er_pose[ 0] * sin( er_pose[ 3] );
@@ -71,7 +71,7 @@
     le_real_t er_geodesy_face( le_real_t const er_altitude ) {
 
         /* computation variables */
-        le_real_t er_normal = er_altitude / LE_ADDRESS_WGSA - 1.0;
+        le_real_t er_normal = er_altitude / LE_ADDRESS_WGS_A - 1.0;
 
         /* return evaluation */
         return( er_altitude * ( 1.0 - 0.75 * exp( - LE_PI * er_normal * er_normal ) ) );
@@ -81,7 +81,7 @@
     le_real_t er_geodesy_radius( le_real_t const er_altitude ) {
 
         /* computation variables */
-        le_real_t er_normal = er_altitude / LE_ADDRESS_WGSA - 1.0;
+        le_real_t er_normal = er_altitude / LE_ADDRESS_WGS_A - 1.0;
 
         /* return evaluation */
         return( er_altitude * ( 1.0 - 0.98 * exp( - LE_2P * 32.0 * er_normal * er_normal ) ) );
@@ -94,7 +94,7 @@
         le_real_t er_clamp = er_scfg - ER_COMMON_SPAN - 2;
 
         /* computation variables */
-        le_real_t er_normal = log( ( LE_ADDRESS_WGSA / 2.0 ) / ( er_distance * 30.0 ) ) / M_LN2 + 9.5;
+        le_real_t er_normal = log( ( LE_ADDRESS_WGS_A / 2.0 ) / ( er_distance * 30.0 ) ) / M_LN2 + 9.5;
 
         /* check range */
         er_normal = ( er_normal < 5.0 ? 5.0 : ( er_normal > er_clamp ? er_clamp : er_normal ) );
@@ -107,7 +107,7 @@
     le_real_t er_geodesy_scale( le_real_t const er_altitude ) {
 
         /* computation variables */
-        le_real_t er_normal = er_altitude / LE_ADDRESS_WGSA - 1.0;
+        le_real_t er_normal = er_altitude / LE_ADDRESS_WGS_A - 1.0;
 
         /* Return evaluation */
         return( exp( - LE_PI * er_normal * er_normal ) );
@@ -117,10 +117,10 @@
     le_real_t er_geodesy_near( le_real_t const er_altitude ) {
 
         /* computation variables */
-        le_real_t er_normal = pow( fabs( er_altitude - LE_ADDRESS_WGSA ) / ( LE_ADDRESS_WGSA * 2.0 ), 4 );
+        le_real_t er_normal = pow( fabs( er_altitude - LE_ADDRESS_WGS_A ) / ( LE_ADDRESS_WGS_A * 2.0 ), 4 );
 
         /* return evaluation */
-        return( LE_ADDRESS_WGSA * er_normal * er_geodesy_scale( er_altitude ) + 1.0 );
+        return( LE_ADDRESS_WGS_A * er_normal * er_geodesy_scale( er_altitude ) + 1.0 );
 
     }
 

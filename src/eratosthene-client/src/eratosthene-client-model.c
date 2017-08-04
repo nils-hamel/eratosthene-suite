@@ -350,7 +350,7 @@
         glRotated( - er_view_get_gam( er_view ), 1.0, 0.0, 0.0 );
 
         /* motion management - altimetric translation */
-        glTranslated( 0.0, 0.0, - er_view_get_alt( er_view ) + LE_ADDRESS_WGSA );
+        glTranslated( 0.0, 0.0, - er_view_get_alt( er_view ) + LE_ADDRESS_WGS_A );
 
         /* motion management - azimuth rotation */
         glRotated( + er_view_get_azm( er_view ), 0.0, 0.0, 1.0 );
@@ -379,7 +379,7 @@
                     er_edge[3] = er_cosl * er_edge[0] + er_sinl * er_edge[2];
 
                     /* motion management - cell translation */
-                    glTranslated( er_edge[3], er_edge[4], er_edge[5] - LE_ADDRESS_WGSA );
+                    glTranslated( er_edge[3], er_edge[4], er_edge[5] - LE_ADDRESS_WGS_A );
 
                     /* motion management - planimetric rotation */
                     glRotated( + er_lat, 1.0, 0.0, 0.0 );
@@ -403,13 +403,13 @@
         glRotated( - er_view_get_gam( er_view ), 1.0, 0.0, 0.0 );
 
         /* motion management - altimetric translation */
-        glTranslated( 0.0, 0.0, - er_view_get_alt( er_view ) + LE_ADDRESS_WGSA );
+        glTranslated( 0.0, 0.0, - er_view_get_alt( er_view ) + LE_ADDRESS_WGS_A );
 
         /* motion management - azimuth rotation */
         glRotated( + er_view_get_azm( er_view ), 0.0, 0.0, 1.0 );
 
         /* earth wireframe - centering */
-        glTranslated( 0.0, 0.0, - LE_ADDRESS_WGSA );
+        glTranslated( 0.0, 0.0, - LE_ADDRESS_WGS_A );
 
         /* motion management - planimetric rotation */
         glRotated( + er_view_get_lat( er_view ), 1.0, 0.0, 0.0 );
@@ -428,7 +428,7 @@
         glColor4f( 0.18, 0.22, 0.28, 1.00 );
 
         /* display quadric */
-        gluSphere( er_earth, LE_ADDRESS_WGSA, 360, 180 );
+        gluSphere( er_earth, LE_ADDRESS_WGS_A, 360, 180 );
 
         /* configure quadric */
         gluQuadricDrawStyle( er_earth, GLU_FILL );
