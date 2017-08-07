@@ -221,6 +221,9 @@
         }
 
         /* reset i/o socket-array */
+        le_array_set_reset( & er_model->md_iosa );
+
+        /* update i/o socket-array size */
         le_array_set_size( & er_model->md_iosa, 0 );
 
         /* parsing v-cells array */
