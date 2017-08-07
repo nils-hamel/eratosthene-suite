@@ -35,15 +35,12 @@
         /* array variables */
         le_array_t er_array = LE_ARRAY_C;
 
-        /* agreement variables */
-        le_size_t er_agree = LE_AUTH_QUER;
-
         /* server configuration variables */
         le_size_t er_space = 0;
         le_time_t er_times = 0;
 
         /* serialisation variables */
-        le_size_t er_head = 0;
+        le_size_t er_serial = 0;
 
         /* created structure variables */
         er_client_t er_client = ER_CLIENT_C;
@@ -56,16 +53,13 @@
 
         }
 
-        /* socket-array size */
-        le_array_set_size( & er_array, sizeof( le_size_t ) );
+        /* update socket-array size */
+        le_array_set_size( & er_array, 0 );
 
-        /* compose socket-array  */
-        le_array_serial( & er_array, & er_agree, sizeof( le_size_t ), 0, _LE_SET );
-
-        /* write socket-array - agreement */
+        /* write socket-array */
         le_array_io_write( & er_array, LE_MODE_AUTH, er_client.cl_socket );
 
-        /* read socket-array */
+        /* read socket array */
         if ( le_array_io_read( & er_array, er_client.cl_socket ) != LE_MODE_AUTH ) {
 
             /* delete client socket */
@@ -76,7 +70,7 @@
 
         }
 
-        /* check array consistency */
+        /* check consistency */
         if ( le_array_get_size( & er_array ) != LE_ARRAY_AUTH ) {
 
             /* delete client socket */
@@ -87,21 +81,9 @@
 
         }
 
-        /* decompose socket-array */
-        er_head = le_array_serial( & er_array, & er_agree, sizeof( le_size_t ), er_head, _LE_GET );
-        er_head = le_array_serial( & er_array, & er_space, sizeof( le_size_t ), er_head, _LE_GET );
-        er_head = le_array_serial( & er_array, & er_times, sizeof( le_time_t ), er_head, _LE_GET );
-
-        /* check agreement value */
-        if ( er_agree != LE_AUTH_AUTH ) {
-
-            /* delete client socket */
-            le_client_delete( er_client.cl_socket );
-
-            /* return created structure */
-            return( er_client._status = _LE_FALSE, er_client );
-
-        }
+        /* serialise server configuration */
+        er_serial = le_array_serial( & er_array, & er_space, sizeof( le_size_t ), er_serial, _LE_GET );
+        er_serial = le_array_serial( & er_array, & er_times, sizeof( le_time_t ), er_serial, _LE_GET );
 
         /* create client model */
         if ( ( er_client.cl_model = er_model_create( er_client.cl_socket, er_space, er_times ) )._status == _LE_FALSE ) {
