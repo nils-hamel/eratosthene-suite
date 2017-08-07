@@ -83,9 +83,6 @@
             /* write socket array */
             le_array_io_write( & er_dual, LE_MODE_INJE, er_socket );
 
-            /* read delay array */
-            le_array_io_read( & er_data, er_socket );
-
         }
 
         /* delete socket array */
@@ -110,12 +107,6 @@
         /* socket variables */
         le_sock_t er_socket = _LE_SOCK_NULL;
 
-        /* authentication variables */
-        le_size_t er_auth = LE_AUTH_QUER;
-
-        /* socket array variables */
-        le_array_t er_array = LE_ARRAY_C;
-
         /* message variables */
         le_enum_t er_message = EXIT_SUCCESS;
 
@@ -130,62 +121,21 @@
 
         } else {
 
-            /* update socket-array size */
-            le_array_set_size( & er_array, sizeof( le_size_t ) );
+            /* switch on format */
+            if ( lc_read_flag( argc, argv, "--uf3", "" ) == LC_TRUE ) {
 
-            /* serialise authentication */
-            le_array_serial( & er_array, & er_auth, sizeof( le_size_t ), 0, _LE_SET );
+                /* injection process */
+                er_message = er_inject_uf3( lc_read_string( argc, argv, "--uf3", "" ), lc_read_signed( argc, argv, "--time", "-t", _LE_TIME_NULL ), er_socket );
 
-            /* write socket array */
-            le_array_io_write( & er_array, LE_MODE_AUTH, er_socket );
-
-            /* read socket-array */
-            if ( le_array_io_read( & er_array, er_socket ) != LE_MODE_AUTH ) {
+            } else {
 
                 /* display message */
-                fprintf( stderr, "eratosthene-suite : error : bad server response\n" );
+                fprintf( stderr, "eratosthene-suite : error : unsupported format\n" );
 
                 /* update message */
                 er_message = EXIT_FAILURE;
 
-            } else {
-
-                /* serialise authentication */
-                le_array_serial( & er_array, & er_auth, sizeof( le_size_t ), 0, _LE_GET );
-
-                /* check authentication */
-                if ( er_auth != LE_AUTH_AUTH ) {
-
-                    /* display message */
-                    fprintf( stderr, "eratosthene-suite : error : authentication failure\n" );
-
-                    /* update message */
-                    er_message = EXIT_FAILURE;
-
-                } else {
-
-                    /* switch on format */
-                    if ( lc_read_flag( argc, argv, "--uf3", "" ) == LC_TRUE ) {
-
-                        /* injection process */
-                        er_message = er_inject_uf3( lc_read_string( argc, argv, "--uf3", "" ), lc_read_signed( argc, argv, "--time", "-t", _LE_TIME_NULL ), er_socket );
-
-                    } else {
-
-                        /* display message */
-                        fprintf( stderr, "eratosthene-suite : error : unsupported format\n" );
-
-                        /* update message */
-                        er_message = EXIT_FAILURE;
-
-                    }
-
-                }
-
             }
-
-            /* delete socket-array */
-            le_array_delete( & er_array );
 
             /* delete socket */
             le_client_delete( er_socket );
