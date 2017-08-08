@@ -89,7 +89,7 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_CLIENT_C { _LE_SOCK_NULL, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, ER_VIEW_D, ER_VIEW_C, 0, GLUT_UP, 0, 0, 1.0, 1.0, 0.0, 0.0, _LE_TRUE, _LE_TRUE }
+    # define ER_CLIENT_C { _LE_SOCK_NULL, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, ER_VIEW_D, ER_VIEW_C, 0, GLUT_UP, 0, 0, 1.0, 1.0, _LE_TRUE }
 
 /*
     header - preprocessor macros
@@ -106,21 +106,23 @@
     /*! \struct er_client_struct
      *  \brief Client structure
      *
-     *  This structure holds the graphical client interface description. In
-     *  addition to the execution loop and point of view management, it also
-     *  holds structure of sub-modules.
+     *  This structure holds the graphical client interface descriptor. It holds
+     *  fields related to point of view motion management and sub-structures
+     *  related to the different software features.
      *
-     *  In addition to the execution loop management variables, it holds fields
-     *  dedicated to the management of the point of view, which includes mouse
-     *  event management and inertial factors applied during point of view
-     *  modification.
+     *  The structure holds the client socket descriptor created with this
+     *  structure. It contains also the value used to maintain the software
+     *  loop.
      *
-     *  It also holds the structure of the sub-modules used by the software such
-     *  as the model management, time interface and movie creation.
+     *  In addition to sub-structure and point of view, this structures also
+     *  holds fields related to the management of the mouse motion.
      *
-     *  This structure is the central structure of this graphical clients and
-     *  is used and modified by the main module functions.
+     *  Finally, this structure also holds a scale value used to adapt the
+     *  displayed model scale according to the point of view to avoid too
+     *  large numbers in graphical process.
      *
+     *  \var er_client_struct::cl_socket
+     *  Client socket
      *  \var er_client_struct::cl_loops
      *  Execution loop mode
      *  \var er_client_struct::cl_model
@@ -132,7 +134,7 @@
      *  \var er_client_struct::cl_view
      *  Point of view structure
      *  \var er_client_struct::cl_push
-     *  Point of view memory structure
+     *  Point of view structure memory
      *  \var er_client_struct::cl_button
      *  Mouse button code
      *  \var er_client_struct::cl_state
@@ -142,7 +144,7 @@
      *  \var er_client_struct::cl_y
      *  Mouse y-position
      *  \var er_client_struct::cl_inertia
-     *  Point of view modification inertial factor
+     *  Point of view inertial factor
      *  \var er_client_struct::cl_scale
      *  Model dynamic scale factor
      */
@@ -166,10 +168,6 @@
         le_real_t  cl_inertia;
         le_real_t  cl_scale;
 
-        le_real_t  cl_mtimea;
-        le_real_t  cl_mtimeb;
-        le_enum_t  cl_motion;
-
     le_enum_t _status; } er_client_t;
 
 /*
@@ -179,7 +177,13 @@
     /*! \brief constructor/destructor methods
      *
      *  This function creates the client structure and returns it. It mainly
-     *  calls the sub-modules structure creation functions.
+     *  calls the sub-modules structure creation functions to initialise them.
+     *
+     *  In addition to sub-modules creation, this function also creates the
+     *  socket to the remote server according to the IP address and service
+     *  port. It then requests the configuration of the remote server, needed
+     *  to peform data queries. The received configuration is then broadcasted
+     *  to the sub-modules.
      *
      *  This function returning the created structure, the status is stored in
      *  the structure itself using the reserved \b _status field.
@@ -195,8 +199,11 @@
     /*! \brief constructor/destructor methods
      *
      *  This function deletes the provided client structure. It deletes the
-     *  sub-modules structure using their related deletion functions. It then
-     *  clears the structure fields.
+     *  sub-modules structure using their related deletion functions.
+     *
+     *  The socket to the remote server is deleted after having sent the server
+     *  resiliation request. It then clears the structure fields using default
+     *  values.
      *
      *  \param er_client Client structure
      */
@@ -205,7 +212,8 @@
 
     /*! \brief main method
      *
-     *  The main function holds the principal execution code.
+     *  The main function holds the principal execution code, including threads
+     *  definition and the infinite loops.
      *
      *  It starts by reading the server address and service port from the main
      *  function standard parameters.
@@ -247,22 +255,28 @@
      *  It starts by clearing buffers and, depending on the scene elements to
      *  render, it calls the specific projection configuration functions.
      *
-     *  The function render the model itself with simple wireframe model of the
-     *  earth used as reference and the time interface.
+     *  The function renders the model itself with simple wireframe model of the
+     *  earth, used as reference, and the time interface.
      */
 
     le_void_t er_client_loops_render( le_void_t );
 
-    /*! \brief loop methods ***
+    /*! \brief loop methods
      *
      *  This function is called by the main function model thread to trigger
      *  model update according to the point of view.
      *
      *  Using the previous point of view, the function starts by determining if
-     *  the point of view has changed. If not, the function ends.
+     *  the point of view has changed. If the point of view has changed, the
+     *  function update the target model. It then calls the synchronisation
+     *  process that updates the actual model to fit the target model using
+     *  a step by step procedure.
      *
-     *  If the point of view has changed, the function starts the model update
-     *  procedure using the model module functions.
+     *  If the point of view has not changed, only the synchronisation takes
+     *  place.
+     *
+     *  If the execution mode is in movie mode, the synchronisation is called
+     *  in a loop until the target and actual model are identical.
      */
 
     le_void_t er_client_loops_update( le_void_t );
@@ -346,7 +360,7 @@
 
     /*! \brief callback methods
      *
-     *  This function implements the motion callback.
+     *  This function implements the mouse motion callback.
      *
      *  Depending on the pressed button and on the initial mouse position, while
      *  taking into account the state of the keyboard modifiers, the function
