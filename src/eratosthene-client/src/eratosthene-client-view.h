@@ -108,6 +108,10 @@
      *  interface. A large area size induces large modification of the related
      *  time.
      *
+     *  A final fields allows to modulate the query addition depth (span) in
+     *  order to allows to dynamically reduce the earth model weight, reducing
+     *  both graphical and bandwidth load.
+     *
      *  \var er_view_struct::vw_lon
      *  Point of view longitude angle, in decimal degrees
      *  \var er_view_struct::vw_lat
@@ -130,6 +134,8 @@
      *  Point of view first time area size (according to time interface)
      *  \var er_view_struct::vw_ztb
      *  Point of view second time area size (according to time interface)
+     *  \var er_view_struct::vw_red
+     *  Addresses additional depth (span) modulation value
      */
 
     typedef struct er_view_struct {
@@ -483,6 +489,19 @@
      */
 
     le_void_t er_view_set_area( er_view_t * const er_view, le_real_t const er_value );
+
+    /*! \brief mutator methods
+     *
+     *  This function allows to modify the value of the model weight reduction,
+     *  that is the value subtracted from the addresses additional depth
+     *  (span).
+     *
+     *  The provided value \b er_add is simply added to the structure field. Its
+     *  value is then clamped in the valid range [0,\b ER_COMMON_SPAN].
+     *
+     *  \param er_view View structure
+     *  \param er_add  Added value
+     */
 
     le_void_t er_view_set_red( er_view_t * const er_view, le_size_t er_add );
 
