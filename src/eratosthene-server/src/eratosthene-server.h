@@ -33,7 +33,7 @@
      *  softwares suite offering front-end solutions to the functionalities of
      *  the eratosthene library.
      *
-     *  The principale software implements the server itself allowing to simply
+     *  The principal software implements the server itself allowing to simply
      *  create instances and maintain services. The suite also offers a front-end
      *  software for the data injection in the available servers. It also offers
      *  a graphical software allowing to browse the 4D worlds offered by the
@@ -105,9 +105,8 @@
      *  and parameters to create the server instance structure.
      *
      *  It then calls the server main function responsible of client connexions
-     *  management and dispatch to the different server functionnalities. As the
-     *  previous function gives the execution back to the main function, it
-     *  deletes the server structure and returns to system.
+     *  management and client thread creation. The server structure is then
+     *  deleted using its specific method.
      *
      *  \param argc Main function parameters
      *  \param argv Main function parameters
