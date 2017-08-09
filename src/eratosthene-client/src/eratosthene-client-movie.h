@@ -81,7 +81,7 @@
      *  motion of the point of view.
      *
      *  Three fields are used to store the movie frame size and the frames image
-     *  bytes array. The bytes array is filled using opengl routine to ask the
+     *  bytes array. The bytes array is filled using OpenGL routines to ask the
      *  content of the rendered colour buffer.
      *
      *  Three fields are used to drive the computation and the exportation of
@@ -171,7 +171,7 @@
      *  The function uses the view module function to compute the interpolated
      *  point of view before to return it.
      *
-     *  \param  er_movie Movie structure
+     *  \param er_movie Movie structure
      *
      *  \return Returns the interpolated point of view
      */
@@ -182,8 +182,8 @@
      *
      *  This function pushes the provided point of view on the stack hold by the
      *  movie structure. The points of view stack being limited in size by the
-     *  \b ER_MOVIE_STACK, the function checks the stack size before to push the
-     *  provided view.
+     *  \b ER_MOVIE_STACK constant, the function checks the stack size before to
+     *  push the provided view.
      *
      *  The function checks also the size of the stack for interpolation values
      *  management. As the stack is of size zero, the function resets the two
@@ -209,7 +209,7 @@
 
     /*! \brief movie methods
      *
-     *  This function retrieves the opengl colour buffer in the movie structure
+     *  This function retrieves the OpenGL colour buffer in the movie structure
      *  buffer and exports it in a portable network graphic file using the frame
      *  exportation index of the structure. The index is then incremented.
      *
@@ -231,7 +231,7 @@
      *  function returns the \b ER_COMMON_VIEW execution mode to tell the main
      *  loop to abort movie frames computation.
      *
-     *  \param  er_movie Movie structure
+     *  \param er_movie Movie structure
      *
      *  \return Returns loop execution mode
      */
