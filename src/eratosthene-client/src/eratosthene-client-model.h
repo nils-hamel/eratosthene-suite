@@ -85,53 +85,68 @@
      *  \brief Model structure
      *
      *  This structure is responsible of maintaining the content of earth model
-     *  provided by the remote server. Its main role is to maintain the cells
-     *  stack. Each cell correspond to a query made to the remote server using
-     *  a single address. The model is constantly updated, following the model
-     *  point of view motion.
+     *  provided by the remote server. Its role is to maintain the earth model
+     *  up to date according to the motion of the point of view.
      *
-     *  In the first place, the structure holds the remote server address and
-     *  service port as it is responsible of queries made to the remote server.
+     *  The first three fields holds the socket opened toward the remote server
+     *  and the two configuration values of the server. The rest of the fields
+     *  are related to the cells stack.
      *
-     *  The structure holds also a copy of the remote server configuration
-     *  values that are the space and time parameters.
+     *  The structure holds two cells stacks, the actual stack, used by the
+     *  graphical process and the target stack. The target stack is the one
+     *  that is updated at high frequency, following the motion of the point
+     *  of view. The actual stack, that contain the data received from the
+     *  remote server, is updated with a lower frequency.
      *
-     *  The main element of the structure is the cell stack. The stack has a
-     *  predefined size (\b ER_MODEL_STACK) and the model has to be fitted in.
-     *  The size field holds a copy of the cell stack and has to be used by
-     *  the processes using the stack.
+     *  The size field gives the amount of cell available in each stack while
+     *  the \b mc_cell and \b md_virt are the base pointers of the actual and
+     *  target stack.
      *
-     *  A field stores the model push index. It is used as the model is updated
-     *  following a modification of the point of view. Its role is to trace the
-     *  count of pushed addresses waiting for validation and query.
+     *  The update of the actual cells stack is made by the synchronisation
+     *  procedure. As soon as the point of view has moved, the target stack is
+     *  updated. A first process checks the cell in common between the target
+     *  and actual stack to avoid to query them. Then, the synchronisation
+     *  reduces the differences between the target stack and the actual one
+     *  step by step. The synchronisation continues even the point of view
+     *  has not changed, until both stack are identical.
      *
-     *  At the last place, the structure holds a cyclic parameter. It is used
-     *  by a specific function responsible of searching free stack cells during
-     *  model update. Its role is to ensure an homogeneous usage of the stack
-     *  and to increase the time a cell spends in the stack, and especially
-     *  inactive cells. This increases the probability for a cell to be reused
-     *  without a query to the remote server even if no more active in the
-     *  current model, reducing bandwidth usage.
+     *  Of course, the target stack is only considered in terms of addresses of
+     *  cells, only the actual stack contains the proper data used by the
+     *  graphical processes.
      *
-     *  \var er_model_struct::md_svip
-     *  Server ip address
-     *  \var er_model_struct::md_port
-     *  Server service port
+     *  The \b md_push field is used to keep the amount of cell that have been
+     *  pushed in the target stack in order to avoid to parse it entirely. The
+     *  \b md_sync value indicates the size - address length - of the cell
+     *  that are considered in one synchronisation step. The synchronisation is
+     *  over as this value gets equal to the server space value - the maximum
+     *  scale value.
+     *
+     *  This dual stack procedure is set up in order to avoid high frequency
+     *  update of the actual cells stack. This allows to considerably decrease
+     *  the amount of request to the server and also allows to cushion high
+     *  frequency motion of the point of view.
+     *
+     *  \var er_model_struct::md_sock
+     *  Socket toward the remote server
      *  \var er_model_struct::md_scfg
      *  Server space parameter
      *  \var er_model_struct::md_tcfg
      *  Server time parameter
      *  \var er_model_struct::md_size
-     *  Cells stack size
+     *  Cells stacks size
      *  \var er_model_struct::md_push
-     *  Cells stack push index
+     *  Target stack used cells
+     *  \var er_model_struct::md_sync
+     *  Synchronisation scale value
      *  \var er_model_struct::md_cell
      *  Cells stack
-     *  \var er_model_struct::md_cycle
-     *  Cyclic search index
+     *  \var er_model_struct::md_virt
+     *  Cells stack
+     *  \var er_model_struct::md_iosa
+     *  Array used for the communication with the remote server
      */
 
-    typedef struct er_model_struct_ {
+    typedef struct er_model_struct {
 
         le_sock_t   md_sock;
         le_size_t   md_scfg;
@@ -156,18 +171,15 @@
      *  This function creates and returns a model structure. It initialises the
      *  structure fields and assign the provided parameters.
      *
-     *  The function performs also a configuration query to the remote server
-     *  to retrieve the two space and time configuration values. A copy of the
-     *  two values are assigned to the structure.
-     *
-     *  This function is also responsible for allocating the cells stack memory
-     *  and for the initialisation of the stack cell structures.
+     *  In addition, this function also allocate the two cells stack needed to
+     *  maintain and update the model. The cells of both stacks are initialised.
      *
      *  This function returning the created structure, the status is stored in
      *  the structure itself using the reserved \b _status field.
      *
-     *  \param er_ip    Server ip address
-     *  \param er_port  Server service port
+     *  \param er_socket Socket toward remote server
+     *  \param er_scfg   Server configuration value
+     *  \param er_tcfg   Server configuration value
      *
      *  \return Created model structure
      */
@@ -177,25 +189,36 @@
     /*! \brief constructor/destructor methods
      *
      *  This function deletes the provided model structure. It deletes each
-     *  cell of the stack using their related function. It then release the
-     *  stack memory allocation and clears the structure fields.
+     *  cell of the stacks using their related function. It then release the
+     *  stacks memory allocations and clears the structure fields using default
+     *  values.
      *
      *  \param er_model Model structure
      */
 
     le_void_t er_model_delete( er_model_t * const er_model );
 
-    /* *** */
+    /*! \brief mutator methods
+     *
+     *  This function is used to prepare an update of the earth model contain in
+     *  the provided structure, typically after point of view motion.
+     *
+     *  Its role is to reset the synchronisation value, as the synchronisation
+     *  will have to restart, the target cells push value and the flags of the
+     *  target and actual stack cells, the flag controlling the progression of
+     *  the stacks synchronisation.
+     *
+     *  \param er_model Model structure
+     */
 
     le_void_t er_model_set_prep( er_model_t * const er_model );
 
     /*! \brief mutator methods
      *
-     *  This function is part of the model update process.
-     *
-     *  Its role is to enumerates all possible cells and to select the ones that
-     *  are relevant according to the position of the point of view. A recursive
-     *  enumeration strategy based on the provided address structure is applied.
+     *  The role of this function is to enumerates all possible cells and to
+     *  select the ones that are relevant according to the position of the point
+     *  of view. A recursive enumeration strategy based on the provided address
+     *  structure is applied.
      *
      *  Starting at scale zero, the possible digits are enumerated. The size of
      *  the address (zero at the beginning) is increased by one. On the first
@@ -209,9 +232,9 @@
      *  same time). If the cell belong to earth face, the function checks if it
      *  is relevant for display according to the point of view. If it is and its
      *  distance to point of view satisfy the criterion, the enumeration address
-     *  is pushed on the stack. If the cell is judge not relevant for display,
-     *  the function calls itself to continue enumeration with the updated
-     *  address.
+     *  is pushed on the target stack. If the cell is judge irrelevant for
+     *  display, the function calls itself to continue enumeration with the
+     *  updated address.
      *
      *  To be selected during enumeration, the cell has to be judged relevant
      *  for display, in terms of size and point density, and has to pass through
@@ -222,56 +245,84 @@
      *  its large size. This would discard all its daughters cells that could
      *  have satisfied the criterion at their own scale.
      *
-     *  In addition, as a cell is judged not relevant for display, the function
-     *  checks if the cell contains data before to calls itself to continue
-     *  the enumeration. Indeed, if a cell is empty all its daughters are also
-     *  empty and then not relevant for enumeration. The same test is made
-     *  before to push the enumeration address on the stack when a cell is
-     *  judged relevant for display.
-     *
-     *  The function tests if cells are empty before to push them on the stack
-     *  by making a time-reduction query to the remote server. In addition to
-     *  avoid pushing empty cell, these queries allows to reduce the time values
-     *  hold by the enumeration address. It follows that any pushed address
-     *  contains implicitly reduced times. This allows subsequent model update
-     *  functions to properly compare pushed addresses with addresses already in
-     *  the stack.
-     *
      *  \param er_model Model structure
-     *  \param er_enum  Address structure
+     *  \param er_enum  Enumeration address structure
+     *  \param er_scale Enumeration address explicit size
      *  \param er_view  Point of view structure
      */
 
     le_void_t er_model_set_enum( er_model_t * const er_model, le_address_t * const er_enum, le_size_t const er_scale, er_view_t const * const er_view );
 
+    /*! mutator methods
+     *
+     *  This function is used just after the target stacks updates. Its role is
+     *  to rapidly checks which cells in the target stack are already in the
+     *  actual stack. This allows to flag them as so, indicating to the
+     *  synchronisation process not to consider these actual stack cells.
+     *
+     *  This function allows to re-enable actual stacks cells in order to allow
+     *  them being part of the rendered model as quickly as possible. This also
+     *  allows the decrease to work load of the synchronisation process and to
+     *  reduce bandwidth toward remote server.
+     *
+     *  \param er_model Model structure
+     */
+
     le_void_t er_model_set_fast( er_model_t * const er_model );
+
+    /*! mutator methods
+     *
+     *  This function is responsible of the step by step synchronisation
+     *  process of the target and actual cells stacks. At each function call,
+     *  one step of the synchronisation is performed.
+     *
+     *  After a target stack update, usually following a modification of the
+     *  point of view, the synchronisation scale is reset to its low value. A
+     *  synchronisation step considers all cells that exhibit an address size
+     *  corresponding to this value. The cells address are packed in a query
+     *  array before to be sent to the remote server. The server answer is then
+     *  read to update the considered cells content.
+     *
+     *  At the end of a synchronisation step, the synchronisation value is
+     *  updated by adding one to it.
+     *
+     *  Such a process allows to be able to interrupt earth model update.
+     *  Indeed, updating the model asking for all the pushed cell content lead
+     *  to a process that consume time. Motion of the point of view will only
+     *  be considered at end of such a global process. Using the step by step
+     *  synchronisation allows to stop one mode update to ensure a better
+     *  following of the point of view motion, saving also large amount of
+     *  data transfer toward the remote server.
+     *
+     *  \param er_model Model structure
+     */
 
     le_enum_t er_model_set_sync( er_model_t * const er_model );
 
     /*! \brief display methods
      *
-     *  This function displays the earth model hold in the stack. It searches
-     *  in the stack the cells that have their drawable flag set.
+     *  This function displays the earth model hold in the actual stack. It
+     *  searches in the actual stack the cells that have their drawable flag
+     *  set.
      *
-     *  The earth-attached Cartesian coordinates set [x_e,y_e,z_e] is associated
-     *  to the opengl Cartesian coordinates set [x_g,y_g,z_g] in the following
-     *  way :
+     *  The earth-attached Cartesian coordinates are related to the OpenGL
+     *  Cartesian one in the following way :
      *
-     *      x_e = z_g
-     *      y_e = x_g
-     *      z_e = y_g
+     *      x_geographic_cartesian -> z_opengl (0->2)
+     *      y_geographic_cartesian -> x_opengl (1->0)
+     *      z_geographic_cartesian -> y_opengl (2->1)
      *
      *  allowing to keep a natural view of earth without additional rotation.
      *
      *  The display strategy consist in keeping the deepest and nearest (point
-     *  of view) cells as near as possible to the opengl frame origin. This
+     *  of view) cells as near as possible to the OpenGL frame origin. This
      *  allows to keep small values for the most relevant (point of view)
      *  points. This follows the strategy that consists in shifting the cell
      *  points to a frame that keep their coordinates small. The objective is
      *  to address single precision saturation issue. This strategy allows to
-     *  consider millimetric model of earth within a single homogeneous model.
+     *  consider millimetric models of earth within a single homogeneous model.
      *
-     *  First, the longitute and latitude angle are used to rotate the cell
+     *  First, the longitude and latitude angles are used to rotate the cell
      *  points. A specific translation has to be computed then : as the points
      *  of the cell are expressed in the frame of the cell itself, the position
      *  of this frame origin in the model has to be computed in order to
