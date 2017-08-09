@@ -567,6 +567,22 @@
 
             } break;
 
+            /* model reduction - key [,] */
+            case ( 0x2c ) : {
+
+                /* update reduction value */
+                er_view_set_red( & er_client.cl_view, +1 );
+
+            } break;
+
+            /* model reduction - key [.] */
+            case ( 0x2e ) : {
+
+                /* update reduction value */
+                er_view_set_red( & er_client.cl_view, -1 );
+
+            } break;
+
         };
 
     }

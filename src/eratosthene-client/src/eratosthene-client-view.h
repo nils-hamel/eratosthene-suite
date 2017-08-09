@@ -54,10 +54,10 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_VIEW_C { 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0 }
+    # define ER_VIEW_C { 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 0 }
 
     /* define pseudo-constructor - default point of view */
-    # define ER_VIEW_D { 12.335435, 45.438531, LE_ADDRESS_WGS_A * 1.5, 0.0, 0.0, 1, 0, 950486422, 0, 31536000, 31536000 }
+    # define ER_VIEW_D { 12.335435, 45.438531, LE_ADDRESS_WGS_A * 1.5, 0.0, 0.0, 1, 0, 950486422, 0, 31536000, 31536000, 0 }
 
 /*
     header - preprocessor macros
@@ -146,6 +146,8 @@
         le_time_t vw_tib;
         le_time_t vw_zta;
         le_time_t vw_ztb;
+
+        le_size_t vw_red;
 
     } er_view_t;
 
@@ -481,6 +483,8 @@
      */
 
     le_void_t er_view_set_area( er_view_t * const er_view, le_real_t const er_value );
+
+    le_void_t er_view_set_red( er_view_t * const er_view, le_size_t er_add );
 
 /*
     header - C/C++ compatibility

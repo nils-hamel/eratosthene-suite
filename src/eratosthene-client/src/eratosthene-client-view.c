@@ -62,6 +62,9 @@
         /* check mode component - return answer */
         if ( er_viewa->vw_mod != er_viewb->vw_mod ) return( _LE_FALSE );
 
+        /* check reduction component - return answer */
+        if ( er_viewa->vw_red != er_viewb->vw_red ) return( _LE_FALSE );
+
         /* return answer */
         return( _LE_TRUE );
 
@@ -135,7 +138,7 @@
         le_address_set_mode( & er_addr, er_view->vw_mod );
 
         /* set address span */
-        le_address_set_span( & er_addr, ER_COMMON_SPAN );
+        le_address_set_span( & er_addr, ER_COMMON_SPAN - er_view->vw_red );
 
         /* check mode */
         if ( er_view->vw_mod != 2 ) {
@@ -231,6 +234,7 @@
         /* compute interpolated values - step interpolation */
         er_view.vw_mod = ( er_views + er_index )->vw_mod;
         er_view.vw_act = ( er_views + er_index )->vw_act;
+        er_view.vw_red = ( er_views + er_index )->vw_red;
 
         /* compute interpolated values - linear interpolation */
         er_view.vw_tia = er_param * ( er_views + er_index + 1 )->vw_tia + ( 1.0 - er_param ) * ( er_views + er_index )->vw_tia;
@@ -349,6 +353,16 @@
             er_view->vw_ztb = lc_clamp( er_view->vw_ztb, 60, 32314982400 );
 
         }
+
+    }
+
+    le_void_t er_view_set_red( er_view_t * const er_view, le_size_t er_add ) {
+
+        /* update reduction value */
+        er_view->vw_red += er_add;
+
+        /* clamp reduction value */
+        er_view->vw_red = lc_clamp( er_view->vw_red, 0, ER_COMMON_SPAN );
 
     }
 

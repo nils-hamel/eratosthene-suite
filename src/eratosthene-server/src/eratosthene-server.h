@@ -104,7 +104,7 @@
      *  reads the storage path and the service port from the provided arguments
      *  and parameters to create the server instance structure.
      *
-     *  It then calls the server main function responsible of client connexions
+     *  It then calls the server main function responsible of client connections
      *  management and client thread creation. The server structure is then
      *  deleted using its specific method.
      *
