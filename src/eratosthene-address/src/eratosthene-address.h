@@ -33,7 +33,7 @@
      *  softwares suite offering front-end solutions to the functionalities of
      *  the eratosthene library.
      *
-     *  The principale software implements the server itself allowing to simply
+     *  The principal software implements the server itself allowing to simply
      *  create instances and maintain services. The suite also offers a front-end
      *  software for the data injection in the available servers. It also offers
      *  a graphical software allowing to browse the 4D worlds offered by the
@@ -114,10 +114,10 @@
      *  spatial index.
      *
      *  It then displays on the standard output the original coordinates, the
-     *  computed spatial index and the coordinates obtiained by converting back
+     *  computed spatial index and the coordinates obtained by converting back
      *  the spatial index.
      *
-     *  The provided coordinate have to be given in decimal degrees in the usual
+     *  The provided coordinates have to be given in decimal degrees in the
      *  ranges : [-180,+180], [-90,+90]. The heights have to be given in metres
      *  above the WGS84 ellipsoid.
      *
@@ -143,8 +143,8 @@
 
     /*! \brief main function
      *
-     *  The main function searches in the arguments and paremeters the execution
-     *  switches. Depending on the provdied switch, the main function calls the
+     *  The main function searches in the arguments and parameters the execution
+     *  switches. Depending on the provided switch, the main function calls the
      *  related specialised process.
      *
      *  \param argc Main function parameters
