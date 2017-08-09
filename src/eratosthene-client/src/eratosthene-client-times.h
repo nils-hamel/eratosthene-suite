@@ -183,7 +183,7 @@
      *  mode and the current state of the two interface times.
      *
      *  The time interface buffer is then drawn on the colour buffer using the
-     *  standard opengl routines. As the interface is drawn over the earth model
+     *  standard OpenGL routines. As the interface is drawn over the earth model
      *  scene, this function has to be called after earth model rendering.
      *
      *  \param er_times Time interface structure
@@ -194,7 +194,7 @@
 
     /*! \brief display methods
      *
-     *  This function displays the time provided as parameter in the opengl
+     *  This function displays the time provided as parameter in the OpenGL
      *  colour buffer.
      *
      *  The function starts by converting the provided date in a text string
@@ -212,7 +212,7 @@
 
     /*! \brief display methods
      *
-     *  This function writes in the opengl colour buffer the text provided as
+     *  This function writes in the OpenGL colour buffer the text provided as
      *  parameter.
      *
      *  It uses the provided coordinates to set the position of the text. The

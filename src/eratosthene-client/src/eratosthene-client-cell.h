@@ -305,11 +305,11 @@
      *
      *  The incoming array is first decompressed. The cell edge is computed
      *  by considering the array first point. It is then converted from the
-     *  geographic coordinates to cartesian coordinates.
+     *  geographic coordinates to Cartesian coordinates.
      *
      *  The rest of the point contained in the array are then processed. Each
      *  point is converted, in terms if its coordinates, from geographic to
-     *  cartesian, as expected by the display functions.
+     *  Cartesian, as expected by the display functions.
      *
      *  The incoming array is assumed to provided the longitude, in radian, the
      *  latitude, in radian, and the height above the WGS84 ellipsoid, expressed

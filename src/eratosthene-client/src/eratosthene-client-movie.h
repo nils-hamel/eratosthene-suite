@@ -141,7 +141,7 @@
      *  structure fields and retrieve the screen sizes.
      *
      *  Using the obtained screen resolution, the function allocate the memory
-     *  of the colour buffer that receives the opengl colour buffer. The buffer
+     *  of the colour buffer that receives the OpenGL colour buffer. The buffer
      *  is used to export movie frames.
      *
      *  This function returning the created structure, the status is stored in

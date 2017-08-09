@@ -104,7 +104,7 @@
      *  that far elements become irrelevant, from the display point of view, as
      *  the point of view gets closer to earth.
      *
-     *  This function is both used to drive to position of the opengl far plane
+     *  This function is both used to drive to position of the OpenGL far plane
      *  and to preselect earth model cells during cells enumeration at model
      *  update.
      *
@@ -126,7 +126,7 @@
      *  relevant for display as the point of view get closer to the earth
      *  surface.
      *
-     *  This function is both used to drive to position of the opengl far plane
+     *  This function is both used to drive to position of the OpenGL far plane
      *  and also during model update. As a cell is detected relevant for display
      *  this function is called to discard cells that are too far away according
      *  to point of view height.
@@ -178,7 +178,7 @@
 
     /*! \brief model functions
      *
-     *  This function computes the position of the near plane used by opengl.
+     *  This function computes the position of the near plane used by OpenGL.
      *
      *  The position of the near and far planes are computed according to the
      *  point of view height that drives the model scale factor. These two
@@ -194,7 +194,7 @@
 
     /*! \brief model functions
      *
-     *  This function computes the position of the far plane used by opengl.
+     *  This function computes the position of the far plane used by OpenGL.
      *
      *  The position of the near and far planes are computed according to the
      *  point of view height that drives the model scale factor. These two

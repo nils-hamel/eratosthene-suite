@@ -33,7 +33,7 @@
      *  softwares suite offering front-end solutions to the functionalities of
      *  the eratosthene library.
      *
-     *  The principale software implements the server itself allowing to simply
+     *  The principal software implements the server itself allowing to simply
      *  create instances and maintain services. The suite also offers a front-end
      *  software for the data injection in the available servers. It also offers
      *  a graphical software allowing to browse the 4D worlds offered by the
@@ -182,7 +182,7 @@
      *  In addition to sub-modules creation, this function also creates the
      *  socket to the remote server according to the IP address and service
      *  port. It then requests the configuration of the remote server, needed
-     *  to peform data queries. The received configuration is then broadcasted
+     *  to perform data queries. The received configuration is then broadcast
      *  to the sub-modules.
      *
      *  This function returning the created structure, the status is stored in
@@ -202,7 +202,7 @@
      *  sub-modules structure using their related deletion functions.
      *
      *  The socket to the remote server is deleted after having sent the server
-     *  resiliation request. It then clears the structure fields using default
+     *  termination request. It then clears the structure fields using default
      *  values.
      *
      *  \param er_client Client structure
@@ -218,8 +218,8 @@
      *  It starts by reading the server address and service port from the main
      *  function standard parameters.
      *
-     *  It then configurates the interface window and creates the graphical
-     *  context. It also set the configuration of the opengl rendering.
+     *  It then configures the interface window and creates the graphical
+     *  context. It also set the configuration of the OpenGL rendering.
      *
      *  It creates the client structure and starts the execution loops. Two
      *  threads are engaged and their behaviour is driven by the execution loop
