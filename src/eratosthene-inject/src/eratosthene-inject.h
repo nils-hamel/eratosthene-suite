@@ -33,7 +33,7 @@
      *  softwares suite offering front-end solutions to the functionalities of
      *  the eratosthene library.
      *
-     *  The principale software implements the server itself allowing to simply
+     *  The principal software implements the server itself allowing to simply
      *  create instances and maintain services. The suite also offers a front-end
      *  software for the data injection in the available servers. It also offers
      *  a graphical software allowing to browse the 4D worlds offered by the
@@ -105,32 +105,35 @@
     /*! \brief injection procedure
      *
      *  This function is responsible of data injection in the specified server
-     *  that come from a file of format uf3 (universal format 3-byte).
+     *  that come from a file of format uf3 (universal format 3-bytes).
      *
-     *  The function reads the injection time parameter provided as standard
-     *  parameter. It the opens the uf3 input file using the path provided as
-     *  standard parameter.
+     *  It opens and checks the provided uf3. It also prepare the injection
+     *  array containing the injection time, needed at each injection segment.
+     *  It then starts to read the file content by chunks and sends them to
+     *  the remote server using the provided socket.
      *
-     *  The function then establish the connexion to the server using the tcp/ip
-     *  address and the port provided as standard parameters. It sends to the
-     *  server the injection handshake and, on success, starts to send the
-     *  content of the file by segments of size \b ER_INJECT. It ends injecting
-     *  the content as the end of the uf3 file is reached. The last data segment
-     *  size can be smaller than \b ER_INJECT.
+     *  The injection time has to be provided in UTC through a UNIX timestamp
+     *  format.
      *
-     *  \param argc Main function parameters
-     *  \param argv Main function parameters
+     *  \param er_path   UF3 stream path
+     *  \param er_time   Injection time
+     *  \param er_socket Remote server socket
      *
-     *  \return Standard exit code
+     *  \return Returns EXIT_SUCCESS on success, EXIT_FAILURE otherwise
      */
 
     le_enum_t er_inject_uf3( char const * const er_path, le_time_t er_time, le_sock_t const er_socket );
 
     /*! \brief main function
      *
-     *  The main function searches in the arguments and parameters which switch
-     *  is provided. Depending on the found switch, the main function calls the
-     *  specialised injection process.
+     *  The main function reads the arguments and parameters to retrieve the
+     *  remote server IP address and service port. It also search for the
+     *  injection time, given as a UNIX timestamp string.
+     *
+     *  It the creates a socket toward the remote server. After connection
+     *  establishment, the function calls the specific injection function
+     *  \b er_inject_uf3() searching for the UF3 path in the arguments and
+     *  parameters.
      *
      *  \param argc Main function parameters
      *  \param argv Main function parameters
