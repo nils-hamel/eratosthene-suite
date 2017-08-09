@@ -33,7 +33,7 @@
      *  softwares suite offering front-end solutions to the functionalities of
      *  the eratosthene library.
      *
-     *  The principale software implements the server itself allowing to simply
+     *  The principal software implements the server itself allowing to simply
      *  create instances and maintain services. The suite also offers a front-end
      *  software for the data injection in the available servers. It also offers
      *  a graphical software allowing to browse the 4D worlds offered by the
