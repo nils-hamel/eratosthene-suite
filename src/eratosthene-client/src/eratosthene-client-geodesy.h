@@ -73,7 +73,7 @@
     /*! \brief distance methods
      *
      *  This function computes the distance that separates the point of view
-     *  provided as parameter to the pseudo-center of the provided cell.
+     *  provided as parameter to the pseudo-centre of the provided cell.
      *
      *  To compute the distance, the function considers the spatial index hold
      *  by the cell address. It determines the parametric centre of the cell and
@@ -81,7 +81,7 @@
      *  of the point of view are also converted in Cartesian coordinates.
      *
      *  The distance is then computed between these two points using a simple
-     *  euclidian distance. The distance, expressed in metres, is then returned
+     *  euclidean distance. The distance, expressed in metres, is then returned
      *  by the function.
      *
      *  \param er_cell Cell structure
@@ -146,13 +146,13 @@
      *  two other provided values are used to clamp the result.
      *
      *  This function is mainly used by the model update process. As it parses
-     *  the possible cells, it checks using this function if a given cell is
-     *  relevant for display of it the enumeration of the possible cells has to
-     *  continue.
+     *  the possible cells it checks, using this function, if a given cell is
+     *  relevant for display. Otherwise, the enumeration continues considering
+     *  the cell daughters.
      *
      *  \param er_distance Distance between the cell and the point of view
-     *  \param er_scale    Server maximum number of scale (space parameter)
-     *  \param er_depth    Cell address additional depth (span)
+     *  \param er_scfg     Server maximum number of scale (space parameter)
+     *  \param er_scale    Enumeration scale - cell address size
      *
      *  \return Returns the ideal depth value
      */
