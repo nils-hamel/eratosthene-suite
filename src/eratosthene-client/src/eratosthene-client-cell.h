@@ -161,7 +161,7 @@
 
     le_byte_t er_cell_get_flag( er_cell_t const * const er_cell, le_byte_t const er_state );
 
-    /*! accessor methods
+    /*! \brief accessor methods
      *
      *  This function compares the two provided cell addresses and return the
      *  _LE_TRUE value if both address are strictly identical and _LE_FALSE
@@ -175,7 +175,18 @@
 
     le_enum_t er_cell_get_equal( er_cell_t const * const er_cell, er_cell_t const * const er_targ );
 
-    /* experimental */
+    /*! \brief accessor methods
+     *
+     *  This function checks if the cell pointed by the provided address is a
+     *  daughter of the cell pointed by the address of the provided cell
+     *  structure. In other words, the function checks if the provided address
+     *  has a filiation with the address contained in the cell structure.
+     *
+     *  \param er_cell      Cell structure
+     *  \param er_Candidate Address structure
+     *
+     *  \return Returns _LE_TRUE on filiation, _LE_FALSE otherwise
+     */
 
     le_enum_t er_cell_get_share( er_cell_t const * const er_cell, le_address_t const * const er_candidate );
 

@@ -198,7 +198,25 @@
 
     le_void_t er_model_delete( er_model_t * const er_model );
 
-    /* experimental */
+    /*! \brief accessor methods
+     *
+     *  This function determines if an address point to a cell that can be
+     *  dropped during model update before it have been queried to the remote
+     *  server.
+     *
+     *  The function checks in the actual cells stack if a cell contains an
+     *  address that is a parent to the provided address. In this case, the
+     *  function checks if the found cell contains data, the cell being assumed
+     *  to contain the server answer to its address. If the found cell is
+     *  empty, it implies that all its daughters are also empty. In this case,
+     *  the cell pointed by the provided address can be discarded during a model
+     *  update.
+     *
+     *  \param er_model Model structure
+     *  \param er_addr  Address structure
+     *
+     *  \return Returns _LE_TRUE if the address can be dropped, _LE_FALSE if not
+     */
 
     le_enum_t er_model_get_drop( er_model_t const * const er_model, le_address_t const * const er_addr );
 
