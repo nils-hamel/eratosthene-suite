@@ -175,6 +175,10 @@
 
     le_enum_t er_cell_get_equal( er_cell_t const * const er_cell, er_cell_t const * const er_targ );
 
+    /* experimental */
+
+    le_enum_t er_cell_get_share( er_cell_t const * const er_cell, le_address_t const * const er_candidate );
+
     /*! \brief accessor methods
      *
      *  This function returns the number of points contained in the cell data

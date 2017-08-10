@@ -69,6 +69,13 @@
 
     }
 
+    le_enum_t er_cell_get_share( er_cell_t const * const er_cell, le_address_t const * const er_candidate ) {
+
+        /* check shared digit condition */
+        return( le_address_get_share( & er_cell->ce_addr, er_candidate ) );
+
+    }
+
     le_size_t er_cell_get_record( er_cell_t const * const er_cell ) {
 
         /* return number of uf3 records */

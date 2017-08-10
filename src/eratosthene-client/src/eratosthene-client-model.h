@@ -198,6 +198,10 @@
 
     le_void_t er_model_delete( er_model_t * const er_model );
 
+    /* experimental */
+
+    le_enum_t er_model_get_drop( er_model_t const * const er_model, le_address_t const * const er_addr );
+
     /*! \brief mutator methods
      *
      *  This function is used to prepare an update of the earth model contain in
