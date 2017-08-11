@@ -164,7 +164,7 @@
         le_real_t er_optb = 0.0;
 
         /* decode socket-array */
-        le_array_uf3_decode( er_array, & er_cell->ce_data );
+        //le_array_uf3_decode( er_array, & er_cell->ce_data );
 
         /* retrieve array size */
         er_size = le_array_get_size( & er_cell->ce_data );

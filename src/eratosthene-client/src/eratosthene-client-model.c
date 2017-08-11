@@ -303,13 +303,15 @@
                         er_cell_set_zero( er_model->md_cell + er_search, ER_CELL_DIS );
 
                         /* read socket-array */
-                        le_array_io_read( & er_model->md_iosa, er_model->md_sock );
+                        //le_array_io_read( & er_model->md_iosa, er_model->md_sock );
+                        le_array_io_read( & ( er_model->md_cell + er_search )->ce_data, er_model->md_sock );
 
                         /* sychronise address cell */
                         er_cell_set_sync( er_model->md_cell + er_search, er_model->md_virt + er_parse );
 
                         /* check socket array */
-                        if ( le_array_get_size( & er_model->md_iosa ) == 0 ) {
+                        //if ( le_array_get_size( & er_model->md_iosa ) == 0 ) {
+                        if ( le_array_get_size( & ( er_model->md_cell + er_search )->ce_data ) == 0 ) {
 
                             /* update d-cell array */
                             er_cell_set_empty( er_model->md_cell + er_search );

@@ -78,10 +78,11 @@
             le_array_set_size( & er_data, er_read );
 
             /* encode socket-array */
-            le_array_uf3_encode( & er_data, & er_dual );
+            //le_array_uf3_encode( & er_data, & er_dual );
 
             /* write socket array */
-            le_array_io_write( & er_dual, LE_MODE_INJE, er_socket );
+            //le_array_io_write( & er_dual, LE_MODE_INJE, er_socket );
+            le_array_io_write( & er_data, LE_MODE_INJE, er_socket );
 
         }
 
