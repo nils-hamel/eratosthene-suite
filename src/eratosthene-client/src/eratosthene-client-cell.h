@@ -302,6 +302,10 @@
 
     le_void_t er_cell_set_sync( er_cell_t * const er_cell, er_cell_t const * const er_targ );
 
+    /* *** */
+
+    le_void_t er_cell_set_empty( er_cell_t * const er_cell );
+
     /*! mutator methods
      *
      *  This function process the array received from the remote server after

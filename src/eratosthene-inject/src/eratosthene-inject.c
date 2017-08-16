@@ -35,6 +35,7 @@
         /* socket-array variables */
         le_array_t er_head = LE_ARRAY_C;
         le_array_t er_data = LE_ARRAY_C;
+        le_array_t er_dual = LE_ARRAY_C;
 
         /* check consistency */
         if ( er_time == _LE_TIME_NULL ) {
@@ -76,14 +77,18 @@
             /* update array size */
             le_array_set_size( & er_data, er_read );
 
+            /* encode socket-array */
+            le_array_uf3_encode( & er_data, & er_dual );
+
             /* write socket array */
-            le_array_io_write( & er_data, LE_MODE_INJE, er_socket );
+            le_array_io_write( & er_dual, LE_MODE_INJE, er_socket );
 
         }
 
         /* delete socket array */
         le_array_delete( & er_head );
         le_array_delete( & er_data );
+        le_array_delete( & er_dual );
 
         /* delete input stream */
         fclose( er_stream );

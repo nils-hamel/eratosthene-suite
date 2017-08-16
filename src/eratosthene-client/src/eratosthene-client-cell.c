@@ -143,6 +143,13 @@
 
     }
 
+    le_void_t er_cell_set_empty( er_cell_t * const er_cell ) {
+
+        /* empty array */
+        le_array_set_size( & er_cell->ce_data, 0 );
+
+    }
+
     le_void_t er_cell_set_data( er_cell_t * const er_cell, le_array_t * const er_array ) {
 
         /* pointer variables */
@@ -157,7 +164,7 @@
         le_real_t er_optb = 0.0;
 
         /* decode socket-array */
-        //le_array_uf3_decode( er_array, & er_cell->ce_data );
+        le_array_uf3_decode( er_array, & er_cell->ce_data );
 
         /* retrieve array size */
         er_size = le_array_get_size( & er_cell->ce_data );
