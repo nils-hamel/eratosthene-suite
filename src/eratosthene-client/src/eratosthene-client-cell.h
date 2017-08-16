@@ -304,17 +304,6 @@
 
     /*! mutator methods
      *
-     *  This function allows to clear the content of the array of the provided
-     *  cell. It uses the array specific function to clear the content of the
-     *  data array.
-     *
-     *  \param er_cell Cell structure
-     */
-
-    le_void_t er_cell_set_empty( er_cell_t * const er_cell );
-
-    /*! mutator methods
-     *
      *  This function process the array received from the remote server after
      *  a query.
      *

@@ -254,9 +254,6 @@
 
         }
 
-        /* reset i/o socket-array */
-        le_array_set_reset( & er_model->md_iosa );
-
         /* update i/o socket-array size */
         le_array_set_size( & er_model->md_iosa, 0 );
 
@@ -310,9 +307,6 @@
 
                         /* check socket array - object fault *** */
                         if ( le_array_get_size( & ( er_model->md_cell + er_search )->ce_data ) == 0 ) {
-
-                            /* update d-cell array */
-                            er_cell_set_empty( er_model->md_cell + er_search );
 
                             /* update d-cell state */
                             er_cell_set_flag( er_model->md_cell + er_search, ER_CELL_SYN );

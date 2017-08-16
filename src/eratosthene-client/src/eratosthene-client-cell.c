@@ -143,13 +143,6 @@
 
     }
 
-    le_void_t er_cell_set_empty( er_cell_t * const er_cell ) {
-
-        /* empty cell array */
-        le_array_set_reset( & er_cell->ce_data );
-
-    }
-
     le_void_t er_cell_set_data( er_cell_t * const er_cell, le_array_t * const er_array ) {
 
         /* pointer variables */
