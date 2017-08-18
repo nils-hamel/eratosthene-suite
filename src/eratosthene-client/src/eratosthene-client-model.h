@@ -94,41 +94,47 @@
      *
      *  The first three fields holds the socket opened toward the remote server
      *  and the two configuration values of the server. The rest of the fields
-     *  are related to the cells stack.
+     *  are related to the cells stacks.
      *
      *  The structure holds two cells stacks, the actual stack, used by the
      *  graphical process and the target stack. The target stack is the one
      *  that is updated at high frequency, following the motion of the point
      *  of view. The actual stack, that contain the data received from the
-     *  remote server, is updated with a lower frequency.
+     *  remote server, is updated with a lower frequency through synchronisation
+     *  procedure.
      *
      *  The size field gives the amount of cell available in each stack while
      *  the \b mc_cell and \b md_virt are the base pointers of the actual and
-     *  target stack.
+     *  target stacks.
      *
      *  The update of the actual cells stack is made by the synchronisation
      *  procedure. As soon as the point of view has moved, the target stack is
-     *  updated. A first process checks the cell in common between the target
-     *  and actual stack to avoid to query them. Then, the synchronisation
+     *  updated. A first process checks the cells in common between the target
+     *  and actual stacks to avoid to query them. Then, the synchronisation
      *  reduces the differences between the target stack and the actual one
      *  step by step. The synchronisation continues even the point of view
-     *  has not changed, until both stack are identical.
+     *  has not changed, until both stacks are identical.
      *
      *  Of course, the target stack is only considered in terms of addresses of
-     *  cells, only the actual stack contains the proper data used by the
-     *  graphical processes.
+     *  cells, only the actual stack contains the proper data received form the
+     *  remote server and used by the graphical processes.
      *
-     *  The \b md_push field is used to keep the amount of cell that have been
+     *  The \b md_push field is used to keep the amount of cells that have been
      *  pushed in the target stack in order to avoid to parse it entirely. The
-     *  \b md_sync value indicates the size - address length - of the cell
-     *  that are considered in one synchronisation step. The synchronisation is
-     *  over as this value gets equal to the server space value - the maximum
-     *  scale value.
+     *  synchronisation fields \b md_syna, \b md_synb, \b md_sync and \b md_free
+     *  are used by the synchronisation method to decrease the differences
+     *  between the actual and target stacks. They are hold in the structure to
+     *  maintain their value between method calls.
      *
      *  This dual stack procedure is set up in order to avoid high frequency
      *  update of the actual cells stack. This allows to considerably decrease
      *  the amount of request to the server and also allows to cushion high
      *  frequency motion of the point of view.
+     *
+     *  A last field is used to keep the scket-array used to pack the query
+     *  address and to receive the data coming from the remote server. It is
+     *  hold in the structure in order to take advantage of the socket-array
+     *  memory management that minimise memory allocation.
      *
      *  \var er_model_struct::md_sock
      *  Socket toward the remote server
@@ -140,8 +146,12 @@
      *  Cells stacks size
      *  \var er_model_struct::md_push
      *  Target stack used cells
+     *  \var er_model_struct::md_syna
+     *  Synchronisation memory
+     *  \var er_model_struct::md_synb
+     *  Synchronisation boundary
      *  \var er_model_struct::md_sync
-     *  Synchronisation scale value
+     *  Synchronisation index
      *  \var er_model_struct::md_cell
      *  Cells stack
      *  \var er_model_struct::md_virt
@@ -158,12 +168,9 @@
 
         le_size_t   md_size;
         le_size_t   md_push;
-
-        le_size_t   md_free; /* n */
-
-        le_size_t   md_syna; /* n */
-        le_size_t   md_synb; /* n */
-
+        le_size_t   md_free;
+        le_size_t   md_syna;
+        le_size_t   md_synb;
         le_size_t   md_sync;
 
         er_cell_t * md_cell;
@@ -310,14 +317,21 @@
      *  one step of the synchronisation is performed.
      *
      *  After a target stack update, usually following a modification of the
-     *  point of view, the synchronisation scale is reset to its low value. A
-     *  synchronisation step considers all cells that exhibit an address size
-     *  corresponding to this value. The cells address are packed in a query
-     *  array before to be sent to the remote server. The server answer is then
-     *  read to update the considered cells content.
+     *  point of view, the synchronisation index is set to zero. At each call,
+     *  the function searches in the target stacks the cells that have to be
+     *  queried to the remote server. It considers 64 cells before to make a
+     *  query to the server. As the server answer the query, the function
+     *  receives and dispatch the data in the corresponding cells of the actual
+     *  stack. The process is repeated at each function call until the
+     *  synchronisation is complete.
      *
-     *  At the end of a synchronisation step, the synchronisation value is
-     *  updated by adding one to it.
+     *  In the first place, the function checks if the synchronisation is done
+     *  or incomplete. It case of fully synchronised stacks, the function does
+     *  nothing.
+     *
+     *  After the last query, the function checks the actual stack for cells
+     *  that were displayed at the previous state and that no more used in the
+     *  current state in order to disable their graphical representation.
      *
      *  Such a process allows to be able to interrupt earth model update.
      *  Indeed, updating the model asking for all the pushed cell content lead
@@ -328,6 +342,8 @@
      *  data transfer toward the remote server.
      *
      *  \param er_model Model structure
+     *
+     *  \return Returns _LE_TRUE on synchronised stacks, _LE_FALSE otherwise
      */
 
     le_enum_t er_model_set_sync( er_model_t * const er_model );
