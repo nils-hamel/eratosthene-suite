@@ -61,13 +61,13 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_MODEL_C        { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 0, 0, NULL, NULL, LE_ARRAY_C, _LE_TRUE }
+    # define ER_MODEL_C        { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 0, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, _LE_TRUE }
 
     /* define pseudo-initialiser */
-    # define ER_MODEL_I(s,p,t) { s, p, t, ER_MODEL_STACK, 0, 0, NULL, NULL, LE_ARRAY_C, _LE_TRUE }
+    # define ER_MODEL_I(s,p,t) { s, p, t, ER_MODEL_STACK, 0, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, _LE_TRUE }
 
     /* define model stack */
-    # define ER_MODEL_STACK    ( 8192 ) // ( 4096 )
+    # define ER_MODEL_STACK    ( 6144 )
 
     /* define display array types */
     # define ER_MODEL_VERTEX   ( GL_DOUBLE )
@@ -158,7 +158,14 @@
 
         le_size_t   md_size;
         le_size_t   md_push;
+
+        le_size_t   md_free; /* n */
+
+        le_size_t   md_syna; /* n */
+        le_size_t   md_synb; /* n */
+
         le_size_t   md_sync;
+
         er_cell_t * md_cell;
         er_cell_t * md_virt;
 
