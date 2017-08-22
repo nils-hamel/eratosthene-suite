@@ -265,7 +265,7 @@
         er_model->md_syna = er_model->md_sync;
 
         /* parsing v-cell array segment */
-        while ( ( er_model->md_sync < er_model->md_push ) && ( er_serial < LE_ARRAY_ADDR * 64 ) ) {
+        while ( ( er_model->md_sync < er_model->md_push ) && ( er_serial < LE_ARRAY_ADDR * ER_COMMON_PACK ) ) {
 
             /* select unsynchronised v-cell */
             if ( er_cell_get_flag( er_model->md_virt + er_model->md_sync, ER_CELL_SYN ) != ER_CELL_SYN ) {

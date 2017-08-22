@@ -82,8 +82,9 @@
     # define ER_COMMON_ALU     ( LE_ADDRESS_WGS_A * 3.00 )
 
     /* define model parameters */
-    # define ER_COMMON_ENUM    ( 4 )
-    # define ER_COMMON_SPAN    ( 7 )
+    # define ER_COMMON_ENUM    (  4 )
+    # define ER_COMMON_SPAN    (  7 )
+    # define ER_COMMON_PACK    ( 16 )
 
     /* define mouse button */
     # define ER_COMMON_WUP     ( 3 )
