@@ -66,10 +66,10 @@
         le_array_serial( & er_head, & er_time, sizeof( le_time_t ), 0, _LE_SET );
 
         /* update array size */
-        le_array_set_size( & er_data, ER_INJECT_ * LE_ARRAY_UF3 );
+        le_array_set_size( & er_data, ER_INJECT * LE_ARRAY_UF3 );
 
         /* read stream */
-        while ( ( er_read = fread( le_array_get_byte( & er_data ), sizeof( le_byte_t ), ER_INJECT_ * LE_ARRAY_UF3, er_stream ) ) > 0 ) {
+        while ( ( er_read = fread( le_array_get_byte( & er_data ), sizeof( le_byte_t ), ER_INJECT * LE_ARRAY_UF3, er_stream ) ) > 0 ) {
 
             /* write socket-array - injection head */
             le_array_io_write( & er_head, LE_MODE_INJE, er_socket );

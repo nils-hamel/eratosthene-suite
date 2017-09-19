@@ -112,8 +112,7 @@
  */
 
     /* define segmentation size */
-    # define ER_INJECT ( LE_ARRAY_STEP / LE_ARRAY_UF3 )
-    # define ER_INJECT_ ( 1048576 )
+    # define ER_INJECT ( LE_ARRAY_STEP )
 
 /*
     header - preprocessor macros
