@@ -24,7 +24,7 @@
     source - raster method
  */
 
-    le_enum_t er_raster( le_char_t const * const er_path, le_address_t const * const er_addr, le_array_t * const er_encode ) {
+    le_enum_t er_raster( le_char_t const * const er_path, le_address_t const * const er_addr, le_array_t * const er_array ) {
 
         /* output stream variables */
         le_file_t er_stream = NULL;
@@ -33,10 +33,10 @@
         le_real_t * er_pose = NULL;
 
         /* array size variables */
-        le_size_t er_size = le_array_get_size( er_encode );
+        le_size_t er_size = le_array_get_size( er_array );
 
         /* array base variables */
-        le_byte_t * er_byte = le_array_get_byte( er_encode );
+        le_byte_t * er_byte = le_array_get_byte( er_array );
 
         /* cell factor variables */
         le_real_t er_fact_p = pow( 2.0, le_address_get_size( er_addr ) ) / LE_2P;
@@ -89,9 +89,6 @@
         /* create output stream */
         if ( ( er_stream = fopen( ( char * ) er_path, "wb" ) ) == NULL ) {
 
-            /* release raster memory */
-            free( er_raster );
-
             /* send message */
             return( _LE_FALSE );
 
@@ -99,12 +96,6 @@
 
         /* export raster content */
         if ( fwrite( er_raster, sizeof( le_byte_t ), er_volume, er_stream ) != er_volume ) {
-
-            /* delete output stream */
-            fclose( er_stream );
-
-            /* release raster memory */
-            free( er_raster );
 
             /* send message */
             return( _LE_FALSE );

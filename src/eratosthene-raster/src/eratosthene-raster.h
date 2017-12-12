@@ -99,8 +99,44 @@
     header - function prototypes
  */
 
+    /*! \brief raster method
+     *
+     *  This function computes and export a 3D raster based on the provided
+     *  array. The array has to be the answered array by a remote server using
+     *  the provided address structure as query.
+     *
+     *  The function parses the array point and compose a 0/1 3D raster that it
+     *  export using the provided path. The raster size, in terms of index,
+     *  corresponds to two to the power of the address span. Each point of the
+     *  array is then placed in the raster according to its position.
+     *
+     *  \param er_path   Path to the raster file
+     *  \param er_addr   Address structure containing the query
+     *  \param er_array Array received from remote server
+     *
+     *  \return Returns _LE_TRUE on success, _LE_FALSE otherwise
+     */
+
+    le_enum_t er_raster( le_char_t const * const er_path, le_address_t const * const er_addr, le_array_t * const er_array );
+
     /*! \brief main function
      *
+     *  This software is used to compute 3D raster from the cells queried to a
+     *  remote server :
+     *
+     *      ./eratosthene-raster --raster/-r --query/-q --ip/-i --port/-p
+     *
+     *  The main function starts by establishing a connection to the remote
+     *  server using the provided ip address and port number. The main function
+     *  performs the authentication procedure.
+     *
+     *  The main function the reads the provided query address string and pack
+     *  it in a array that is then send to the remote server. The answer array
+     *  is read and decoded.
+     *
+     *  The main function finally invoke the raster creation process providing
+     *  it the query address, the received array and the path to the file in
+     *  which the raster is dumped.
      *
      *  \param argc Main function parameters
      *  \param argv Main function parameters
