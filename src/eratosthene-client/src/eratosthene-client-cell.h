@@ -183,7 +183,7 @@
      *  has a filiation with the address contained in the cell structure.
      *
      *  \param er_cell      Cell structure
-     *  \param er_Candidate Address structure
+     *  \param er_candidate Address structure
      *
      *  \return Returns _LE_TRUE on filiation, _LE_FALSE otherwise
      */
