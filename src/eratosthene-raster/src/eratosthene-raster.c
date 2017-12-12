@@ -77,9 +77,9 @@
             er_pose = ( le_real_t * ) ( er_byte + er_parse );
 
             /* convert coordinates to raster index */
-            er_index[0] = ( le_size_t ) ( ( ( er_pose[0] - er_edge[0] ) * er_fact_p ) * er_segment );
-            er_index[1] = ( le_size_t ) ( ( ( er_pose[1] - er_edge[1] ) * er_fact_p ) * er_segment );
-            er_index[2] = ( le_size_t ) ( ( ( er_pose[2] - er_edge[2] ) * er_fact_a ) * er_segment );
+            er_index[0] = ( le_size_t ) round( ( ( er_pose[0] - er_edge[0] ) * er_fact_p ) * er_segment );
+            er_index[1] = ( le_size_t ) round( ( ( er_pose[1] - er_edge[1] ) * er_fact_p ) * er_segment );
+            er_index[2] = ( le_size_t ) round( ( ( er_pose[2] - er_edge[2] ) * er_fact_a ) * er_segment );
 
             /* assign raster value */
             * ( er_raster + ( ( er_index[2] * er_segment ) + er_index[1] ) * er_segment + er_index[0] ) = 1;
@@ -87,7 +87,7 @@
         }
 
         /* create output stream */
-        if ( ( er_stream = fopen( ( char * ) er_path, "wb" ) ) != NULL ) {
+        if ( ( er_stream = fopen( ( char * ) er_path, "wb" ) ) == NULL ) {
 
             /* release raster memory */
             free( er_raster );
