@@ -14,6 +14,14 @@ The Eratosthene Project is designed to answer this question by implementing an s
 
 The space-time indexation formalism is designed to efficiently manage the storage of the incoming 4D models and to offer and simple and efficient ways of addressing queries to the server allowing models broadcasting. The space-time indexation also allows to perform queries to the server in a intuitive way giving the possibility to both address the questions of the earth structures levels of detail and time management. This allows to explore the entire earth surface in terms of 4D structures from large mountain chains in 2000 to very small details of cities in 1850.
 
+The following image gives an illustration of the view offered by the graphical client looking at the whole Europa.
+
+<p align="center">
+<img src="https://github.com/nils-hamel/turing-project/blob/master/doc/image/client-0?raw=true" width="512">
+<br />
+<i>View of Europa using eratosthene-suite graphical client</i>
+</p>
+
 ## Copyright and License
 
 **eratosthene-suite** - Nils Hamel <br >
