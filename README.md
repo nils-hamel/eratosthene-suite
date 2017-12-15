@@ -14,7 +14,9 @@ The Eratosthene Project is designed to answer this question by implementing an s
 
 The space-time indexation formalism is designed to efficiently manage the storage of the incoming 4D models and to offer and simple and efficient ways of addressing queries to the server allowing models broadcasting. The space-time indexation also allows to perform queries to the server in a intuitive way giving the possibility to both address the questions of the earth structures levels of detail and time management. This allows to explore the entire earth surface in terms of 4D structures from large mountain chains in 2000 to very small details of cities in 1850.
 
-The following image gives an illustration of the view offered by the graphical client looking at the whole Europa :
+## Graphical Client
+
+The following illustration gives an overview of the interface of the graphical client as it communicates with a experimental server hosted by the DHLAB. The following image gives an illustration of the view offered by the graphical client looking at the whole Europa from a very high altitude :
 
 <p align="center">
 <img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-0.jpg?raw=true" width="512">
@@ -22,12 +24,12 @@ The following image gives an illustration of the view offered by the graphical c
 <i>View of Europa using eratosthene-suite graphical client</i>
 </p>
 
-The following image shows a view of the Swiss Alps looking in the direction of the Leman lake :
+The following image shows a view of the Swiss Alps looking in the direction of the Leman lake and Geneva City :
 
 <p align="center">
 <img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-1.jpg?raw=true" width="512">
 <br />
-<i>View of Europa using eratosthene-suite graphical client</i>
+<i>View of Swiss Alps using eratosthene-suite graphical client</i>
 </p>
 
 On the two previous images, the model is mainly constituted from point of the SRTM topographic model. The following image shows a closer view of the Geneva city as it was in 2009 :
@@ -35,7 +37,7 @@ On the two previous images, the model is mainly constituted from point of the SR
 <p align="center">
 <img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-2.jpg?raw=true" width="512">
 <br />
-<i>View of Europa using eratosthene-suite graphical client</i>
+<i>View the city of Geneva using eratosthene-suite graphical client</i>
 </p>
 
 In this case, the model is dominantly made of points coming from the SITG lidar model of the city. Finally, this last illustration shows a view of the city of Sion in Switzerland as it was in 2014 :
@@ -43,7 +45,7 @@ In this case, the model is dominantly made of points coming from the SITG lidar 
 <p align="center">
 <img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-3.jpg?raw=true" width="512">
 <br />
-<i>View of Europa using eratosthene-suite graphical client</i>
+<i>View of the city of Sion using eratosthene-suite graphical client</i>
 </p>
 
 In this last case, the model is made of point coming from a photogrammetric model of the city of Sion computed by the DHLAB using Sion state aerial images.
