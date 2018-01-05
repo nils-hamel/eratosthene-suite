@@ -32,8 +32,6 @@ At such position and time, the server provides a topographic model built using t
 <i>View of Swiss Alps using eratosthene-suite graphical client</i>
 </p>
 
-On the two previous images, the model is mainly constituted from point of the SRTM topographic model. 
-
 Again, the information provided by the server to the graphical client are mainly based on the SRTM according to the position in space and time of the point of view. The following image shows a closer view of the Geneva city with a position in time in the year 2009 :
 
 <p align="center">
