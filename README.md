@@ -45,7 +45,7 @@ In this case, the model is dominantly made of points coming from the SITG lidar 
 <p align="center">
 <img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-3.jpg?raw=true" width="512">
 <br />
-<i>View of the city of Sion using eratosthene-suite graphical client</i>
+<i>View of the city of Venice using eratosthene-suite graphical client</i>
 </p>
 
 On this last image, the model provided by the remote server is mainly composed of points coming from a photogrammetric model of the city of Venice computed at the DHLAB using aerial images.
