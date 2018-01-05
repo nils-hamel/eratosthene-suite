@@ -16,7 +16,7 @@ The space-time indexation formalism is designed to efficiently manage the storag
 
 ## Server and Client
 
-The following illustration gives an overview of the interface of the graphical client as it communicates with a experimental server hosted by the DHLAB. The following image gives an illustration of the view offered by the graphical client looking at the whole Europa from a very high altitude :
+The following illustrations give an overview of the interface of the graphical client as it communicates with an experimental server hosted by the DHLAB. The following image gives an illustration of the view offered by the graphical client looking at the whole Europa from a very high altitude :
 
 <p align="center">
 <img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-0.jpg?raw=true" width="512">
@@ -24,7 +24,7 @@ The following illustration gives an overview of the interface of the graphical c
 <i>View of Europa using eratosthene-suite graphical client</i>
 </p>
 
-The following image shows a view of the Swiss Alps looking in the direction of the Leman lake and Geneva City :
+At such position and time, the server provides a topographic model built using the SRTM data it holds. The following image shows a view of the Swiss Alps looking in the direction of Geneva city :
 
 <p align="center">
 <img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-1.jpg?raw=true" width="512">
@@ -32,7 +32,9 @@ The following image shows a view of the Swiss Alps looking in the direction of t
 <i>View of Swiss Alps using eratosthene-suite graphical client</i>
 </p>
 
-On the two previous images, the model is mainly constituted from point of the SRTM topographic model. The following image shows a closer view of the Geneva city as it was in 2009 :
+On the two previous images, the model is mainly constituted from point of the SRTM topographic model. 
+
+Again, the information provided by the server to the graphical client are mainly based on the SRTM according to the position in space and time of the point of view. The following image shows a closer view of the Geneva city with a position in time in the year 2009 :
 
 <p align="center">
 <img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-2.jpg?raw=true" width="512">
@@ -40,7 +42,7 @@ On the two previous images, the model is mainly constituted from point of the SR
 <i>View the city of Geneva using eratosthene-suite graphical client</i>
 </p>
 
-In this case, the model is dominantly made of points coming from the SITG lidar model of the city. Finally, this last illustration shows a view of the city of Sion in Switzerland as it was in 2014 :
+In this case, the model is dominantly made of points coming from the SITG lidar model of the city of Geneva and that has been injected in the remote server. Finally, this last illustration shows a view of the city Venice using a point of view in time in the year 2010 :
 
 <p align="center">
 <img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-3.jpg?raw=true" width="512">
@@ -48,7 +50,7 @@ In this case, the model is dominantly made of points coming from the SITG lidar 
 <i>View of the city of Sion using eratosthene-suite graphical client</i>
 </p>
 
-In this last case, the model is made of point coming from a photogrammetric model of the city of Sion computed by the DHLAB using Sion state aerial images.
+On this last image, the model provided by the remote server is mainly composed of points coming from a photogrammetric model of the city of Venice computed at the DHLAB using aerial images.
 
 ## Copyright and License
 
