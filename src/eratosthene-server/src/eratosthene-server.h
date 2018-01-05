@@ -2,7 +2,7 @@
  *  eratosthene-suite - server
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016-2017 DHLAB, EPFL
+ *      Copyright (c) 2016-2018 DHLAB, EPFL
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@
      *  \section license Copyright and License
      *
      *  **eratosthene-suite** - Nils Hamel <br >
-     *  Copyright (c) 2016-2017 DHLAB, EPFL
+     *  Copyright (c) 2016-2018 DHLAB, EPFL
      *
      *  This program is licensed under the terms of the GNU GPLv3.
      */
