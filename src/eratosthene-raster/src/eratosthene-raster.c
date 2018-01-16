@@ -106,7 +106,7 @@
         fclose( er_stream );
 
         /* display point count */
-        fprintf( stdout, "%lli\n", ( er_size / LE_ARRAY_UF3 ) );
+        fprintf( stdout, "%" _LE_SIZE_P "\n", ( er_size / LE_ARRAY_UF3 ) );
 
         /* release raster memory */
         free( er_raster );
