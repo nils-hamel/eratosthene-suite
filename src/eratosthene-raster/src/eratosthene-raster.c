@@ -60,7 +60,7 @@
         le_size_t er_volume = er_segment * er_segment * er_segment;
 
         /* allocate raster memory */
-        if ( ( er_raster = ( le_byte_t * ) malloc( er_volume ) ) == NULL ) {
+        if ( ( er_raster = ( le_byte_t * ) calloc( er_volume, sizeof( le_byte_t ) ) ) == NULL ) {
 
             /* send message */
             return( _LE_FALSE );
