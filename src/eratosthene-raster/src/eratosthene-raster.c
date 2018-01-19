@@ -161,6 +161,9 @@
         /* size variable */
         le_size_t er_size = 0;
 
+        /* span variable */
+        le_size_t er_span = 0;
+
         /* digit value variable */
         le_size_t er_digit = 0;
 
@@ -177,20 +180,53 @@
         /* check scale */
         if ( er_scale < er_target ) {
 
-            /* enumeration process */
-            while ( ( er_digit < er_base ) && ( er_message == _LE_TRUE ) ) {
+            /* update array size */
+            le_array_set_size( & er_encode, LE_ARRAY_ADDR );
 
-                /* update address digit */
-                le_address_set_digit( er_addr, er_scale, er_digit );
+            /* push address span */
+            er_span = le_address_get_span( er_addr );
 
-                /* update address size */
-                le_address_set_size( er_addr, er_scale + 1 );
+            /* set span for fast query */
+            le_address_set_span( er_addr, 0 );
 
-                /* continue enumeration */
-                er_message = er_raster_enum( er_addr, er_scale + 1, er_target, er_limit, er_path, er_socket );
+            /* serialise address */
+            le_address_serial( er_addr, & er_encode, 0, _LE_SET );
 
-                /* update digit value */
-                er_digit ++;
+            /* pop address span */
+            le_address_set_span( er_addr, er_span );
+
+            /* write socket-array */
+            le_array_io_write( & er_encode, LE_MODE_QUER, er_socket );
+
+            /* read socket-array */
+            if ( le_array_io_read( & er_encode, er_socket ) != LE_MODE_QUER ) {
+
+                /* push message */
+                er_message = _LE_FALSE;
+
+            } else {
+
+                /* check array size */
+                if ( le_array_get_size( & er_encode ) > 0 ) {
+
+                    /* enumeration process */
+                    while ( ( er_digit < er_base ) && ( er_message == _LE_TRUE ) ) {
+
+                        /* update address digit */
+                        le_address_set_digit( er_addr, er_scale, er_digit );
+
+                        /* update address size */
+                        le_address_set_size( er_addr, er_scale + 1 );
+
+                        /* continue enumeration */
+                        er_message = er_raster_enum( er_addr, er_scale + 1, er_target, er_limit, er_path, er_socket );
+
+                        /* update digit value */
+                        er_digit ++;
+
+                    }
+
+                }
 
             }
 

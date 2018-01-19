@@ -184,6 +184,12 @@
      *  than the provided limit value, the raster is not computed and not
      *  exported.
      *
+     *  In addition, during enumeration process, as the target scale is not
+     *  reached, the function performs a query towards the remote server on the
+     *  actual state of the address to check its content. If the address leads
+     *  to an empty cell, it follows that any of its subsequent cell is empty
+     *  and the address is dropped from enumeration.
+     *
      *  \param er_addr   Enumeration address
      *  \param er_scale  Current scale
      *  \param er_target Target scale
