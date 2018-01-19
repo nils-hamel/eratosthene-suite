@@ -130,6 +130,22 @@
     header - function prototypes
  */
 
+    /*! \brief auxiliary methods
+     *
+     *  This function computes and returns the exportation path of computed
+     *  raster based on the provided directory path and raster address string.
+     *  Using these elements, the function composes the exportation path by
+     *  appending the address string to the provided directory path.
+     *
+     *  In the first place, the raster address string is modified to replace the
+     *  '/' and ',' characters by simple minus symbols.
+     *
+     *  \param er_addr Raster address string
+     *  \param er_path Exportation directory path
+     *
+     *  \return Returns the composed exportation path
+     */
+
     le_char_t * er_raster_path( le_char_t * const er_addr, le_char_t const * const er_path );
 
     /*! \brief raster method
@@ -138,40 +154,71 @@
      *  array. The array has to be the answered array by a remote server using
      *  the provided address structure as query.
      *
-     *  The function parses the array point and compose a 0/1 3D raster that it
-     *  export using the provided path. The raster size, in terms of index,
-     *  corresponds to two to the power of the address span. Each point of the
-     *  array is then placed in the raster according to its position.
+     *  The function parses the array points and compose a binary 3D raster that
+     *  it exports using the provided path. The raster size, in terms of array,
+     *  boundaries, corresponds to two to the power of the address span. Each
+     *  point of the array is then placed in the raster according to its
+     *  position in the limit of the discretisation of the spatial index and
+     *  span.
      *
-     *  \param er_path   Path to the raster file
-     *  \param er_addr   Address structure containing the query
-     *  \param er_array Array received from remote server
+     *  \param er_path  Raster exportation path
+     *  \param er_addr  Address structure
+     *  \param er_array Remote server array
      *
      *  \return Returns _LE_TRUE on success, _LE_FALSE otherwise
      */
 
     le_enum_t er_raster( le_char_t const * const er_path, le_address_t const * const er_addr, le_array_t * const er_array );
 
+    /*! \brief enumeration methods
+     *
+     *  This function is used to query more than one raster based on the unique
+     *  address provided to the function. Based on the provided target scale,
+     *  the function recursively enumerates all the sub-cells of the original
+     *  address up to the specified depth. For each enumerated cell, the
+     *  function queries the data to the remote server and triggers the
+     *  computation of the corresponding raster.
+     *
+     *  Before any raster computation and exportation, the function checks the
+     *  amount of points of the queried cell. If the amount of point is less
+     *  than the provided limit value, the raster is not computed and not
+     *  exported.
+     *
+     *  \param er_addr   Enumeration address
+     *  \param er_scale  Current scale
+     *  \param er_target Target scale
+     *  \param er_limit  Exportation limit
+     *  \param er_path   Exportation directory path
+     *  \param er_socket Socket to the remove server
+     *
+     *  \return Returns _LE_TRUE on success, _LE_FALSE otherwise
+     */
+
     le_enum_t er_raster_enum( le_address_t * const er_addr, le_size_t const er_scale, le_size_t const er_target, le_size_t const er_limit, le_char_t const * const er_path, le_sock_t const er_socket );
 
     /*! \brief main function
      *
-     *  This software is used to compute 3D raster from the cells queried to a
-     *  remote server :
+     *  This software is used to compute and export rasters from the cells
+     *  queried to the specified remote server :
      *
-     *      ./eratosthene-raster --raster/-r --query/-q --ip/-i --port/-p
+     *      ./eratosthene-raster --query/-q --depth/-d --export/-e --limit/-l
+     *                           --ip/-i --port/-p
      *
      *  The main function starts by establishing a connection to the remote
      *  server using the provided ip address and port number. The main function
      *  performs the authentication procedure.
      *
-     *  The main function the reads the provided query address string and pack
-     *  it in a array that is then send to the remote server. The answer array
-     *  is read and decoded.
+     *  The main function then reads the provided address strings and depth
+     *  value that is uses to invoke the raster enumeration procedure. The
+     *  address is considered as the mother cell while the depth is used to
+     *  compute the target scale at which the enumerated address are used to
+     *  perform query and to compute the subsequent rasters.
      *
-     *  The main function finally invoke the raster creation process providing
-     *  it the query address, the received array and the path to the file in
-     *  which the raster is dumped.
+     *  In addition, the limit value provided as parameter is also sent to the
+     *  enumeration process. This value is used to discard all cell that have
+     *  an amount of point that is less than the limit value. The default value
+     *  is zero, meaning all cells are used to compute and export raster, even
+     *  when empty.
      *
      *  \param argc Main function parameters
      *  \param argv Main function parameters

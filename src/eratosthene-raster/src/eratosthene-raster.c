@@ -55,93 +55,97 @@
 
     le_enum_t er_raster( le_char_t const * const er_path, le_address_t const * const er_addr, le_array_t * const er_array ) {
 
-        /* output stream variables */
+        /* message variable */
+        le_enum_t er_message = _LE_TRUE;
+
+        /* output stream variable */
         le_file_t er_stream = NULL;
 
-        /* array pointer variables */
+        /* array pointer variable */
         le_real_t * er_pose = NULL;
 
-        /* array size variables */
+        /* array size variable */
         le_size_t er_size = le_array_get_size( er_array );
 
-        /* array base variables */
+        /* array base variable */
         le_byte_t * er_byte = le_array_get_byte( er_array );
 
-        /* cell factor variables */
+        /* cell factor variable */
         le_real_t er_fact_p = pow( 2.0, le_address_get_size( er_addr ) ) / LE_2P;
 
-        /* cell factor variables */
+        /* cell factor variable */
         le_real_t er_fact_a = er_fact_p / LE_ADDRESS_WGS_A;
 
-        /* cell edge variables */
+        /* cell edge variable */
         le_real_t er_edge[3] = { 0.0 };
 
-        /* raster index variables */
+        /* raster index variable */
         le_size_t er_index[3] = { 0 };
 
-        /* raster memory variables */
+        /* raster memory variable */
         le_byte_t * er_raster = NULL;
 
-        /* raster size variables */
-        le_size_t er_segment = 1 << le_address_get_span( er_addr );
+        /* raster size variable */
+        le_size_t er_width = 1 << le_address_get_span( er_addr );
 
-        /* raster size variables */
-        le_size_t er_volume = er_segment * er_segment * er_segment;
+        /* raster size variable */
+        le_size_t er_volume = er_width * er_width * er_width;
 
         /* allocate raster memory */
         if ( ( er_raster = ( le_byte_t * ) calloc( er_volume, sizeof( le_byte_t ) ) ) == NULL ) {
 
-            /* send message */
-            return( _LE_FALSE );
+            /* push message */
+            er_message = _LE_FALSE;
+
+        } else {
+
+            /* compute raster edge */
+            le_address_get_pose( er_addr, er_edge );
+
+            /* parsing array elements */
+            for ( le_size_t er_parse = 0; er_parse < er_size; er_parse += LE_ARRAY_UF3 ) {
+
+                /* compute array pointer */
+                er_pose = ( le_real_t * ) ( er_byte + er_parse );
+
+                /* convert coordinates to raster index */
+                er_index[0] = ( le_size_t ) round( ( ( er_pose[0] - er_edge[0] ) * er_fact_p ) * er_width );
+                er_index[1] = ( le_size_t ) round( ( ( er_pose[1] - er_edge[1] ) * er_fact_p ) * er_width );
+                er_index[2] = ( le_size_t ) round( ( ( er_pose[2] - er_edge[2] ) * er_fact_a ) * er_width );
+
+                /* assign raster value */
+                * ( er_raster + ( ( er_index[2] * er_width ) + er_index[1] ) * er_width + er_index[0] ) = 1;
+
+            }
+
+            /* create output stream */
+            if ( ( er_stream = fopen( ( char * ) er_path, "wb" ) ) == NULL ) {
+
+                /* push message */
+                er_message = _LE_FALSE;
+
+            } else {
+
+                /* export raster */
+                if ( fwrite( er_raster, sizeof( le_byte_t ), er_volume, er_stream ) != er_volume ) {
+
+                    /* push message */
+                    er_message = _LE_FALSE;
+
+                }
+
+                /* delete output stream */
+                fclose( er_stream );
+
+            }
+
+            /* release raster memory */
+            free( er_raster );
 
         }
-
-        /* compute cell edge */
-        le_address_get_pose( er_addr, er_edge );
-
-        /* parsing array elements */
-        for ( le_size_t er_parse = 0; er_parse < er_size; er_parse += LE_ARRAY_UF3 ) {
-
-            /* compute array pointer */
-            er_pose = ( le_real_t * ) ( er_byte + er_parse );
-
-            /* convert coordinates to raster index */
-            er_index[0] = ( le_size_t ) round( ( ( er_pose[0] - er_edge[0] ) * er_fact_p ) * er_segment );
-            er_index[1] = ( le_size_t ) round( ( ( er_pose[1] - er_edge[1] ) * er_fact_p ) * er_segment );
-            er_index[2] = ( le_size_t ) round( ( ( er_pose[2] - er_edge[2] ) * er_fact_a ) * er_segment );
-
-            /* assign raster value */
-            * ( er_raster + ( ( er_index[2] * er_segment ) + er_index[1] ) * er_segment + er_index[0] ) = 1;
-
-        }
-
-        /* create output stream */
-        if ( ( er_stream = fopen( ( char * ) er_path, "wb" ) ) == NULL ) {
-
-            /* send message */
-            return( _LE_FALSE );
-
-        }
-
-        /* export raster content */
-        if ( fwrite( er_raster, sizeof( le_byte_t ), er_volume, er_stream ) != er_volume ) {
-
-            /* send message */
-            return( _LE_FALSE );
-
-        }
-
-        /* delete output stream */
-        fclose( er_stream );
-
-        /* display point count */
-        fprintf( stdout, "%" _LE_SIZE_P "\n", ( er_size / LE_ARRAY_UF3 ) );
-
-        /* release raster memory */
-        free( er_raster );
 
         /* send message */
-        return( _LE_TRUE );
+        return( er_message );
 
     }
 
@@ -154,17 +158,17 @@
         /* message variable */
         le_enum_t er_message = _LE_TRUE;
 
+        /* size variable */
+        le_size_t er_size = 0;
+
         /* digit value variable */
         le_size_t er_digit = 0;
 
         /* digit span variable */
         le_size_t er_base = le_address_base( er_scale );
 
-        /* size variable */
-        le_size_t er_size = 0;
-
         /* diplay variable */
-        le_char_t er_display[_LE_USE_STRING];
+        le_char_t er_string[_LE_USE_STRING] = { 0 };
 
         /* array variable */
         static le_array_t er_encode = LE_ARRAY_C;
@@ -193,7 +197,7 @@
         } else {
 
             /* compose display string */
-            le_address_ct_string( er_addr, er_display );
+            le_address_ct_string( er_addr, er_string );
 
             /* update array size */
             le_array_set_size( & er_encode, LE_ARRAY_ADDR );
@@ -205,24 +209,31 @@
             le_array_io_write( & er_encode, LE_MODE_QUER, er_socket );
 
             /* read socket-array */
-            le_array_io_read( & er_encode, er_socket );
+            if ( le_array_io_read( & er_encode, er_socket ) != LE_MODE_QUER ) {
 
-            /* decode socket-array */
-            le_array_uf3_decode( & er_encode, & er_decode );
-
-            /* check limitation value */
-            if ( ( er_size = ( le_array_get_size( & er_decode ) / LE_ARRAY_UF3 ) ) < er_limit ) {
-
-                /* display message */
-                fprintf( stdout, "%s rejected with %" _LE_SIZE_P "\n", er_display, er_size );
+                /* push message */
+                er_message = _LE_FALSE;
 
             } else {
 
-                /* display message */
-                fprintf( stdout, "%s selected with %" _LE_SIZE_P "\n", er_display, er_size );
+                /* decode socket-array */
+                le_array_uf3_decode( & er_encode, & er_decode );
 
-                /* compute and export raster */
-                er_raster( er_raster_path( er_display, er_path ), er_addr, & er_decode );
+                /* check limitation value */
+                if ( ( er_size = ( le_array_get_size( & er_decode ) / LE_ARRAY_UF3 ) ) < er_limit ) {
+
+                    /* display message */
+                    fprintf( stdout, "%s rejected with %" _LE_SIZE_P "\n", er_string, er_size );
+
+                } else {
+
+                    /* display message */
+                    fprintf( stdout, "%s selected with %" _LE_SIZE_P "\n", er_string, er_size );
+
+                    /* compute and export raster */
+                    er_raster( er_raster_path( er_string, er_path ), er_addr, & er_decode );
+
+                }
 
             }
 
@@ -245,8 +256,8 @@
         /* socket variable */
         le_sock_t er_socket = _LE_SOCK_NULL;
 
-        /* array variable */
-        le_array_t er_auth = LE_ARRAY_C;
+        /* address size variable */
+        le_size_t er_size = 0;
 
         /* enumeration depth variable */
         le_size_t er_depth = 0;
@@ -254,11 +265,11 @@
         /* limit value variable */
         le_size_t er_limit = 0;
 
-        /* address size variable */
-        le_size_t er_size = 0;
-
         /* exportation path variable */
         le_char_t * er_path = ( le_char_t * ) lc_read_string( argc, argv, "--export", "-e" );;
+
+        /* array variable */
+        le_array_t er_auth = LE_ARRAY_C;
 
         /* query address variable */
         le_address_t er_addr = LE_ADDRESS_C;
