@@ -21,7 +21,36 @@
     # include "eratosthene-raster.h"
 
 /*
-    source - raster method
+    source - auxiliary methods
+ */
+
+    le_char_t * er_raster_path( le_char_t * const er_addr, le_char_t const * const er_path ) {
+
+        /* path variable */
+        static le_char_t er_export[PATH_MAX] = { 0 };
+
+        /* parsing pointer variable */
+        le_char_t * er_parse = er_addr;
+
+        /* parsing address string */
+        while ( * ( ++ er_parse ) != '\0' ) {
+
+            /* search and replace */
+            if ( * er_parse == '/' ) * er_parse = '-';
+            if ( * er_parse == ',' ) * er_parse = '-';
+
+        }
+
+        /* compose exportation path */
+        sprintf( ( char * ) er_export, "%s/%s", er_path, er_addr + 1 );
+
+        /* return exportation path */
+        return( er_export );
+
+    }
+
+/*
+    source - raster methods
  */
 
     le_enum_t er_raster( le_char_t const * const er_path, le_address_t const * const er_addr, le_array_t * const er_array ) {
@@ -117,88 +146,183 @@
     }
 
 /*
+    source - enumeration methods
+ */
+
+    le_enum_t er_raster_enum( le_address_t * const er_addr, le_size_t const er_scale, le_size_t const er_target, le_size_t const er_limit, le_char_t const * const er_path, le_sock_t const er_socket ) {
+
+        /* message variable */
+        le_enum_t er_message = _LE_TRUE;
+
+        /* digit value variable */
+        le_size_t er_digit = 0;
+
+        /* digit span variable */
+        le_size_t er_base = le_address_base( er_scale );
+
+        /* size variable */
+        le_size_t er_size = 0;
+
+        /* diplay variable */
+        le_char_t er_display[_LE_USE_STRING];
+
+        /* array variable */
+        static le_array_t er_encode = LE_ARRAY_C;
+        static le_array_t er_decode = LE_ARRAY_C;
+
+        /* check scale */
+        if ( er_scale < er_target ) {
+
+            /* enumeration process */
+            while ( ( er_digit < er_base ) && ( er_message == _LE_TRUE ) ) {
+
+                /* update address digit */
+                le_address_set_digit( er_addr, er_scale, er_digit );
+
+                /* update address size */
+                le_address_set_size( er_addr, er_scale + 1 );
+
+                /* continue enumeration */
+                er_message = er_raster_enum( er_addr, er_scale + 1, er_target, er_limit, er_path, er_socket );
+
+                /* update digit value */
+                er_digit ++;
+
+            }
+
+        } else {
+
+            /* compose display string */
+            le_address_ct_string( er_addr, er_display );
+
+            /* update array size */
+            le_array_set_size( & er_encode, LE_ARRAY_ADDR );
+
+            /* serialise address */
+            le_address_serial( er_addr, & er_encode, 0, _LE_SET );
+
+            /* write socket-array */
+            le_array_io_write( & er_encode, LE_MODE_QUER, er_socket );
+
+            /* read socket-array */
+            le_array_io_read( & er_encode, er_socket );
+
+            /* decode socket-array */
+            le_array_uf3_decode( & er_encode, & er_decode );
+
+            /* check limitation value */
+            if ( ( er_size = ( le_array_get_size( & er_decode ) / LE_ARRAY_UF3 ) ) < er_limit ) {
+
+                /* display message */
+                fprintf( stdout, "%s rejected with %" _LE_SIZE_P "\n", er_display, er_size );
+
+            } else {
+
+                /* display message */
+                fprintf( stdout, "%s selected with %" _LE_SIZE_P "\n", er_display, er_size );
+
+                /* compute and export raster */
+                er_raster( er_raster_path( er_display, er_path ), er_addr, & er_decode );
+
+            }
+
+        }
+
+        /* send message */
+        return( er_message );
+
+    }
+
+/*
     source - main function
  */
 
     int main( int argc, char ** argv ) {
 
-        /* address variables */
-        le_address_t er_address = LE_ADDRESS_C;
+        /* messagae variable */
+        le_enum_t er_message = EXIT_SUCCESS;
 
-        /* query array variables */
-        le_array_t er_encode = LE_ARRAY_C;
-        le_array_t er_decode = LE_ARRAY_C;
-
-        /* socket variables */
+        /* socket variable */
         le_sock_t er_socket = _LE_SOCK_NULL;
 
+        /* array variable */
+        le_array_t er_auth = LE_ARRAY_C;
+
+        /* enumeration depth variable */
+        le_size_t er_depth = 0;
+
+        /* limit value variable */
+        le_size_t er_limit = 0;
+
+        /* address size variable */
+        le_size_t er_size = 0;
+
+        /* exportation path variable */
+        le_char_t * er_path = ( le_char_t * ) lc_read_string( argc, argv, "--export", "-e" );;
+
+        /* query address variable */
+        le_address_t er_addr = LE_ADDRESS_C;
+
         /* create socket */
-        if ( ( er_socket = le_client_create( ( le_char_t * ) lc_read_string( argc, argv, "--ip", "-i" ), lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT ) ) ) == _LE_SOCK_NULL ) {
+        if ( ( er_socket = le_client_create( ( le_char_t * ) lc_read_string( argc, argv, "--ip", "-i" ), lc_read_signed( argc, argv, "--port", "-p", _LE_USE_PORT ) ) ) == _LE_SOCK_NULL ) {
 
             /* display message */
             fprintf( stderr, "eratosthene-suite : error : unable to establish connection to server\n" );
 
-            /* send message */
-            return( EXIT_FAILURE );
+            /* push message */
+            er_message = EXIT_FAILURE;
 
-        }
+        } else {
 
-        /* socket array size */
-        le_array_set_size( & er_encode, 0 );
+            /* compose authorisation array */
+            le_array_set_size( & er_auth, 0 );
 
-        /* write socket array */
-        le_array_io_write( & er_encode, LE_MODE_AUTH, er_socket );
+            /* write authorisation array */
+            le_array_io_write( & er_auth, LE_MODE_AUTH, er_socket );
 
-        /* read socket array */
-        if ( le_array_io_read( & er_encode, er_socket ) != LE_MODE_AUTH ) {
+            /* read authorisation response */
+            if ( le_array_io_read( & er_auth, er_socket ) != LE_MODE_AUTH ) {
 
-            /* display message */
-            fprintf( stderr, "eratosthene-suite : warning : bad server response\n" );
+                /* display message */
+                fprintf( stderr, "eratosthene-suite : error : bad server response\n" );
 
-        }
+                /* push message */
+                er_message = EXIT_FAILURE;
 
-        /* check array consistency */
-        if ( le_array_get_size( & er_encode ) != LE_ARRAY_AUTH ) {
+            } else {
 
-            /* display message */
-            fprintf( stderr, "eratosthene-suite : warining : bad server response\n" );
+                /* read enumeration depth */
+                er_depth = lc_read_signed( argc, argv, "--depth", "-d", 0 );
 
-        }
+                /* read raster limit value */
+                er_limit = lc_read_signed( argc, argv, "--limit", "-l", 0 );
 
-        /* socket array size */
-        le_array_set_size( & er_encode, LE_ARRAY_ADDR );
+                /* read query address */
+                le_address_cf_string( & er_addr, ( le_char_t * ) lc_read_string( argc, argv, "--query", "-q" ) );
 
-        /* convert string to address */
-        le_address_cf_string( & er_address, ( le_char_t * ) lc_read_string( argc, argv, "--query", "-q" ) );
+                /* retrieve address size */
+                er_size = le_address_get_size( & er_addr );
 
-        /* serialise address */
-        le_address_serial( & er_address, & er_encode, 0, _LE_SET );
+                /* address enumeration process */
+                if ( er_raster_enum( & er_addr, er_size, er_size + er_depth, er_limit, er_path, er_socket ) != _LE_TRUE ) {
 
-        /* write socket-array */
-        le_array_io_write( & er_encode, LE_MODE_QUER, er_socket );
+                    /* display message */
+                    fprintf( stderr, "eratostehen-suite : error : raster query/exportation\n" );
 
-        /* read socket-array */
-        le_array_io_read( & er_encode, er_socket );
+                    /* push message */
+                    er_message = EXIT_FAILURE;
 
-        /* decode array */
-        le_array_uf3_decode( & er_encode, & er_decode );
+                }
 
-        /* delete socket */
-        le_client_delete( er_socket );
+            }
 
-        /* compute and export raster */
-        if ( er_raster( ( le_char_t * ) lc_read_string( argc, argv, "--raster", "-r" ), & er_address, & er_decode ) == _LE_FALSE ) {
-
-            /* display message */
-            fprintf( stderr, "eratosthene-suite : error : unable to create raster\n" );
-
-            /* send message */
-            return( EXIT_FAILURE );
+            /* delete socket */
+            er_socket = le_client_delete( er_socket );
 
         }
 
         /* send message */
-        return( EXIT_SUCCESS );
+        return( er_message );
 
     }
 

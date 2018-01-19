@@ -104,8 +104,10 @@
 
     # include <stdio.h>
     # include <stdlib.h>
-    # include <common-include.h>
     # include <math.h>
+    # include <string.h>
+    # include <limits.h>
+    # include <common-include.h>
     # include <eratosthene-include.h>
 
 /*
@@ -128,6 +130,8 @@
     header - function prototypes
  */
 
+    le_char_t * er_raster_path( le_char_t * const er_addr, le_char_t const * const er_path );
+
     /*! \brief raster method
      *
      *  This function computes and export a 3D raster based on the provided
@@ -147,6 +151,8 @@
      */
 
     le_enum_t er_raster( le_char_t const * const er_path, le_address_t const * const er_addr, le_array_t * const er_array );
+
+    le_enum_t er_raster_enum( le_address_t * const er_addr, le_size_t const er_scale, le_size_t const er_target, le_size_t const er_limit, le_char_t const * const er_path, le_sock_t const er_socket );
 
     /*! \brief main function
      *
