@@ -1,4 +1,4 @@
 VER_MAJ:=0
 VER_MIN:=3
-VER_REV:=5
+VER_REV:=6
 STATIC=true
