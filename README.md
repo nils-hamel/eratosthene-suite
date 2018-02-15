@@ -63,8 +63,8 @@ The _eratosthene-suite_ comes with the following package dependencies (Ubuntu 16
 
 * build-essential
 * mesa-common-dev
-* libglew-dev
-* freeglut3-dev
+* libglew-dev : suppression
+* freeglut3-dev : replacing by libsdl2-dev
 * libpng12-dev
 
 and the following external dependencies provided as sub-modules :
