@@ -24,19 +24,19 @@
     source - constructor/destructor methods
  */
 
-    er_times_t er_times_create( le_void_t ) {
+    er_times_t er_times_create( le_size_t const er_width, le_size_t const er_height ) {
 
         /* created structure variables */
         er_times_t er_times = ER_TIMES_C;
 
         /* assign buffer width */
-        er_times.tm_width = glutGet( GLUT_SCREEN_WIDTH );
+        er_times.tm_width = er_width;
 
         /* assign buffer height */
         er_times.tm_height = 96 - 16;
 
         /* assign buffer lower position */
-        er_times.tm_offset = glutGet( GLUT_SCREEN_HEIGHT ) - er_times.tm_height - 64;
+        er_times.tm_offset = er_height - er_times.tm_height - 64;
 
         /* assign screen heights */
         er_times.tm_sh1 = er_times.tm_offset - ( ( 6 + 6 ) + 15 ) + 6;
@@ -216,7 +216,7 @@
         glRasterPos2i( er_x, er_y );
 
         /* display text */
-        glutBitmapString( GLUT_BITMAP_9_BY_15, er_text );
+        //glutBitmapString( GLUT_BITMAP_9_BY_15, er_text );
 
     }
 

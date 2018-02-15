@@ -118,7 +118,8 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_CLIENT_C { _LE_SOCK_NULL, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, ER_VIEW_D, ER_VIEW_C, 0, GLUT_UP, 0, 0, 1.0, 1.0, _LE_TRUE }
+    //# define ER_CLIENT_C { _LE_SOCK_NULL, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, ER_VIEW_D, ER_VIEW_C, 0, GLUT_UP, 0, 0, 1.0, 1.0, _LE_TRUE }
+    # define ER_CLIENT_C { _LE_SOCK_NULL, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, ER_VIEW_D, ER_VIEW_C, 0, 0, 0, 0, 1.0, 1.0, _LE_TRUE }
 
 /*
     header - preprocessor macros
@@ -203,7 +204,7 @@
     header - function prototypes
  */
 
-    /*! \brief constructor/destructor methods
+    /*! \brief constructor/destructor methods (revoked)
      *
      *  This function creates the client structure and returns it. It mainly
      *  calls the sub-modules structure creation functions to initialise them.
@@ -223,7 +224,7 @@
      *  \return Returns the created client structure
      */
 
-    er_client_t er_client_create( le_char_t * const er_ip, le_sock_t const er_port );
+    er_client_t er_client_create( le_char_t * const er_ip, le_sock_t const er_port, le_size_t const er_width, le_size_t const er_height );
 
     /*! \brief constructor/destructor methods
      *
@@ -276,7 +277,7 @@
 
     int main( int argc, char ** argv );
 
-    /*! \brief loop methods
+    /*! \brief loop methods (revoked)
      *
      *  This function is called by the main function graphical thread to trigger
      *  scene rendering according to the point of view.
@@ -288,9 +289,13 @@
      *  earth, used as reference, and the time interface.
      */
 
-    le_void_t er_client_loops_render( le_void_t );
+    le_void_t er_client_loops_render( le_size_t const er_width, le_size_t const er_height );
 
-    /*! \brief loop methods
+    /* ... */
+
+    le_void_t er_client_loops_event( er_client_t * const er_client );
+
+    /*! \brief loop methods (revoked)
      *
      *  This function is called by the main function model thread to trigger
      *  model update according to the point of view.
@@ -310,7 +315,7 @@
 
     le_void_t er_client_loops_update( le_void_t );
 
-    /*! \brief projection methods
+    /*! \brief projection methods (revoked)
      *
      *  This function is used to set the rendering projection matrix for the
      *  model display.
@@ -328,7 +333,7 @@
 
     le_void_t er_client_proj_model( int er_width, int er_height );
 
-    /*! \brief projection methods
+    /*! \brief projection methods (revoked)
      *
      *  This function is used to set the rendering projection matrix for the
      *  time interface display.
@@ -344,20 +349,7 @@
 
     le_void_t er_client_proj_interface( int er_width, int er_height );
 
-    /*! \brief callback methods
-     *
-     *  This function implements the reshape callback.
-     *
-     *  The function simply sets the opengl viewport according to the provided
-     *  parameters in order to occupy the entire screen.
-     *
-     *  \param er_width  Width, in pixel, of the rendering buffer
-     *  \param er_height Height, in pixels, of the rendering buffer
-     */
-
-    le_void_t er_client_calls_reshape( int er_width, int er_height );
-
-    /*! \brief callback methods
+    /*! \brief callback methods (revoked)
      *
      *  This function implements the keyboard callback.
      *
@@ -369,9 +361,13 @@
      *  \param er_y       Mouse y-position at key press
      */
 
-    le_void_t er_client_calls_keybd( unsigned char er_keycode, int er_x, int er_y );
+    le_void_t er_client_callback_keydown( SDL_KeyboardEvent er_event, er_client_t * const er_client );
 
-    /*! \brief callback methods
+    /* *** */
+
+    le_void_t er_client_callback_wheel( SDL_MouseWheelEvent er_event, er_client_t * const er_client );
+
+    /*! \brief callback methods (revoked)
      *
      *  This function implements the mouse callback.
      *
@@ -384,10 +380,9 @@
      *  \param er_x      Mouse x-position at click
      *  \param er_y      Mouse y-position at click
      */
+    le_void_t er_client_callback_button( SDL_MouseButtonEvent er_event, er_client_t * const er_client );
 
-    le_void_t er_client_calls_mouse( int er_button, int er_state, int er_x, int er_y );
-
-    /*! \brief callback methods
+    /*! \brief callback methods (revoked)
      *
      *  This function implements the mouse motion callback.
      *
@@ -399,7 +394,7 @@
      *  \param er_y Mouse y-position
      */
 
-    le_void_t er_client_calls_move( int er_x, int er_y );
+    le_void_t er_client_callback_motion( SDL_MouseMotionEvent er_event, er_client_t * const er_client );
 
 /*
     header - C/C++ compatibility

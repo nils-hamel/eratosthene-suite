@@ -158,7 +158,8 @@
      *  \return Returns the constructed time interface structure
      */
 
-    er_times_t er_times_create( le_void_t );
+    er_times_t er_times_create( le_size_t const er_width, le_size_t const er_height );
+    //er_times_t er_times_create( le_void_t );
 
     /*! \brief constructor/destructor methods
      *

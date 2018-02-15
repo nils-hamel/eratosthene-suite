@@ -150,7 +150,8 @@
      *  \return Returns the created movie structure
      */
 
-    er_movie_t er_movie_create( le_void_t );
+    er_movie_t er_movie_create( le_size_t const er_width, le_size_t const er_height );
+    //er_movie_t er_movie_create( le_void_t );
 
     /*! \brief constructor/destructor methods
      *

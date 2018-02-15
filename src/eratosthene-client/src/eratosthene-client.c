@@ -30,7 +30,7 @@
     source - constructor/destructor methods
  */
 
-    er_client_t er_client_create( le_char_t * const er_ip, le_sock_t const er_port ) {
+    er_client_t er_client_create( le_char_t * const er_ip, le_sock_t const er_port, le_size_t const er_width, le_size_t const er_height ) {
 
         /* array variables */
         le_array_t er_array = LE_ARRAY_C;
@@ -97,7 +97,7 @@
         }
 
         /* create client times */
-        if ( ( er_client.cl_times = er_times_create() )._status == _LE_FALSE ) {
+        if ( ( er_client.cl_times = er_times_create( er_width, er_height ) )._status == _LE_FALSE ) {
 
             /* delete client socket */
             le_client_delete( er_client.cl_socket );
@@ -108,7 +108,7 @@
         }
 
         /* create client movie */
-        if ( ( er_client.cl_movie = er_movie_create() )._status == _LE_FALSE ) {
+        if ( ( er_client.cl_movie = er_movie_create( er_width, er_height ) )._status == _LE_FALSE ) {
 
             /* delete client socket */
             le_client_delete( er_client.cl_socket );
@@ -161,31 +161,80 @@
     int main( int argc, char ** argv ) {
 
         /* server address variables */
-        le_char_t * le_svip = ( le_char_t * ) lc_read_string( argc, argv, "--ip"  , "-i" );
+        le_char_t * er_svip = ( le_char_t * ) lc_read_string( argc, argv, "--ip"  , "-i" );
 
         /* server port variables */
-        le_sock_t le_port = ( le_sock_t ) lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT );
+        le_sock_t er_port = ( le_sock_t ) lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT );
 
         /* color array variables */
         float er_color[4] = { 0.02, 0.04, 0.06, 0.00 };
 
-        /* initialise gl/glu/glut */
-        glutInit( & argc, argv );
 
-        /* initialise display mode */
-        glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH );
+        /* display mode variable */
+        SDL_DisplayMode er_display;
 
-        /* create rendering window */
-        glutCreateWindow( "eratosthene-client" );
+        /* window handle variable */
+        SDL_Window * er_window = NULL;
 
-        /* rendering window configuration */
-        glutFullScreen();
+        /* opengl context variable */
+        SDL_GLContext er_context;
 
-        /* cursor configuration */
-        glutSetCursor( GLUT_CURSOR_NONE );
 
-        /* graphical thread behavior configuration */
-        glutSetOption( GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION );
+        /* initialise sdl */
+        if ( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
+
+            /* display message */
+            fprintf( stderr, "eratosthene-suite : error : unable to initialise sdl library\n" );
+
+            /* send message */
+            return( EXIT_FAILURE );
+
+        }
+
+        /* retrieve display mode */
+        if ( SDL_GetCurrentDisplayMode( 0, & er_display ) < 0 ) {
+
+            /* display message */
+            fprintf( stderr, "eratosthene-suite : error : unable to query current display mode\n" );
+
+            /* send message */
+            return( EXIT_FAILURE );
+
+        }
+
+        /* enable double buffer */
+        SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+
+        /* color buffer bits */
+        SDL_GL_SetAttribute( SDL_GL_RED_SIZE  , 8 );
+        SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
+        SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE , 8 );
+        SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 );
+
+        /* depth buffer bits */
+        SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
+
+        /* create window */
+        if ( ( er_window = SDL_CreateWindow( "eratosthene-client", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, er_display.w, er_display.h, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL ) ) == NULL ) {
+
+            /* display message */
+            fprintf( stderr, "eratosthene-suite : error : unable to create window\n" );
+
+            /* send message */
+            return( EXIT_FAILURE );
+
+        }
+
+        /* create opengl context */
+        if ( ( er_context = SDL_GL_CreateContext( er_window ) ) == NULL ) {
+
+            /* display message */
+            fprintf( stderr, "eratosthene-suite : error : unable to create opengl context\n" );
+
+            /* send message */
+            return( EXIT_FAILURE );
+
+        }
 
         /* color buffer clear values */
         glClearColor( er_color[0], er_color[1], er_color[2], er_color[3] );
@@ -205,19 +254,12 @@
         /* opengl blending configuration */
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-        /* declare client callback functions */
-        glutKeyboardFunc     ( er_client_calls_keybd   );
-        glutReshapeFunc      ( er_client_calls_reshape );
-        glutMouseFunc        ( er_client_calls_mouse   );
-        glutMotionFunc       ( er_client_calls_move    );
-        glutPassiveMotionFunc( er_client_calls_move    );
-
         /* enable vertex and color arrays */
         glEnableClientState( GL_VERTEX_ARRAY );
         glEnableClientState( GL_COLOR_ARRAY  );
 
         /* create client */
-        if ( ( er_client = er_client_create( le_svip, le_port ) )._status == _LE_FALSE ) {
+        if ( ( er_client = er_client_create( er_svip, er_port, er_display.w, er_display.h ) )._status == _LE_FALSE ) {
 
             /* display message */
             fprintf( stderr, "eratosthene-suite : error : unable to create client\n" );
@@ -244,13 +286,15 @@
                     while ( er_client.cl_loops == ER_COMMON_VIEW ) {
 
                         /* interface events procedure */
-                        glutMainLoopEvent();
+                        //glutMainLoopEvent();
+                        er_client_loops_event( & er_client );
 
                         /* model display procedure */
-                        er_client_loops_render();
+                        er_client_loops_render( er_display.w, er_display.h );
 
                         /* swap buffers */
-                        glutSwapBuffers();
+                        //glutSwapBuffers();
+                        SDL_GL_SwapWindow( er_window );
 
                     }
 
@@ -266,10 +310,11 @@
                         er_client_loops_update();
 
                         /* model display procedure */
-                        er_client_loops_render();
+                        er_client_loops_render( er_display.w, er_display.h );
 
                         /* swap buffers */
-                        glutSwapBuffers();
+                        //glutSwapBuffers();
+                        SDL_GL_SwapWindow( er_window );
 
                         /* movie procedure */
                         er_client.cl_loops = er_movie( & er_client.cl_movie );
@@ -307,8 +352,17 @@
         /* delete client */
         er_client_delete( & er_client );
 
-        /* stability mechanism (?) - send message */
-        return( glutIdleFunc( glutLeaveMainLoop ), glutMainLoop(), EXIT_SUCCESS );
+        /* delete opengl context */
+        SDL_GL_DeleteContext( er_context );
+
+        /* delete window */
+        SDL_DestroyWindow( er_window );
+
+        /* terminate sdl */
+        SDL_Quit();
+
+        /* send message */
+        return( EXIT_SUCCESS );
 
     }
 
@@ -316,13 +370,13 @@
     source - loop methods
  */
 
-    le_void_t er_client_loops_render( le_void_t ) {
+    le_void_t er_client_loops_render( le_size_t const er_width, le_size_t const er_height ) {
 
         /* clear color and depth buffers */
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
         /* projection : model */
-        er_client_proj_model( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
+        er_client_proj_model( er_width, er_height );
 
         /* matrix - cells */
         glPushMatrix(); {
@@ -341,7 +395,7 @@
         } glPopMatrix();
 
         /* projection : interface */
-        er_client_proj_interface( glutGet( GLUT_SCREEN_WIDTH ), glutGet( GLUT_SCREEN_HEIGHT ) );
+        er_client_proj_interface( er_width, er_height );
 
         /* matrix - interface */
         glPushMatrix(); {
@@ -350,6 +404,55 @@
             er_times_display( & er_client.cl_times, & er_client.cl_view );
 
         } glPopMatrix();
+
+    }
+
+    le_void_t er_client_loops_event( er_client_t * const er_client ) {
+
+        /* event variable */
+        SDL_Event er_event;
+
+        /* pop events from stack */
+        while ( SDL_PollEvent( & er_event ) > 0 ) {
+
+            /* switch on event type */
+            switch ( er_event.type ) {
+
+                /* event type : keydown */
+                case( SDL_KEYDOWN ) : {
+
+                    /* event-specific callback */
+                    er_client_callback_keydown( er_event.key, er_client );
+
+                } break;
+
+                /* event type : wheel */
+                case( SDL_MOUSEWHEEL ) : {
+
+                    /* event-specialised callback */
+                    er_client_callback_wheel( er_event.wheel, er_client );
+
+                } break;
+
+                /* event type : button */
+                case ( SDL_MOUSEBUTTONDOWN ) : {
+
+                    /* event-specialised callback */
+                    er_client_callback_button( er_event.button, er_client );
+
+                } break;
+
+                /* event type : motion */
+                case ( SDL_MOUSEMOTION ) : {
+
+                    /* event-specialised callback */
+                    er_client_callback_motion( er_event.motion, er_client );
+
+                } break;
+
+            }
+
+        }
 
     }
 
@@ -441,7 +544,7 @@
         glLoadIdentity();
 
         /* compute projection matrix */
-        glOrtho( 0, glutGet( GLUT_SCREEN_WIDTH ), 0, glutGet( GLUT_SCREEN_HEIGHT ), -1.0, 1.0 );
+        glOrtho( 0, er_width, 0, er_height, -1.0, 1.0 );
 
         /* matrix mode to modelview */
         glMatrixMode( GL_MODELVIEW );
@@ -455,221 +558,222 @@
     }
 
 /*
-    source - callback methods
+    source - event methods
  */
 
-    le_void_t er_client_calls_reshape( int er_width, int er_height ) {
-
-        /* configurate viewport */
-        glViewport( 0, 0, er_width, er_height );
-
-    }
-
-    le_void_t er_client_calls_keybd( unsigned char er_keycode, int er_x, int er_y ) {
+    le_void_t er_client_callback_keydown( SDL_KeyboardEvent er_event, er_client_t * const er_client ) {
 
         /* switch on keycode */
-        switch( er_keycode ) {
+        switch ( er_event.keysym.sym ) {
 
-            /* execution mode - key [esc] */
-            case ( 0x1b ) : {
-
-                /* update execution mode */
-                er_client.cl_loops = ER_COMMON_EXIT;
-
-            } break;
-
-            /* execution mode - key [p] */
-            case ( 0x70 ) : {
+            case ( SDLK_ESCAPE ) : {
 
                 /* update execution mode */
-                er_client.cl_loops = ER_COMMON_MOVIE;
+                er_client->cl_loops = ER_COMMON_EXIT;
 
             } break;
 
-            /* graphical options - key [1-4] */
-            case ( 0x31 ) :
-            case ( 0x32 ) :
-            case ( 0x33 ) :
-            case ( 0x34 ) : {
+            case ( SDLK_p ) : {
 
-                /* update opengl point size */
-                glPointSize( er_keycode - 0x30 );
+                /* update execution mode */
+                er_client->cl_loops = ER_COMMON_MOVIE;
 
             } break;
 
-            /* time management - key [TAB] */
-            case ( 0x09 ) : {
+            case ( SDLK_1 ) :
+            case ( SDLK_2 ) :
+            case ( SDLK_3 ) :
+            case ( SDLK_4 ) : {
+
+                /* update model parameter */
+                glPointSize( er_event.keysym.sym - SDLK_1 + 1 );
+
+            } break;
+
+            case ( SDLK_TAB ) : {
 
                 /* swap active time */
-                er_view_set_swap( & er_client.cl_view );
+                er_view_set_swap( & er_client->cl_view );
 
             } break;
 
-            /* time management - key [SPACE] */
-            case ( 0x20 ) : {
+            case ( SDLK_SPACE ) : {
 
-                /* align times */
-                er_view_set_times( & er_client.cl_view );
-
-            } break;
-
-            /* mode management - key [q] */
-            case ( 0x71 ) : {
-
-                /* update mode */
-                er_view_set_mode( & er_client.cl_view, 1 );
+                /* equal times */
+                er_view_set_times( & er_client->cl_view );
 
             } break;
 
-            /* mode management - key [w] */
-            case ( 0x77 ) : {
+            case ( SDLK_q ) : {
 
-                /* update mode */
-                er_view_set_mode( & er_client.cl_view, 2 );
-
-            } break;
-
-            /* mode management - key [e] */
-            case ( 0x65 ) : {
-
-                /* update mode */
-                er_view_set_mode( & er_client.cl_view, 3 );
+                /* update dual-model mode */
+                er_view_set_mode( & er_client->cl_view, 1 );
 
             } break;
 
-            /* mode management - key [r] */
-            case ( 0x72 ) : {
+            case ( SDLK_w ) : {
 
-                /* update mode */
-                er_view_set_mode( & er_client.cl_view, 4 );
-
-            } break;
-
-            /* mode management - key [t] */
-            case ( 0x74 ) : {
-
-                /* update mode */
-                er_view_set_mode( & er_client.cl_view, 5 );
+                /* update dual-model mode */
+                er_view_set_mode( & er_client->cl_view, 2 );
 
             } break;
 
-            /* movie creation - key [i] */
-            case ( 0x69 ) : {
+            case ( SDLK_e ) : {
 
-                /* unstacking control points */
-                er_movie_set_clear( & er_client.cl_movie );
-
-            } break;
-
-            /* movie creation - key [o] */
-            case ( 0x6f ) : {
-
-                /* stack view as control point */
-                er_movie_set( & er_client.cl_movie, & er_client.cl_view );
+                /* update dual-model mode */
+                er_view_set_mode( & er_client->cl_view, 3 );
 
             } break;
 
-            /* model reduction - key [,] */
-            case ( 0x2c ) : {
+            case ( SDLK_r ) : {
 
-                /* update reduction value */
-                er_view_set_red( & er_client.cl_view, +1 );
-
-            } break;
-
-            /* model reduction - key [.] */
-            case ( 0x2e ) : {
-
-                /* update reduction value */
-                er_view_set_red( & er_client.cl_view, -1 );
+                /* update dual-model mode */
+                er_view_set_mode( & er_client->cl_view, 4 );
 
             } break;
 
-        };
+            case ( SDLK_t ) : {
 
-    }
+                /* update dual-model mode */
+                er_view_set_mode( & er_client->cl_view, 5 );
 
-    le_void_t er_client_calls_mouse( int er_button, int er_state, int er_x, int er_y ) {
+            } break;
 
-        /* switch on button */
-        if ( ( er_button != ER_COMMON_WUP ) && ( er_button != ER_COMMON_WDOWN ) ) {
+            case ( SDLK_i ) : {
 
-            /* assign state */
-            er_client.cl_state = er_state;
+                /* flush control point */
+                er_movie_set_clear( & er_client->cl_movie );
 
-            /* assign button */
-            er_client.cl_button = er_button;
+            } break;
 
-            /* assign position */
-            er_client.cl_x = er_x;
-            er_client.cl_y = er_y;
+            case ( SDLK_o ) : {
+
+                /* push view as control point */
+                er_movie_set( & er_client->cl_movie, & er_client->cl_view );
+
+            } break;
+
+            case ( SDLK_COMMA ) : {
+
+                /* update model cell span */
+                er_view_set_red( & er_client->cl_view, +1 );
+
+            } break;
+
+            case ( SDLK_PERIOD ) : {
+
+                /* update model cell span */
+                er_view_set_red( & er_client->cl_view, -1 );
+
+            } break;
 
         }
 
-        /* check state - return */
-        if ( er_state != GLUT_DOWN ) return;
+    }
 
-        /* compute inertial coefficient */
-        er_client.cl_inertia = abs( er_view_get_alt( & er_client.cl_view ) - LE_ADDRESS_WGS_A ) * ER_COMMON_INE;
+    le_void_t er_client_callback_wheel( SDL_MouseWheelEvent er_event, er_client_t * const er_client ) {
 
-        /* clamp inertial coefficient */
-        if ( er_client.cl_inertia < 5.0 ) er_client.cl_inertia = 5.0;
+        /* modifier variable */
+        le_enum_t er_modif = SDL_GetModState() & ER_COMMON_KMALL;
 
-        /* switch on modifiers - apply inertial coefficient */
-        if ( glutGetModifiers() == GLUT_ACTIVE_CTRL  ) er_client.cl_inertia *= ER_COMMON_IMU;
-        if ( glutGetModifiers() == GLUT_ACTIVE_SHIFT ) er_client.cl_inertia *= ER_COMMON_IML;
+        /* check modifiers */
+        if ( er_modif == ER_COMMON_KMAAC ) {
 
-        /* switch on modifiers */
-        if ( glutGetModifiers() == ( GLUT_ACTIVE_CTRL | GLUT_ACTIVE_ALT ) ) {
+            /* check wheel direction */
+            if ( er_event.y > 0 ) {
 
-            /* switch on button - update time zoom */
-            if ( er_button == ER_COMMON_WUP   ) er_view_set_area( & er_client.cl_view, 1.0990 );
-            if ( er_button == ER_COMMON_WDOWN ) er_view_set_area( & er_client.cl_view, 0.9099 );
+                /* update time area */
+                er_view_set_area( & er_client->cl_view, 1.0990 );
 
-        } else if ( glutGetModifiers() == GLUT_ACTIVE_ALT ) {
+            } else {
 
-            /* switch on button - update time position */
-            if ( er_button == ER_COMMON_WUP   ) er_view_set_time( & er_client.cl_view, + 0.02 );
-            if ( er_button == ER_COMMON_WDOWN ) er_view_set_time( & er_client.cl_view, - 0.02 );
+                /* update time area */
+                er_view_set_area( & er_client->cl_view, 0.9099 );
+
+            }
+
+        } else if ( er_modif == ER_COMMON_KMALT ) {
+
+            /* check wheel direction */
+            if ( er_event.y > 0 ) {
+
+                /* update time position */
+                er_view_set_time( & er_client->cl_view, + 0.02 );
+
+            } else {
+
+                /* update time position */
+                er_view_set_time( & er_client->cl_view, - 0.02 );
+
+            }
 
         } else {
 
-            /* switch on button - update altitude */
-            if ( er_button == ER_COMMON_WUP   ) er_view_set_alt( & er_client.cl_view, + er_client.cl_inertia );
-            if ( er_button == ER_COMMON_WDOWN ) er_view_set_alt( & er_client.cl_view, - er_client.cl_inertia );
+            /* update intertia */
+            er_client->cl_inertia = abs( er_view_get_alt( & er_client->cl_view ) - LE_ADDRESS_WGS_A ) * ER_COMMON_INE;
+
+            /* check inertia */
+            if ( er_client->cl_inertia < 5.0 ) er_client->cl_inertia = 5.0;
+
+            /* inertia multipliers */
+            if ( er_modif & ER_COMMON_KMCTL ) er_client->cl_inertia *= ER_COMMON_IMU;
+            if ( er_modif & ER_COMMON_KMSHF ) er_client->cl_inertia *= ER_COMMON_IML;
+
+            /* check wheel direction */
+            if ( er_event.y > 0 ) {
+
+                /* update view position */
+                er_view_set_alt( & er_client->cl_view, + er_client->cl_inertia );
+
+            } else {
+
+                /* update view position */
+                er_view_set_alt( & er_client->cl_view, - er_client->cl_inertia );
+
+            }
 
         }
 
     }
 
-    le_void_t er_client_calls_move( int er_x, int er_y ) {
+    le_void_t er_client_callback_button( SDL_MouseButtonEvent er_event, er_client_t * const er_client ) {
 
-        /* displacement variables */
-        le_real_t er_mdx = ( le_real_t ) er_x - er_client.cl_x;
-        le_real_t er_mdy = ( le_real_t ) er_y - er_client.cl_y;
+        /* check button state */
+        if ( ( er_event.button == SDL_BUTTON_LEFT ) || ( er_event.button == SDL_BUTTON_RIGHT ) ) {
 
-        /* check state - return */
-        if ( er_client.cl_state != GLUT_DOWN ) return;
+            /* update click position */
+            er_client->cl_x = er_event.x;
+            er_client->cl_y = er_event.y;
+
+        }
+
+    }
+
+    le_void_t er_client_callback_motion( SDL_MouseMotionEvent er_event, er_client_t * const er_client ) {
+
+        /* motion variable */
+        le_real_t er_dx = ( le_real_t ) er_event.x - er_client->cl_x;
+        le_real_t er_dy = ( le_real_t ) er_event.y - er_client->cl_y;
 
         /* switch on button */
-        if ( er_client.cl_button == GLUT_LEFT_BUTTON ) {
+        if ( ( er_event.state & SDL_BUTTON_LMASK ) != 0 ) {
 
-            /* apply inertial coefficients and multipliers */
-            er_mdx *= ER_COMMON_INP * er_client.cl_inertia;
-            er_mdy *= ER_COMMON_INP * er_client.cl_inertia;
+            /* apply inertia */
+            er_dx *= ER_COMMON_INP * er_client->cl_inertia;
+            er_dy *= ER_COMMON_INP * er_client->cl_inertia;
 
-            /* update longitude and latitude */
-            er_view_set_plan( & er_client.cl_view, er_mdx, er_mdy );
+            /* update view position */
+            er_view_set_plan( & er_client->cl_view, er_dx, er_dy );
 
-        } else if ( er_client.cl_button == GLUT_RIGHT_BUTTON ) {
+        } else if ( ( er_event.state & SDL_BUTTON_RMASK ) != 0 ) {
 
-            /* apply inetrial coefficients and multipliers */
-            er_mdx *= ER_COMMON_INR;
-            er_mdy *= ER_COMMON_INR;
+            /* apply inertia */
+            er_dx *= ER_COMMON_INR;
+            er_dy *= ER_COMMON_INR;
 
-            /* update azimuth and gamma */
-            er_view_set_azm( & er_client.cl_view, - er_mdx );
-            er_view_set_gam( & er_client.cl_view, + er_mdy );
+            /* update view direction */
+            er_view_set_azm( & er_client->cl_view, - er_dx );
+            er_view_set_gam( & er_client->cl_view, + er_dy );
 
         }
 

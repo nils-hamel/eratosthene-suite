@@ -24,14 +24,14 @@
     source - constructor/destructor methods
  */
 
-    er_movie_t er_movie_create( le_void_t ) {
+    er_movie_t er_movie_create( le_size_t const er_width, le_size_t const er_height ) {
 
         /* create structure variables */
         er_movie_t er_movie = ER_MOVIE_C;
 
         /* align buffer size to screen resolution */
-        er_movie.mv_wbuffer = glutGet( GLUT_SCREEN_WIDTH  );
-        er_movie.mv_hbuffer = glutGet( GLUT_SCREEN_HEIGHT );
+        er_movie.mv_wbuffer = er_width;
+        er_movie.mv_hbuffer = er_height;
 
         /* allocate buffer memory */
         if ( ( er_movie.mv_pbuffer = ( le_byte_t * ) malloc( er_movie.mv_wbuffer * er_movie.mv_hbuffer * 4 ) ) == NULL ) {

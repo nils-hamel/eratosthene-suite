@@ -53,12 +53,9 @@
     # include <time.h>
     # include <math.h>
     # include <omp.h>
-    # include <GL/freeglut.h>
-
     # include <GL/gl.h>
     # include <GL/glu.h>
     # include <SDL2/SDL.h>
-
     # include <common-include.h>
     # include <eratosthene-include.h>
 
@@ -94,6 +91,13 @@
     /* define mouse button */
     # define ER_COMMON_WUP     ( 3 )
     # define ER_COMMON_WDOWN   ( 4 )
+
+    /* define keyboard modifiers */
+    # define ER_COMMON_KMALL   ( KMOD_LCTRL | KMOD_LALT | KMOD_LSHIFT )
+    # define ER_COMMON_KMAAC   ( KMOD_LCTRL | KMOD_LALT )
+    # define ER_COMMON_KMCTL   ( KMOD_LCTRL )
+    # define ER_COMMON_KMALT   ( KMOD_LALT )
+    # define ER_COMMON_KMSHF   ( KMOD_LSHIFT )
 
 /*
     header - preprocessor macros
