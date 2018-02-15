@@ -114,6 +114,32 @@
 
     }
 
+    le_real_t er_view_get_inertia( er_view_t const * const er_view, le_enum_t const er_modifier ) {
+
+        /* inertia variable */
+        le_real_t er_inertia = fabs( er_view->vw_alt - LE_ADDRESS_WGS_A ) * ER_COMMON_INE;
+
+        /* range clamping */
+        er_inertia = er_inertia < 5.0 ? 5.0 : er_inertia;
+
+        /* check modifier */
+        if ( er_modifier & ER_COMMON_KMCTL ) {
+
+            /* modify inertia */
+            er_inertia *=  ER_COMMON_IMU;
+
+        } else if ( er_modifier & ER_COMMON_KMSHF ) {
+
+            /* modify inertia */
+            er_inertia *= ER_COMMON_IML;
+
+        }
+
+        /* return inertia */
+        return( er_inertia );
+
+    }
+
     le_enum_t er_view_get_mode( er_view_t const * const er_view ) {
 
         /* return time mode */

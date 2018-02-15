@@ -21,12 +21,6 @@
     # include "eratosthene-client.h"
 
 /*
-    source - global variable (GLUT callbacks)
- */
-
-    er_client_t er_client = ER_CLIENT_C;
-
-/*
     source - constructor/destructor methods
  */
 
@@ -44,6 +38,10 @@
 
         /* created structure variables */
         er_client_t er_client = ER_CLIENT_C;
+
+        /* assign display parameters */
+        er_client.cl_width  = er_width;
+        er_client.cl_height = er_height;
 
         /* create client socket */
         if ( ( er_client.cl_socket = le_client_create( er_ip, er_port ) ) == _LE_SOCK_NULL ) {
@@ -143,7 +141,7 @@
         /* socket-array size */
         le_array_set_size( & er_array, 0 );
 
-        /* write socket-array - resiliation */
+        /* write socket-array */
         le_array_io_write( & er_array, LE_MODE_RESI, er_client->cl_socket );
 
         /* delete client socket */
@@ -178,6 +176,9 @@
 
         /* opengl context variable */
         SDL_GLContext er_context;
+
+        /* client structure variable */
+        er_client_t er_client = ER_CLIENT_C;
 
 
         /* initialise sdl */
@@ -286,14 +287,12 @@
                     while ( er_client.cl_loops == ER_COMMON_VIEW ) {
 
                         /* interface events procedure */
-                        //glutMainLoopEvent();
                         er_client_loops_event( & er_client );
 
                         /* model display procedure */
-                        er_client_loops_render( er_display.w, er_display.h );
+                        er_client_loops_render( & er_client );
 
                         /* swap buffers */
-                        //glutSwapBuffers();
                         SDL_GL_SwapWindow( er_window );
 
                     }
@@ -307,13 +306,12 @@
                         er_client.cl_view = er_movie_get( & er_client.cl_movie );
 
                         /* model update procedure */
-                        er_client_loops_update();
+                        er_client_loops_update( & er_client );
 
                         /* model display procedure */
-                        er_client_loops_render( er_display.w, er_display.h );
+                        er_client_loops_render( & er_client );
 
                         /* swap buffers */
-                        //glutSwapBuffers();
                         SDL_GL_SwapWindow( er_window );
 
                         /* movie procedure */
@@ -321,8 +319,7 @@
 
                     }
 
-                /* thread idle */
-                } else { sleep( 1 ); }
+                }
 
             }
 
@@ -338,12 +335,11 @@
                     while ( er_client.cl_loops == ER_COMMON_VIEW ) {
 
                         /* model update procedure */
-                        er_client_loops_update();
+                        er_client_loops_update( & er_client );
 
                     }
 
-                /* thread idle */
-                } else { sleep( 1 ); }
+                }
 
             }
 
@@ -370,19 +366,19 @@
     source - loop methods
  */
 
-    le_void_t er_client_loops_render( le_size_t const er_width, le_size_t const er_height ) {
+    le_void_t er_client_loops_render( er_client_t * const er_client ) {
 
         /* clear color and depth buffers */
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
         /* projection : model */
-        er_client_proj_model( er_width, er_height );
+        er_client_proj_model( er_client );
 
         /* matrix - cells */
         glPushMatrix(); {
 
             /* display cells */
-            er_model_display_cell( & er_client.cl_model, & er_client.cl_view );
+            er_model_display_cell( & er_client->cl_model, & er_client->cl_view );
 
         } glPopMatrix();
 
@@ -390,18 +386,18 @@
         glPushMatrix(); {
 
             /* display earth */
-            er_model_display_earth( & er_client.cl_view );
+            er_model_display_earth( & er_client->cl_view );
 
         } glPopMatrix();
 
         /* projection : interface */
-        er_client_proj_interface( er_width, er_height );
+        er_client_proj_interface( er_client );
 
         /* matrix - interface */
         glPushMatrix(); {
 
             /* display interface */
-            er_times_display( & er_client.cl_times, & er_client.cl_view );
+            er_times_display( & er_client->cl_times, & er_client->cl_view );
 
         } glPopMatrix();
 
@@ -429,7 +425,7 @@
                 /* event type : wheel */
                 case( SDL_MOUSEWHEEL ) : {
 
-                    /* event-specialised callback */
+                    /* event-specific callback */
                     er_client_callback_wheel( er_event.wheel, er_client );
 
                 } break;
@@ -437,7 +433,7 @@
                 /* event type : button */
                 case ( SDL_MOUSEBUTTONDOWN ) : {
 
-                    /* event-specialised callback */
+                    /* event-specific callback */
                     er_client_callback_button( er_event.button, er_client );
 
                 } break;
@@ -445,7 +441,7 @@
                 /* event type : motion */
                 case ( SDL_MOUSEMOTION ) : {
 
-                    /* event-specialised callback */
+                    /* event-specific callback */
                     er_client_callback_motion( er_event.motion, er_client );
 
                 } break;
@@ -456,41 +452,41 @@
 
     }
 
-    le_void_t er_client_loops_update( le_void_t ) {
+    le_void_t er_client_loops_update( er_client_t * const er_client ) {
 
         /* address variables */
         le_address_t er_enum = LE_ADDRESS_C;
 
         /* motion detection */
-        if ( er_view_get_equal( & er_client.cl_push, & er_client.cl_view ) == _LE_FALSE ) {
+        if ( er_view_get_equal( & er_client->cl_push, & er_client->cl_view ) == _LE_FALSE ) {
 
             /* retreive address times */
-            er_enum = er_view_get_times( & er_client.cl_view );
+            er_enum = er_view_get_times( & er_client->cl_view );
 
             /* prepare model update */
-            er_model_set_prep( & er_client.cl_model );
+            er_model_set_prep( & er_client->cl_model );
 
             /* update model target */
-            er_model_set_enum( & er_client.cl_model, & er_enum, 0, & er_client.cl_view );
+            er_model_set_enum( & er_client->cl_model, & er_enum, 0, & er_client->cl_view );
 
             /* model/target fast synchronisation */
-            er_model_set_fast( & er_client.cl_model );
+            er_model_set_fast( & er_client->cl_model );
 
             /* push considered view */
-            er_client.cl_push = er_client.cl_view;
+            er_client->cl_push = er_client->cl_view;
 
         }
 
         /* check exectution mode */
-        if ( er_client.cl_loops == ER_COMMON_MOVIE ) {
+        if ( er_client->cl_loops == ER_COMMON_MOVIE ) {
 
             /* synchronisation process - full-process */
-            while ( er_model_set_sync( & er_client.cl_model ) == _LE_FALSE );
+            while ( er_model_set_sync( & er_client->cl_model ) == _LE_FALSE );
 
         } else {
 
             /* synchronisation process - step-process */
-            er_model_set_sync( & er_client.cl_model );
+            er_model_set_sync( & er_client->cl_model );
 
         }
 
@@ -500,14 +496,14 @@
     source - projection methods
  */
 
-    le_void_t er_client_proj_model( int er_width, int er_height ) {
+    le_void_t er_client_proj_model( er_client_t * const er_client ) {
 
         /* clipping plane variables */
-        le_real_t er_neac = er_geodesy_near( er_view_get_alt( & er_client.cl_view ) );
-        le_real_t er_farc = er_geodesy_far ( er_view_get_alt( & er_client.cl_view ) );
+        le_real_t er_neac = er_geodesy_near( er_view_get_alt( & er_client->cl_view ) );
+        le_real_t er_farc = er_geodesy_far ( er_view_get_alt( & er_client->cl_view ) );
 
         /* compute model scale factor */
-        er_client.cl_scale = er_geodesy_scale( er_view_get_alt( & er_client.cl_view ) );
+        er_client->cl_scale = er_geodesy_scale( er_view_get_alt( & er_client->cl_view ) );
 
         /* matrix mode to projection */
         glMatrixMode( GL_PROJECTION );
@@ -516,7 +512,7 @@
         glLoadIdentity();
 
         /* compute projection matrix */
-        gluPerspective( 45.0, ( double ) er_width / er_height, er_neac, er_farc );
+        gluPerspective( 45.0, ( GLdouble ) er_client->cl_width / er_client->cl_height, er_neac, er_farc );
 
         /* matrix mode to modelview */
         glMatrixMode( GL_MODELVIEW );
@@ -525,7 +521,7 @@
         glLoadIdentity();
 
         /* apply scale factor to projection matrix */
-        glScaled( er_client.cl_scale, er_client.cl_scale, er_client.cl_scale );
+        glScaled( er_client->cl_scale, er_client->cl_scale, er_client->cl_scale );
 
         /* fog configuration */
         glFogf( GL_FOG_START, er_farc * 0.8 ), glFogf( GL_FOG_END, er_farc );
@@ -535,7 +531,7 @@
 
     }
 
-    le_void_t er_client_proj_interface( int er_width, int er_height ) {
+    le_void_t er_client_proj_interface( er_client_t * const er_client ) {
 
         /* matrix mode to projection */
         glMatrixMode( GL_PROJECTION );
@@ -544,7 +540,7 @@
         glLoadIdentity();
 
         /* compute projection matrix */
-        glOrtho( 0, er_width, 0, er_height, -1.0, 1.0 );
+        glOrtho( 0, er_client->cl_width, 0, er_client->cl_height, -1.0, 1.0 );
 
         /* matrix mode to modelview */
         glMatrixMode( GL_MODELVIEW );
@@ -709,15 +705,8 @@
 
         } else {
 
-            /* update intertia */
-            er_client->cl_inertia = abs( er_view_get_alt( & er_client->cl_view ) - LE_ADDRESS_WGS_A ) * ER_COMMON_INE;
-
-            /* check inertia */
-            if ( er_client->cl_inertia < 5.0 ) er_client->cl_inertia = 5.0;
-
-            /* inertia multipliers */
-            if ( er_modif & ER_COMMON_KMCTL ) er_client->cl_inertia *= ER_COMMON_IMU;
-            if ( er_modif & ER_COMMON_KMSHF ) er_client->cl_inertia *= ER_COMMON_IML;
+            /* compute inertia */
+            er_client->cl_inertia = er_view_get_inertia( & er_client->cl_view, er_modif );
 
             /* check wheel direction */
             if ( er_event.y > 0 ) {
@@ -740,6 +729,9 @@
 
         /* check button state */
         if ( ( er_event.button == SDL_BUTTON_LEFT ) || ( er_event.button == SDL_BUTTON_RIGHT ) ) {
+
+            /* compute inertia */
+            er_client->cl_inertia = er_view_get_inertia( & er_client->cl_view, SDL_GetModState() );
 
             /* update click position */
             er_client->cl_x = er_event.x;

@@ -269,6 +269,10 @@
 
     le_void_t er_view_get_pose( er_view_t const * const er_view, le_real_t * const er_pose );
 
+    /* *** */
+
+    le_real_t er_view_get_inertia( er_view_t const * const er_view, le_enum_t const er_modifier );
+
     /*! \brief accessor methods
      *
      *  This function returns the times comparison mode value contained in the

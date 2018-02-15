@@ -118,7 +118,6 @@
  */
 
     /* define pseudo-constructor */
-    //# define ER_CLIENT_C { _LE_SOCK_NULL, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, ER_VIEW_D, ER_VIEW_C, 0, GLUT_UP, 0, 0, 1.0, 1.0, _LE_TRUE }
     # define ER_CLIENT_C { _LE_SOCK_NULL, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, ER_VIEW_D, ER_VIEW_C, 0, 0, 0, 0, 1.0, 1.0, _LE_TRUE }
 
 /*
@@ -134,7 +133,7 @@
  */
 
     /*! \struct er_client_struct
-     *  \brief Client structure
+     *  \brief Client structure (revoked)
      *
      *  This structure holds the graphical client interface descriptor. It holds
      *  fields related to point of view motion management and sub-structures
@@ -165,10 +164,6 @@
      *  Point of view structure
      *  \var er_client_struct::cl_push
      *  Point of view structure memory
-     *  \var er_client_struct::cl_button
-     *  Mouse button code
-     *  \var er_client_struct::cl_state
-     *  Mouse state code
      *  \var er_client_struct::cl_x
      *  Mouse x-position
      *  \var er_client_struct::cl_y
@@ -191,8 +186,9 @@
         er_view_t  cl_view;
         er_view_t  cl_push;
 
-        le_enum_t  cl_button;
-        le_enum_t  cl_state;
+        le_size_t  cl_width;
+        le_size_t  cl_height;
+
         le_size_t  cl_x;
         le_size_t  cl_y;
         le_real_t  cl_inertia;
@@ -289,7 +285,7 @@
      *  earth, used as reference, and the time interface.
      */
 
-    le_void_t er_client_loops_render( le_size_t const er_width, le_size_t const er_height );
+    le_void_t er_client_loops_render( er_client_t * const er_client );
 
     /* ... */
 
@@ -313,7 +309,7 @@
      *  in a loop until the target and actual model are identical.
      */
 
-    le_void_t er_client_loops_update( le_void_t );
+    le_void_t er_client_loops_update( er_client_t * const er_client );
 
     /*! \brief projection methods (revoked)
      *
@@ -330,8 +326,7 @@
      *  \param er_width  Screen width, in pixels
      *  \param er_height Screen height, in pixels
      */
-
-    le_void_t er_client_proj_model( int er_width, int er_height );
+    le_void_t er_client_proj_model( er_client_t * const er_client );
 
     /*! \brief projection methods (revoked)
      *
@@ -347,7 +342,7 @@
      *  \param er_height Screen height, in pixels
      */
 
-    le_void_t er_client_proj_interface( int er_width, int er_height );
+    le_void_t er_client_proj_interface( er_client_t * const er_client );
 
     /*! \brief callback methods (revoked)
      *
