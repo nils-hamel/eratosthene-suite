@@ -227,79 +227,81 @@
 
         }
 
-        /* execution threads */
-        # pragma omp parallel sections
-        {
-
-        /* master thread - display procedure */
-        # pragma omp section
-        while ( er_client.cl_loops != ER_COMMON_EXIT ) {
-
-            /* switch on execution mode */
-            if ( er_client.cl_loops == ER_COMMON_VIEW ) {
-
-                /* principale execution loop */
-                while ( er_client.cl_loops == ER_COMMON_VIEW ) {
-
-                    /* interface events procedure */
-                    glutMainLoopEvent();
-
-                    /* model display procedure */
-                    er_client_loops_render();
-
-                    /* swap buffers */
-                    glutSwapBuffers();
-
-                }
-
-            } else if ( er_client.cl_loops == ER_COMMON_MOVIE ) {
-
-                /* principale execution loop */
-                while ( er_client.cl_loops == ER_COMMON_MOVIE ) {
-
-                    /* motion management procedure */
-                    er_client.cl_view = er_movie_get( & er_client.cl_movie );
-
-                    /* model update procedure */
-                    er_client_loops_update();
-
-                    /* model display procedure */
-                    er_client_loops_render();
-
-                    /* swap buffers */
-                    glutSwapBuffers();
-
-                    /* movie procedure */
-                    er_client.cl_loops = er_movie( & er_client.cl_movie );
-
-                }
-
-            /* thread idle */
-            } else { sleep( 1 ); }
-
-        }
-
-        /* secondary thread - model procedure */
-        # pragma omp section
-        while ( er_client.cl_loops != ER_COMMON_EXIT ) {
-
-            /* switch on execution mode */
-            if ( er_client.cl_loops == ER_COMMON_VIEW ) {
-
-                /* principale execution loop */
-                while ( er_client.cl_loops == ER_COMMON_VIEW ) {
-
-                    /* model update procedure */
-                    er_client_loops_update();
-
-                }
-
-            /* thread idle */
-            } else { sleep( 1 ); }
-
-        }
+        /* disable dynamic thread */
+        omp_set_dynamic( 0 );
 
         /* execution threads */
+        # pragma omp parallel num_threads( 2 )
+        if ( omp_get_thread_num() == 0 ) {
+
+            /* execution loop */
+            while ( er_client.cl_loops != ER_COMMON_EXIT ) {
+
+                /* switch on execution mode */
+                if ( er_client.cl_loops == ER_COMMON_VIEW ) {
+
+                    /* principale execution loop */
+                    while ( er_client.cl_loops == ER_COMMON_VIEW ) {
+
+                        /* interface events procedure */
+                        glutMainLoopEvent();
+
+                        /* model display procedure */
+                        er_client_loops_render();
+
+                        /* swap buffers */
+                        glutSwapBuffers();
+
+                    }
+
+                } else if ( er_client.cl_loops == ER_COMMON_MOVIE ) {
+
+                    /* principale execution loop */
+                    while ( er_client.cl_loops == ER_COMMON_MOVIE ) {
+
+                        /* motion management procedure */
+                        er_client.cl_view = er_movie_get( & er_client.cl_movie );
+
+                        /* model update procedure */
+                        er_client_loops_update();
+
+                        /* model display procedure */
+                        er_client_loops_render();
+
+                        /* swap buffers */
+                        glutSwapBuffers();
+
+                        /* movie procedure */
+                        er_client.cl_loops = er_movie( & er_client.cl_movie );
+
+                    }
+
+                /* thread idle */
+                } else { sleep( 1 ); }
+
+            }
+
+        } else {
+
+            /* execution loop */
+            while ( er_client.cl_loops != ER_COMMON_EXIT ) {
+
+                /* switch on execution mode */
+                if ( er_client.cl_loops == ER_COMMON_VIEW ) {
+
+                    /* principale execution loop */
+                    while ( er_client.cl_loops == ER_COMMON_VIEW ) {
+
+                        /* model update procedure */
+                        er_client_loops_update();
+
+                    }
+
+                /* thread idle */
+                } else { sleep( 1 ); }
+
+            }
+
         }
 
         /* delete client */
