@@ -118,7 +118,10 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_CLIENT_C { _LE_SOCK_NULL, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, ER_VIEW_D, ER_VIEW_C, 0, 0, 0, 0, 1.0, 1.0, _LE_TRUE }
+    # define ER_CLIENT_C  { _LE_SOCK_NULL, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, ER_VIEW_D, ER_VIEW_C, 0, 0, 0, 0, 1.0, 1.0, _LE_TRUE }
+
+    /* define window properties */
+    # define ER_SDL_FLAGS ( SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL )
 
 /*
     header - preprocessor macros
@@ -272,6 +275,10 @@
      */
 
     int main( int argc, char ** argv );
+
+    /* *** */
+
+    le_void_t er_client_loops(  er_client_t * const er_client, SDL_Window * const er_window );
 
     /*! \brief loop methods (revoked)
      *

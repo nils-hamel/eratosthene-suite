@@ -73,6 +73,9 @@
     # define ER_MODEL_VERTEX   ( GL_DOUBLE )
     # define ER_MODEL_COLORS   ( GL_UNSIGNED_BYTE )
 
+    /* define model color */
+    # define ER_MODEL_SPACE    { 0.01, 0.04, 0.07, 0.00 }
+
 /*
     header - preprocessor macros
  */

@@ -63,6 +63,10 @@
     header - preprocessor definitions
  */
 
+    /* define name */
+    # define ER_COMMON_NAME    "eratosthene-client"
+    # define ER_COMMON_PREFIX  "eratosthene-suite"
+
     /* define execution modes */
     # define ER_COMMON_EXIT    ( 0x00 )
     # define ER_COMMON_VIEW    ( 0x01 )

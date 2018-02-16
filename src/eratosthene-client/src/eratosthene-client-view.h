@@ -269,7 +269,24 @@
 
     le_void_t er_view_get_pose( er_view_t const * const er_view, le_real_t * const er_pose );
 
-    /* *** */
+    /*! \brief accessor methods
+     *
+     *  This function computes and return the inertia factor that is used to
+     *  modulate the point of view modification. In addition to the position
+     *  coordinates, the function also checks the keyboard modifiers to adapt
+     *  the inertia value.
+     *
+     *  As the point of view get closer to the ground surface, the motion has
+     *  to be reduced in order to keep relevant displacement speed. In addition,
+     *  if left-control key is pressed, the inertia is augmented to speed up
+     *  the point of view. If the left-shift key is pressed, the inertia is
+     *  decreased to allow fine tune of the point of view.
+     *
+     *  \param er_view     View structure
+     *  \param er_modifier Keyboard modifier flags
+     *
+     *  \return Returns the computed inertia value
+     */
 
     le_real_t er_view_get_inertia( er_view_t const * const er_view, le_enum_t const er_modifier );
 

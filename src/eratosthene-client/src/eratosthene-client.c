@@ -158,15 +158,8 @@
 
     int main( int argc, char ** argv ) {
 
-        /* server address variables */
-        le_char_t * er_svip = ( le_char_t * ) lc_read_string( argc, argv, "--ip"  , "-i" );
-
-        /* server port variables */
-        le_sock_t er_port = ( le_sock_t ) lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT );
-
-        /* color array variables */
-        float er_color[4] = { 0.02, 0.04, 0.06, 0.00 };
-
+        /* messasge variable */
+        int er_message = EXIT_SUCCESS;
 
         /* display mode variable */
         SDL_DisplayMode er_display;
@@ -180,62 +173,113 @@
         /* client structure variable */
         er_client_t er_client = ER_CLIENT_C;
 
+        /* server address variables */
+        le_char_t * er_svip = NULL;
+
+        /* server service variables */
+        le_sock_t er_port = 0;
 
         /* initialise sdl */
         if ( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
 
             /* display message */
-            fprintf( stderr, "eratosthene-suite : error : unable to initialise sdl library\n" );
+            fprintf( stderr, ER_COMMON_PREFIX " : error : unable to initialise sdl library\n" );
 
-            /* send message */
-            return( EXIT_FAILURE );
+            /* push message */
+            er_message = EXIT_FAILURE;
+
+        } else {
+
+            /* retrieve display mode */
+            SDL_GetCurrentDisplayMode( 0, & er_display );
+
+            /* enable double buffer */
+            SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+
+            /* color buffer bits */
+            SDL_GL_SetAttribute( SDL_GL_RED_SIZE  , 8 );
+            SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
+            SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE , 8 );
+            SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 );
+
+            /* depth buffer bits */
+            SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
+
+            /* create window */
+            if ( ( er_window = SDL_CreateWindow( ER_COMMON_NAME, 0, 0, er_display.w, er_display.h, ER_SDL_FLAGS ) ) == NULL ) {
+
+                /* display message */
+                fprintf( stderr, ER_COMMON_PREFIX " : error : unable to create window\n" );
+
+                /* push message */
+                er_message = EXIT_FAILURE;
+
+            } else {
+
+                /* create opengl context */
+                if ( ( er_context = SDL_GL_CreateContext( er_window ) ) == NULL ) {
+
+                    /* display message */
+                    fprintf( stderr, ER_COMMON_PREFIX " : error : unable to create context\n" );
+
+                    /* push message */
+                    er_message = EXIT_FAILURE;
+
+                } else {
+
+                    /* read server address */
+                    er_svip = ( le_char_t * ) lc_read_string( argc, argv, "--ip"  , "-i" );
+
+                    /* read server service */
+                    er_port = ( le_sock_t ) lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT );
+
+                    /* create client */
+                    if ( ( er_client = er_client_create( er_svip, er_port, er_display.w, er_display.h ) )._status == _LE_FALSE ) {
+
+                        /* display message */
+                        fprintf( stderr, ER_COMMON_PREFIX " : error : unable to create client\n" );
+
+                        /* push message */
+                        er_message = EXIT_FAILURE;
+
+                    } else {
+
+                        /* principal loop */
+                        er_client_loops( & er_client, er_window );
+
+                        /* delete client */
+                        er_client_delete( & er_client );
+
+                    }
+
+                    /* delete opengl context */
+                    SDL_GL_DeleteContext( er_context );
+
+                }
+
+                /* delete window */
+                SDL_DestroyWindow( er_window );
+
+            }
+
+            /* terminate sdl */
+            SDL_Quit();
 
         }
 
-        /* retrieve display mode */
-        if ( SDL_GetCurrentDisplayMode( 0, & er_display ) < 0 ) {
+        /* send message */
+        return( er_message );
 
-            /* display message */
-            fprintf( stderr, "eratosthene-suite : error : unable to query current display mode\n" );
+    }
 
-            /* send message */
-            return( EXIT_FAILURE );
+/*
+    source - loop methods
+ */
 
-        }
+    le_void_t er_client_loops(  er_client_t * const er_client, SDL_Window * const er_window ) {
 
-        /* enable double buffer */
-        SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-
-        /* color buffer bits */
-        SDL_GL_SetAttribute( SDL_GL_RED_SIZE  , 8 );
-        SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
-        SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE , 8 );
-        SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 );
-
-        /* depth buffer bits */
-        SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
-
-        /* create window */
-        if ( ( er_window = SDL_CreateWindow( "eratosthene-client", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, er_display.w, er_display.h, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL ) ) == NULL ) {
-
-            /* display message */
-            fprintf( stderr, "eratosthene-suite : error : unable to create window\n" );
-
-            /* send message */
-            return( EXIT_FAILURE );
-
-        }
-
-        /* create opengl context */
-        if ( ( er_context = SDL_GL_CreateContext( er_window ) ) == NULL ) {
-
-            /* display message */
-            fprintf( stderr, "eratosthene-suite : error : unable to create opengl context\n" );
-
-            /* send message */
-            return( EXIT_FAILURE );
-
-        }
+        /* color array variables */
+        float er_color[4] = ER_MODEL_SPACE;
 
         /* color buffer clear values */
         glClearColor( er_color[0], er_color[1], er_color[2], er_color[3] );
@@ -259,63 +303,55 @@
         glEnableClientState( GL_VERTEX_ARRAY );
         glEnableClientState( GL_COLOR_ARRAY  );
 
-        /* create client */
-        if ( ( er_client = er_client_create( er_svip, er_port, er_display.w, er_display.h ) )._status == _LE_FALSE ) {
-
-            /* display message */
-            fprintf( stderr, "eratosthene-suite : error : unable to create client\n" );
-
-            /* send message */
-            return( EXIT_FAILURE );
-
-        }
-
         /* disable dynamic thread */
         omp_set_dynamic( 0 );
 
         /* execution threads */
         # pragma omp parallel num_threads( 2 )
+        {
+
+        /* master swicth switch */
         if ( omp_get_thread_num() == 0 ) {
 
             /* execution loop */
-            while ( er_client.cl_loops != ER_COMMON_EXIT ) {
+            while ( er_client->cl_loops != ER_COMMON_EXIT ) {
 
                 /* switch on execution mode */
-                if ( er_client.cl_loops == ER_COMMON_VIEW ) {
+                if ( er_client->cl_loops == ER_COMMON_VIEW ) {
 
                     /* principale execution loop */
-                    while ( er_client.cl_loops == ER_COMMON_VIEW ) {
+                    while ( er_client->cl_loops == ER_COMMON_VIEW ) {
 
                         /* interface events procedure */
-                        er_client_loops_event( & er_client );
+                        er_client_loops_event( er_client );
 
                         /* model display procedure */
-                        er_client_loops_render( & er_client );
+                        er_client_loops_render( er_client );
 
                         /* swap buffers */
                         SDL_GL_SwapWindow( er_window );
 
                     }
 
-                } else if ( er_client.cl_loops == ER_COMMON_MOVIE ) {
+                } else if ( er_client->cl_loops == ER_COMMON_MOVIE ) {
 
                     /* principale execution loop */
-                    while ( er_client.cl_loops == ER_COMMON_MOVIE ) {
+                    while ( er_client->cl_loops == ER_COMMON_MOVIE ) {
 
                         /* motion management procedure */
-                        er_client.cl_view = er_movie_get( & er_client.cl_movie );
+                        er_client->cl_view = er_movie_get( & er_client->cl_movie );
 
                         /* model update procedure */
-                        er_client_loops_update( & er_client );
+                        er_client_loops_update( er_client );
 
                         /* model display procedure */
-                        er_client_loops_render( & er_client );
+                        er_client_loops_render( er_client );
 
                         /* swap buffers */
                         SDL_GL_SwapWindow( er_window );
 
                         /* movie procedure */
-                        er_client.cl_loops = er_movie( & er_client.cl_movie );
+                        er_client->cl_loops = er_movie( & er_client->cl_movie );
 
                     }
 
@@ -326,16 +362,16 @@
         } else {
 
             /* execution loop */
-            while ( er_client.cl_loops != ER_COMMON_EXIT ) {
+            while ( er_client->cl_loops != ER_COMMON_EXIT ) {
 
                 /* switch on execution mode */
-                if ( er_client.cl_loops == ER_COMMON_VIEW ) {
+                if ( er_client->cl_loops == ER_COMMON_VIEW ) {
 
                     /* principale execution loop */
-                    while ( er_client.cl_loops == ER_COMMON_VIEW ) {
+                    while ( er_client->cl_loops == ER_COMMON_VIEW ) {
 
                         /* model update procedure */
-                        er_client_loops_update( & er_client );
+                        er_client_loops_update( er_client );
 
                     }
 
@@ -345,20 +381,7 @@
 
         }
 
-        /* delete client */
-        er_client_delete( & er_client );
-
-        /* delete opengl context */
-        SDL_GL_DeleteContext( er_context );
-
-        /* delete window */
-        SDL_DestroyWindow( er_window );
-
-        /* terminate sdl */
-        SDL_Quit();
-
-        /* send message */
-        return( EXIT_SUCCESS );
+        }
 
     }
 
