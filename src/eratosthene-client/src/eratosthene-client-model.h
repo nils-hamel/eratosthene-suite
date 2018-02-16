@@ -74,7 +74,7 @@
     # define ER_MODEL_COLORS   ( GL_UNSIGNED_BYTE )
 
     /* define model color */
-    # define ER_MODEL_SPACE    { 0.01, 0.04, 0.07, 0.00 }
+    # define ER_MODEL_SPACE    { 0.03, 0.04, 0.05, 0.00 }
 
 /*
     header - preprocessor macros
