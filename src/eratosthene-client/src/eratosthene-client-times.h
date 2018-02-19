@@ -55,12 +55,15 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_TIMES_C           { 0, 0, 0, 0, NULL, 0, 0, 0, 0, 0, 0, _LE_TRUE }
+    # define ER_TIMES_C           { 0, 0, 0, 0, NULL, 0, 0, 0, 0, 0, ER_COMMON_FONT, _LE_TRUE }
 
     /* define string justification */
     # define ER_TIMES_LEFT        ( 0 )
     # define ER_TIMES_RIGHT       ( 1 )
     # define ER_TIMES_CENTER      ( 2 )
+
+    /* define interface string */
+    # define ER_TIMES_MODES       { ( le_char_t * ) "< ONLY  ", ( le_char_t * ) "  ONLY >", ( le_char_t * ) "< OR >", ( le_char_t * ) "< AND >", ( le_char_t * ) "< XOR >" }
 
 /*
     header - preprocessor macros
@@ -132,10 +135,11 @@
 
         le_size_t   tm_sh1;
         le_size_t   tm_sh2;
-        le_size_t   tm_sh3;
         le_size_t   tm_bh1;
         le_size_t   tm_bh2;
         le_size_t   tm_middle;
+
+        er_font_t   tm_font;
 
     le_enum_t _status; } er_times_t;
 
@@ -143,7 +147,7 @@
     header - function prototypes
  */
 
-    /*! \brief constructor/destructor methods
+    /*! \brief constructor/destructor methods (revoked)
      *
      *  This function creates and returns a times interface structure. It gets
      *  information about the screen sizes and precomputes the vertical and
@@ -159,7 +163,6 @@
      */
 
     er_times_t er_times_create( le_size_t const er_width, le_size_t const er_height );
-    //er_times_t er_times_create( le_void_t );
 
     /*! \brief constructor/destructor methods
      *
@@ -171,7 +174,7 @@
 
     le_void_t er_times_delete( er_times_t * const er_times );
 
-    /*! \brief display methods
+    /*! \brief display methods (revoked)
      *
      *  This function is responsible of the time interface drawing and display
      *  in the opengl colour buffer. It is also responsible of the display of
@@ -193,7 +196,7 @@
 
     le_void_t er_times_display( er_times_t const * const er_times, er_view_t const * const er_view );
 
-    /*! \brief display methods
+    /*! \brief display methods (revoked)
      *
      *  This function displays the time provided as parameter in the OpenGL
      *  colour buffer.
@@ -209,9 +212,9 @@
      *  \param er_justify Time value text justification
      */
 
-    le_void_t er_times_display_date( le_time_t const er_time, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify );
+    le_void_t er_times_display_date( er_times_t const * const er_times, le_time_t const er_date, le_size_t const er_x, le_size_t const er_y, le_byte_t const er_value, le_enum_t const er_justify );
 
-    /*! \brief display methods
+    /*! \brief display methods (revoked)
      *
      *  This function writes in the OpenGL colour buffer the text provided as
      *  parameter.
@@ -227,7 +230,7 @@
      *  \param er_justify Text justification
      */
 
-    le_void_t er_times_display_text( le_char_t const * const er_text, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify );
+    le_void_t er_times_display_text( er_times_t const * const er_times, le_char_t const * const er_text, le_size_t er_x, le_size_t er_y, le_byte_t const er_value, le_enum_t const er_justify );
 
 /*
     header - C/C++ compatibility

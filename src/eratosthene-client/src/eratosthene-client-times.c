@@ -33,19 +33,18 @@
         er_times.tm_width = er_width;
 
         /* assign buffer height */
-        er_times.tm_height = 96 - 16;
+        er_times.tm_height = er_times.tm_font.ft_h * 5;
 
         /* assign buffer lower position */
-        er_times.tm_offset = er_height - er_times.tm_height - 64;
+        er_times.tm_offset = er_height - er_times.tm_height - ( er_height * 0.05 );
 
         /* assign screen heights */
-        er_times.tm_sh1 = er_times.tm_offset - ( ( 6 + 6 ) + 15 ) + 6;
-        er_times.tm_sh2 = er_times.tm_offset + 6;
-        er_times.tm_sh3 = er_times.tm_offset + er_times.tm_height - ( ( 6 + 6 ) + 15 );
+        er_times.tm_sh1 = er_times.tm_font.ft_h * 0.5;
+        er_times.tm_sh2 = er_times.tm_font.ft_h * 3.5;
 
         /* assign buffer heights */
-        er_times.tm_bh1 = ( ( 6 + 6 ) + 15 ) - 6;
-        er_times.tm_bh2 = er_times.tm_height - ( ( 6 + 6 ) + 15 ) - 6 - 6;
+        er_times.tm_bh1 = er_times.tm_font.ft_h * 2.0;
+        er_times.tm_bh2 = er_times.tm_font.ft_h * 3.0;
 
         /* assign middle position */
         er_times.tm_middle = er_times.tm_width >> 1;
@@ -94,10 +93,13 @@
     le_void_t er_times_display( er_times_t const * const er_times, er_view_t const * const er_view ) {
 
         /* interface text variables */
-        le_char_t * er_text[5] = { ( le_char_t * ) "< ONLY  ",  ( le_char_t * ) "  ONLY >", ( le_char_t * ) "< OR >", ( le_char_t * ) "< AND >", ( le_char_t * ) "< XOR >" };
+        le_char_t * er_text[5] = ER_TIMES_MODES;
 
         /* garduation display variables */
         le_size_t er_grad = 0;
+
+        /* text display value variable */
+        le_byte_t er_alpha = 0;
 
         /* view point variables */
         le_enum_t er_act = er_view_get_active( er_view );
@@ -118,25 +120,22 @@
         for ( le_size_t er_parse = 3; er_parse < er_times->tm_length; er_parse += 4 ) {
 
             /* check current height */
-            if ( ( er_parse / ( er_times->tm_width << 2 ) ) == er_times->tm_bh2 ) {
+            if ( ( er_parse / ( er_times->tm_width << 2 ) ) < er_times->tm_bh2 ) {
 
                 /* reset buffer alpha component */
-                er_times->tm_buffer[er_parse] = 0;
+                er_times->tm_buffer[er_parse] = 224;
 
             } else {
 
                 /* reset buffer alpha component */
-                er_times->tm_buffer[er_parse] = 230;
+                er_times->tm_buffer[er_parse] = 240;
 
             }
 
         }
 
-        /* specify text color */
-        glColor4f( 1.0, 1.0, 1.0, 0.0 );
-
         /* parsing graduation scales */
-        for ( le_size_t er_scale = er_scaled, er_reduce = 6; er_scale <= er_scaleu; er_scale *= 10, er_reduce -= 4 ) {
+        for ( le_size_t er_scale = er_scaled; er_scale <= er_scaleu; er_scale *= 10 ) {
 
             /* parsing graduation increments */
             for ( le_time_t er_parse = er_times_rnd( er_timed, er_scale ); er_parse < er_timeu; er_parse += er_scale ) {
@@ -145,7 +144,7 @@
                 er_grad = ( ( ( ( le_real_t ) er_parse ) - er_time ) / er_area ) * er_times->tm_width + er_times->tm_middle;
 
                 /* display graduation increment */
-                for ( le_size_t er_pixel = er_times->tm_bh1 + er_reduce; er_pixel < er_times->tm_bh2; er_pixel ++ ) {
+                for ( le_size_t er_pixel = er_times->tm_bh1; er_pixel < er_times->tm_bh2; er_pixel ++ ) {
 
                     /* update interface buffer alpha channel */
                     er_times->tm_buffer[( ( er_grad + er_pixel * er_times->tm_width ) << 2 ) + 3] -= 56;
@@ -156,7 +155,7 @@
                 if ( er_scale == er_scaleu ) {
 
                     /* display date text */
-                    er_times_display_date( er_parse, er_grad, er_times->tm_sh3, ER_TIMES_CENTER );
+                    er_times_display_date( er_times, er_parse, er_grad, er_times->tm_sh1, 0, ER_TIMES_CENTER );
 
                 }
 
@@ -164,26 +163,20 @@
 
         }
 
-        /* display middle marker text */
-        er_times_display_text( ( le_char_t * ) "^", er_times->tm_middle + 1, er_times->tm_sh2, ER_TIMES_CENTER );
-
-        /* specify text color */
-        glColor4f( 0.9, 0.9, 0.9, 1.0 );
-
         /* display mode text */
-        er_times_display_text( er_text[er_view_get_mode( er_view ) - 1], er_times->tm_middle, er_times->tm_sh1, ER_TIMES_CENTER );
+        er_times_display_text( er_times, er_text[er_view_get_mode( er_view ) - 1], er_times->tm_middle, er_times->tm_sh2, 64, ER_TIMES_CENTER );
 
-        /* check activity - specify text color */
-        if ( er_act == 0 ) glColor4f( 0.9, 0.9, 0.9, 1.0 ); else glColor4f( 0.7, 0.7, 0.7, 1.0 );
-
-        /* display times */
-        er_times_display_date( er_view_get_time( er_view, 0 ), er_times->tm_middle - 48, er_times->tm_sh1, ER_TIMES_RIGHT );
-
-        /* check activity - specify text color */
-        if ( er_act == 1 ) glColor4f( 0.9, 0.9, 0.9, 1.0 ); else glColor4f( 0.7, 0.7, 0.7, 1.0 );
+        /* assign text color */
+        er_alpha = ( er_act == 0 ) ? 64 : 192;
 
         /* display times */
-        er_times_display_date( er_view_get_time( er_view, 1 ), er_times->tm_middle + 48, er_times->tm_sh1, ER_TIMES_LEFT  );
+        er_times_display_date( er_times, er_view_get_time( er_view, 0 ), er_times->tm_middle - 48, er_times->tm_sh2, er_alpha, ER_TIMES_RIGHT );
+
+        /* assign text color */
+        er_alpha = ( er_act == 1 ) ? 64 : 192;
+
+        /* display times */
+        er_times_display_date( er_times, er_view_get_time( er_view, 1 ), er_times->tm_middle + 48, er_times->tm_sh2, er_alpha, ER_TIMES_LEFT  );
 
         /* assign buffer position */
         glRasterPos2i( 0, er_times->tm_offset );
@@ -193,30 +186,97 @@
 
     }
 
-    le_void_t er_times_display_date( le_time_t const er_time, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify ) {
+    le_void_t er_times_display_date( er_times_t const * const er_times, le_time_t const er_date, le_size_t const er_x, le_size_t const er_y, le_byte_t const er_value, le_enum_t const er_justify ) {
 
         /* string array variables */
         le_char_t er_string[32] = { 0 };
 
         /* compose date string */
-        lc_time_to_string( er_time, er_string, 32 );
+        lc_time_to_string( er_date, er_string, 32 );
 
         /* display date text */
-        er_times_display_text( er_string, er_x, er_y, er_justify );
+        er_times_display_text( er_times, er_string, er_x, er_y, er_value, er_justify );
 
     }
 
-    le_void_t er_times_display_text( le_char_t const * const er_text, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify ) {
+    le_void_t er_times_display_text( er_times_t const * const er_times, le_char_t const * const er_text, le_size_t er_x, le_size_t er_y, le_byte_t const er_value, le_enum_t const er_justify ) {
 
-        /* check justification - assign shift */
-        if ( er_justify == ER_TIMES_RIGHT  ) er_x -= 9.0 * strlen( ( char * ) er_text );
-        if ( er_justify == ER_TIMES_CENTER ) er_x -= 4.5 * strlen( ( char * ) er_text );
+        /* string length variable */
+        le_size_t er_length = strlen( ( char * ) er_text );
 
-        /* set string position */
-        glRasterPos2i( er_x, er_y );
+        /* pixel offset variable */
+        le_byte_t * er_offset = NULL;
 
-        /* display text */
-        //glutBitmapString( GLUT_BITMAP_9_BY_15, er_text );
+        /* position variable */
+        le_size_t er_r = 0;
+        le_size_t er_s = 0;
+
+        /* bit coordinates variable */
+        le_size_t er_bitx = 0;
+        le_size_t er_bity = 0;
+
+        /* check justification */
+        if ( er_justify == ER_TIMES_RIGHT ) {
+
+            /* correct x-position */
+            er_x -= er_length * ( er_times->tm_font.ft_w );
+
+        } else if ( er_justify == ER_TIMES_CENTER ) {
+
+            /* correct x-position */
+            er_x -= er_length * ( er_times->tm_font.ft_w >> 1 );
+
+        }
+
+        /* parsing text string */
+        for ( le_size_t er_parse = 0; er_parse < er_length; er_parse ++ ) {
+
+            /* parsing pixels */
+            for ( le_size_t er_u = 0; er_u < er_times->tm_font.ft_w; er_u ++ ) {
+
+                /* parsing pixels */
+                for ( le_size_t er_v = 0; er_v < er_times->tm_font.ft_h; er_v ++ ) {
+
+                    /* compute position */
+                    er_r = er_x + er_u;
+                    er_s = er_y + er_v;
+
+                    /* check boundaries */
+                    if ( er_r < 0 ) continue;
+                    if ( er_s < 0 ) continue;
+
+                    /* check boundaries */
+                    if ( er_r >= er_times->tm_width  ) continue;
+                    if ( er_s >= er_times->tm_height ) continue;
+
+                    /* compute pixel offset */
+                    er_offset = er_times->tm_buffer + ( ( ( er_y + er_v ) * er_times->tm_width + ( er_x + er_u ) ) * 4 );
+
+                    /* compute bit coordinate */
+                    er_bitx = er_times->tm_font.ft_w * ( le_size_t ) ( er_text[er_parse] ) + er_u;
+
+                    /* compute bit coordinate */
+                    er_bity = er_times->tm_font.ft_w * er_times->tm_font.ft_c;
+
+                    /* compute bit coordinate */
+                    er_bitx = er_bity * ( er_times->tm_font.ft_h - er_v - 1 ) + er_bitx;
+
+                    /* check font bitmap */
+                    if ( er_times->tm_font.ft_bits[er_bitx >> 3] & ( 1 << ( er_bitx % 8 ) ) ) {
+
+                        /* assign value */
+                        er_offset[3] = er_value;
+
+                    }
+
+                }
+
+            }
+
+            /* update head */
+            er_x += er_times->tm_font.ft_w;
+
+        }
 
     }
 
