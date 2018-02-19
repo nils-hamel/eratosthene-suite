@@ -195,7 +195,7 @@
      *  \param er_view  View structure
      */
 
-    le_void_t er_times_display( er_times_t const * const er_times, er_view_t const * const er_view );
+    le_void_t er_times_display( er_times_t * const er_times, er_view_t const * const er_view );
 
     /*! \brief display methods (revoked)
      *
@@ -213,7 +213,7 @@
      *  \param er_justify Time value text justification
      */
 
-    le_void_t er_times_display_date( er_times_t const * const er_times, le_time_t const er_date, le_size_t const er_x, le_size_t const er_y, le_byte_t const er_value, le_enum_t const er_justify );
+    le_void_t er_times_display_date( er_times_t * const er_times, le_time_t const er_date, le_byte_t const er_value, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify );
 
     /*! \brief display methods (revoked)
      *
@@ -231,7 +231,7 @@
      *  \param er_justify Text justification
      */
 
-    le_void_t er_times_display_text( er_times_t const * const er_times, le_char_t const * const er_text, le_size_t er_x, le_size_t er_y, le_byte_t const er_value, le_enum_t const er_justify );
+    le_void_t er_times_display_text( er_times_t * const er_times, le_char_t const * const er_text, le_byte_t const er_value, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify );
 
 /*
     header - C/C++ compatibility

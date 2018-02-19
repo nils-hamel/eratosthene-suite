@@ -297,18 +297,9 @@
 
     le_size_t er_font_get_count( er_font_t const * const er_font );
 
-    /*! \brief accessor methods
-     *
-     *  This function returns the size, in bits/pixel, of the total width of
-     *  the provided font. This value can be obtained by multiplying the font
-     *  character width and the character count.
-     *
-     *  \param er_font Font structure
-     *
-     *  \return Returns the font full width
-     */
+    /* *** */
 
-    le_size_t er_font_get_period( er_font_t const * const er_font );
+    le_void_t er_font_display_string( er_font_t const * const er_font, le_char_t const * const er_string, le_size_t er_length, le_byte_t const er_value, le_byte_t * const er_buffer, le_size_t const er_width, le_size_t const er_height, le_size_t er_x, le_size_t er_y );
 
 /*
     header - C/C++ compatibility

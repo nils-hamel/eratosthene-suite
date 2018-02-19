@@ -73,7 +73,7 @@
 
     le_void_t er_times_delete( er_times_t * const er_times ) {
 
-        /* deleted structure variables */
+        /* deleted structure variable */
         er_times_t er_delete = ER_TIMES_C;
 
         /* check buffer memory */
@@ -93,31 +93,31 @@
     source - display methods
  */
 
-    le_void_t er_times_display( er_times_t const * const er_times, er_view_t const * const er_view ) {
+    le_void_t er_times_display( er_times_t * const er_times, er_view_t const * const er_view ) {
 
-        /* interface text variables */
+        /* view point variable */
+        le_enum_t er_act = er_view_get_active( er_view );
+
+        /* view point variable */
+        le_time_t er_time = er_view_get_time( er_view, er_act );
+        le_time_t er_area = er_view_get_area( er_view, er_act );
+
+        /* time boundaries variable */
+        le_time_t er_timed = er_time - ( er_area >> 1 );
+        le_time_t er_timeu = er_time + ( er_area >> 1 );
+
+        /* scale boundaries variable */
+        le_time_t er_scaled = pow( 10.0, floor( log( er_area * 0.02 ) / log( 10.0 ) ) );
+        le_time_t er_scaleu = pow( 10.0, floor( log( er_area * 0.85 ) / log( 10.0 ) ) );
+
+        /* interface text variable */
         le_char_t * er_text[5] = ER_TIMES_MODES;
 
-        /* garduation display variables */
+        /* garduation display variable */
         le_size_t er_grad = 0;
 
         /* text display value variable */
         le_byte_t er_alpha = 0;
-
-        /* view point variables */
-        le_enum_t er_act = er_view_get_active( er_view );
-
-        /* view point variables */
-        le_time_t er_time = er_view_get_time( er_view, er_act );
-        le_time_t er_area = er_view_get_area( er_view, er_act );
-
-        /* time boundaries variables */
-        le_time_t er_timed = er_time - ( er_area >> 1 );
-        le_time_t er_timeu = er_time + ( er_area >> 1 );
-
-        /* scale boundaries variables */
-        le_time_t er_scaled = pow( 10.0, floor( log( er_area * 0.02 ) / log( 10.0 ) ) );
-        le_time_t er_scaleu = pow( 10.0, floor( log( er_area * 0.85 ) / log( 10.0 ) ) );
 
         /* reset buffer memory */
         for ( le_size_t er_parse = 3; er_parse < er_times->tm_length; er_parse += 4 ) {
@@ -147,10 +147,10 @@
                 er_grad = ( ( ( ( le_real_t ) er_parse ) - er_time ) / er_area ) * er_times->tm_width + er_times->tm_middle;
 
                 /* display graduation increment */
-                for ( le_size_t er_pixel = er_times->tm_bh1; er_pixel < er_times->tm_bh2; er_pixel ++ ) {
+                for ( le_size_t er_pixel = er_times->tm_bh1, er_u = 4; er_pixel < er_times->tm_bh2; er_pixel ++, er_u += 4 ) {
 
                     /* update interface buffer alpha channel */
-                    er_times->tm_buffer[( ( er_grad + er_pixel * er_times->tm_width ) << 2 ) + 3] -= 56;
+                    er_times->tm_buffer[( ( er_grad + er_pixel * er_times->tm_width ) << 2 ) + 3] -= er_u; //56;
 
                 }
 
@@ -158,7 +158,7 @@
                 if ( er_scale == er_scaleu ) {
 
                     /* display date text */
-                    er_times_display_date( er_times, er_parse, er_grad, er_times->tm_sh1, 0, ER_TIMES_CENTER );
+                    er_times_display_date( er_times, er_parse, 64, er_grad, er_times->tm_sh1, ER_TIMES_CENTER );
 
                 }
 
@@ -167,19 +167,19 @@
         }
 
         /* display mode text */
-        er_times_display_text( er_times, er_text[er_view_get_mode( er_view ) - 1], er_times->tm_middle, er_times->tm_sh2, 64, ER_TIMES_CENTER );
+        er_times_display_text( er_times, er_text[er_view_get_mode( er_view ) - 1], 64, er_times->tm_middle, er_times->tm_sh2, ER_TIMES_CENTER );
 
         /* assign text color */
         er_alpha = ( er_act == 0 ) ? 64 : 192;
 
         /* display times */
-        er_times_display_date( er_times, er_view_get_time( er_view, 0 ), er_times->tm_middle - 48, er_times->tm_sh2, er_alpha, ER_TIMES_RIGHT );
+        er_times_display_date( er_times, er_view_get_time( er_view, 0 ), er_alpha, er_times->tm_middle - 48, er_times->tm_sh2, ER_TIMES_RIGHT );
 
         /* assign text color */
         er_alpha = ( er_act == 1 ) ? 64 : 192;
 
         /* display times */
-        er_times_display_date( er_times, er_view_get_time( er_view, 1 ), er_times->tm_middle + 48, er_times->tm_sh2, er_alpha, ER_TIMES_LEFT  );
+        er_times_display_date( er_times, er_view_get_time( er_view, 1 ), er_alpha, er_times->tm_middle + 48, er_times->tm_sh2, ER_TIMES_LEFT  );
 
         /* assign buffer position */
         glRasterPos2i( 0, er_times->tm_offset );
@@ -189,34 +189,23 @@
 
     }
 
-    le_void_t er_times_display_date( er_times_t const * const er_times, le_time_t const er_date, le_size_t const er_x, le_size_t const er_y, le_byte_t const er_value, le_enum_t const er_justify ) {
+    le_void_t er_times_display_date( er_times_t * const er_times, le_time_t const er_date, le_byte_t const er_value, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify ) {
 
-        /* string array variables */
+        /* string array variable */
         le_char_t er_string[32] = { 0 };
 
         /* compose date string */
         lc_time_to_string( er_date, er_string, 32 );
 
         /* display date text */
-        er_times_display_text( er_times, er_string, er_x, er_y, er_value, er_justify );
+        er_times_display_text( er_times, er_string, er_value, er_x, er_y, er_justify );
 
     }
 
-    le_void_t er_times_display_text( er_times_t const * const er_times, le_char_t const * const er_text, le_size_t er_x, le_size_t er_y, le_byte_t const er_value, le_enum_t const er_justify ) {
+    le_void_t er_times_display_text( er_times_t * const er_times, le_char_t const * const er_text, le_byte_t const er_value, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify ) {
 
         /* string length variable */
         le_size_t er_length = strlen( ( char * ) er_text );
-
-        /* pixel offset variable */
-        le_byte_t * er_offset = NULL;
-
-        /* position variable */
-        le_size_t er_r = 0;
-        le_size_t er_s = 0;
-
-        /* bit coordinates variable */
-        le_size_t er_bitx = 0;
-        le_size_t er_bity = 0;
 
         /* check justification */
         if ( er_justify == ER_TIMES_RIGHT ) {
@@ -231,55 +220,8 @@
 
         }
 
-        /* parsing text string */
-        for ( le_size_t er_parse = 0; er_parse < er_length; er_parse ++ ) {
-
-            /* parsing pixels */
-            for ( le_size_t er_u = 0; er_u < er_times->tm_font.ft_w; er_u ++ ) {
-
-                /* parsing pixels */
-                for ( le_size_t er_v = 0; er_v < er_times->tm_font.ft_h; er_v ++ ) {
-
-                    /* compute position */
-                    er_r = er_x + er_u;
-                    er_s = er_y + er_v;
-
-                    /* check boundaries */
-                    if ( er_r < 0 ) continue;
-                    if ( er_s < 0 ) continue;
-
-                    /* check boundaries */
-                    if ( er_r >= er_times->tm_width  ) continue;
-                    if ( er_s >= er_times->tm_height ) continue;
-
-                    /* compute pixel offset */
-                    er_offset = er_times->tm_buffer + ( ( ( er_y + er_v ) * er_times->tm_width + ( er_x + er_u ) ) * 4 );
-
-                    /* compute bit coordinate */
-                    er_bitx = er_times->tm_font.ft_w * ( le_size_t ) ( er_text[er_parse] ) + er_u;
-
-                    /* compute bit coordinate */
-                    er_bity = er_times->tm_font.ft_w * er_times->tm_font.ft_c;
-
-                    /* compute bit coordinate */
-                    er_bitx = er_bity * ( er_times->tm_font.ft_h - er_v - 1 ) + er_bitx;
-
-                    /* check font bitmap */
-                    if ( er_times->tm_font.ft_bits[er_bitx >> 3] & ( 1 << ( er_bitx % 8 ) ) ) {
-
-                        /* assign value */
-                        er_offset[3] = er_value;
-
-                    }
-
-                }
-
-            }
-
-            /* update head */
-            er_x += er_times->tm_font.ft_w;
-
-        }
+        /* display string */
+        er_font_display_string( & er_times->tm_font, er_text, er_length, er_value, er_times->tm_buffer, er_times->tm_width, er_times->tm_height, er_x, er_y );
 
     }
 
