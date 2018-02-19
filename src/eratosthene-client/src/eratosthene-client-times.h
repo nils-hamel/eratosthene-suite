@@ -44,6 +44,7 @@
  */
 
     # include "eratosthene-client-common.h"
+    # include "eratosthene-client-font.h"
     # include "eratosthene-client-view.h"
 
 /*
@@ -55,7 +56,7 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_TIMES_C           { 0, 0, 0, 0, NULL, 0, 0, 0, 0, 0, ER_COMMON_FONT, _LE_TRUE }
+    # define ER_TIMES_C           { 0, 0, 0, 0, NULL, 0, 0, 0, 0, 0, ER_FONT_ERATOSTHENE, _LE_TRUE }
 
     /* define string justification */
     # define ER_TIMES_LEFT        ( 0 )

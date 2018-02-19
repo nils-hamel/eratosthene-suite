@@ -26,25 +26,28 @@
 
     er_times_t er_times_create( le_size_t const er_width, le_size_t const er_height ) {
 
-        /* created structure variables */
+        /* created structure variable */
         er_times_t er_times = ER_TIMES_C;
+
+        /* font height variable */
+        le_size_t er_font = er_font_get_height( & er_times.tm_font );
 
         /* assign buffer width */
         er_times.tm_width = er_width;
 
         /* assign buffer height */
-        er_times.tm_height = er_times.tm_font.ft_h * 5;
+        er_times.tm_height = er_font * 5;
 
         /* assign buffer lower position */
         er_times.tm_offset = er_height - er_times.tm_height - ( er_height * 0.05 );
 
         /* assign screen heights */
-        er_times.tm_sh1 = er_times.tm_font.ft_h * 0.5;
-        er_times.tm_sh2 = er_times.tm_font.ft_h * 3.5;
+        er_times.tm_sh1 = er_font * 0.5;
+        er_times.tm_sh2 = er_font * 3.5;
 
         /* assign buffer heights */
-        er_times.tm_bh1 = er_times.tm_font.ft_h * 2.0;
-        er_times.tm_bh2 = er_times.tm_font.ft_h * 3.0;
+        er_times.tm_bh1 = er_font * 2.0;
+        er_times.tm_bh2 = er_font * 3.0;
 
         /* assign middle position */
         er_times.tm_middle = er_times.tm_width >> 1;
