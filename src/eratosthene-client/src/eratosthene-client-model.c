@@ -104,6 +104,8 @@
                 /* analyse address and cell filiation */
                 if ( er_cell_get_share( er_model->md_cell + er_parse, er_addr ) == _LE_TRUE ) {
 
+                    er_cell_set_flag( er_model->md_cell + er_parse, ER_CELL_SYN ); /* correction */
+
                     /* send message */
                     return( _LE_TRUE );
 
@@ -221,6 +223,8 @@
         /* parsing v-cells array */
         for ( le_size_t er_parse = 0; er_parse < er_model->md_push; er_index = 0, er_parse ++ ) {
 
+            er_index = 0; /* correction */
+
             /* parsing d-cells array */
             while ( er_index < er_model->md_size ) {
 
@@ -246,6 +250,8 @@
     }
 
     le_enum_t er_model_set_sync( er_model_t * const er_model ) {
+
+        static le_size_t er_freeb = 0;  /* checking */
 
         /* serialisation variables */
         le_size_t er_serial = 0;
@@ -294,6 +300,8 @@
 
             /* reset synchronisation index */
             er_model->md_sync = er_model->md_syna;
+
+            er_freeb = er_model->md_free; /* checking */
 
             /* parsing v-cell array segment */
             while ( er_model->md_sync < er_model->md_synb ) {
@@ -349,11 +357,26 @@
 
         }
 
+        /* checking */
+        for ( le_size_t er_parse = er_freeb; er_parse <= er_model->md_free; er_parse ++ ) {
+
+            /* check d-cell state */
+            if ( er_cell_get_flag( er_model->md_cell + er_parse, ER_CELL_SYN | ER_CELL_DIS ) == ER_CELL_DIS ) {
+
+                /* update d-cell flag */
+                er_cell_set_zero( er_model->md_cell + er_parse, ER_CELL_DIS );
+
+            }
+
+        }
+        /* checking */
+
         /* check synchronisation index */
         if ( er_model->md_sync >= er_model->md_push ) {
 
             /* parsing d-cells array */
-            for ( le_size_t er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
+            //for ( le_size_t er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
+            for ( le_size_t er_parse = er_model->md_free + 1; er_parse < er_model->md_size; er_parse ++ ) { /* checking */
 
                 /* check d-cell state */
                 if ( er_cell_get_flag( er_model->md_cell + er_parse, ER_CELL_SYN | ER_CELL_DIS ) == ER_CELL_DIS ) {
