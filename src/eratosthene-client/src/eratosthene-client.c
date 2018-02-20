@@ -388,10 +388,6 @@
 
     }
 
-/*
-    source - loop methods
- */
-
     le_void_t er_client_loops_render( er_client_t * const er_client ) {
 
         /* clear color and depth buffers */

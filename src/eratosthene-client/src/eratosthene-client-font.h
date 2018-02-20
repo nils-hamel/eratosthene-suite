@@ -297,7 +297,31 @@
 
     le_size_t er_font_get_count( er_font_t const * const er_font );
 
-    /* *** */
+    /*! \brief display methods
+     *
+     *  This function displays the provided string in the provided graphical
+     *  buffer using the specified font. The properties of the strings and the
+     *  graphical buffer have to be provided.
+     *
+     *  The x and y coordinates of the string are the lower-left corner of the
+     *  area on which the string is displayed. The graphical buffer is seen as
+     *  a standard OpenGL graphical buffer that is reverse in terms of y. In
+     *  addition, it is assumed to be in RGBA format.
+     *
+     *  Due to the implemented interface, only the alpha component of the string
+     *  can be specified. This allows to increase the efficiency of the string
+     *  display.
+     *
+     *  \param er_font   Font structure
+     *  \param er_string String to display
+     *  \param er_length Length of the string, in chars
+     *  \param er_value  Alpha value of the displayed string
+     *  \param er_buffer Pointer to the graphical buffer
+     *  \param er_width  Width of the graphical buffer, in pixels
+     *  \param er_height Height of the graphical buffer, in pixels
+     *  \param er_x      String display area x-coordinate
+     *  \param er_y      String display area y-coordinate
+     */
 
     le_void_t er_font_display_string( er_font_t const * const er_font, le_char_t const * const er_string, le_size_t er_length, le_byte_t const er_value, le_byte_t * const er_buffer, le_size_t const er_width, le_size_t const er_height, le_size_t er_x, le_size_t er_y );
 

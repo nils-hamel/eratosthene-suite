@@ -302,7 +302,13 @@
 
     le_void_t er_cell_set_sync( er_cell_t * const er_cell, er_cell_t const * const er_targ );
 
-    /* *** */
+    /*! mutator methods
+     *
+     *  This function allows to empty the content of the provided cell. It
+     *  simply sets the size of the array cell to zero.
+     *
+     *  \param er_cell Cell structure
+     */
 
     le_void_t er_cell_set_empty( er_cell_t * const er_cell );
 

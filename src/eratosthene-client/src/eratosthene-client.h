@@ -136,43 +136,44 @@
  */
 
     /*! \struct er_client_struct
-     *  \brief Client structure (revoked)
+     *  \brief Client structure
      *
-     *  This structure holds the graphical client interface descriptor. It holds
+     *  This structure holds the graphical client main instance. It holds
      *  fields related to point of view motion management and sub-structures
-     *  related to the different software features.
+     *  related to the different client features.
      *
      *  The structure holds the client socket descriptor created with this
      *  structure. It contains also the value used to maintain the software
      *  loop.
      *
-     *  In addition to sub-structure and point of view, this structures also
+     *  In addition to sub-structures and point of view, this structures also
      *  holds fields related to the management of the mouse motion.
      *
      *  Finally, this structure also holds a scale value used to adapt the
-     *  displayed model scale according to the point of view to avoid too
-     *  large numbers in graphical process.
+     *  displayed model scale according to the point of view to avoid the
+     *  saturation of the single precision format, as the client has to be able
+     *  to provide the display of earth-scale centimetric models.
      *
      *  \var er_client_struct::cl_socket
      *  Client socket
      *  \var er_client_struct::cl_loops
      *  Execution loop mode
      *  \var er_client_struct::cl_model
-     *  Model management sub-system structure
+     *  Model management sub-structure
      *  \var er_client_struct::cl_times
-     *  Time interface sub-system structure
+     *  Time interface sub-structure
      *  \var er_client_struct::cl_movie
-     *  Movie creation sub-system structure
+     *  Movie creation sub-structure
      *  \var er_client_struct::cl_view
-     *  Point of view structure
+     *  Active point of view structure
      *  \var er_client_struct::cl_push
-     *  Point of view structure memory
+     *  Pushed point of view structure
      *  \var er_client_struct::cl_x
-     *  Mouse x-position
+     *  Mouse click x-position
      *  \var er_client_struct::cl_y
-     *  Mouse y-position
+     *  Mouse click y-position
      *  \var er_client_struct::cl_inertia
-     *  Point of view inertial factor
+     *  Point of view inertia factor
      *  \var er_client_struct::cl_scale
      *  Model dynamic scale factor
      */
@@ -203,7 +204,7 @@
     header - function prototypes
  */
 
-    /*! \brief constructor/destructor methods (revoked)
+    /*! \brief constructor/destructor methods
      *
      *  This function creates the client structure and returns it. It mainly
      *  calls the sub-modules structure creation functions to initialise them.
@@ -217,8 +218,10 @@
      *  This function returning the created structure, the status is stored in
      *  the structure itself using the reserved \b _status field.
      *
-     *  \param er_ip    Server ip address
-     *  \param er_port  Server service port
+     *  \param er_ip     Server ip address
+     *  \param er_port   Server service port
+     *  \param er_width  Screen horizontal resolution, in pixels
+     *  \param er_height Screen vertical resolution, in pixels
      *
      *  \return Returns the created client structure
      */
@@ -241,32 +244,26 @@
 
     /*! \brief main method
      *
-     *  The main function holds the principal execution code, including threads
-     *  definition and the infinite loops.
+     *  The eratosthene-client software allows to query and display a four
+     *  dimensional model of the earth :
      *
-     *  It starts by reading the server address and service port from the main
-     *  function standard parameters.
+     *      ./eratosthene-client --ip/-i --port/-p
      *
-     *  It then configures the interface window and creates the graphical
-     *  context. It also set the configuration of the OpenGL rendering.
+     *  The main function starts by creating the graphical context of the
+     *  client by creating the display window. It also configure its graphical
+     *  context.
      *
-     *  It creates the client structure and starts the execution loops. Two
-     *  threads are engaged and their behaviour is driven by the execution loop
-     *  mode hold in the client structure. The first thread is responsible of
-     *  the scene rendering and events capture. The second thread has the
-     *  responsibility of the model update management.
+     *  It then initialises the client main structure that is responsible of
+     *  sub-structure creation and connection to the remove server creation. The
+     *  IP address of the remote server is provided through the --ip argument
+     *  while the service port is set through the --port argument.
      *
-     *  Three execution modes are available : the exit mode that indicates the
-     *  threads loop to stop execution ; the view mode, which is the standard
-     *  mode, that indicates the graphical thread to render the scene and the
-     *  model thread to perform update depending on the point of view ; the
-     *  movie mode, used for the exportation of movie frames, tells the model
-     *  thread to suspend activity and indicate to the graphical thread that it
-     *  has to manage the point of view trajectory and model update in addition
-     *  to the scene rendering.
+     *  As both graphical client and client structure are created, the main
+     *  function invoke the function responsible of the main execution loop and
+     *  thread management.
      *
-     *  As the execution stop (exit mode), the main function deletes the client
-     *  structure and close the graphical context.
+     *  As the main execution loop is terminated, the main function destroy the
+     *  client main structure and the graphical context.
      *
      *  \param argc Main function parameters
      *  \param argv Main function parameters
@@ -276,124 +273,168 @@
 
     int main( int argc, char ** argv );
 
-    /* *** */
+    /*! \brief loop methods
+     *
+     *  This function is responsible of the OpenGL configuration and the threads
+     *  and execution loops management.
+     *
+     *  Two threads are instanced by this function. The principal thread is
+     *  responsible of the graphical process of the client. The secondary thread
+     *  is responsible of the earth model update according to the motion of the
+     *  point of view. When the 'movie' mode is enabled, the secondary thread
+     *  remains in idle mode while the principal thread is in charge of both
+     *  graphical and update processes, in addition to the automatic motion of
+     *  the point of view.
+     *
+     *  The user events are processed through the principal thread. As an event
+     *  is catched, the specialised callback process are called to handle the
+     *  event.
+     *
+     *  Three execution mode are implemented. The standard mode is enable to
+     *  ensure the display and update of the earth model according to the point
+     *  of view motion. The 'movie' mode is triggered to produce video fram
+     *  along the pushed point of views stack. The last mode, called the 'exit'
+     *  mode tells the thread to stop their process to allow the end of the
+     *  exectution of the client.
+     *
+     *  \param er_client Client structure
+     *  \param er_window SDL window structure
+     */
 
     le_void_t er_client_loops(  er_client_t * const er_client, SDL_Window * const er_window );
 
-    /*! \brief loop methods (revoked)
+    /*! \brief loop methods
      *
-     *  This function is called by the main function graphical thread to trigger
-     *  scene rendering according to the point of view.
+     *  This function is called by the main loop function to trigger earth model
+     *  rendering according to the point of view.
      *
      *  It starts by clearing buffers and, depending on the scene elements to
      *  render, it calls the specific projection configuration functions.
      *
-     *  The function renders the model itself with simple wireframe model of the
-     *  earth, used as reference, and the time interface.
+     *  The function displays the earth model itself, the time navigation
+     *  interface and a simple wirefram model of the earth used as a guide
+     *
+     *  \param er_client Client structure
      */
 
     le_void_t er_client_loops_render( er_client_t * const er_client );
 
-    /* ... */
+    /*! \brief loop methods
+     *
+     *  This function is responsible of the user event catching and processing.
+     *  It is called by the main loop function.
+     *
+     *  As the event stack is not empty, the function pop each event one by one
+     *  and call they respective specific processing callbacks. The function
+     *  returns as the event stack is empty.
+     *
+     *  \param er_client Client structure
+     */
 
     le_void_t er_client_loops_event( er_client_t * const er_client );
 
     /*! \brief loop methods (revoked)
      *
-     *  This function is called by the main function model thread to trigger
+     *  This function is called by the main loop function to trigger the earth
      *  model update according to the point of view.
      *
-     *  Using the previous point of view, the function starts by determining if
+     *  Using the pushed point of view, the function starts by determining if
      *  the point of view has changed. If the point of view has changed, the
      *  function update the target model. It then calls the synchronisation
      *  process that updates the actual model to fit the target model using
-     *  a step by step procedure.
+     *  a step by step procedure. The current point of view is finally pushed.
      *
      *  If the point of view has not changed, only the synchronisation takes
      *  place.
      *
      *  If the execution mode is in movie mode, the synchronisation is called
      *  in a loop until the target and actual model are identical.
+     *
+     *  \param er_client Client structure
      */
 
     le_void_t er_client_loops_update( er_client_t * const er_client );
 
-    /*! \brief projection methods (revoked)
+    /*! \brief projection methods
      *
      *  This function is used to set the rendering projection matrix for the
-     *  model display.
+     *  earth model display.
      *
      *  It applies a projection matrix with dynamic near and far planes driven
      *  by specific functions of the geodesy module. Using the geodesy module
      *  function, is also computes and applies the model scale factor.
      *
-     *  This function also manage the dynamic configuration of the opengl fog
+     *  This function also manage the dynamic configuration of the OpenGL fog
      *  and enable it.
      *
-     *  \param er_width  Screen width, in pixels
-     *  \param er_height Screen height, in pixels
+     *  \param er_client Client structure
      */
+
     le_void_t er_client_proj_model( er_client_t * const er_client );
 
-    /*! \brief projection methods (revoked)
+    /*! \brief projection methods
      *
      *  This function is used to set the rendering projection matrix for the
-     *  time interface display.
+     *  time navigation interface display.
      *
      *  It applies an orthogonal projection matrix used by the time module to
      *  render the time interface.
      *
-     *  This function also disable the opengl fog.
+     *  This function also disable the OpenGL fog.
      *
-     *  \param er_width  Screen width, in pixels
-     *  \param er_height Screen height, in pixels
+     *  \param er_client Client structure
      */
 
     le_void_t er_client_proj_interface( er_client_t * const er_client );
 
-    /*! \brief callback methods (revoked)
+    /*! \brief callback methods
      *
-     *  This function implements the keyboard callback.
+     *  This function implements the keyboard callback function.
      *
      *  It implements a simple switch on the provided keycode. It then applies
      *  the action attached to the pressed key.
      *
-     *  \param er_keycode Keyboard key code
-     *  \param er_x       Mouse x-position at key press
-     *  \param er_y       Mouse y-position at key press
+     *  \param er_event  SDL event structure
+     *  \param er_client Client structure
      */
 
     le_void_t er_client_callback_keydown( SDL_KeyboardEvent er_event, er_client_t * const er_client );
 
-    /* *** */
+    /*! \brief callback methods
+     *
+     *  This function implements the mouse wheel callback function.
+     *
+     *  Depending on the keyboard modifier state, the function updates the time
+     *  or the point of view.
+     *
+     *  \param er_event  SDL event structure
+     *  \param er_client Client structure
+     */
 
     le_void_t er_client_callback_wheel( SDL_MouseWheelEvent er_event, er_client_t * const er_client );
 
-    /*! \brief callback methods (revoked)
+    /*! \brief callback methods
      *
-     *  This function implements the mouse callback.
+     *  This function implements the mouse button callback function.
      *
-     *  Depending on the pressed button, while taking into account the keyboard
-     *  modifiers state, the function updates the point of view based on the
-     *  mouse event.
+     *  Depending on the mouse button state, this function computes the point of
+     *  view inertia factor and update the position of the click.
      *
-     *  \param er_button Mouse button code
-     *  \param er_state  Mouse button state
-     *  \param er_x      Mouse x-position at click
-     *  \param er_y      Mouse y-position at click
+     *  \param er_event  SDL event structure
+     *  \param er_client Client structure
      */
+
     le_void_t er_client_callback_button( SDL_MouseButtonEvent er_event, er_client_t * const er_client );
 
-    /*! \brief callback methods (revoked)
+    /*! \brief callback methods
      *
-     *  This function implements the mouse motion callback.
+     *  This function implements the mouse button callback function.
      *
-     *  Depending on the pressed button and on the initial mouse position, while
-     *  taking into account the state of the keyboard modifiers, the function
-     *  updates the point of view.
+     *  Depending on the mouse button state, this function updates the point of
+     *  view.
      *
-     *  \param er_x Mouse x-position
-     *  \param er_y Mouse y-position
+     *  \param er_event  SDL event structure
+     *  \param er_client Client structure
      */
 
     le_void_t er_client_callback_motion( SDL_MouseMotionEvent er_event, er_client_t * const er_client );
