@@ -193,6 +193,9 @@
             /* retrieve display mode */
             SDL_GetCurrentDisplayMode( 0, & er_display );
 
+            /* hide mouse cursor */
+            SDL_ShowCursor( SDL_DISABLE );
+
             /* enable double buffer */
             SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 

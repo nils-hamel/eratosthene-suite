@@ -42,12 +42,13 @@
         er_times.tm_offset = er_height - er_times.tm_height - ( er_height * 0.05 );
 
         /* assign screen heights */
-        er_times.tm_sh1 = er_font * 0.5;
-        er_times.tm_sh2 = er_font * 3.5;
+        er_times.tm_sh1 = er_font * 0.50;
+        er_times.tm_sh2 = er_font * 3.00;
+        er_times.tm_sh3 = er_font * 3.50;
 
         /* assign buffer heights */
-        er_times.tm_bh1 = er_font * 2.0;
-        er_times.tm_bh2 = er_font * 3.0;
+        er_times.tm_bh1 = er_font * 1.75;
+        er_times.tm_bh2 = er_font * 3.00;
 
         /* assign middle position */
         er_times.tm_middle = er_times.tm_width >> 1;
@@ -111,13 +112,16 @@
         le_time_t er_scaleu = pow( 10.0, floor( log( er_area * 0.85 ) / log( 10.0 ) ) );
 
         /* interface text variable */
-        le_char_t * er_text[5] = ER_TIMES_MODES;
+        le_char_t * er_text[6] = ER_TIMES_MODES;
 
         /* garduation display variable */
         le_size_t er_grad = 0;
 
         /* text display value variable */
         le_byte_t er_alpha = 0;
+
+        /* shading variable */
+        le_size_t er_shade = 64 / ( er_times->tm_bh2 - er_times->tm_bh1 );
 
         /* reset buffer memory */
         for ( le_size_t er_parse = 3; er_parse < er_times->tm_length; er_parse += 4 ) {
@@ -126,7 +130,7 @@
             if ( ( er_parse / ( er_times->tm_width << 2 ) ) < er_times->tm_bh2 ) {
 
                 /* reset buffer alpha component */
-                er_times->tm_buffer[er_parse] = 224;
+                er_times->tm_buffer[er_parse] = 232;
 
             } else {
 
@@ -147,10 +151,10 @@
                 er_grad = ( ( ( ( le_real_t ) er_parse ) - er_time ) / er_area ) * er_times->tm_width + er_times->tm_middle;
 
                 /* display graduation increment */
-                for ( le_size_t er_pixel = er_times->tm_bh1, er_u = 4; er_pixel < er_times->tm_bh2; er_pixel ++, er_u += 4 ) {
+                for ( le_size_t er_pixel = er_times->tm_bh1, er_value = 0; er_pixel < er_times->tm_bh2; er_pixel ++, er_value += er_shade ) {
 
                     /* update interface buffer alpha channel */
-                    er_times->tm_buffer[( ( er_grad + er_pixel * er_times->tm_width ) << 2 ) + 3] -= er_u; //56;
+                    er_times->tm_buffer[( ( er_grad + er_pixel * er_times->tm_width ) << 2 ) + 3] -= er_value;
 
                 }
 
@@ -166,20 +170,23 @@
 
         }
 
+        /* display cursor text */
+        er_times_display_text( er_times, er_text[0], 64, er_times->tm_middle, er_times->tm_sh2, ER_TIMES_CENTER );
+
         /* display mode text */
-        er_times_display_text( er_times, er_text[er_view_get_mode( er_view ) - 1], 64, er_times->tm_middle, er_times->tm_sh2, ER_TIMES_CENTER );
+        er_times_display_text( er_times, er_text[er_view_get_mode( er_view )], 64, er_times->tm_middle, er_times->tm_sh3, ER_TIMES_CENTER );
 
         /* assign text color */
         er_alpha = ( er_act == 0 ) ? 64 : 192;
 
         /* display times */
-        er_times_display_date( er_times, er_view_get_time( er_view, 0 ), er_alpha, er_times->tm_middle - 48, er_times->tm_sh2, ER_TIMES_RIGHT );
+        er_times_display_date( er_times, er_view_get_time( er_view, 0 ), er_alpha, er_times->tm_middle - 48, er_times->tm_sh3, ER_TIMES_RIGHT );
 
         /* assign text color */
         er_alpha = ( er_act == 1 ) ? 64 : 192;
 
         /* display times */
-        er_times_display_date( er_times, er_view_get_time( er_view, 1 ), er_alpha, er_times->tm_middle + 48, er_times->tm_sh2, ER_TIMES_LEFT  );
+        er_times_display_date( er_times, er_view_get_time( er_view, 1 ), er_alpha, er_times->tm_middle + 48, er_times->tm_sh3, ER_TIMES_LEFT  );
 
         /* assign buffer position */
         glRasterPos2i( 0, er_times->tm_offset );
