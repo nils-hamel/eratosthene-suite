@@ -129,6 +129,9 @@
         le_time_t er_scale_l = pow( 10.0, floor( log( er_area * 0.02 ) / log( 10.0 ) ) );
         le_time_t er_scale_h = pow( 10.0, floor( log( er_area * 0.85 ) / log( 10.0 ) ) );
 
+        /* positive component variable */
+        le_time_t er_shift = 0;
+
         /* garduation increment variable */
         le_size_t er_grad = 0;
 
@@ -138,11 +141,14 @@
         /* parsing slider scales */
         for ( le_size_t er_scale = er_scale_l; er_scale <= er_scale_h; er_scale *= 10 ) {
 
+            /* compute positive component */
+            er_shift = ( er_time_l < 0 ) ? 0 : er_scale;
+
             /* parsing slider graduation */
-            for ( le_time_t er_parse = ( er_time_l / er_scale ) * ( er_scale + 1 ); er_parse < er_time_h; er_parse += er_scale ) {
+            for ( le_time_t er_parse = ( er_time_l / er_scale ) * er_scale + er_shift; er_parse < er_time_h; er_parse += er_scale ) {
 
                 /* increment position */
-                er_grad = ( ( ( ( le_real_t ) er_parse ) - er_time ) / er_area ) * er_times->tm_width + er_times->tm_middle;
+                er_grad = ( ( er_parse - er_time ) * er_times->tm_width ) / er_area + er_times->tm_middle;
 
                 /* display increment */
                 for ( le_size_t er_pixel = er_times->tm_bh1, er_value = 0; er_pixel < er_times->tm_bh2; er_pixel ++, er_value += er_shade ) {
@@ -220,7 +226,7 @@
     le_void_t er_times_display_date( er_times_t * const er_times, le_time_t const er_date, le_byte_t const er_value, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify ) {
 
         /* string array variable */
-        le_char_t er_string[25] = { 0 };
+        le_char_t er_string[26] = { 0 };
 
         /* compose date string */
         lc_time_to_string( er_date, er_string, 32 );
