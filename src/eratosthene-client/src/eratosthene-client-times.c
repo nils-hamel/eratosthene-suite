@@ -139,7 +139,7 @@
         for ( le_size_t er_scale = er_scale_l; er_scale <= er_scale_h; er_scale *= 10 ) {
 
             /* parsing slider graduation */
-            for ( le_time_t er_parse = er_times_rnd( er_time_l, er_scale ); er_parse < er_time_h; er_parse += er_scale ) {
+            for ( le_time_t er_parse = ( er_time_l / er_scale ) * ( er_scale + 1 ); er_parse < er_time_h; er_parse += er_scale ) {
 
                 /* increment position */
                 er_grad = ( ( ( ( le_real_t ) er_parse ) - er_time ) / er_area ) * er_times->tm_width + er_times->tm_middle;
@@ -220,7 +220,7 @@
     le_void_t er_times_display_date( er_times_t * const er_times, le_time_t const er_date, le_byte_t const er_value, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify ) {
 
         /* string array variable */
-        le_char_t er_string[32] = { 0 };
+        le_char_t er_string[25] = { 0 };
 
         /* compose date string */
         lc_time_to_string( er_date, er_string, 32 );

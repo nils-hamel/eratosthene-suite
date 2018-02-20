@@ -76,6 +76,9 @@
     # define ER_COMMON_D2R     ( 3.1415926535 / 180.0 )
     # define ER_COMMON_R2D     ( 180.0 / 3.1415926535 )
 
+    /* define time range */
+    # define ER_COMMON_LIMIT   ( _LE_TIME_L( 28382400000000 ) )
+
     /* define inertial coefficients */
     # define ER_COMMON_INE     ( 1.0 / 100.0 )
     # define ER_COMMON_IML     ( 1.0 / 10.0 )

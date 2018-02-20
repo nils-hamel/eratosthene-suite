@@ -348,10 +348,16 @@
             /* update time value */
             er_view->vw_tia += ( le_real_t ) er_view->vw_zta * er_value;
 
+            /* clamp time range */
+            er_view->vw_tia = lc_clamp( er_view->vw_tia, -ER_COMMON_LIMIT, +ER_COMMON_LIMIT );
+
         } else if ( er_view->vw_mod == 2 ) {
 
             /* update time value */
             er_view->vw_tib += ( le_real_t ) er_view->vw_ztb * er_value;
+
+            /* clamp time range */
+            er_view->vw_tib = lc_clamp( er_view->vw_tib, -ER_COMMON_LIMIT, +ER_COMMON_LIMIT );
 
         }
 

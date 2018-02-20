@@ -70,9 +70,6 @@
     header - preprocessor macros
  */
 
-    /* define rounding macro */
-    # define er_times_rnd( t, r ) ( ( ( ( t ) / ( r ) ) * ( r ) ) + ( r ) )
-
 /*
     header - type definition
  */
