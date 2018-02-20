@@ -147,14 +147,6 @@
 
     }
 
-
-    le_enum_t er_view_get_active( er_view_t const * const er_view ) {
-
-        /* return active index */
-        return( er_view->vw_act );
-
-    }
-
     le_address_t er_view_get_times( er_view_t const * const er_view ) {
 
         /* returned structure variables */
@@ -259,7 +251,7 @@
 
         /* compute interpolated values - step interpolation */
         er_view.vw_mod = ( er_views + er_index )->vw_mod;
-        er_view.vw_act = ( er_views + er_index )->vw_act;
+        //er_view.vw_act = ( er_views + er_index )->vw_act;
         er_view.vw_red = ( er_views + er_index )->vw_red;
 
         /* compute interpolated values - linear interpolation */
@@ -325,32 +317,38 @@
 
     }
 
-    le_void_t er_view_set_swap( er_view_t * const er_view ) {
-
-        /* swap active time */
-        er_view->vw_act = 1 - er_view->vw_act;
-
-    }
-
     le_void_t er_view_set_times( er_view_t * const er_view ) {
 
-        /* align secondary time */
-        er_view->vw_tib = er_view->vw_tia;
+        /* check mode */
+        if ( er_view->vw_mod == 1 ) {
 
-        /* align secondary area */
-        er_view->vw_ztb = er_view->vw_zta;
+            /* align secondary time */
+            er_view->vw_tib = er_view->vw_tia;
+
+            /* align secondary area */
+            er_view->vw_ztb = er_view->vw_zta;
+
+        } else if ( er_view->vw_mod == 2 ) {
+
+            /* align secondary time */
+            er_view->vw_tia = er_view->vw_tib;
+
+            /* align secondary area */
+            er_view->vw_zta = er_view->vw_ztb;
+
+        }
 
     }
 
     le_void_t er_view_set_time( er_view_t * const er_view, le_real_t const er_value ) {
 
-        /* check active time */
-        if ( er_view->vw_act == 0 ) {
+        /* check mode */
+        if ( er_view->vw_mod == 1 ) {
 
             /* update time value */
             er_view->vw_tia += ( le_real_t ) er_view->vw_zta * er_value;
 
-        } else {
+        } else if ( er_view->vw_mod == 2 ) {
 
             /* update time value */
             er_view->vw_tib += ( le_real_t ) er_view->vw_ztb * er_value;
@@ -361,8 +359,8 @@
 
     le_void_t er_view_set_area( er_view_t * const er_view, le_real_t const er_value ) {
 
-        /* check active time */
-        if ( er_view->vw_act == 0 ) {
+        /* check mode */
+        if ( er_view->vw_mod == 1 ) {
 
             /* update area value */
             er_view->vw_zta *= er_value;
@@ -370,7 +368,7 @@
             /* clamp area value */
             er_view->vw_zta = lc_clamp( er_view->vw_zta, 60, 32314982400 );
 
-        } else {
+        } else if ( er_view->vw_mod == 2 ) {
 
             /* update area value */
             er_view->vw_ztb *= er_value;

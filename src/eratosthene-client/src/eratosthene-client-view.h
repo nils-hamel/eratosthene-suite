@@ -54,10 +54,10 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_VIEW_C { 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 0 }
+    # define ER_VIEW_C { 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0 }
 
     /* define pseudo-constructor - default point of view */
-    # define ER_VIEW_D { 12.335435, 45.438531, LE_ADDRESS_WGS_A * 1.5, 0.0, 0.0, 1, 0, 950486422, 0, 31536000, 31536000, 0 }
+    # define ER_VIEW_D { 12.335435, 45.438531, LE_ADDRESS_WGS_A * 1.5, 0.0, 0.0, 1, 950486422, 0, 31536000, 31536000, 0 }
 
 /*
     header - preprocessor macros
@@ -85,7 +85,7 @@
      *  A structure field holds the times comparison mode. As the graphical
      *  client allows to browse two different times simultaneously, the mode
      *  describes how their are handled. The remote server implements five
-     *   comparison modes :
+     *  comparison modes :
      *
      *      mode = 1 : first time only
      *      mode = 2 : second time only
@@ -95,10 +95,6 @@
      *
      *  These modes allow to emphasise the similarities and differences through
      *  time of the earth model.
-     *
-     *  As two different times can be browsed the time interface, that allows
-     *  to choose the value of each time, has to know on which one the focus is
-     *  set. This information is stored in the \b vw_act structure field.
      *
      *  The two times are then part of the point of view and their value is kept
      *  in this structure through two fields. In addition to their value, each
@@ -124,8 +120,6 @@
      *  Point of view tilt (gamma) angle, in decimal degrees
      *  \var er_view_struct::vw_mod
      *  Point of view times comparison mode
-     *  \var er_view_struct::vw_act
-     *  Point of view focused time (according to time interface)
      *  \var er_view_struct::vw_tia
      *  Point of view first time value
      *  \var er_view_struct::vw_tib
@@ -147,7 +141,6 @@
         le_real_t vw_gam;
 
         le_enum_t vw_mod;
-        le_enum_t vw_act;
         le_time_t vw_tia;
         le_time_t vw_tib;
         le_time_t vw_zta;
@@ -304,18 +297,6 @@
 
     /*! \brief accessor methods
      *
-     *  This function returns the index of the focused time pointed by the view
-     *  structure provided as parameter.
-     *
-     *  \param  er_view View structure
-     *
-     *  \return Returns view focused time index
-     */
-
-    le_enum_t er_view_get_active( er_view_t const * const er_view );
-
-    /*! \brief accessor methods
-     *
      *  This function creates and returns an address structure initialised using
      *  the provided view structure.
      *
@@ -463,20 +444,12 @@
 
     /*! \brief mutator methods
      *
-     *  This function swaps the focus between the two times of the provided view
-     *  structure. In other words, it simply exchange the activity of the times
-     *  of the structure (from the time interface point of view).
+     *  This function is used for alignment of the two times of the provided
+     *  view structure.
      *
-     *  \param er_view View structure
-     */
-
-    le_void_t er_view_set_swap( er_view_t * const er_view );
-
-    /*! \brief mutator methods
-     *
-     *  This function aligns the second time of the provided view structure on
-     *  the first one. It simply copies the time and time area size values of
-     *  the first time to the second.
+     *  If the mode is 1, the second time is aligned on the first one. If the
+     *  mode is two, the first time is aligned on the second one. This also
+     *  align the respective area fields of each time.
      *
      *  \param er_view View structure
      */
@@ -485,11 +458,12 @@
 
     /*! \brief mutator methods
      *
-     *  This function assign the provided time to the time of the provided view
-     *  structure. The index of the time to set is retrieved through the focus
-     *  value hold in the structure. In other word, this function only allows
-     *  to specify the structure active time (from the time interface point of
-     *  view).
+     *  This function update the time value of the provided view structure using
+     *  its respective area. The provided value is used as a factor applied to
+     *  the area for the time update.
+     *
+     *  As the structure holds two times, the time that correspond to the active
+     *  mode is updated through a call to this function.
      *
      *  \param er_view  View structure
      *  \param er_value Time value
@@ -499,11 +473,8 @@
 
     /*! \brief mutator methods
      *
-     *  This function assign the provided time area size to the time area size
-     *  of the provided view structure. As for \b er_view_set_time() function,
-     *  this function uses the structure focus to choose the time. In other
-     *  words, this function only allows to set the time area size of the active
-     *  time (from the time interface point of view).
+     *  This function update the area value of the time corresponding to the
+     *  active mode.
      *
      *  \param er_view  View structure
      *  \param er_value Time area size value
@@ -514,8 +485,7 @@
     /*! \brief mutator methods
      *
      *  This function allows to modify the value of the model weight reduction,
-     *  that is the value subtracted from the addresses additional depth
-     *  (span).
+     *  that is the value subtracted from the addresses additional depth (span).
      *
      *  The provided value \b er_add is simply added to the structure field. Its
      *  value is then clamped in the valid range [0,\b ER_COMMON_SPAN].

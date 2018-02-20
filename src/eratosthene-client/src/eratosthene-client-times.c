@@ -91,66 +91,60 @@
     }
 
 /*
-    source - display methods
+    source - mutator methods
  */
 
-    le_void_t er_times_display( er_times_t * const er_times, er_view_t const * const er_view ) {
+    le_void_t er_times_set_buffer( er_times_t * const er_times ) {
 
-        /* view point variable */
-        le_enum_t er_act = er_view_get_active( er_view );
+        /* buffer period variable */
+        le_size_t er_period = er_times->tm_width << 2;
 
-        /* view point variable */
-        le_time_t er_time = er_view_get_time( er_view, er_act );
-        le_time_t er_area = er_view_get_area( er_view, er_act );
-
-        /* time boundaries variable */
-        le_time_t er_timed = er_time - ( er_area >> 1 );
-        le_time_t er_timeu = er_time + ( er_area >> 1 );
-
-        /* scale boundaries variable */
-        le_time_t er_scaled = pow( 10.0, floor( log( er_area * 0.02 ) / log( 10.0 ) ) );
-        le_time_t er_scaleu = pow( 10.0, floor( log( er_area * 0.85 ) / log( 10.0 ) ) );
-
-        /* interface text variable */
-        le_char_t * er_text[6] = ER_TIMES_MODES;
-
-        /* garduation display variable */
-        le_size_t er_grad = 0;
-
-        /* text display value variable */
-        le_byte_t er_alpha = 0;
-
-        /* shading variable */
-        le_size_t er_shade = 64 / ( er_times->tm_bh2 - er_times->tm_bh1 );
-
-        /* reset buffer memory */
+        /* reset buffer */
         for ( le_size_t er_parse = 3; er_parse < er_times->tm_length; er_parse += 4 ) {
 
-            /* check current height */
-            if ( ( er_parse / ( er_times->tm_width << 2 ) ) < er_times->tm_bh2 ) {
+            /* buffer height detection */
+            if ( ( er_parse / er_period ) < er_times->tm_bh2 ) {
 
-                /* reset buffer alpha component */
+                /* reset buffer alpha */
                 er_times->tm_buffer[er_parse] = 232;
 
             } else {
 
-                /* reset buffer alpha component */
+                /* reset buffer alpha */
                 er_times->tm_buffer[er_parse] = 240;
 
             }
 
         }
 
-        /* parsing graduation scales */
-        for ( le_size_t er_scale = er_scaled; er_scale <= er_scaleu; er_scale *= 10 ) {
+    }
 
-            /* parsing graduation increments */
-            for ( le_time_t er_parse = er_times_rnd( er_timed, er_scale ); er_parse < er_timeu; er_parse += er_scale ) {
+    le_void_t er_times_set_slider( er_times_t * const er_times, le_time_t const er_time, le_time_t const er_area ) {
 
-                /* compute graduation x-position */
+        /* time boundaries variable */
+        le_time_t er_time_l = er_time - ( er_area >> 1 );
+        le_time_t er_time_h = er_time + ( er_area >> 1 );
+
+        /* scale boundaries variable */
+        le_time_t er_scale_l = pow( 10.0, floor( log( er_area * 0.02 ) / log( 10.0 ) ) );
+        le_time_t er_scale_h = pow( 10.0, floor( log( er_area * 0.85 ) / log( 10.0 ) ) );
+
+        /* garduation increment variable */
+        le_size_t er_grad = 0;
+
+        /* shading factor variable */
+        le_size_t er_shade = 64 / ( er_times->tm_bh2 - er_times->tm_bh1 );
+
+        /* parsing slider scales */
+        for ( le_size_t er_scale = er_scale_l; er_scale <= er_scale_h; er_scale *= 10 ) {
+
+            /* parsing slider graduation */
+            for ( le_time_t er_parse = er_times_rnd( er_time_l, er_scale ); er_parse < er_time_h; er_parse += er_scale ) {
+
+                /* increment position */
                 er_grad = ( ( ( ( le_real_t ) er_parse ) - er_time ) / er_area ) * er_times->tm_width + er_times->tm_middle;
 
-                /* display graduation increment */
+                /* display increment */
                 for ( le_size_t er_pixel = er_times->tm_bh1, er_value = 0; er_pixel < er_times->tm_bh2; er_pixel ++, er_value += er_shade ) {
 
                     /* update interface buffer alpha channel */
@@ -159,39 +153,66 @@
                 }
 
                 /* detect largest scale */
-                if ( er_scale == er_scaleu ) {
+                if ( er_scale == er_scale_h ) {
 
                     /* display date text */
                     er_times_display_date( er_times, er_parse, 64, er_grad, er_times->tm_sh1, ER_TIMES_CENTER );
 
                 }
 
+
             }
 
         }
 
-        /* display cursor text */
+    }
+
+/*
+    source - display methods
+ */
+
+    le_void_t er_times_display( er_times_t * const er_times, er_view_t const * const er_view ) {
+
+        /* mode variable */
+        le_enum_t er_mode = er_view_get_mode( er_view );
+
+        /* activity variable */
+        le_enum_t er_active = ( er_mode == 2 ) ? 1 : 0;
+
+        /* alpha variable */
+        le_byte_t er_alpha = 0;
+
+        /* text variable */
+        le_char_t * er_text[6] = ER_TIMES_MODES;
+
+        /* reset buffer */
+        er_times_set_buffer( er_times );
+
+        /* display slider */
+        er_times_set_slider( er_times, er_view_get_time( er_view, er_active ), er_view_get_area( er_view, er_active ) );
+
+        /* display cursor */
         er_times_display_text( er_times, er_text[0], 64, er_times->tm_middle, er_times->tm_sh2, ER_TIMES_CENTER );
 
-        /* display mode text */
-        er_times_display_text( er_times, er_text[er_view_get_mode( er_view )], 64, er_times->tm_middle, er_times->tm_sh3, ER_TIMES_CENTER );
+        /* display mode */
+        er_times_display_text( er_times, er_text[er_mode], 64, er_times->tm_middle, er_times->tm_sh3, ER_TIMES_CENTER );
 
-        /* assign text color */
-        er_alpha = ( er_act == 0 ) ? 64 : 192;
+        /* update activity */
+        er_alpha = ( er_mode != 2 ) ? 64 : 208;
 
-        /* display times */
-        er_times_display_date( er_times, er_view_get_time( er_view, 0 ), er_alpha, er_times->tm_middle - 48, er_times->tm_sh3, ER_TIMES_RIGHT );
+        /* display time */
+        er_times_display_date( er_times, er_view_get_time( er_view, 0 ), er_alpha, er_times->tm_middle - 24, er_times->tm_sh3, ER_TIMES_RIGHT );
 
-        /* assign text color */
-        er_alpha = ( er_act == 1 ) ? 64 : 192;
+        /* update activity */
+        er_alpha = ( er_mode >= 2 ) ? 64 : 208;
 
-        /* display times */
-        er_times_display_date( er_times, er_view_get_time( er_view, 1 ), er_alpha, er_times->tm_middle + 48, er_times->tm_sh3, ER_TIMES_LEFT  );
+        /* display time */
+        er_times_display_date( er_times, er_view_get_time( er_view, 1 ), er_alpha, er_times->tm_middle + 24, er_times->tm_sh3, ER_TIMES_LEFT );
 
-        /* assign buffer position */
+        /* buffer position */
         glRasterPos2i( 0, er_times->tm_offset );
 
-        /* display buffer */
+        /* buffer display */
         glDrawPixels( er_times->tm_width, er_times->tm_height, GL_RGBA, GL_UNSIGNED_BYTE, er_times->tm_buffer );
 
     }

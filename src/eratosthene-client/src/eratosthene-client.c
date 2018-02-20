@@ -608,13 +608,6 @@
 
             } break;
 
-            case ( SDLK_TAB ) : {
-
-                /* swap active time */
-                er_view_set_swap( & er_client->cl_view );
-
-            } break;
-
             case ( SDLK_SPACE ) : {
 
                 /* equal times */

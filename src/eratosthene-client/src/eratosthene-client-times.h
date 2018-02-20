@@ -64,7 +64,7 @@
     # define ER_TIMES_CENTER      ( 2 )
 
     /* define interface string */
-    # define ER_TIMES_MODES       { ( le_char_t * ) "\177", ( le_char_t * ) "< ONLY  ", ( le_char_t * ) "  ONLY >", ( le_char_t * ) "< OR >", ( le_char_t * ) "< AND >", ( le_char_t * ) "< XOR >" }
+    # define ER_TIMES_MODES       { ( le_char_t * ) "\177", ( le_char_t * ) "ONLY", ( le_char_t * ) "ONLY", ( le_char_t * ) "OR", ( le_char_t * ) "AND", ( le_char_t * ) "XOR" }
 
 /*
     header - preprocessor macros
@@ -175,6 +175,14 @@
      */
 
     le_void_t er_times_delete( er_times_t * const er_times );
+
+    /* *** */
+
+    le_void_t er_times_set_buffer( er_times_t * const er_times );
+
+    /* *** */
+
+    le_void_t er_times_set_slider( er_times_t * const er_times, le_time_t const er_time, le_time_t const er_area );
 
     /*! \brief display methods (revoked)
      *
