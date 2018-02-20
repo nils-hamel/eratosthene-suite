@@ -56,15 +56,15 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_TIMES_C           { 0, 0, 0, 0, NULL, 0, 0, 0, 0, 0, 0, ER_FONT_ERATOSTHENE, _LE_TRUE }
+    # define ER_TIMES_C      { 0, 0, 0, 0, NULL, 0, 0, 0, 0, 0, 0, ER_FONT_ERATOSTHENE, _LE_TRUE }
 
     /* define string justification */
-    # define ER_TIMES_LEFT        ( 0 )
-    # define ER_TIMES_RIGHT       ( 1 )
-    # define ER_TIMES_CENTER      ( 2 )
+    # define ER_TIMES_LEFT   ( 0 )
+    # define ER_TIMES_RIGHT  ( 1 )
+    # define ER_TIMES_CENTER ( 2 )
 
     /* define interface string */
-    # define ER_TIMES_MODES       { ( le_char_t * ) "\177", ( le_char_t * ) "ONLY", ( le_char_t * ) "ONLY", ( le_char_t * ) "OR", ( le_char_t * ) "AND", ( le_char_t * ) "XOR" }
+    # define ER_TIMES_MODES  { ( le_char_t * ) "\177", ( le_char_t * ) "ONLY", ( le_char_t * ) "ONLY", ( le_char_t * ) "OR", ( le_char_t * ) "AND", ( le_char_t * ) "XOR" }
 
 /*
     header - preprocessor macros
@@ -82,11 +82,11 @@
      *  \brief Times structure
      *
      *  This structure holds the required information for the display of the
-     *  time interface. The time interface is used by the graphical clients to
+     *  time navigation interface. The time interface is used by the clients to
      *  drive the display of earth model according to time.
      *
      *  Through this interface, the user can move two separated time values to
-     *  tell the graphical clients what to display. In addition, the interface
+     *  tell the graphical client what to display. In addition, the interface
      *  allows the user to change the times comparison mode.
      *
      *  The structure contains fields storing configuration of the interface
@@ -96,7 +96,7 @@
      *
      *  The structure also contains fields storing precomputed vertical and
      *  horizontal positions that are used to display interface texts and to
-     *  draw the interface temporal graduation.
+     *  draw the interface time slider.
      *
      *  \var er_times_struct::tm_width
      *  Width of the time interface buffer, in pixels
@@ -109,17 +109,17 @@
      *  \var er_times_struct::tm_buffer
      *  Time interface buffer bytes
      *  \var er_times_struct::tm_sh1
-     *  Time interface texts vertical position - screen position
+     *  Time interface texts vertical position - buffer position
      *  \var er_times_struct::tm_sh2
-     *  Time interface texts vertical position - screen position
+     *  Time interface texts vertical position - buffer position
      *  \var er_times_struct::tm_sh3
-     *  Time interface texts vertical position - screen position
+     *  Time interface texts vertical position - buffer position
      *  \var er_times_struct::tm_bh1
-     *  Time interface graduation vertical position - buffer position
+     *  Time interface slider vertical position - buffer position
      *  \var er_times_struct::tm_bh2
-     *  Time interface graduation vertical position - buffer position
+     *  Time interface slider vertical position - buffer position
      *  \var er_times_struct::tm_middle
-     *  Time interface horizontal middle position - buffer/screen position
+     *  Time interface horizontal middle position - buffer & screen position
      */
 
     typedef struct er_times_struct {
@@ -148,15 +148,17 @@
 
     /*! \brief constructor/destructor methods (revoked)
      *
-     *  This function creates and returns a times interface structure. It gets
-     *  information about the screen sizes and precomputes the vertical and
-     *  horizontal positions used to display interface texts and graphical
-     *  elements.
+     *  This function creates and returns a times interface structure. Based on
+     *  the screen resolution and font size, the function pre-computes the
+     *  interface elements horizontal and vertial positions.
      *
      *  The function also allocate the memory of the time interface buffer and
      *  initialise its content. As the elements of the time interface are drawn
      *  through the alpha components of the buffer, the initialisation of the
      *  RGB components made by the function stands during the whole execution.
+     *
+     *  \param er_width  Screen horizontal resolution, in pixels
+     *  \param er_height Screen vertical position, in pixels
      *
      *  \return Returns the constructed time interface structure
      */
@@ -173,67 +175,92 @@
 
     le_void_t er_times_delete( er_times_t * const er_times );
 
-    /* *** */
+    /*! \brief mutator methods
+     *
+     *  This function clears the time interface buffer before its update. While
+     *  the interface is only drawn through the alpha layer of the buffer, only
+     *  the alpha components are reset by the function.
+     *
+     *  \param er_times Time structure
+     */
 
     le_void_t er_times_set_buffer( er_times_t * const er_times );
 
-    /* *** */
+    /*! \brief mutator methods
+     *
+     *  This function draws the time slider in the time interface buffer of the
+     *  provided time structure.
+     *
+     *  The slider is constituted of several passes on different log-scale
+     *  adapted to the provided time window and centered on the time position.
+     *  A graduation is displayed in the slider along with dates that correspond
+     *  to the highest scale graduation marks.
+     *
+     *  \param er_times Time structure
+     *  \param er_time  Position in time
+     *  \param er_area  Size of the time window
+     */
 
     le_void_t er_times_set_slider( er_times_t * const er_times, le_time_t const er_time, le_time_t const er_area );
 
-    /*! \brief display methods (revoked)
+    /*! \brief display methods
      *
      *  This function is responsible of the time interface drawing and display
-     *  in the opengl colour buffer. It is also responsible of the display of
+     *  in the OpenGL colour buffer. It is also responsible of the display of
      *  the time interface texts.
      *
-     *  The function starts by clearing the alpha channel of the time interface
-     *  buffer as it only performs rendering through this channel. It then draws
-     *  the interface time graduation and graduation date texts. The other texts
-     *  of the interface are then drawn : the text giving the time comparison
-     *  mode and the current state of the two interface times.
+     *  The function starts by clearing the alpha layer of the interface buffer
+     *  before to draw the time slider through the specialised function. It then
+     *  displays the view structure times and the times comparison mode.
      *
      *  The time interface buffer is then drawn on the colour buffer using the
      *  standard OpenGL routines. As the interface is drawn over the earth model
      *  scene, this function has to be called after earth model rendering.
      *
-     *  \param er_times Time interface structure
+     *  \param er_times Time structure
      *  \param er_view  View structure
      */
 
     le_void_t er_times_display( er_times_t * const er_times, er_view_t const * const er_view );
 
-    /*! \brief display methods (revoked)
+    /*! \brief display methods
      *
-     *  This function displays the time provided as parameter in the OpenGL
-     *  colour buffer.
+     *  This function displays the provided date in the interface buffer using
+     *  the time structure font.
      *
      *  The function starts by converting the provided date in a text string
-     *  that is written in the colour buffer using \b er_times_display_text()
+     *  that is written in the interface buffer using \b er_times_display_text()
      *  function. The date is converted using the libcommon date conversion
      *  function that follows the format : YYYY-MM-DD-hh-mm-ss.
      *
-     *  \param er_time    Time value
-     *  \param er_x       Time value text x-position - screen position
-     *  \param er_y       Time value text y-position - screen position
-     *  \param er_justify Time value text justification
+     *  \param er_times   Time structure
+     *  \param er_date    Displayed date text
+     *  \param er_value   Alpha value of the date text
+     *  \param er_x       Displayed date text x-coordinate
+     *  \param er_y       Displayed date text y-coordinate
+     *  \param er_justify Date text justification
      */
 
     le_void_t er_times_display_date( er_times_t * const er_times, le_time_t const er_date, le_byte_t const er_value, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify );
 
-    /*! \brief display methods (revoked)
+    /*! \brief display methods
      *
-     *  This function writes in the OpenGL colour buffer the text provided as
-     *  parameter.
+     *  This function displays the provided text in the interface buffer of the
+     *  provided time structure using it font.
      *
-     *  It uses the provided coordinates to set the position of the text. The
-     *  justification parameter is used to set text alignment. The three usual
-     *  modes are available : \b ER_TIMES_LEFT, \b ER_TIMES_RIGHT and the mode
-     *  \b ER_TIMES_CENTER.
+     *  As buffers are used through OpenGL rendering, the y-coordinates are
+     *  reversed. It follows that the specified x and y coordinates are the
+     *  lower-left corner of the area in which the text is displayed.
      *
-     *  \param er_text    Text string
-     *  \param er_x       Text x-position - screen position
-     *  \param er_y       Text y-position - screen position
+     *  The justification parameter is used to set text alignment. The three
+     *  usual modes are available : \b ER_TIMES_LEFT, \b ER_TIMES_RIGHT and the
+     *  \b ER_TIMES_CENTER mode.
+     *
+     *  \param er_times   Time structure
+     *  \param er_text    Displayed text
+     *  \param er_value   Alpha value of the text
+     *  \param er_x       Displayed text x-coordinate
+     *  \param er_y       Displayed text y-coordinate
      *  \param er_justify Text justification
      */
 
