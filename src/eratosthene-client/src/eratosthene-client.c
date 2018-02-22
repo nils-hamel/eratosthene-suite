@@ -306,6 +306,9 @@
         glEnableClientState( GL_VERTEX_ARRAY );
         glEnableClientState( GL_COLOR_ARRAY  );
 
+        /* opengl point size */
+        glPointSize( 2.0 );
+
         /* disable dynamic thread */
         omp_set_dynamic( 0 );
 

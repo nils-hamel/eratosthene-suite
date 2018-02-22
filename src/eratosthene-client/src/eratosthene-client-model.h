@@ -61,10 +61,10 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_MODEL_C        { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 0, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, _LE_TRUE }
+    # define ER_MODEL_C        { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, LE_ARRAY_C, _LE_TRUE }
 
     /* define pseudo-initialiser */
-    # define ER_MODEL_I(s,p,t) { s, p, t, ER_MODEL_STACK, 0, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, _LE_TRUE }
+    # define ER_MODEL_I(s,p,t) { s, p, t, ER_MODEL_STACK, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, LE_ARRAY_C, _LE_TRUE }
 
     /* define model stack */
     # define ER_MODEL_STACK    ( 6144 )
@@ -88,7 +88,7 @@
     header - structures
  */
 
-    /*! \struct er_model_struct
+    /*! \struct er_model_struct (revoked)
      *  \brief Model structure
      *
      *  This structure is responsible of maintaining the content of earth model
@@ -170,7 +170,9 @@
         le_time_t   md_tcfg;
 
         le_size_t   md_size;
+        le_size_t   md_maxd;
         le_size_t   md_push;
+        le_size_t   md_frea;
         le_size_t   md_free;
         le_size_t   md_syna;
         le_size_t   md_synb;
@@ -180,6 +182,7 @@
         er_cell_t * md_virt;
 
         le_array_t  md_iosa;
+        le_array_t  md_read;
 
     le_enum_t _status; } er_model_t;
 
@@ -240,6 +243,10 @@
      */
 
     le_enum_t er_model_get_drop( er_model_t const * const er_model, le_address_t const * const er_addr );
+
+    /* *** */
+
+    le_enum_t er_model_get_discare( er_model_t const * const er_model, le_address_t const * const er_addr );
 
     /*! \brief mutator methods
      *

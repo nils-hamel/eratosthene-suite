@@ -69,6 +69,13 @@
 
     }
 
+    le_enum_t er_cell_get_drop( er_cell_t const * const er_cell, le_address_t const * const er_addr ) {
+
+        /* compare addresses */
+        return( le_address_get_equal( & er_cell->ce_addr, er_addr ) );
+
+    }
+
     le_enum_t er_cell_get_share( er_cell_t const * const er_cell, le_address_t const * const er_candidate ) {
 
         /* check shared digit condition */
@@ -111,6 +118,13 @@
 
     }
 
+    le_size_t er_cell_get_sync_( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset ) {
+
+        /* serialise address */
+        return( le_address_serial( & er_cell->ce_addr, er_array, er_offset, _LE_GET ) );
+
+    }
+
 /*
     source - mutator methods
  */
@@ -140,6 +154,13 @@
 
         /* synchronise address */
         er_cell->ce_addr = er_targ->ce_addr;
+
+    }
+
+    le_size_t er_cell_set_sync_( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset ) {
+
+        /* de-serialise address */
+        return( le_address_serial( & er_cell->ce_addr, er_array, er_offset, _LE_SET ) );
 
     }
 
@@ -210,10 +231,10 @@
     source - serialisation methods
  */
 
-    le_size_t er_cell_serial( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset ) {
+    le_size_t er_cell_serial( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset, le_enum_t const er_mode ) {
 
         /* serialise cell address */
-        return( le_address_serial( & er_cell->ce_addr, er_array, er_offset, _LE_SET ) );
+        return( le_address_serial( & er_cell->ce_addr, er_array, er_offset, er_mode ) );
 
     }
 

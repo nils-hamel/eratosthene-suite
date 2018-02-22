@@ -175,6 +175,10 @@
 
     le_enum_t er_cell_get_equal( er_cell_t const * const er_cell, er_cell_t const * const er_targ );
 
+    /* *** */
+
+    le_enum_t er_cell_get_drop( er_cell_t const * const er_cell, le_address_t const * const er_addr );
+
     /*! \brief accessor methods
      *
      *  This function checks if the cell pointed by the provided address is a
@@ -254,6 +258,10 @@
      */
 
     le_real_t * er_cell_get_edge( er_cell_t * const er_cell );
+
+    /* *** */
+
+    le_size_t er_cell_get_sync_( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset );
 
     /*! mutator methods
      *
@@ -343,7 +351,7 @@
 
     le_void_t er_cell_set_data( er_cell_t * const er_cell, le_array_t * const er_array );
 
-    /*! \brief serialisation methods
+    /*! \brief serialisation methods (revoked)
      *
      *  This function allows to serialise the address of the provided cell in
      *  the provided array structure at the offset provided through the
@@ -360,7 +368,7 @@
      *  \return Returns serialisation corrected offset
      */
 
-    le_size_t er_cell_serial( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset );
+    le_size_t er_cell_serial( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset, le_enum_t const er_mode );
 
 /*
     header - C/C++ compatibility

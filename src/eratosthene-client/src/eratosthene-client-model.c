@@ -102,9 +102,35 @@
             if ( er_cell_get_record( er_model->md_cell + er_parse ) == 0 ) {
 
                 /* analyse address and cell filiation */
-                if ( er_cell_get_share( er_model->md_cell + er_parse, er_addr ) == _LE_TRUE ) {
+                //if ( er_cell_get_share( er_model->md_cell + er_parse, er_addr ) == _LE_TRUE ) {
+                if ( er_cell_get_drop( er_model->md_cell + er_parse, er_addr ) == _LE_TRUE ) { /* correction */
 
                     er_cell_set_flag( er_model->md_cell + er_parse, ER_CELL_SYN ); /* correction */
+
+                    /* send message */
+                    return( _LE_TRUE );
+
+                }
+
+            }
+
+        }
+
+        /* send message */
+        return( _LE_FALSE );
+
+    }
+
+    le_enum_t er_model_get_discare( er_model_t const * const er_model, le_address_t const * const er_addr ) {
+
+        /* parsing d-cell array */
+        for ( le_size_t er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
+
+            /* compare to cell address */
+            if ( er_cell_get_drop( er_model->md_cell + er_parse, er_addr ) == _LE_TRUE ) {
+
+                /* check cell state */
+                if ( er_cell_get_record( er_model->md_cell + er_parse ) == 0 ) {
 
                     /* send message */
                     return( _LE_TRUE );
@@ -128,6 +154,9 @@
 
         /* reset synchronisation index */
         er_model->md_sync = 0;
+
+        /* addition */
+        er_model->md_maxd = 0;
 
         /* reset search index */
         er_model->md_free = 0;
@@ -159,6 +188,9 @@
         /* scale digit enumeration */
         for ( le_size_t er_digit = 0; er_digit < er_base; er_digit ++ ) {
 
+            /* addition */
+            if ( ( er_scale + 1 ) > er_model->md_maxd ) er_model->md_maxd = er_scale + 1;
+
             /* update address size */
             le_address_set_size( er_enum, er_scale + 1 );
 
@@ -182,7 +214,7 @@
                         /* check target size */
                         if ( er_model->md_push < er_model->md_size ) {
 
-                            /* filiation-driven cell selection */
+                            /* *** */
                             if ( er_model_get_drop( er_model, er_enum ) == _LE_FALSE ) {
 
                                 /* push address */
@@ -200,8 +232,13 @@
                         /* check enumeration boundary */
                         if ( ( er_scale + 2 + ER_COMMON_SPAN ) < er_model->md_scfg ) {
 
-                            /* continue enumeration */
-                            er_model_set_enum( er_model, er_enum, er_scale + 1, er_view );
+                            /* drop condition */
+                            if ( er_model_get_discare( er_model, er_enum ) == _LE_FALSE ) { /* addition */
+
+                                /* continue enumeration */
+                                er_model_set_enum( er_model, er_enum, er_scale + 1, er_view );
+
+                            }
 
                         }
 
@@ -251,13 +288,16 @@
 
     le_enum_t er_model_set_sync( er_model_t * const er_model ) {
 
-        static le_size_t er_freeb = 0;  /* checking */
-
         /* serialisation variables */
         le_size_t er_serial = 0;
 
+        /* serialisation variables */
+        le_size_t er_seria = 0;
+        le_size_t er_serib = 0;
+
         /* check synchronisation state */
-        if ( er_model->md_sync >= er_model->md_push ) {
+        if ( ( er_model->md_sync >= er_model->md_push ) && ( er_model->md_maxd == 0 ) ) {
+        //if ( er_model->md_sync >= er_model->md_push ) {
 
             /* send message */
             return( _LE_TRUE );
@@ -268,46 +308,76 @@
         le_array_set_size( & er_model->md_iosa, 0 );
 
         /* push synchronisation index */
-        er_model->md_syna = er_model->md_sync;
+        //er_model->md_syna = er_model->md_sync;
 
         /* parsing v-cell array segment */
-        while ( ( er_model->md_sync < er_model->md_push ) && ( er_serial < LE_ARRAY_ADDR * ER_COMMON_PACK ) ) {
+        while ( ( er_model->md_sync < er_model->md_push ) && ( er_model->md_maxd > 0 ) && ( er_seria < LE_ARRAY_ADDR * ER_COMMON_PACK ) ) {
+        //while ( ( er_model->md_sync < er_model->md_push ) && ( er_serial < LE_ARRAY_ADDR * ER_COMMON_PACK ) ) {
+        //while ( ( er_model->md_sync < er_model->md_push ) && ( er_model->md_maxd > 0 ) && ( er_serial < LE_ARRAY_ADDR * ER_COMMON_PACK ) ) { /* correction */
 
             /* select unsynchronised v-cell */
             if ( er_cell_get_flag( er_model->md_virt + er_model->md_sync, ER_CELL_SYN ) != ER_CELL_SYN ) {
 
-                /* update socket-array size */
-                le_array_set( & er_model->md_iosa, LE_ARRAY_ADDR );
+                /* addition */
+                if ( er_cell_get_size( er_model->md_virt + er_model->md_sync ) == er_model->md_maxd ) {
 
-                /* serialise address */
-                er_serial = er_cell_serial( er_model->md_virt + er_model->md_sync, & er_model->md_iosa, er_serial );
+                    /* update socket-array size */
+                    le_array_set( & er_model->md_iosa, LE_ARRAY_ADDR );
+
+                    /* serialise address */
+                    er_seria = er_cell_serial( er_model->md_virt + er_model->md_sync, & er_model->md_iosa, er_seria, _LE_SET );
+                    //er_serial = er_cell_serial( er_model->md_virt + er_model->md_sync, & er_model->md_iosa, er_serial, _LE_SET );
+
+                    /* addition */
+                    er_cell_set_flag( er_model->md_virt + er_model->md_sync, ER_CELL_SYN );
+
+                }
 
             }
 
             /* update synchronisation index */
             er_model->md_sync ++;
 
+            /* addition */
+            if ( er_model->md_sync == er_model->md_push ) {
+
+                /* addition */
+                er_model->md_maxd --;
+
+                /* addition */
+                if ( er_model->md_maxd > 0 ) {
+
+                    /* addition */
+                    er_model->md_sync = 0;
+
+                }
+
+            }
+
         }
 
-        /* check socket-array state */
-        if ( er_serial > 0 ) {
+        /* check socket-array state */ /* really necessary ? */
+        //if ( er_serial > 0 ) {
+        if ( er_seria > 0 ) {
 
             /* write socket-array on socket */
             le_array_io_write( & er_model->md_iosa, LE_MODE_QUER, er_model->md_sock );
 
+            /* push search boundary */
+            er_model->md_frea = er_model->md_free;
+
             /* push synchronisation boundary */
-            er_model->md_synb = er_model->md_sync;
+            //er_model->md_synb = er_model->md_sync;
 
             /* reset synchronisation index */
-            er_model->md_sync = er_model->md_syna;
-
-            er_freeb = er_model->md_free; /* checking */
+            //er_model->md_sync = er_model->md_syna;
 
             /* parsing v-cell array segment */
-            while ( er_model->md_sync < er_model->md_synb ) {
+            while ( er_serib < er_seria ) {
+            //while ( er_model->md_sync < er_model->md_synb ) {
 
                 /* select unsynchronised v-cell */
-                if ( er_cell_get_flag( er_model->md_virt + er_model->md_sync, ER_CELL_SYN ) != ER_CELL_SYN ) {
+                //if ( er_cell_get_flag( er_model->md_virt + er_model->md_sync, ER_CELL_SYN ) != ER_CELL_SYN ) {
 
                     /* search usable d-cell */
                     while ( er_cell_get_flag( er_model->md_cell + er_model->md_free, ER_CELL_SYN ) == ER_CELL_SYN ) {
@@ -321,13 +391,16 @@
                     er_cell_set_zero( er_model->md_cell + er_model->md_free, ER_CELL_DIS );
 
                     /* read socket-array */
-                    le_array_io_read( & er_model->md_iosa, er_model->md_sock );
+                    le_array_io_read( & er_model->md_read, er_model->md_sock );
+                    //le_array_io_read( & er_model->md_iosa, er_model->md_sock );
 
                     /* sychronise address cell */
-                    er_cell_set_sync( er_model->md_cell + er_model->md_free, er_model->md_virt + er_model->md_sync );
+                    //er_cell_set_sync( er_model->md_cell + er_model->md_free, er_model->md_virt + er_model->md_sync );
+                    er_serib = er_cell_get_sync_( er_model->md_cell + er_model->md_free, & er_model->md_iosa, er_serib );
 
                     /* check socket-array state */
-                    if ( le_array_get_size( & er_model->md_iosa ) == 0 ) {
+                    if ( le_array_get_size( & er_model->md_read ) == 0 ) {
+                    //if ( le_array_get_size( & er_model->md_iosa ) == 0 ) {
 
                         /* update d-cell content */
                         er_cell_set_empty( er_model->md_cell + er_model->md_free );
@@ -338,7 +411,8 @@
                     } else {
 
                         /* update d-cell content */
-                        er_cell_set_data( er_model->md_cell + er_model->md_free, & er_model->md_iosa );
+                        er_cell_set_data( er_model->md_cell + er_model->md_free, & er_model->md_read );
+                        //er_cell_set_data( er_model->md_cell + er_model->md_free, & er_model->md_iosa );
 
                         /* update d-cell state */
                         er_cell_set_flag( er_model->md_cell + er_model->md_free, ER_CELL_SYN | ER_CELL_DIS );
@@ -346,42 +420,44 @@
                     }
 
                     /* update v-cell state */
-                    er_cell_set_flag( er_model->md_virt + er_model->md_sync, ER_CELL_SYN );
+                    //er_cell_set_flag( er_model->md_virt + er_model->md_sync, ER_CELL_SYN );
 
-                }
+                //}
 
                 /* update synchronisation index */
-                er_model->md_sync ++;
+                //er_model->md_sync ++;
 
             }
 
         }
-
-        /* checking */
-        for ( le_size_t er_parse = er_freeb; er_parse <= er_model->md_free; er_parse ++ ) {
-
-            /* check d-cell state */
-            if ( er_cell_get_flag( er_model->md_cell + er_parse, ER_CELL_SYN | ER_CELL_DIS ) == ER_CELL_DIS ) {
-
-                /* update d-cell flag */
-                er_cell_set_zero( er_model->md_cell + er_parse, ER_CELL_DIS );
-
-            }
-
-        }
-        /* checking */
 
         /* check synchronisation index */
-        if ( er_model->md_sync >= er_model->md_push ) {
+        if ( ( er_model->md_sync >= er_model->md_push ) && ( er_model->md_maxd == 0 ) ) {
+        //if ( er_model->md_sync >= er_model->md_push ) {
 
             /* parsing d-cells array */
             //for ( le_size_t er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
-            for ( le_size_t er_parse = er_model->md_free + 1; er_parse < er_model->md_size; er_parse ++ ) { /* checking */
+            for ( le_size_t er_parse = er_model->md_free + 1; er_parse < er_model->md_size; er_parse ++ ) { /* correction */
 
                 /* check d-cell state */
                 if ( er_cell_get_flag( er_model->md_cell + er_parse, ER_CELL_SYN | ER_CELL_DIS ) == ER_CELL_DIS ) {
 
                     /* update d-cell flag */
+                    er_cell_set_zero( er_model->md_cell + er_parse, ER_CELL_DIS );
+
+                }
+
+            }
+
+        } else {
+
+            /* addition */
+            for ( le_size_t er_parse = er_model->md_frea; er_parse <= er_model->md_free; er_parse ++ ) {
+
+                /* addition */
+                if ( er_cell_get_flag( er_model->md_cell + er_parse, ER_CELL_SYN | ER_CELL_DIS ) == ER_CELL_DIS ) {
+
+                    /* addition */
                     er_cell_set_zero( er_model->md_cell + er_parse, ER_CELL_DIS );
 
                 }
@@ -493,13 +569,13 @@
         gluQuadricDrawStyle( er_earth, GLU_LINE );
 
         /* earth color */
-        glColor4f( 0.6, 0.6, 0.6, 0.07 );
+        glColor4f( 0.6, 0.6, 0.6, 0.09 );
 
         /* display quadric */
         gluSphere( er_earth, LE_ADDRESS_WGS_A, 360, 180 );
 
         /* earth color */
-        glColor4f( 0.6, 0.6, 0.6, 0.03 );
+        glColor4f( 0.6, 0.6, 0.6, 0.04 );
 
         /* configure quadric */
         gluQuadricDrawStyle( er_earth, GLU_FILL );
