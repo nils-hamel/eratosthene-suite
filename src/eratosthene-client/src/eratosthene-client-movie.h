@@ -55,10 +55,13 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_MOVIE_C     { 0, 0, NULL, 0, 0, 0.0, 0, { { 0.0 } }, _LE_TRUE }
+    # define ER_MOVIE_C      { 0, 0, NULL, 0, 0, 0.0, 0, { { 0.0 } }, _LE_FALSE }
+
+    /* define pseudo-constructor */
+    # define ER_MOVIE_I(w,h) { w, h, NULL, w, h, 0.0, 0, { { 0.0 } }, _LE_FALSE }
 
     /* define stack size */
-    # define ER_MOVIE_STACK ( 64 )
+    # define ER_MOVIE_STACK  ( 64 )
 
 /*
     header - preprocessor macros

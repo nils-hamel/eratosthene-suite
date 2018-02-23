@@ -61,10 +61,10 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_MODEL_C        { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, LE_ARRAY_C, _LE_TRUE }
+    # define ER_MODEL_C        { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, LE_ARRAY_C, _LE_FALSE }
 
     /* define pseudo-initialiser */
-    # define ER_MODEL_I(s,p,t) { s, p, t, ER_MODEL_STACK, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, LE_ARRAY_C, _LE_TRUE }
+    # define ER_MODEL_I(s,p,t) { s, p, t, ER_MODEL_STACK, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, LE_ARRAY_C, _LE_FALSE }
 
     /* define model stack */
     # define ER_MODEL_STACK    ( 6144 )
@@ -74,7 +74,7 @@
     # define ER_MODEL_COLORS   ( GL_UNSIGNED_BYTE )
 
     /* define model color */
-    # define ER_MODEL_SPACE    { 0.03, 0.04, 0.05, 0.00 }
+    # define ER_MODEL_SPACE    { 0.03, 0.04, 0.05, 1.00 }
 
 /*
     header - preprocessor macros

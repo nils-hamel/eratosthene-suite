@@ -251,7 +251,6 @@
 
         /* compute interpolated values - step interpolation */
         er_view.vw_mod = ( er_views + er_index )->vw_mod;
-        //er_view.vw_act = ( er_views + er_index )->vw_act;
         er_view.vw_red = ( er_views + er_index )->vw_red;
 
         /* compute interpolated values - linear interpolation */

@@ -40,7 +40,12 @@
         if ( ( er_model.md_cell = ( er_cell_t * ) malloc( er_size * sizeof( er_cell_t ) ) ) == NULL ) {
 
             /* return created structure */
-            return( er_model._status = _LE_FALSE, er_model );
+            return( er_model );
+
+        } else {
+
+            /* assign target stack pointer */
+            er_model.md_virt = er_model.md_cell + er_model.md_size;
 
         }
 
@@ -52,11 +57,8 @@
 
         }
 
-        /* assign secondary cache */
-        er_model.md_virt = er_model.md_cell + er_model.md_size;
-
         /* return created structure */
-        return( er_model );
+        return( er_model._status = _LE_TRUE, er_model );
 
     }
 

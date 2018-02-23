@@ -107,10 +107,6 @@
     # define ER_COMMON_KMSHF   ( KMOD_LSHIFT )
 
 /*
-    header - common-specific
- */
-
-/*
     header - preprocessor macros
  */
 

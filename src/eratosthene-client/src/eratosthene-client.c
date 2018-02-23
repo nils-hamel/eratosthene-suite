@@ -37,17 +37,13 @@
         le_size_t er_serial = 0;
 
         /* created structure variables */
-        er_client_t er_client = ER_CLIENT_C;
-
-        /* assign display parameters */
-        er_client.cl_width  = er_width;
-        er_client.cl_height = er_height;
+        er_client_t er_client = ER_CLIENT_I( er_width, er_height );
 
         /* create client socket */
         if ( ( er_client.cl_socket = le_client_create( er_ip, er_port ) ) == _LE_SOCK_NULL ) {
 
             /* return created structure */
-            return( er_client._status = _LE_FALSE, er_client );
+            return( er_client );
 
         }
 
@@ -64,7 +60,7 @@
             le_client_delete( er_client.cl_socket );
 
             /* return created structure */
-            return( er_client._status = _LE_FALSE, er_client );
+            return( er_client );
 
         }
 
@@ -75,7 +71,7 @@
             le_client_delete( er_client.cl_socket );
 
             /* return created structure */
-            return( er_client._status = _LE_FALSE, er_client );
+            return( er_client );
 
         }
 
@@ -90,7 +86,7 @@
             le_client_delete( er_client.cl_socket );
 
             /* return created structure */
-            return( er_client._status = _LE_FALSE, er_client );
+            return( er_client );
 
         }
 
@@ -101,7 +97,7 @@
             le_client_delete( er_client.cl_socket );
 
             /* return created structure */
-            return( er_client._status = _LE_FALSE, er_client );
+            return( er_client );
 
         }
 
@@ -112,12 +108,12 @@
             le_client_delete( er_client.cl_socket );
 
             /* return created structure */
-            return( er_client._status = _LE_FALSE, er_client );
+            return( er_client );
 
         }
 
         /* return created structure */
-        return( er_client );
+        return( er_client._status = _LE_TRUE, er_client );
 
     }
 
@@ -347,9 +343,6 @@
                         /* motion management procedure */
                         er_client->cl_view = er_movie_get( & er_client->cl_movie );
 
-                        /* model update procedure */
-                        er_client_loops_update( er_client );
-
                         /* model display procedure */
                         er_client_loops_render( er_client );
 
@@ -375,6 +368,17 @@
 
                     /* principale execution loop */
                     while ( er_client->cl_loops == ER_COMMON_VIEW ) {
+
+                        /* model update procedure */
+                        er_client_loops_update( er_client );
+
+                    }
+
+                /* switch on execution mode */
+                } else if ( er_client->cl_loops == ER_COMMON_MOVIE ) {
+
+                    /* principale execution loop */
+                    while( er_client->cl_loops == ER_COMMON_MOVIE ) {
 
                         /* model update procedure */
                         er_client_loops_update( er_client );
@@ -502,18 +506,8 @@
 
         }
 
-        /* check exectution mode */
-        if ( er_client->cl_loops == ER_COMMON_MOVIE ) {
-
-            /* synchronisation process - full-process */
-            while ( er_model_set_sync( & er_client->cl_model ) == _LE_FALSE );
-
-        } else {
-
-            /* synchronisation process - step-process */
-            er_model_set_sync( & er_client->cl_model );
-
-        }
+        /* synchronisation process - step-process */
+        er_model_set_sync( & er_client->cl_model );
 
     }
 

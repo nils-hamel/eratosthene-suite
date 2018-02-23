@@ -27,22 +27,18 @@
     er_movie_t er_movie_create( le_size_t const er_width, le_size_t const er_height ) {
 
         /* create structure variables */
-        er_movie_t er_movie = ER_MOVIE_C;
-
-        /* align buffer size to screen resolution */
-        er_movie.mv_wbuffer = er_width;
-        er_movie.mv_hbuffer = er_height;
+        er_movie_t er_movie = ER_MOVIE_I( er_width, er_height );
 
         /* allocate buffer memory */
-        if ( ( er_movie.mv_pbuffer = ( le_byte_t * ) malloc( er_movie.mv_wbuffer * er_movie.mv_hbuffer * 4 ) ) == NULL ) {
+        if ( ( er_movie.mv_pbuffer = ( le_byte_t * ) malloc( er_movie.mv_wbuffer * er_movie.mv_hbuffer * 3 ) ) == NULL ) {
 
-            /* send message - return created structure */
-            return( er_movie._status = _LE_FALSE, er_movie );
+            /* return created structure */
+            return( er_movie );
 
         }
 
         /* return created structure */
-        return( er_movie );
+        return( er_movie._status = _LE_TRUE, er_movie );
 
     }
 
@@ -134,10 +130,10 @@
         glReadBuffer( GL_BACK );
 
         /* read buffer content */
-        glReadPixels( 0, 0, er_movie->mv_wbuffer, er_movie->mv_hbuffer, GL_RGBA, GL_UNSIGNED_BYTE, er_movie->mv_pbuffer );
+        glReadPixels( 0, 0, er_movie->mv_wbuffer, er_movie->mv_hbuffer, GL_RGB, GL_UNSIGNED_BYTE, er_movie->mv_pbuffer );
 
         /* buffer content exportation */
-        lc_image_png_write( ( char * ) er_path, er_movie->mv_wbuffer, er_movie->mv_hbuffer, LC_IMAGE_RGBA, er_movie->mv_pbuffer );
+        lc_image_png_write( ( char * ) er_path, er_movie->mv_wbuffer, er_movie->mv_hbuffer, LC_IMAGE_RGB, er_movie->mv_pbuffer );
 
         /* update interpolation parameter */
         if ( ( er_movie->mv_param += 0.0025 ) < 1.0 ) {
