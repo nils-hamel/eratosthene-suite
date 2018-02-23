@@ -291,15 +291,15 @@
      *  the point of view.
      *
      *  The user events are processed through the principal thread. As an event
-     *  is catched, the specialised callback process are called to handle the
+     *  is catch, the specialised callback process are called to handle the
      *  event.
      *
      *  Three execution mode are implemented. The standard mode is enable to
      *  ensure the display and update of the earth model according to the point
-     *  of view motion. The 'movie' mode is triggered to produce video fram
+     *  of view motion. The 'movie' mode is triggered to produce video frames
      *  along the pushed point of views stack. The last mode, called the 'exit'
      *  mode tells the thread to stop their process to allow the end of the
-     *  exectution of the client.
+     *  execution of the client.
      *
      *  \param er_client Client structure
      *  \param er_window SDL window structure
@@ -316,7 +316,7 @@
      *  render, it calls the specific projection configuration functions.
      *
      *  The function displays the earth model itself, the time navigation
-     *  interface and a simple wirefram model of the earth used as a guide
+     *  interface and a simple wireframe model of the earth used as a guide
      *
      *  \param er_client Client structure
      */

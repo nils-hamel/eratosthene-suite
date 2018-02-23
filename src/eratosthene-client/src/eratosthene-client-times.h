@@ -151,8 +151,8 @@
     /*! \brief constructor/destructor methods (revoked)
      *
      *  This function creates and returns a times interface structure. Based on
-     *  the screen resolution and font size, the function pre-computes the
-     *  interface elements horizontal and vertial positions.
+     *  the screen resolution and font size, the function precomputes the
+     *  interface elements horizontal and vertical positions.
      *
      *  The function also allocate the memory of the time interface buffer and
      *  initialise its content. As the elements of the time interface are drawn
@@ -194,7 +194,7 @@
      *  provided time structure.
      *
      *  The slider is constituted of several passes on different log-scale
-     *  adapted to the provided time window and centered on the time position.
+     *  adapted to the provided time window and centred on the time position.
      *  A graduation is displayed in the slider along with dates that correspond
      *  to the highest scale graduation marks.
      *

@@ -249,7 +249,7 @@
      *  \param er_model Model structure
      *  \param er_addr  Address structure
      *
-     *  \return Returns _LE_TRUE if empty cell is found, _LE_FALSE ohterwise
+     *  \return Returns _LE_TRUE if empty cell is found, _LE_FALSE otherwise
      */
 
     le_enum_t er_model_get_discare( er_model_t const * const er_model, le_address_t const * const er_addr );
