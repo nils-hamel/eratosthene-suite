@@ -168,6 +168,10 @@
      *  Active point of view structure
      *  \var er_client_struct::cl_push
      *  Pushed point of view structure
+     *  \var er_client_struct::cl_width
+     *  Display resolution width, in pixels
+     *  \var er_client_struct::cl_height
+     *  Display resolution height, in pixels
      *  \var er_client_struct::cl_x
      *  Mouse click x-position
      *  \var er_client_struct::cl_y

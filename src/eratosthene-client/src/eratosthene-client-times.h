@@ -120,6 +120,8 @@
      *  Time interface slider vertical position - buffer position
      *  \var er_times_struct::tm_middle
      *  Time interface horizontal middle position - buffer & screen position
+     *  \var er_times_struct::tm_font
+     *  Interface font structure
      */
 
     typedef struct er_times_struct {
