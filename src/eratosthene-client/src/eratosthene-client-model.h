@@ -61,10 +61,10 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_MODEL_C        { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, LE_ARRAY_C, _LE_TRUE }
+    # define ER_MODEL_C        { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, LE_ARRAY_C, _LE_TRUE }
 
     /* define pseudo-initialiser */
-    # define ER_MODEL_I(s,p,t) { s, p, t, ER_MODEL_STACK, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, LE_ARRAY_C, _LE_TRUE }
+    # define ER_MODEL_I(s,p,t) { s, p, t, ER_MODEL_STACK, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, LE_ARRAY_C, _LE_TRUE }
 
     /* define model stack */
     # define ER_MODEL_STACK    ( 6144 )
@@ -124,20 +124,21 @@
      *
      *  The \b md_push field is used to keep the amount of cells that have been
      *  pushed in the target stack in order to avoid to parse it entirely. The
-     *  synchronisation fields \b md_syna, \b md_synb, \b md_sync and \b md_free
-     *  are used by the synchronisation method to decrease the differences
-     *  between the actual and target stacks. They are hold in the structure to
-     *  maintain their value between method calls.
+     *  synchronisation fields \b md_syna, \b md_synb and \b md_free are used by
+     *  the synchronisation method to decrease the differences between the
+     *  actual and target stacks. They are hold in the structure to maintain
+     *  their value between method calls.
      *
      *  This dual stack procedure is set up in order to avoid high frequency
      *  update of the actual cells stack. This allows to considerably decrease
      *  the amount of request to the server and also allows to cushion high
      *  frequency motion of the point of view.
      *
-     *  A last field is used to keep the scket-array used to pack the query
-     *  address and to receive the data coming from the remote server. It is
-     *  hold in the structure in order to take advantage of the socket-array
-     *  memory management that minimise memory allocation.
+     *  The two last field are socket arrays used for the communication with
+     *  the server. The first one is used for query address packing while the
+     *  second is used to receive compressed data from the server. They are hold
+     *  in the structure in order to take advantage of the socket-array memory
+     *  management that minimise memory allocation.
      *
      *  \var er_model_struct::md_sock
      *  Socket toward the remote server
@@ -149,18 +150,20 @@
      *  Cells stacks size
      *  \var er_model_struct::md_push
      *  Target stack used cells
+     *  \var er_model_struct::md_free
+     *  Synchronisation index
      *  \var er_model_struct::md_syna
-     *  Synchronisation memory
+     *  Synchronisation index
      *  \var er_model_struct::md_synb
-     *  Synchronisation boundary
-     *  \var er_model_struct::md_sync
      *  Synchronisation index
      *  \var er_model_struct::md_cell
-     *  Cells stack
+     *  Cells stack (actual)
      *  \var er_model_struct::md_virt
-     *  Cells stack
-     *  \var er_model_struct::md_iosa
-     *  Array used for the communication with the remote server
+     *  Cells stack (target)
+     *  \var er_model_struct::md_addr
+     *  Communication socket-array
+     *  \var er_model_struct::md_data
+     *  Communication socket-array
      */
 
     typedef struct er_model_struct {
@@ -170,19 +173,16 @@
         le_time_t   md_tcfg;
 
         le_size_t   md_size;
-        le_size_t   md_maxd;
         le_size_t   md_push;
-        le_size_t   md_frea;
         le_size_t   md_free;
         le_size_t   md_syna;
         le_size_t   md_synb;
-        le_size_t   md_sync;
 
         er_cell_t * md_cell;
         er_cell_t * md_virt;
 
-        le_array_t  md_iosa;
-        le_array_t  md_read;
+        le_array_t  md_addr;
+        le_array_t  md_data;
 
     le_enum_t _status; } er_model_t;
 
@@ -224,27 +224,33 @@
 
     /*! \brief accessor methods
      *
-     *  This function determines if an address point to a cell that can be
-     *  dropped during model update before it have been queried to the remote
-     *  server.
-     *
-     *  The function checks in the actual cells stack if a cell contains an
-     *  address that is a parent to the provided address. In this case, the
-     *  function checks if the found cell contains data, the cell being assumed
-     *  to contain the server answer to its address. If the found cell is
-     *  empty, it implies that all its daughters are also empty. In this case,
-     *  the cell pointed by the provided address can be discarded during a model
-     *  update.
+     *  This function checks if the provided address is identical to a cell that
+     *  is already present in the display cell array. In case a cell is found,
+     *  the function returns the index of the cell in the array. Otherwise, the
+     *  size of the display cell array is returned.
      *
      *  \param er_model Model structure
      *  \param er_addr  Address structure
      *
-     *  \return Returns _LE_TRUE if the address can be dropped, _LE_FALSE if not
+     *  \return Returns cell index if found, cell array size otherwise
      */
 
-    le_enum_t er_model_get_drop( er_model_t const * const er_model, le_address_t const * const er_addr );
+    le_size_t er_model_get_drop( er_model_t const * const er_model, le_address_t const * const er_addr );
 
-    /* *** */
+    /*! \brief accessor methods
+     *
+     *  This function search in the display cell array if a cell has the same
+     *  address as the one provided as parameter.
+     *
+     *  If such a cell is found and if the cell is empty, the function returns
+     *  _LE_TRUE. If the cell is not found or found but not empty, the function
+     *  returns _LE_FALSE.
+     *
+     *  \param er_model Model structure
+     *  \param er_addr  Address structure
+     *
+     *  \return Returns _LE_TRUE if empty cell is found, _LE_FALSE ohterwise
+     */
 
     le_enum_t er_model_get_discare( er_model_t const * const er_model, le_address_t const * const er_addr );
 
@@ -329,11 +335,11 @@
      *  After a target stack update, usually following a modification of the
      *  point of view, the synchronisation index is set to zero. At each call,
      *  the function searches in the target stacks the cells that have to be
-     *  queried to the remote server. It considers 64 cells before to make a
-     *  query to the server. As the server answer the query, the function
-     *  receives and dispatch the data in the corresponding cells of the actual
-     *  stack. The process is repeated at each function call until the
-     *  synchronisation is complete.
+     *  queried to the remote server. Cell query are packed together to limit
+     *  communication with the server. As the server answer the query, the
+     *  function receives and stores the data in cell determined as free. The
+     *  process is repeated at each function call until the synchronisation is
+     *  complete.
      *
      *  In the first place, the function checks if the synchronisation is done
      *  or incomplete. It case of fully synchronised stacks, the function does
@@ -357,6 +363,35 @@
      */
 
     le_enum_t er_model_set_sync( er_model_t * const er_model );
+
+    /*! mutator methods
+     *
+     *  This function is responsible of the composition of the query pack to
+     *  the remote server.
+     *
+     *  The function search in the target stack which cell have to be queried
+     *  and pack them into a single query array.
+     *
+     *  \param er_model Model structure
+     *
+     *  \return Returns address array size, in bytes
+     */
+
+    le_size_t er_model_set_sync_pack( er_model_t * const er_model );
+
+    /*! mutator methods
+     *
+     *  This function is responsible of the cleaning of the tail of the actual
+     *  cell stack as the end of the synchronisation is reached.
+     *
+     *  Its task is to search for cell that are not engaged by the target stack
+     *  and remains displayed due to the previous state of the actual stack. As
+     *  such cells are found, the function disable their graphical state.
+     *
+     *  \param er_model Model structure
+     */
+
+    le_void_t er_model_set_sync_tail( er_model_t * const er_model );
 
     /*! \brief display methods
      *

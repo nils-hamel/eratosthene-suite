@@ -175,24 +175,19 @@
 
     le_enum_t er_cell_get_equal( er_cell_t const * const er_cell, er_cell_t const * const er_targ );
 
-    /* *** */
-
-    le_enum_t er_cell_get_drop( er_cell_t const * const er_cell, le_address_t const * const er_addr );
-
     /*! \brief accessor methods
      *
-     *  This function checks if the cell pointed by the provided address is a
-     *  daughter of the cell pointed by the address of the provided cell
-     *  structure. In other words, the function checks if the provided address
-     *  has a filiation with the address contained in the cell structure.
+     *  This function compare the address of the provided cell to the address
+     *  provided as parameter. If both are identical, the function returns the
+     *  _LE_TRUE value, _LE_FALSE otherwise.
      *
-     *  \param er_cell      Cell structure
-     *  \param er_candidate Address structure
+     *  \param er_cell Cell structure
+     *  \param er_addr Address structure
      *
-     *  \return Returns _LE_TRUE on filiation, _LE_FALSE otherwise
+     * \return Returns _LE_TRUE on identity, _LE_FALSE otherwise
      */
 
-    le_enum_t er_cell_get_share( er_cell_t const * const er_cell, le_address_t const * const er_candidate );
+    le_enum_t er_cell_get_drop( er_cell_t const * const er_cell, le_address_t const * const er_addr );
 
     /*! \brief accessor methods
      *
@@ -259,9 +254,20 @@
 
     le_real_t * er_cell_get_edge( er_cell_t * const er_cell );
 
-    /* *** */
+    /*! \brief accessor methods
+     *
+     *  This function allows to serialise the provided cell address structure
+     *  in the provided array at the specified offset. After serialisation, the
+     *  function returns the next serialisation offset.
+     *
+     *  \param er_cell   Cell structure
+     *  \param er_array  Array structure
+     *  \param er_offset Serialisation offset, in bytes
+     *
+     *  \return Returns the array next serialisation offset
+     */
 
-    le_size_t er_cell_get_sync_( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset );
+    le_size_t er_cell_get_sync( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset );
 
     /*! mutator methods
      *
@@ -300,15 +306,19 @@
 
     /*! mutator methods
      *
-     *  This function synchronises the cell address with the provided target
-     *  cell address. The target cell address is simply copied in the cell
-     *  structure.
+     *  This function allows to un-serialise the address from the provided
+     *  array using the provided offset value. The de-serialised address is
+     *  then affected to the provided cell address. After un-serialisation, the
+     *  function returns the array next un-serialisation offset.
      *
-     *  \param er_cell Cell structure
-     *  \param er_targ Target cell structure
+     *  \param er_cell   Cell structure
+     *  \param er_array  Array structure
+     *  \param er_offset Serialisation offset
+     *
+     *  \return Returns the array next un-serialisation offset
      */
 
-    le_void_t er_cell_set_sync( er_cell_t * const er_cell, er_cell_t const * const er_targ );
+    le_size_t er_cell_set_sync( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset );
 
     /*! mutator methods
      *
@@ -350,25 +360,6 @@
      */
 
     le_void_t er_cell_set_data( er_cell_t * const er_cell, le_array_t * const er_array );
-
-    /*! \brief serialisation methods (revoked)
-     *
-     *  This function allows to serialise the address of the provided cell in
-     *  the provided array structure at the offset provided through the
-     *  \b er_offset parameter.
-     *
-     *  The function uses the serialisation method of the address structure to
-     *  pack them in the array. The used method returned value is then return
-     *  by this function.
-     *
-     *  \param er_cell   Cell structure
-     *  \param er_array  Array structure
-     *  \param er_offset Serialisation offset, in bytes
-     *
-     *  \return Returns serialisation corrected offset
-     */
-
-    le_size_t er_cell_serial( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset, le_enum_t const er_mode );
 
 /*
     header - C/C++ compatibility

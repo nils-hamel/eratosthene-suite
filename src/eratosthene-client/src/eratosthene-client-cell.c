@@ -76,13 +76,6 @@
 
     }
 
-    le_enum_t er_cell_get_share( er_cell_t const * const er_cell, le_address_t const * const er_candidate ) {
-
-        /* check shared digit condition */
-        return( le_address_get_share( & er_cell->ce_addr, er_candidate ) );
-
-    }
-
     le_size_t er_cell_get_record( er_cell_t const * const er_cell ) {
 
         /* return number of uf3 records */
@@ -118,10 +111,10 @@
 
     }
 
-    le_size_t er_cell_get_sync_( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset ) {
+    le_size_t er_cell_get_sync( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset ) {
 
-        /* serialise address */
-        return( le_address_serial( & er_cell->ce_addr, er_array, er_offset, _LE_GET ) );
+        /* de-serialise address */
+        return( le_address_serial( & er_cell->ce_addr, er_array, er_offset, _LE_SET ) );
 
     }
 
@@ -150,17 +143,10 @@
 
     }
 
-    le_void_t er_cell_set_sync( er_cell_t * const er_cell, er_cell_t const * const er_targ ) {
+    le_size_t er_cell_set_sync( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset ) {
 
-        /* synchronise address */
-        er_cell->ce_addr = er_targ->ce_addr;
-
-    }
-
-    le_size_t er_cell_set_sync_( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset ) {
-
-        /* de-serialise address */
-        return( le_address_serial( & er_cell->ce_addr, er_array, er_offset, _LE_SET ) );
+        /* serialise address */
+        return( le_address_serial( & er_cell->ce_addr, er_array, er_offset, _LE_GET ) );
 
     }
 
@@ -224,17 +210,6 @@
             ( ( le_real_t * ) er_head )[2] = ( ( le_real_t * ) er_head )[2] * cos( er_opta ) - er_cell->ce_edge[2];
 
         }
-
-    }
-
-/*
-    source - serialisation methods
- */
-
-    le_size_t er_cell_serial( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset, le_enum_t const er_mode ) {
-
-        /* serialise cell address */
-        return( le_address_serial( & er_cell->ce_addr, er_array, er_offset, er_mode ) );
 
     }
 
