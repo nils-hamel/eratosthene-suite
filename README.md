@@ -68,7 +68,7 @@ The _eratosthene-suite_ comes with the following package dependencies (Ubuntu 16
 
 and the following external dependencies provided as sub-modules :
 
-* liberatosthene 0.3.1
+* liberatosthene 0.3.2
 
 The code documentation is built using Doxygen.
 
