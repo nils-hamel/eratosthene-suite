@@ -57,7 +57,7 @@
         if ( le_array_io_read( & er_array, er_client.cl_socket ) != LE_MODE_AUTH ) {
 
             /* delete client socket */
-            le_client_delete( er_client.cl_socket );
+            er_client_delete( & er_client );
 
             /* return created structure */
             return( er_client );
@@ -68,7 +68,7 @@
         if ( le_array_get_size( & er_array ) != LE_ARRAY_AUTH ) {
 
             /* delete client socket */
-            le_client_delete( er_client.cl_socket );
+            er_client_delete( & er_client );
 
             /* return created structure */
             return( er_client );
@@ -83,7 +83,7 @@
         if ( ( er_client.cl_model = er_model_create( er_client.cl_socket, er_space, er_times ) )._status == _LE_FALSE ) {
 
             /* delete client socket */
-            le_client_delete( er_client.cl_socket );
+            er_client_delete( & er_client );
 
             /* return created structure */
             return( er_client );
@@ -94,18 +94,7 @@
         if ( ( er_client.cl_times = er_times_create( er_width, er_height ) )._status == _LE_FALSE ) {
 
             /* delete client socket */
-            le_client_delete( er_client.cl_socket );
-
-            /* return created structure */
-            return( er_client );
-
-        }
-
-        /* create client movie */
-        if ( ( er_client.cl_movie = er_movie_create( er_width, er_height ) )._status == _LE_FALSE ) {
-
-            /* delete client socket */
-            le_client_delete( er_client.cl_socket );
+            er_client_delete( & er_client );
 
             /* return created structure */
             return( er_client );
@@ -124,9 +113,6 @@
 
         /* deleted structure variables */
         er_client_t er_delete = ER_CLIENT_C;
-
-        /* delete client movie */
-        er_movie_delete( & er_client->cl_movie );
 
         /* delete client times */
         er_times_delete( & er_client->cl_times );
@@ -318,41 +304,17 @@
             /* execution loop */
             while ( er_client->cl_loops != ER_COMMON_EXIT ) {
 
-                /* switch on execution mode */
-                if ( er_client->cl_loops == ER_COMMON_VIEW ) {
+                /* principale execution loop */
+                while ( er_client->cl_loops == ER_COMMON_VIEW ) {
 
-                    /* principale execution loop */
-                    while ( er_client->cl_loops == ER_COMMON_VIEW ) {
+                    /* interface events procedure */
+                    er_client_loops_event( er_client );
 
-                        /* interface events procedure */
-                        er_client_loops_event( er_client );
+                    /* model display procedure */
+                    er_client_loops_render( er_client );
 
-                        /* model display procedure */
-                        er_client_loops_render( er_client );
-
-                        /* swap buffers */
-                        SDL_GL_SwapWindow( er_window );
-
-                    }
-
-                } else if ( er_client->cl_loops == ER_COMMON_MOVIE ) {
-
-                    /* principale execution loop */
-                    while ( er_client->cl_loops == ER_COMMON_MOVIE ) {
-
-                        /* motion management procedure */
-                        er_client->cl_view = er_movie_get( & er_client->cl_movie );
-
-                        /* model display procedure */
-                        er_client_loops_render( er_client );
-
-                        /* swap buffers */
-                        SDL_GL_SwapWindow( er_window );
-
-                        /* movie procedure */
-                        er_client->cl_loops = er_movie( & er_client->cl_movie );
-
-                    }
+                    /* swap buffers */
+                    SDL_GL_SwapWindow( er_window );
 
                 }
 
@@ -363,27 +325,11 @@
             /* execution loop */
             while ( er_client->cl_loops != ER_COMMON_EXIT ) {
 
-                /* switch on execution mode */
-                if ( er_client->cl_loops == ER_COMMON_VIEW ) {
+                /* principale execution loop */
+                while ( er_client->cl_loops == ER_COMMON_VIEW ) {
 
-                    /* principale execution loop */
-                    while ( er_client->cl_loops == ER_COMMON_VIEW ) {
-
-                        /* model update procedure */
-                        er_client_loops_update( er_client );
-
-                    }
-
-                /* switch on execution mode */
-                } else if ( er_client->cl_loops == ER_COMMON_MOVIE ) {
-
-                    /* principale execution loop */
-                    while( er_client->cl_loops == ER_COMMON_MOVIE ) {
-
-                        /* model update procedure */
-                        er_client_loops_update( er_client );
-
-                    }
+                    /* model update procedure */
+                    er_client_loops_update( er_client );
 
                 }
 
@@ -588,13 +534,6 @@
 
             } break;
 
-            case ( SDLK_p ) : {
-
-                /* update execution mode */
-                er_client->cl_loops = ER_COMMON_MOVIE;
-
-            } break;
-
             case ( SDLK_1 ) :
             case ( SDLK_2 ) :
             case ( SDLK_3 ) :
@@ -644,20 +583,6 @@
 
                 /* update dual-model mode */
                 er_view_set_mode( & er_client->cl_view, 5 );
-
-            } break;
-
-            case ( SDLK_i ) : {
-
-                /* flush control point */
-                er_movie_set_clear( & er_client->cl_movie );
-
-            } break;
-
-            case ( SDLK_o ) : {
-
-                /* push view as control point */
-                er_movie_set( & er_client->cl_movie, & er_client->cl_view );
 
             } break;
 

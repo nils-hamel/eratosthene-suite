@@ -70,7 +70,6 @@
     /* define execution modes */
     # define ER_COMMON_EXIT    ( 0x00 )
     # define ER_COMMON_VIEW    ( 0x01 )
-    # define ER_COMMON_MOVIE   ( 0x02 )
 
     /* define trigonometric factors */
     # define ER_COMMON_D2R     ( 3.1415926535 / 180.0 )

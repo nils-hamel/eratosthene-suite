@@ -106,7 +106,6 @@
     # include "eratosthene-client-geodesy.h"
     # include "eratosthene-client-times.h"
     # include "eratosthene-client-model.h"
-    # include "eratosthene-client-movie.h"
     # include "eratosthene-client-view.h"
 
 /*
@@ -118,10 +117,10 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_CLIENT_C      { _LE_SOCK_NULL, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, ER_VIEW_D, ER_VIEW_C, 0, 0, 0, 0, 1.0, 1.0, _LE_FALSE }
+    # define ER_CLIENT_C      { _LE_SOCK_NULL, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_VIEW_D, ER_VIEW_C, 0, 0, 0, 0, 1.0, 1.0, _LE_FALSE }
 
     /* define pseudo-constructor */
-    # define ER_CLIENT_I(w,h) { _LE_SOCK_NULL, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_MOVIE_C, ER_VIEW_D, ER_VIEW_C, w, h, 0, 0, 1.0, 1.0, _LE_FALSE }
+    # define ER_CLIENT_I(w,h) { _LE_SOCK_NULL, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_VIEW_D, ER_VIEW_C, w, h, 0, 0, 1.0, 1.0, _LE_FALSE }
 
     /* define window properties */
     # define ER_SDL_FLAGS     ( SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL )
@@ -165,8 +164,6 @@
      *  Model management sub-structure
      *  \var er_client_struct::cl_times
      *  Time interface sub-structure
-     *  \var er_client_struct::cl_movie
-     *  Movie creation sub-structure
      *  \var er_client_struct::cl_view
      *  Active point of view structure
      *  \var er_client_struct::cl_push
@@ -192,7 +189,6 @@
 
         er_model_t cl_model;
         er_times_t cl_times;
-        er_movie_t cl_movie;
 
         er_view_t  cl_view;
         er_view_t  cl_push;
