@@ -148,19 +148,19 @@
     header - function prototypes
  */
 
-    /*! \brief constructor/destructor methods (revoked)
+    /*! \brief constructor/destructor methods
      *
      *  This function creates and returns a times interface structure. Based on
-     *  the screen resolution and font size, the function precomputes the
+     *  the screen resolution and font size, the function pre-computes the
      *  interface elements horizontal and vertical positions.
      *
      *  The function also allocate the memory of the time interface buffer and
      *  initialise its content. As the elements of the time interface are drawn
      *  through the alpha components of the buffer, the initialisation of the
-     *  RGB components made by the function stands during the whole execution.
+     *  RGB components made by this function stands during the whole execution.
      *
      *  \param er_width  Screen horizontal resolution, in pixels
-     *  \param er_height Screen vertical position, in pixels
+     *  \param er_height Screen vertical resolution, in pixels
      *
      *  \return Returns the constructed time interface structure
      */

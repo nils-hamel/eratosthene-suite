@@ -336,7 +336,7 @@
 
     le_void_t er_client_loops_event( er_client_t * const er_client );
 
-    /*! \brief loop methods (revoked)
+    /*! \brief loop methods
      *
      *  This function is called by the main loop function to trigger the earth
      *  model update according to the point of view.
@@ -349,9 +349,6 @@
      *
      *  If the point of view has not changed, only the synchronisation takes
      *  place.
-     *
-     *  If the execution mode is in movie mode, the synchronisation is called
-     *  in a loop until the target and actual model are identical.
      *
      *  \param er_client Client structure
      */

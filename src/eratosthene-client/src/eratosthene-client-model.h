@@ -88,7 +88,7 @@
     header - structures
  */
 
-    /*! \struct er_model_struct (revoked)
+    /*! \struct er_model_struct
      *  \brief Model structure
      *
      *  This structure is responsible of maintaining the content of earth model
@@ -107,7 +107,7 @@
      *  procedure.
      *
      *  The size field gives the amount of cell available in each stack while
-     *  the \b mc_cell and \b md_virt are the base pointers of the actual and
+     *  the \b md_cell and \b md_virt are the base pointers of the actual and
      *  target stacks.
      *
      *  The update of the actual cells stack is made by the synchronisation
