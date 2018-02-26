@@ -213,57 +213,6 @@
 
     }
 
-    er_view_t er_view_get_inter( er_view_t const * const er_views, le_size_t const er_size, le_size_t const er_index, le_real_t const er_param ) {
-
-        /* returned value variables */
-        er_view_t er_view = ER_VIEW_C;
-
-        /* interpolation variables */
-        le_real_t er_value = 0.0;
-
-        /* accumulation variables */
-        le_real_t er_accum = 0.0;
-
-        /* parsing control points */
-        for ( le_size_t er_parse = 0; er_parse < er_size; er_parse ++ ) {
-
-            /* compute interpolation parameter */
-            er_value = ( ( le_real_t ) er_index + er_param ) - ( le_real_t ) er_parse;
-
-            /* compute interpolation weight - accumulate interpolation weight */
-            er_accum += ( er_value = exp( - 3.0 * er_value * er_value ) );
-
-            /* update interpolated values */
-            er_view.vw_lon += er_value * ( er_views + er_parse )->vw_lon;
-            er_view.vw_lat += er_value * ( er_views + er_parse )->vw_lat;
-            er_view.vw_alt += er_value * ( er_views + er_parse )->vw_alt;
-            er_view.vw_azm += er_value * ( er_views + er_parse )->vw_azm;
-            er_view.vw_gam += er_value * ( er_views + er_parse )->vw_gam;
-
-        }
-
-        /* compute interpolated values - simple smooth interpolation */
-        er_view.vw_lon /= er_accum;
-        er_view.vw_lat /= er_accum;
-        er_view.vw_alt /= er_accum;
-        er_view.vw_azm /= er_accum;
-        er_view.vw_gam /= er_accum;
-
-        /* compute interpolated values - step interpolation */
-        er_view.vw_mod = ( er_views + er_index )->vw_mod;
-        er_view.vw_red = ( er_views + er_index )->vw_red;
-
-        /* compute interpolated values - linear interpolation */
-        er_view.vw_tia = er_param * ( er_views + er_index + 1 )->vw_tia + ( 1.0 - er_param ) * ( er_views + er_index )->vw_tia;
-        er_view.vw_tib = er_param * ( er_views + er_index + 1 )->vw_tib + ( 1.0 - er_param ) * ( er_views + er_index )->vw_tib;
-        er_view.vw_zta = er_param * ( er_views + er_index + 1 )->vw_zta + ( 1.0 - er_param ) * ( er_views + er_index )->vw_zta;
-        er_view.vw_ztb = er_param * ( er_views + er_index + 1 )->vw_ztb + ( 1.0 - er_param ) * ( er_views + er_index )->vw_ztb;
-
-        /* return computed view */
-        return( er_view );
-
-    }
-
 /*
     source - mutator methods
  */

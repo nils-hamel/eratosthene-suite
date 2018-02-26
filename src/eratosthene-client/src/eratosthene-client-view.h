@@ -347,34 +347,6 @@
 
     le_time_t er_view_get_area( er_view_t const * const er_view, le_enum_t const er_time );
 
-    /*! \brief accessor methods
-     *
-     *  This function computes an interpolated view structure using the provided
-     *  views array and the interpolation parameters.
-     *
-     *  The integer interpolation parameter gives the array index of the view
-     *  that is smaller or equal to the interpolation position. The floating
-     *  point parameter gives the position form the previous view, assuming that
-     *  the addition of the two parameters is always smaller than the index of
-     *  the next array view.
-     *
-     *  For the positions coordinates and angles of sight of the point of view,
-     *  a non linear interpolation is used. The times comparison mode value and
-     *  the time focus are set using the values of the array view pointed by the
-     *  integer interpolation parameter. The times and time area sizes values
-     *  are set using a simple linear interpolation between the two views
-     *  surrounding the interpolation position.
-     *
-     *  \param  er_views View structures array
-     *  \param  er_size  View structures array size
-     *  \param  er_index Integer interpolation parameter
-     *  \param  er_param Floating point interpolation parameter
-     *
-     *  \return Returns interpolated view
-     */
-
-    er_view_t er_view_get_inter( er_view_t const * const er_views, le_size_t const er_size, le_size_t const er_index, le_real_t const er_param );
-
     /*! \brief mutator methods
      *
      *  This function updates the position of the point of view provided by the
