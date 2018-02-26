@@ -537,15 +537,6 @@
         /* display quadric */
         gluSphere( er_earth, LE_ADDRESS_WGS_A, 360, 180 );
 
-        /* earth color */
-        glColor4f( 0.6, 0.6, 0.6, 0.04 );
-
-        /* configure quadric */
-        gluQuadricDrawStyle( er_earth, GLU_FILL );
-
-        /* display quadric */
-        gluSphere( er_earth, LE_ADDRESS_WGS_A, 360, 180 );
-
         /* delete quadric */
         gluDeleteQuadric( er_earth );
 
