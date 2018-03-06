@@ -26,11 +26,17 @@
 
     int main( int argc, char ** argv ) {
 
-        /* server handle variables */
+        /* server variable */
         le_server_t er_server = LE_SERVER_C;
 
+        /* service path variable */
+        le_char_t * er_path = ( le_char_t * ) lc_read_string( argc, argv, "--path", "-p" );
+
+        /* service port variable */
+        le_sock_t er_port = lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT );
+
         /* create server */
-        if ( ( er_server = le_server_create( ( le_char_t * ) lc_read_string( argc, argv, "--path", "-p" ), lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT ) ) )._status != LE_ERROR_SUCCESS ) {
+        if ( ( er_server = le_server_create( er_path, er_port ) )._status != LE_ERROR_SUCCESS ) {
 
             /* display message */
             fprintf( stderr, "eratosthene-suite : error : unable to create server\n" );
