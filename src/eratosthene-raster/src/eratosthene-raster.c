@@ -174,14 +174,14 @@
         le_char_t er_string[_LE_USE_STRING] = { 0 };
 
         /* array variable */
-        static le_array_t er_encode = LE_ARRAY_C;
-        static le_array_t er_decode = LE_ARRAY_C;
+        static le_array_t er_data = LE_ARRAY_C;
+        static le_array_t er_dual = LE_ARRAY_C;
 
         /* check scale */
         if ( er_scale < er_target ) {
 
             /* update array size */
-            le_array_set_size( & er_encode, LE_ARRAY_ADDR );
+            le_array_set_size( & er_data, LE_ARRAY_ADDR );
 
             /* push address span */
             er_span = le_address_get_span( er_addr );
@@ -190,16 +190,16 @@
             le_address_set_span( er_addr, 0 );
 
             /* serialise address */
-            le_address_serial( er_addr, & er_encode, 0, _LE_SET );
+            le_address_serial( er_addr, & er_data, 0, _LE_SET );
 
             /* pop address span */
             le_address_set_span( er_addr, er_span );
 
             /* write socket-array */
-            le_array_io_write( & er_encode, LE_MODE_QUER, er_socket );
+            le_array_io_put( & er_data, & er_dual, LE_MODE_QUER, er_socket );
 
             /* read socket-array */
-            if ( le_array_io_read( & er_encode, er_socket ) != LE_MODE_QUER ) {
+            if ( le_array_io_get( & er_data, & er_dual, er_socket ) != LE_MODE_QUER ) {
 
                 /* push message */
                 er_message = _LE_FALSE;
@@ -207,7 +207,7 @@
             } else {
 
                 /* check array size */
-                if ( le_array_get_size( & er_encode ) > 0 ) {
+                if ( le_array_get_size( & er_data ) > 0 ) {
 
                     /* enumeration process */
                     while ( ( er_digit < er_base ) && ( er_message == _LE_TRUE ) ) {
@@ -236,27 +236,24 @@
             le_address_ct_string( er_addr, er_string );
 
             /* update array size */
-            le_array_set_size( & er_encode, LE_ARRAY_ADDR );
+            le_array_set_size( & er_data, LE_ARRAY_ADDR );
 
             /* serialise address */
-            le_address_serial( er_addr, & er_encode, 0, _LE_SET );
+            le_address_serial( er_addr, & er_data, 0, _LE_SET );
 
             /* write socket-array */
-            le_array_io_write( & er_encode, LE_MODE_QUER, er_socket );
+            le_array_io_put( & er_data, & er_dual, LE_MODE_QUER, er_socket );
 
             /* read socket-array */
-            if ( le_array_io_read( & er_encode, er_socket ) != LE_MODE_QUER ) {
+            if ( le_array_io_get( & er_data, & er_dual, er_socket ) != LE_MODE_QUER ) {
 
                 /* push message */
                 er_message = _LE_FALSE;
 
             } else {
 
-                /* decode socket-array */
-                le_array_uf3_decode( & er_encode, & er_decode );
-
                 /* check limitation value */
-                if ( ( er_size = ( le_array_get_size( & er_decode ) / LE_ARRAY_UF3 ) ) < er_limit ) {
+                if ( ( er_size = ( le_array_get_size( & er_data ) / LE_ARRAY_UF3 ) ) < er_limit ) {
 
                     /* display message */
                     fprintf( stdout, "%s rejected with %" _LE_SIZE_P "\n", er_string, er_size );
@@ -267,7 +264,7 @@
                     fprintf( stdout, "%s selected with %" _LE_SIZE_P "\n", er_string, er_size );
 
                     /* compute and export raster */
-                    er_raster( er_raster_path( er_string, er_path ), er_addr, & er_decode );
+                    er_raster( er_raster_path( er_string, er_path ), er_addr, & er_data );
 
                 }
 
@@ -325,10 +322,10 @@
             le_array_set_size( & er_auth, 0 );
 
             /* write authorisation array */
-            le_array_io_write( & er_auth, LE_MODE_AUTH, er_socket );
+            le_array_io_put( & er_auth, NULL, LE_MODE_AUTH, er_socket );
 
             /* read authorisation response */
-            if ( le_array_io_read( & er_auth, er_socket ) != LE_MODE_AUTH ) {
+            if ( le_array_io_get( & er_auth, NULL, er_socket ) != LE_MODE_AUTH ) {
 
                 /* display message */
                 fprintf( stderr, "eratosthene-suite : error : bad server response\n" );

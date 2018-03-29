@@ -72,16 +72,13 @@
         while ( ( er_read = fread( le_array_get_byte( & er_data ), sizeof( le_byte_t ), ER_INJECT * LE_ARRAY_UF3, er_stream ) ) > 0 ) {
 
             /* write socket-array - injection head */
-            le_array_io_write( & er_head, LE_MODE_INJE, er_socket );
+            le_array_io_put( & er_head, NULL, LE_MODE_INJE, er_socket );
 
             /* update array size */
             le_array_set_size( & er_data, er_read );
 
-            /* encode socket-array */
-            le_array_uf3_encode( & er_data, & er_dual );
-
             /* write socket array */
-            le_array_io_write( & er_dual, LE_MODE_INJE, er_socket );
+            le_array_io_put( & er_data, & er_dual, LE_MODE_INJE, er_socket );
 
         }
 

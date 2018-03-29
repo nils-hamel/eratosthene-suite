@@ -269,6 +269,10 @@
 
     le_size_t er_cell_get_sync( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset );
 
+    /* *** */
+
+    le_array_t * er_cell_get_array( er_cell_t const * const er_cell );
+
     /*! mutator methods
      *
      *  This function allows to set bits of the flag field of the provided cell
@@ -320,17 +324,7 @@
 
     le_size_t er_cell_set_sync( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset );
 
-    /*! mutator methods
-     *
-     *  This function allows to empty the content of the provided cell. It
-     *  simply sets the size of the array cell to zero.
-     *
-     *  \param er_cell Cell structure
-     */
-
-    le_void_t er_cell_set_empty( er_cell_t * const er_cell );
-
-    /*! mutator methods
+    /*! mutator methods (revoked)
      *
      *  This function process the array received from the remote server after
      *  a query.
@@ -356,10 +350,9 @@
      *  This is done to obtain a natural view in the OpenGL frame.
      *
      *  \param er_cell  Cell structure
-     *  \param er_array Array structure
      */
 
-    le_void_t er_cell_set_data( er_cell_t * const er_cell, le_array_t * const er_array );
+    le_size_t er_cell_set_data( er_cell_t * const er_cell );
 
 /*
     header - C/C++ compatibility

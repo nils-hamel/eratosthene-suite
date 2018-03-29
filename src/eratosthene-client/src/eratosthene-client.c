@@ -51,10 +51,10 @@
         le_array_set_size( & er_array, 0 );
 
         /* write socket-array */
-        le_array_io_write( & er_array, LE_MODE_AUTH, er_client.cl_socket );
+        le_array_io_put( & er_array, NULL, LE_MODE_AUTH, er_client.cl_socket );
 
         /* read socket array */
-        if ( le_array_io_read( & er_array, er_client.cl_socket ) != LE_MODE_AUTH ) {
+        if ( le_array_io_get( & er_array, NULL, er_client.cl_socket ) != LE_MODE_AUTH ) {
 
             /* delete client socket */
             er_client_delete( & er_client );
@@ -122,9 +122,6 @@
 
         /* socket-array size */
         le_array_set_size( & er_array, 0 );
-
-        /* write socket-array */
-        le_array_io_write( & er_array, LE_MODE_RESI, er_client->cl_socket );
 
         /* delete client socket */
         le_client_delete( er_client->cl_socket );

@@ -118,6 +118,13 @@
 
     }
 
+    le_array_t * er_cell_get_array( er_cell_t const * const er_cell ) {
+
+        /* return array */
+        return( ( le_array_t * ) & er_cell->ce_data );
+
+    }
+
 /*
     source - mutator methods
  */
@@ -150,14 +157,7 @@
 
     }
 
-    le_void_t er_cell_set_empty( er_cell_t * const er_cell ) {
-
-        /* empty array */
-        le_array_set_size( & er_cell->ce_data, 0 );
-
-    }
-
-    le_void_t er_cell_set_data( er_cell_t * const er_cell, le_array_t * const er_array ) {
+    le_size_t er_cell_set_data( er_cell_t * const er_cell ) {
 
         /* pointer variables */
         le_byte_t * er_head = NULL;
@@ -170,11 +170,13 @@
         le_real_t er_opta = 0.0;
         le_real_t er_optb = 0.0;
 
-        /* decode socket-array */
-        le_array_uf3_decode( er_array, & er_cell->ce_data );
-
         /* retrieve array size */
-        er_size = le_array_get_size( & er_cell->ce_data );
+        if ( ( er_size = le_array_get_size( & er_cell->ce_data ) ) == 0 ) {
+
+            /* return cell size */
+            return( er_size );
+
+        }
 
         /* retrieve array pointer */
         er_head = er_base = le_array_get_byte( & er_cell->ce_data );
@@ -210,6 +212,9 @@
             ( ( le_real_t * ) er_head )[2] = ( ( le_real_t * ) er_head )[2] * cos( er_opta ) - er_cell->ce_edge[2];
 
         }
+
+        /* return cell size */
+        return( er_size );
 
     }
 

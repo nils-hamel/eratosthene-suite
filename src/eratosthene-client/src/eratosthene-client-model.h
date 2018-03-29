@@ -162,7 +162,7 @@
      *  Cells stack (target)
      *  \var er_model_struct::md_addr
      *  Communication socket-array
-     *  \var er_model_struct::md_data
+     *  \var er_model_struct::md_dual
      *  Communication socket-array
      */
 
@@ -182,7 +182,7 @@
         er_cell_t * md_virt;
 
         le_array_t  md_addr;
-        le_array_t  md_data;
+        le_array_t  md_dual;
 
     le_enum_t _status; } er_model_t;
 
