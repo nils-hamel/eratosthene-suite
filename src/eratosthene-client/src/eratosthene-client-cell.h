@@ -269,7 +269,14 @@
 
     le_size_t er_cell_get_sync( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset );
 
-    /* *** */
+    /*! \brief accessor methods
+     *
+     *  This function returns the socket-array of the provided cell.
+     *
+     *  \param  er_cell Cell structure
+     *
+     *  \return Returns a pointer to the cell array
+     */
 
     le_array_t * er_cell_get_array( er_cell_t const * const er_cell );
 
@@ -324,14 +331,14 @@
 
     le_size_t er_cell_set_sync( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset );
 
-    /*! mutator methods (revoked)
+    /*! mutator methods
      *
      *  This function process the array received from the remote server after
      *  a query.
      *
-     *  The incoming array is first decompressed. The cell edge is computed
-     *  by considering the array first point. It is then converted from the
-     *  geographic coordinates to Cartesian coordinates.
+     *  The cell edge position is computed by considering the array first point.
+     *  It is then converted from the geographic coordinates to Cartesian
+     *  coordinates.
      *
      *  The rest of the point contained in the array are then processed. Each
      *  point is converted, in terms if its coordinates, from geographic to
@@ -339,7 +346,7 @@
      *
      *  The incoming array is assumed to provided the longitude, in radian, the
      *  latitude, in radian, and the height above the WGS84 ellipsoid, expressed
-     *  in metre. These values are expected in this order and are mixed during
+     *  in metres. These values are expected in this order and are mixed during
      *  conversion to be adapted to the display frame. To summarise, the mix
      *  of dimension occurs as follows :
      *
@@ -349,7 +356,12 @@
      *
      *  This is done to obtain a natural view in the OpenGL frame.
      *
-     *  \param er_cell  Cell structure
+     *  The function returns finally the size of the array of the provided cell
+     *  in bytes.
+     *
+     *  \param er_cell Cell structure
+     *
+     *  \return Returns cell array size in bytes
      */
 
     le_size_t er_cell_set_data( er_cell_t * const er_cell );
