@@ -23,11 +23,11 @@
     MAKE_CMRMDR:=rmdir -p --ignore-fail-on-non-empty
     MAKE_CC_BLD:=gcc
     MAKE_CPPBLD:=g++
-    MAKE_STABLD:=ar
+    MAKE_STABLD:=gcc-ar
     MAKE_DOCBLD:=doxygen
 
-    BUILD_FLAGS:=-Wall -funsigned-char -pedantic -O3
-    BUILD_LINKD:=
+    BUILD_FLAGS:=-Wall -funsigned-char -pedantic -O3  -flto
+    BUILD_LINKD:=-flto
     BUILD_SUBMD:=
 
 #

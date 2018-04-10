@@ -23,11 +23,11 @@
     MAKE_CMRMDR:=rmdir -p --ignore-fail-on-non-empty
     MAKE_CC_BLD:=gcc
     MAKE_CPPBLD:=g++
-    MAKE_STABLD:=ar
+    MAKE_STABLD:=gcc-ar
     MAKE_DOCBLD:=doxygen
 
-    BUILD_FLAGS:=-Wall -funsigned-char -pedantic -O3 -D _BSD_SOURCE
-    BUILD_LINKD:=-lm -lz
+    BUILD_FLAGS:=-Wall -funsigned-char -pedantic -O3 -D _BSD_SOURCE  -flto
+    BUILD_LINKD:=-lm -lz -flto
     BUILD_SUBMD:=$(MAKE_LIBRAR)/libcommon $(MAKE_LIBRAR)/liberatosthene
 
 #
