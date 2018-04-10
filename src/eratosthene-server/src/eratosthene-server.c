@@ -47,7 +47,7 @@
             fprintf( stderr, "eratosthene-suite : state : server listening on TCP/IP\n" );
 
             /* server process */
-            le_server_io( & er_server );
+            le_server_srv( & er_server );
 
             /* delete server */
             le_server_delete( & er_server );
