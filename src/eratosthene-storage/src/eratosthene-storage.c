@@ -20,212 +20,127 @@
 
     # include "eratosthene-storage.h"
 
-    /* temporary */
-    le_size_t le_motion_counter = 0;
-
 /*
     source - specific function
  */
 
-    le_void_t le_storage( le_unit_t * const le_unit ) {
+    le_void_t le_storage( le_unit_t * const le_unit, le_char_t const * const le_root, le_time_t const le_time ) {
 
-        /* parsing variable */
-        le_size_t le_parse = 0;
+        /* scale parser variable */
+        le_size_t le_scale = 0;
 
         /* stream variable */
-        le_file_t le_root = NULL;
-        le_file_t le_work = NULL;
+        le_file_t le_line = NULL;
+        le_file_t le_data = NULL;
+        le_file_t le_temp = NULL;
+
+        /* string variable */
+        le_char_t le_real[_LE_USE_STRING] = { 0 };
+
+        /* string variable */
+        le_char_t le_proc[_LE_USE_STRING] = { 0 };
+
+        /* compose temporary path */
+        sprintf( ( char * ) le_proc, "%s/%" _LE_TIME_P "/optimise.bin", le_root, le_time );
+
+        /* parsing scales */
+        while ( le_scale < _LE_USE_DEPTH ) {
+
+            /* extract and check stream */
+            if ( ( le_data = le_unit_get_stream( le_unit, le_scale + 1 ) ) != NULL ) {
+
+                /* extract stream */
+                le_line = le_unit_get_stream( le_unit, le_scale );
+
+                /* create temporary stream */
+                le_temp = fopen( ( char * ) le_proc, "w+" );
+
+                /* process scale */
+                le_storage_move( le_line, le_data, le_temp );
+
+                /* close scale stream */
+                fclose( le_data );
+
+                /* swap stream - encapsulation fault */
+                le_unit->un_pile[le_scale + 1] = ( le_data = le_temp );
+                
+                /* compose stream name */
+                sprintf( ( char * ) le_real, "%s/%" _LE_TIME_P "/scale-%03" _LE_SIZE_P ".bin", le_root, le_time, le_scale + 1 );
+
+                /* replace file */
+                rename( ( char * ) le_proc, ( char * ) le_real );
+
+            /* abort process */
+            } else { return; }
+
+            /* update index */
+            le_scale ++;
+
+        }
+
+    }
+
+    le_void_t le_storage_move( le_file_t const le_line, le_file_t const le_data, le_file_t const le_temp ) {
 
         /* offset variable */
         le_size_t le_offset = 0;
 
         /* offset variable */
-        le_size_t le_enumerate = 0;
+        le_size_t le_tracker = 0;
 
-        /* locker variable */
-        le_size_t le_locker = 0;
+        /* offset variable */
+        le_size_t le_target = 0;
 
-        /* stream size variable */
+        /* length variable */
         le_size_t le_length = 0;
 
-        /* flag variable */
-        le_enum_t le_flag = _LE_FALSE;
+        /* class variable */
+        le_class_t le_class_l = LE_CLASS_C;
 
         /* class variable */
-        le_class_t le_class = LE_CLASS_C;
+        le_class_t le_class_m = LE_CLASS_C;
 
-        /* parsing scales */
-        while ( le_parse < _LE_USE_DEPTH ) {
+        /* search end of stream */
+        fseek( le_line, 0, SEEK_END );
 
-            /* extract scale stream */
-            le_root = le_unit_get_stream( le_unit, le_parse );
+        /* retrieve stream size */
+        le_length = ftell( le_line );
 
-            /* extract and check scale stream */
-            if ( ( le_work = le_unit_get_stream( le_unit, le_parse + 1 ) ) != NULL ) {
-
-                /* temporary */ fprintf( stderr, "Process on scale %" _LE_SIZE_P ", current moves %" _LE_SIZE_P "\n", le_parse, le_motion_counter );
-
-                /* reset offset */
-                le_offset = 0;
-
-                /* reset locker */
-                le_locker = 0;
-
-                /* search stream end */
-                fseek( le_root, 0, SEEK_END );
-
-                /* retrieve stream size */
-                le_length = ftell( le_root );
-
-                /* parsing stream classes */
-                while ( le_offset < le_length ) {
-
-                    /* read class */
-                    le_class_io_read( & le_class, le_offset, le_root );
-
-                    /* reset modification flag */
-                    le_flag = _LE_FALSE;
-
-                    /* parsing offsets */
-                    for ( le_size_t le_digit = 0; le_digit < _LE_USE_BASE; le_digit ++ ) {
-
-                        /* extract offset */
-                        if ( ( le_enumerate = le_class_get_offset( & le_class, le_digit ) ) != _LE_OFFS_NULL ) {
-
-                            /* motion condition */
-                            if ( le_enumerate != le_locker ) {
-
-                                /* update class offset */
-                                le_class_set_offset( & le_class, le_digit, le_locker );
-
-                                /* set modification flag */
-                                le_flag = _LE_TRUE;
-
-                                /* replace near reference */
-                                if ( le_storage_self( & le_class, le_digit, le_locker, le_enumerate ) == _LE_FALSE ) {
-
-                                    /* replace distant reference */
-                                    le_storage_move( le_root, le_offset, le_locker, le_enumerate, le_length );
-
-                                }
-
-                                /* swap classes */
-                                le_storage_swap( le_work, le_enumerate, le_locker );
-
-                            }
-
-                            /* update locker */
-                            le_locker += LE_CLASS_ARRAY;
-
-                        }
-
-                    }
-
-                    /* check modification flag */
-                    if ( le_flag == _LE_TRUE ) {
-
-                        /* export modified class */
-                        le_class_io_write( & le_class, le_offset, le_root );
-
-                    }
-
-                    /* update offset */
-                    le_offset += LE_CLASS_ARRAY;
-
-                }
-                
-                /* update index */
-                le_parse ++;
-
-            /* interrupt process */
-            } else { le_parse = _LE_USE_DEPTH; }
-
-        }
-        
-
-    }
-
-    le_enum_t le_storage_self( le_class_t * const le_class, le_size_t const le_index, le_size_t const le_locker, le_size_t const le_replace ) {
-
-        /* parsing digit */
-        for ( le_size_t le_digit = 0; le_digit < _LE_USE_BASE; le_digit ++ ) {
-
-            /* check index */
-            if ( le_digit != le_index ) {
-
-                /* compare reference */
-                if ( le_class_get_offset( le_class, le_digit ) == le_locker ) {
-
-                    /* swap reference */
-                    le_class_set_offset( le_class, le_digit, le_replace );
-
-                    /* send message */
-                    return( _LE_TRUE );
-
-                }
-
-            }
-
-        }
-
-        /* send message */
-        return( _LE_FALSE );
-
-    }
-
-    le_void_t le_storage_move( le_file_t const le_root, le_size_t le_offset, le_size_t const le_locker, le_size_t const le_replace, le_size_t const le_length ) {
-
-        /* class variable */
-        le_class_t le_class = LE_CLASS_C;
-
-        /* parsing classes */
-        while ( ( le_offset += LE_CLASS_ARRAY ) < le_length ) {
+        /* parsing line stream */
+        while ( le_offset < le_length ) {
 
             /* read class */
-            le_class_io_read( & le_class, le_offset, le_root );
+            le_class_io_read( & le_class_l, le_offset, le_line );
 
-            /* parsing digit */
+            /* parsing digits */
             for ( le_size_t le_digit = 0; le_digit < _LE_USE_BASE; le_digit ++ ) {
 
-                /* compare offset */
-                if ( le_class_get_offset( & le_class, le_digit ) == le_locker ) {
+                /* check offset */
+                if ( ( le_target = le_class_get_offset( & le_class_l, le_digit ) ) != _LE_OFFS_NULL ) {
 
-                    /* set class offset */
-                    le_class_set_offset( & le_class, le_digit, le_replace );
+                    /* reset offset */
+                    le_class_set_offset( & le_class_l, le_digit, le_tracker );
 
-                    /* write class */
-                    le_class_io_write( & le_class, le_offset, le_root );
+                    /* import target class */
+                    le_class_io_read( & le_class_m, le_target, le_data );
 
-                    /* abort process */
-                    return;
+                    /* export target class */
+                    le_class_io_write( & le_class_m, le_tracker, le_temp );
+
+                    /* update tracker */
+                    le_tracker += LE_CLASS_ARRAY;
 
                 }
 
             }
 
+            /* write class */
+            le_class_io_write( & le_class_l, le_offset, le_line );
+
+            /* update offset */
+            le_offset += LE_CLASS_ARRAY;
+
         }
-
-    }
-
-    le_void_t le_storage_swap( le_file_t const le_work, le_size_t const le_offa, le_size_t const le_offb ) {
-
-        /* swap variable */
-        le_class_t le_ca = LE_CLASS_C;
-        le_class_t le_cb = LE_CLASS_C;
-
-        /* read class */
-        le_class_io_read( & le_ca, le_offa, le_work );
-
-        /* read class */
-        le_class_io_read( & le_cb, le_offb, le_work );
-
-        /* write class */
-        le_class_io_write( & le_ca, le_offb, le_work );
-
-        /* write class */
-        le_class_io_write( & le_cb, le_offa, le_work );
-
-        /* temporary */ le_motion_counter ++;
 
     }
 
@@ -233,7 +148,7 @@
     source - i/o function
  */
 
-    le_size_t le_storage_io_space( le_char_t * le_root ) {
+    le_size_t le_storage_io_server( le_char_t * le_root ) {
 
         /* string variable */
         le_char_t le_path[_LE_USE_STRING] = { 0 };
@@ -284,7 +199,7 @@
         le_char_t * le_path = ( le_char_t * ) lc_read_string( argc, argv, "--path", "-p" );
 
         /* parameter variable */
-        le_size_t le_scfg = le_storage_io_space( le_path );
+        le_size_t le_scfg = le_storage_io_server( le_path );
 
         /* time variable */
         le_time_t le_time = ( le_time_t ) lc_read_signed( argc, argv, "--time", "-t", _LE_TIME_NULL );
@@ -304,7 +219,7 @@
         }
 
         /* check unit creation */
-        if ( le_get_status( le_unit = le_unit_create( le_path, le_time, LE_UNIT_READ, le_scfg ) ) != LE_ERROR_SUCCESS ) {
+        if ( le_get_status( le_unit = le_unit_create( le_path, le_time, LE_UNIT_READ, le_scfg, LE_UNIT_BDEF ) ) != LE_ERROR_SUCCESS ) {
 
             /* display message */
             fprintf( stderr, "eratosthene-suite : error : unable to accoss storage unit\n" );
@@ -315,9 +230,7 @@
         }
 
         /* process storage unit */
-        le_storage( & le_unit );
-
-        /* temporary */ fprintf( stderr, "# move : %" _LE_SIZE_P "\n", le_motion_counter );
+        le_storage( & le_unit, le_path, le_time );
 
         /* delete unit */
         le_unit_delete( & le_unit );

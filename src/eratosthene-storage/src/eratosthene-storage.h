@@ -130,23 +130,26 @@
 
     /* *** */
 
-    le_void_t le_storage( le_unit_t * const le_unit );
+    le_void_t le_storage( le_unit_t * const le_unit, le_char_t const * const le_root, le_time_t const le_time );
 
     /* *** */
 
-    le_enum_t le_storage_self( le_class_t * const le_class, le_size_t const le_index, le_size_t const le_locker, le_size_t const le_replace );
+    le_void_t le_storage_move( le_file_t const le_line, le_file_t const le_data, le_file_t const le_temp );
 
-    /* *** */
+    /*! \brief i/o function
+     *
+     *  This function reads the server configuration file to extract its spatial
+     *  configuration parameter. The parameter is then returned.
+     *
+     *  The provided path as to point to the server storage structrue main
+     *  directory. On failure, the function returns the \b _LE_SIZE_NULL value.
+     *
+     *  \param le_root Server storage structure path
+     *
+     *  \return Returns server parameter on success, _LE_SIZE_NULL otherwise.
+     */
 
-    le_void_t le_storage_move( le_file_t const le_root, le_size_t le_offset, le_size_t const le_locker, le_size_t const le_replace, le_size_t const le_length );
-
-    /* *** */
-
-    le_void_t le_storage_swap( le_file_t const le_work, le_size_t const le_offa, le_size_t const le_offb );
-
-    /* *** */
-
-    le_size_t le_storage_io_space( le_char_t * le_root );
+    le_size_t le_storage_io_server( le_char_t * le_root );
 
 
     /*! \brief main function
