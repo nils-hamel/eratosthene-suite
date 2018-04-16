@@ -128,14 +128,6 @@
     header - function prototypes
  */
 
-    /* *** */
-
-    le_void_t le_storage( le_unit_t * const le_unit, le_char_t const * const le_root, le_time_t const le_time );
-
-    /* *** */
-
-    le_void_t le_storage_move( le_file_t const le_line, le_file_t const le_data, le_file_t const le_temp );
-
     /*! \brief i/o function
      *
      *  This function reads the server configuration file to extract its spatial
@@ -150,7 +142,6 @@
      */
 
     le_size_t le_storage_io_server( le_char_t * le_root );
-
 
     /*! \brief main function
      *

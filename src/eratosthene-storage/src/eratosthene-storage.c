@@ -21,130 +21,6 @@
     # include "eratosthene-storage.h"
 
 /*
-    source - specific function
- */
-
-    le_void_t le_storage( le_unit_t * const le_unit, le_char_t const * const le_root, le_time_t const le_time ) {
-
-        /* scale parser variable */
-        le_size_t le_scale = 0;
-
-        /* stream variable */
-        le_file_t le_line = NULL;
-        le_file_t le_data = NULL;
-        le_file_t le_temp = NULL;
-
-        /* string variable */
-        le_char_t le_real[_LE_USE_STRING] = { 0 };
-
-        /* string variable */
-        le_char_t le_proc[_LE_USE_STRING] = { 0 };
-
-        /* compose temporary path */
-        sprintf( ( char * ) le_proc, "%s/%" _LE_TIME_P "/optimise.bin", le_root, le_time );
-
-        /* parsing scales */
-        while ( le_scale < _LE_USE_DEPTH ) {
-
-            /* extract and check stream */
-            if ( ( le_data = le_unit_get_stream( le_unit, le_scale + 1 ) ) != NULL ) {
-
-                /* extract stream */
-                le_line = le_unit_get_stream( le_unit, le_scale );
-
-                /* create temporary stream */
-                le_temp = fopen( ( char * ) le_proc, "w+" );
-
-                /* process scale */
-                le_storage_move( le_line, le_data, le_temp );
-
-                /* close scale stream */
-                fclose( le_data );
-
-                /* swap stream - encapsulation fault */
-                le_unit->un_pile[le_scale + 1] = ( le_data = le_temp );
-                
-                /* compose stream name */
-                sprintf( ( char * ) le_real, "%s/%" _LE_TIME_P "/scale-%03" _LE_SIZE_P ".bin", le_root, le_time, le_scale + 1 );
-
-                /* replace file */
-                rename( ( char * ) le_proc, ( char * ) le_real );
-
-            /* abort process */
-            } else { return; }
-
-            /* update index */
-            le_scale ++;
-
-        }
-
-    }
-
-    le_void_t le_storage_move( le_file_t const le_line, le_file_t const le_data, le_file_t const le_temp ) {
-
-        /* offset variable */
-        le_size_t le_offset = 0;
-
-        /* offset variable */
-        le_size_t le_tracker = 0;
-
-        /* offset variable */
-        le_size_t le_target = 0;
-
-        /* length variable */
-        le_size_t le_length = 0;
-
-        /* class variable */
-        le_class_t le_class_l = LE_CLASS_C;
-
-        /* class variable */
-        le_class_t le_class_m = LE_CLASS_C;
-
-        /* search end of stream */
-        fseek( le_line, 0, SEEK_END );
-
-        /* retrieve stream size */
-        le_length = ftell( le_line );
-
-        /* parsing line stream */
-        while ( le_offset < le_length ) {
-
-            /* read class */
-            le_class_io_read( & le_class_l, le_offset, le_line );
-
-            /* parsing digits */
-            for ( le_size_t le_digit = 0; le_digit < _LE_USE_BASE; le_digit ++ ) {
-
-                /* check offset */
-                if ( ( le_target = le_class_get_offset( & le_class_l, le_digit ) ) != _LE_OFFS_NULL ) {
-
-                    /* reset offset */
-                    le_class_set_offset( & le_class_l, le_digit, le_tracker );
-
-                    /* import target class */
-                    le_class_io_read( & le_class_m, le_target, le_data );
-
-                    /* export target class */
-                    le_class_io_write( & le_class_m, le_tracker, le_temp );
-
-                    /* update tracker */
-                    le_tracker += LE_CLASS_ARRAY;
-
-                }
-
-            }
-
-            /* write class */
-            le_class_io_write( & le_class_l, le_offset, le_line );
-
-            /* update offset */
-            le_offset += LE_CLASS_ARRAY;
-
-        }
-
-    }
-
-/*
     source - i/o function
  */
 
@@ -230,7 +106,8 @@
         }
 
         /* process storage unit */
-        le_storage( & le_unit, le_path, le_time );
+        //le_storage( & le_unit, le_path, le_time );
+        le_unit_set_optimise( & le_unit, le_path );
 
         /* delete unit */
         le_unit_delete( & le_unit );
