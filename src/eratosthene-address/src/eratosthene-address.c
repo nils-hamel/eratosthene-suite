@@ -105,6 +105,7 @@
 
     int main( int argc, char ** argv ) {
 
+        /* search flag */
         if ( lc_read_flag( argc, argv, "--time", "-t" ) == LC_TRUE ) {
 
             /* specialised method */
@@ -114,11 +115,6 @@
 
             /* specialised method */
             er_address_space( argc, argv );
-
-        } else {
-
-            /* send message */
-            return( EXIT_FAILURE );
 
         }
 

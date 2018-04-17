@@ -35,11 +35,17 @@
         /* service port variable */
         le_sock_t er_port = lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT );
 
+        /* message variable */
+        le_enum_t er_message = EXIT_SUCCESS;
+
         /* create server */
-        if ( ( er_server = le_server_create( er_path, er_port ) )._status != LE_ERROR_SUCCESS ) {
+        if ( le_get_status( er_server = le_server_create( er_path, er_port ) ) != LE_ERROR_SUCCESS ) {
 
             /* display message */
             fprintf( stderr, "eratosthene-suite : error : unable to create server\n" );
+
+            /* push message */
+            er_message = EXIT_FAILURE;
 
         } else {
 
@@ -55,7 +61,7 @@
         }
 
         /* send message */
-        return( EXIT_SUCCESS );
+        return( er_message );
 
     }
 

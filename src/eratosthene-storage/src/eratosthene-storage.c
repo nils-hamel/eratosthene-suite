@@ -98,7 +98,7 @@
         if ( le_get_status( le_unit = le_unit_create( le_path, le_time, LE_UNIT_READ, le_scfg, LE_UNIT_BDEF ) ) != LE_ERROR_SUCCESS ) {
 
             /* display message */
-            fprintf( stderr, "eratosthene-suite : error : unable to accoss storage unit\n" );
+            fprintf( stderr, "eratosthene-suite : error : unable to access storage unit\n" );
 
             /* send message */
             return( EXIT_FAILURE );
