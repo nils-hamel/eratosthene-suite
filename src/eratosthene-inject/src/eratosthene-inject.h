@@ -152,6 +152,10 @@
 
     le_enum_t er_inject_uf3( char const * const er_path, le_time_t er_time, le_sock_t const er_socket );
 
+    /* *** */
+
+    le_enum_t er_inject_optimise( le_time_t er_time, le_sock_t const er_socket );
+
     /*! \brief main function
      *
      *  The main function reads the arguments and parameters to retrieve the

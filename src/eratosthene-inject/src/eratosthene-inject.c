@@ -96,19 +96,59 @@
     }
 
 /*
+    source - injection method - optimisation
+ */
+
+    le_enum_t er_inject_optimise( le_time_t er_time, le_sock_t const er_socket ) {
+
+        /* socket array variable */
+        le_array_t er_array = LE_ARRAY_C;
+
+        /* check consistency */
+        if ( er_time == _LE_TIME_NULL ) {
+
+            /* display message */
+            fprintf( stderr, "eratosthene-suite : error : invalid time\n" );
+
+            /* send message */
+            return( EXIT_FAILURE );
+
+        }
+
+        /* update array size */
+        le_array_set_size( & er_array, LE_ARRAY_OPTM );
+
+        /* serialise time */
+        le_array_serial( & er_array, & er_time, sizeof( le_time_t ), 0, _LE_SET );
+
+        /* write socket-array */
+        le_array_io_put( & er_array, NULL, LE_MODE_OPTM, er_socket );
+
+        /* send message */
+        return( EXIT_SUCCESS );
+
+    }
+
+/*
     source - main method
  */
 
     int main( int argc, char ** argv ) {
 
-        /* socket variables */
+        /* socket variable */
         le_sock_t er_socket = _LE_SOCK_NULL;
 
-        /* message variables */
+        /* server address variable */
+        le_char_t * er_host = ( le_char_t * ) lc_read_string( argc, argv, "--ip", "-i" );
+
+        /* server service variable */
+        le_enum_t er_port = lc_read_signed( argc, argv, "--port", "-p", _LE_USE_PORT );
+
+        /* message variable */
         le_enum_t er_message = EXIT_SUCCESS;
 
         /* create socket */
-        if ( ( er_socket = le_client_create( ( le_char_t * ) lc_read_string( argc, argv, "--ip", "-i" ), lc_read_signed( argc, argv, "--port", "-p", _LE_USE_PORT ) ) ) == _LE_SOCK_NULL ) {
+        if ( ( er_socket = le_client_create( er_host, er_port ) ) == _LE_SOCK_NULL ) {
 
             /* display message */
             fprintf( stderr, "eratosthene-suite : error : unable to establish connection\n" );
@@ -118,19 +158,32 @@
 
         } else {
 
-            /* switch on format */
-            if ( lc_read_flag( argc, argv, "--uf3", "" ) == LC_TRUE ) {
+            /* search flags */
+            if ( lc_read_flag( argc, argv, "--inject", "-i" ) == LC_TRUE ) {
 
-                /* injection process */
-                er_message = er_inject_uf3( lc_read_string( argc, argv, "--uf3", "" ), lc_read_signed( argc, argv, "--time", "-t", _LE_TIME_NULL ), er_socket );
+                /* switch on format */
+                if ( lc_read_flag( argc, argv, "--uf3", "" ) == LC_TRUE ) {
 
-            } else {
+                    /* injection process */
+                    er_message = er_inject_uf3( lc_read_string( argc, argv, "--uf3", "" ), lc_read_signed( argc, argv, "--time", "-t", _LE_TIME_NULL ), er_socket );
 
-                /* display message */
-                fprintf( stderr, "eratosthene-suite : error : unsupported format\n" );
+                } else {
 
-                /* update message */
-                er_message = EXIT_FAILURE;
+                    /* display message */
+                    fprintf( stderr, "eratosthene-suite : error : unsupported format\n" );
+
+                    /* update message */
+                    er_message = EXIT_FAILURE;
+
+                }
+
+            }
+
+            /* search flag */
+            if ( lc_read_flag( argc, argv, "--optimise", "-o" ) == LC_TRUE ) {
+
+                /* optimisation process */
+                er_message = er_inject_optimise( lc_read_signed( argc, argv, "--time", "-t", _LE_TIME_NULL ), er_socket );
 
             }
 
