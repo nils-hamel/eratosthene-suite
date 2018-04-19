@@ -26,10 +26,10 @@
 
     le_enum_t er_inject_uf3( char const * const er_path, le_time_t er_time, le_sock_t const er_socket ) {
 
-        /* stream variables */
+        /* stream variable */
         le_file_t er_stream = NULL;
 
-        /* i/o count variables */
+        /* i/o count variable */
         le_size_t er_read = 0;
 
         /* socket-array variables */
@@ -41,7 +41,7 @@
         if ( er_time == _LE_TIME_NULL ) {
 
             /* display message */
-            fprintf( stderr, "eratosthene-suite : error : injection time\n" );
+            lc_error( "time specification" );
 
             /* send message */
             return( EXIT_FAILURE );
@@ -52,7 +52,7 @@
         if ( ( er_stream = fopen( er_path, "rb" ) ) == NULL ) {
 
             /* display messsage */
-            fprintf( stderr, "eratosthene-suite : error : unable to access input stream\n" );
+            lc_error( "input stream access" );
 
             /* send message */
             return( EXIT_FAILURE );
@@ -66,10 +66,10 @@
         le_array_serial( & er_head, & er_time, sizeof( le_time_t ), 0, _LE_SET );
 
         /* update array size */
-        le_array_set_size( & er_data, ER_INJECT * LE_ARRAY_UF3 );
+        le_array_set_size( & er_data, ER_INJECT );
 
         /* read stream */
-        while ( ( er_read = fread( le_array_get_byte( & er_data ), sizeof( le_byte_t ), ER_INJECT * LE_ARRAY_UF3, er_stream ) ) > 0 ) {
+        while ( ( er_read = fread( le_array_get_byte( & er_data ), sizeof( le_byte_t ), ER_INJECT, er_stream ) ) > 0 ) {
 
             /* write socket-array - injection head */
             le_array_io_put( & er_head, NULL, LE_MODE_INJE, er_socket );
@@ -108,7 +108,7 @@
         if ( er_time == _LE_TIME_NULL ) {
 
             /* display message */
-            fprintf( stderr, "eratosthene-suite : error : invalid time\n" );
+            lc_error( "time specification" );
 
             /* send message */
             return( EXIT_FAILURE );
@@ -123,6 +123,9 @@
 
         /* write socket-array */
         le_array_io_put( & er_array, NULL, LE_MODE_OPTM, er_socket );
+
+        /* delete socket-array */
+        le_array_delete( & er_array );
 
         /* send message */
         return( EXIT_SUCCESS );
@@ -142,7 +145,10 @@
         le_char_t * er_host = ( le_char_t * ) lc_read_string( argc, argv, "--ip", "-i" );
 
         /* server service variable */
-        le_enum_t er_port = lc_read_signed( argc, argv, "--port", "-p", _LE_USE_PORT );
+        le_enum_t er_port = lc_read_unsigned( argc, argv, "--port", "-p", _LE_USE_PORT );
+
+        /* time variable */
+        le_time_t er_time = lc_read_signed( argc, argv, "--time", "-t", _LE_TIME_NULL );
 
         /* message variable */
         le_enum_t er_message = EXIT_SUCCESS;
@@ -151,7 +157,7 @@
         if ( ( er_socket = le_client_create( er_host, er_port ) ) == _LE_SOCK_NULL ) {
 
             /* display message */
-            fprintf( stderr, "eratosthene-suite : error : unable to establish connection\n" );
+            lc_error( "service connection" );
 
             /* update message */
             er_message = EXIT_FAILURE;
@@ -165,12 +171,12 @@
                 if ( lc_read_flag( argc, argv, "--uf3", "" ) == LC_TRUE ) {
 
                     /* injection process */
-                    er_message = er_inject_uf3( lc_read_string( argc, argv, "--uf3", "" ), lc_read_signed( argc, argv, "--time", "-t", _LE_TIME_NULL ), er_socket );
+                    er_message = er_inject_uf3( lc_read_string( argc, argv, "--uf3", "" ), er_time, er_socket );
 
                 } else {
 
                     /* display message */
-                    fprintf( stderr, "eratosthene-suite : error : unsupported format\n" );
+                    lc_error( "un-supported format" );
 
                     /* update message */
                     er_message = EXIT_FAILURE;
@@ -183,7 +189,7 @@
             if ( lc_read_flag( argc, argv, "--optimise", "-o" ) == LC_TRUE ) {
 
                 /* optimisation process */
-                er_message = er_inject_optimise( lc_read_signed( argc, argv, "--time", "-t", _LE_TIME_NULL ), er_socket );
+                er_message = er_inject_optimise( er_time, er_socket );
 
             }
 
