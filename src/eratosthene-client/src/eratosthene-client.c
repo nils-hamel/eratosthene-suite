@@ -403,7 +403,8 @@
                 } break;
 
                 /* event type : button */
-                case ( SDL_MOUSEBUTTONDOWN ) : {
+                case ( SDL_MOUSEBUTTONDOWN ) :
+                case ( SDL_MOUSEBUTTONUP   ) : {
 
                     /* event-specific callback */
                     er_client_callback_button( er_event.button, er_client );
@@ -647,15 +648,25 @@
 
     le_void_t er_client_callback_button( SDL_MouseButtonEvent er_event, er_client_t * const er_client ) {
 
-        /* check button state */
-        if ( ( er_event.button == SDL_BUTTON_LEFT ) || ( er_event.button == SDL_BUTTON_RIGHT ) ) {
+        /* check button event type */
+        if ( er_event.type == SDL_MOUSEBUTTONUP ) {
 
-            /* compute inertia */
-            er_client->cl_inertia = er_view_get_inertia( & er_client->cl_view, SDL_GetModState() );
+            /* mouse position to screen center */
+            SDL_WarpMouseGlobal( er_client->cl_width >> 1, er_client->cl_height >> 1 );
 
-            /* update click position */
-            er_client->cl_x = er_event.x;
-            er_client->cl_y = er_event.y;
+        } else {
+
+            /* check button state */
+            if ( ( er_event.button == SDL_BUTTON_LEFT ) || ( er_event.button == SDL_BUTTON_RIGHT ) ) {
+
+                /* compute inertia */
+                er_client->cl_inertia = er_view_get_inertia( & er_client->cl_view, SDL_GetModState() );
+
+                /* update click position */
+                er_client->cl_x = er_event.x;
+                er_client->cl_y = er_event.y;
+
+            }
 
         }
 
