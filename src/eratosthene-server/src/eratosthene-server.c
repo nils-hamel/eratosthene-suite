@@ -33,7 +33,7 @@
         le_char_t * er_path = ( le_char_t * ) lc_read_string( argc, argv, "--path", "-p" );
 
         /* service port variable */
-        le_sock_t er_port = lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT );
+        le_enum_t er_port = lc_read_unsigned( argc, argv, "--port", "-t", _LE_USE_PORT );
 
         /* message variable */
         le_enum_t er_message = EXIT_SUCCESS;
@@ -42,7 +42,7 @@
         if ( le_get_status( er_server = le_server_create( er_path, er_port ) ) != LE_ERROR_SUCCESS ) {
 
             /* display message */
-            fprintf( stderr, "eratosthene-suite : error : unable to create server\n" );
+            lc_error( "server creation" );
 
             /* push message */
             er_message = EXIT_FAILURE;
@@ -50,7 +50,7 @@
         } else {
 
             /* display message */
-            fprintf( stderr, "eratosthene-suite : state : server listening on TCP/IP\n" );
+            printf( LC_PROJECT " : listening on TCP/IP on %" _LE_ENUM_P "\n", er_port );
 
             /* server process */
             le_server_srv( & er_server );

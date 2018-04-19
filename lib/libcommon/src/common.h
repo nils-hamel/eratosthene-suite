@@ -116,7 +116,7 @@
  */
 
     /* define common name */
-    # define LC_PROJECT          "eratosthene-project"
+    # define LC_PROJECT          "eratosthene-suite"
 
     /* define boolean values */
     # define LC_FALSE            ( 0 )
@@ -127,7 +127,7 @@
  */
 
     /* standard display */
-    # define lc_error( m )       fprintf( stderr, "eratosthene-suite : error " m "\n" )
+    # define lc_error( m )       fprintf( stderr, LC_PROJECT " : error " m "\n" )
 
     /* strict clamping */
     # define lc_clamp( v, a, b ) ( ( v ) < ( a ) ? ( a ) : ( ( v ) > ( b ) ? ( b ) : ( v ) ) )
