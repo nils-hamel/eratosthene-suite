@@ -366,6 +366,9 @@
 
             }
 
+            /* delete array */
+            le_array_delete( & er_auth );
+
             /* delete socket */
             er_socket = le_client_delete( er_socket );
 

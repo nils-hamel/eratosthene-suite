@@ -79,6 +79,9 @@
         er_serial = le_array_serial( & er_array, & er_space, sizeof( le_size_t ), er_serial, _LE_GET );
         er_serial = le_array_serial( & er_array, & er_times, sizeof( le_time_t ), er_serial, _LE_GET );
 
+        /* delete array */
+        le_array_delete( & er_array );
+
         /* create client model */
         if ( le_get_status( er_client.cl_model = er_model_create( er_client.cl_socket, er_space, er_times ) ) == _LE_FALSE ) {
 
@@ -102,14 +105,11 @@
         }
 
         /* return created structure */
-        return( er_client._status = _LE_TRUE, er_client );
+        return( le_set_status( er_client, _LE_TRUE ) );
 
     }
 
     le_void_t er_client_delete( er_client_t * const er_client ) {
-
-        /* socket-array variables */
-        le_array_t er_array = LE_ARRAY_C;
 
         /* deleted structure variables */
         er_client_t er_delete = ER_CLIENT_C;
@@ -119,9 +119,6 @@
 
         /* delete client model */
         er_model_delete( & er_client->cl_model );
-
-        /* socket-array size */
-        le_array_set_size( & er_array, 0 );
 
         /* delete client socket */
         le_client_delete( er_client->cl_socket );

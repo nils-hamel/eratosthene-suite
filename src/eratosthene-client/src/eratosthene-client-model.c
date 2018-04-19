@@ -40,7 +40,7 @@
         if ( ( er_model.md_cell = ( er_cell_t * ) malloc( er_size * sizeof( er_cell_t ) ) ) == NULL ) {
 
             /* return created structure */
-            return( le_set_status( er_model, _LE_FALSE ) );
+            return( er_model );
 
         }
 
@@ -56,7 +56,7 @@
         }
 
         /* return created structure */
-        return( er_model );
+        return( le_set_status( er_model, _LE_TRUE ) );
 
     }
 
