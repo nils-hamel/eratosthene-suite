@@ -56,7 +56,7 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_TIMES_C      { 0, 0, 0, 0, NULL, 0, 0, 0, 0, 0, 0, ER_FONT_ERATOSTHENE, _LE_FALSE }
+    # define ER_TIMES_C      { 0, 0, 0, 0, NULL, 0, 0, 0, 0, 0, 0, ER_FONT_ERATOSTHENE, _LE_TRUE }
 
     /* define string justification */
     # define ER_TIMES_LEFT   ( 0 )

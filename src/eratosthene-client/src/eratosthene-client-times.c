@@ -60,17 +60,15 @@
         if ( ( er_times.tm_buffer = ( le_byte_t * ) malloc( er_times.tm_length ) ) == NULL ) {
 
             /* send message */
-            return( er_times );
-
-        } else {
-
-            /* initialise buffer memory */
-            memset( er_times.tm_buffer, 255, er_times.tm_length );
+            return( le_set_status( er_times, _LE_FALSE ) );
 
         }
 
+        /* initialise buffer memory */
+        memset( er_times.tm_buffer, 255, er_times.tm_length );
+
         /* return created structure */
-        return( er_times._status = _LE_TRUE, er_times );
+        return( er_times );
 
     }
 

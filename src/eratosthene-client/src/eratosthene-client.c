@@ -80,7 +80,7 @@
         er_serial = le_array_serial( & er_array, & er_times, sizeof( le_time_t ), er_serial, _LE_GET );
 
         /* create client model */
-        if ( ( er_client.cl_model = er_model_create( er_client.cl_socket, er_space, er_times ) )._status == _LE_FALSE ) {
+        if ( le_get_status( er_client.cl_model = er_model_create( er_client.cl_socket, er_space, er_times ) ) == _LE_FALSE ) {
 
             /* delete client socket */
             er_client_delete( & er_client );
@@ -91,7 +91,7 @@
         }
 
         /* create client times */
-        if ( ( er_client.cl_times = er_times_create( er_width, er_height ) )._status == _LE_FALSE ) {
+         if ( le_get_status( er_client.cl_times = er_times_create( er_width, er_height ) ) == _LE_FALSE ) {
 
             /* delete client socket */
             er_client_delete( & er_client );
@@ -162,7 +162,7 @@
         if ( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
 
             /* display message */
-            fprintf( stderr, ER_COMMON_PREFIX " : error : unable to initialise sdl library\n" );
+            lc_error( "SDL library initialisation" );
 
             /* push message */
             er_message = EXIT_FAILURE;
@@ -188,10 +188,10 @@
             SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
 
             /* create window */
-            if ( ( er_window = SDL_CreateWindow( ER_COMMON_NAME, 0, 0, er_display.w, er_display.h, ER_SDL_FLAGS ) ) == NULL ) {
+            if ( ( er_window = SDL_CreateWindow( LC_PROJECT, 0, 0, er_display.w, er_display.h, ER_SDL_FLAGS ) ) == NULL ) {
 
                 /* display message */
-                fprintf( stderr, ER_COMMON_PREFIX " : error : unable to create window\n" );
+                lc_error( "window creation" );
 
                 /* push message */
                 er_message = EXIT_FAILURE;
@@ -202,7 +202,7 @@
                 if ( ( er_context = SDL_GL_CreateContext( er_window ) ) == NULL ) {
 
                     /* display message */
-                    fprintf( stderr, ER_COMMON_PREFIX " : error : unable to create context\n" );
+                    lc_error( "OpenGL context creation" );
 
                     /* push message */
                     er_message = EXIT_FAILURE;
@@ -219,7 +219,7 @@
                     if ( ( er_client = er_client_create( er_svip, er_port, er_display.w, er_display.h ) )._status == _LE_FALSE ) {
 
                         /* display message */
-                        fprintf( stderr, ER_COMMON_PREFIX " : error : unable to create client\n" );
+                        lc_error( "client creation" );
 
                         /* push message */
                         er_message = EXIT_FAILURE;
@@ -580,20 +580,6 @@
 
                 /* update dual-model mode */
                 er_view_set_mode( & er_client->cl_view, 5 );
-
-            } break;
-
-            case ( SDLK_COMMA ) : {
-
-                /* update model cell span */
-                er_view_set_red( & er_client->cl_view, +1 );
-
-            } break;
-
-            case ( SDLK_PERIOD ) : {
-
-                /* update model cell span */
-                er_view_set_red( & er_client->cl_view, -1 );
 
             } break;
 

@@ -115,6 +115,9 @@
     header - preprocessor definitions
  */
 
+    /* define common name */
+    # define LC_PROJECT          "eratosthene-project"
+
     /* define boolean values */
     # define LC_FALSE            ( 0 )
     # define LC_TRUE             ( 1 )

@@ -40,14 +40,12 @@
         if ( ( er_model.md_cell = ( er_cell_t * ) malloc( er_size * sizeof( er_cell_t ) ) ) == NULL ) {
 
             /* return created structure */
-            return( er_model );
-
-        } else {
-
-            /* assign target stack pointer */
-            er_model.md_virt = er_model.md_cell + er_model.md_size;
+            return( le_set_status( er_model, _LE_FALSE ) );
 
         }
+
+        /* assign target stack pointer */
+        er_model.md_virt = er_model.md_cell + er_model.md_size;
 
         /* initialise arrays cells */
         for ( le_size_t er_parse = 0; er_parse < er_size; er_parse ++ ) {
@@ -58,7 +56,7 @@
         }
 
         /* return created structure */
-        return( er_model._status = _LE_TRUE, er_model );
+        return( er_model );
 
     }
 

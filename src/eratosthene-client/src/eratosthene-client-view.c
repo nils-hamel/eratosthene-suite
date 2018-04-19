@@ -62,9 +62,6 @@
         /* check mode component - return answer */
         if ( er_viewa->vw_mod != er_viewb->vw_mod ) return( _LE_FALSE );
 
-        /* check reduction component - return answer */
-        if ( er_viewa->vw_red != er_viewb->vw_red ) return( _LE_FALSE );
-
         /* return answer */
         return( _LE_TRUE );
 
@@ -156,7 +153,7 @@
         le_address_set_mode( & er_addr, er_view->vw_mod );
 
         /* set address span */
-        le_address_set_span( & er_addr, ER_COMMON_SPAN - er_view->vw_red );
+        le_address_set_span( & er_addr, ER_COMMON_SPAN );
 
         /* check mode */
         if ( er_view->vw_mod != 2 ) {
@@ -235,8 +232,7 @@
         er_view->vw_alt += er_value;
 
         /* clamp altitude value */
-        if ( er_view->vw_alt < ER_COMMON_ALL ) er_view->vw_alt = ER_COMMON_ALL;
-        if ( er_view->vw_alt > ER_COMMON_ALU ) er_view->vw_alt = ER_COMMON_ALU;
+        er_view->vw_alt = lc_clamp( er_view->vw_alt, ER_COMMON_ALL, ER_COMMON_ALU );
 
     }
 
@@ -244,6 +240,9 @@
 
         /* update azimuth */
         er_view->vw_azm += er_value;
+
+        /* clamp azimuth value */
+        er_view->vw_azm = lc_angle( er_view->vw_azm );
 
     }
 
@@ -253,8 +252,7 @@
         er_view->vw_gam += er_value;
 
         /* clamp gamma value */
-        if ( er_view->vw_gam > + 120.0 ) er_view->vw_gam = + 120.0;
-        if ( er_view->vw_gam < - 120.0 ) er_view->vw_gam = - 120.0;
+        er_view->vw_gam = lc_clamp( er_view->vw_gam, 0.0, 140.0 );
 
     }
 
@@ -331,16 +329,6 @@
             er_view->vw_ztb = lc_clamp( er_view->vw_ztb, 60, 32314982400 );
 
         }
-
-    }
-
-    le_void_t er_view_set_red( er_view_t * const er_view, le_size_t er_add ) {
-
-        /* update reduction value */
-        er_view->vw_red += er_add;
-
-        /* clamp reduction value */
-        er_view->vw_red = lc_clamp( er_view->vw_red, 0, ER_COMMON_SPAN );
 
     }
 

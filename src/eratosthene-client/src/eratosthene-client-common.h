@@ -49,8 +49,6 @@
 
     # include <stdio.h>
     # include <stdlib.h>
-    # include <unistd.h>
-    # include <time.h>
     # include <math.h>
     # include <omp.h>
     # include <GL/gl.h>
@@ -62,10 +60,6 @@
 /*
     header - preprocessor definitions
  */
-
-    /* define name */
-    # define ER_COMMON_NAME    "eratosthene-client"
-    # define ER_COMMON_PREFIX  "eratosthene-suite"
 
     /* define execution modes */
     # define ER_COMMON_EXIT    ( 0x00 )
