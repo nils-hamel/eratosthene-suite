@@ -27,7 +27,7 @@
     le_char_t * er_raster_path( le_char_t * const er_addr, le_char_t const * const er_path ) {
 
         /* path variable */
-        static le_char_t er_export[PATH_MAX] = { 0 };
+        static le_char_t er_export[_LE_USE_PATH] = { 0 };
 
         /* parsing pointer variable */
         le_char_t * er_parse = er_addr;
@@ -170,8 +170,8 @@
         /* digit span variable */
         le_size_t er_base = le_address_base( er_scale );
 
-        /* diplay variable */
-        le_char_t er_string[_LE_USE_STRING] = { 0 };
+        /* display variable */
+        le_char_t er_string[_LE_USE_PATH] = { 0 };
 
         /* array variable */
         static le_array_t er_data = LE_ARRAY_C;

@@ -60,7 +60,7 @@
         }
 
         /* update array size */
-        le_array_set_size( & er_head, LE_ARRAY_INJE_HEAD );
+        le_array_set_size( & er_head, LE_ARRAY_INJE );
 
         /* serialise injection time */
         le_array_serial( & er_head, & er_time, sizeof( le_time_t ), 0, _LE_SET );
