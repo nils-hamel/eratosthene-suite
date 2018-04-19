@@ -107,10 +107,9 @@
     # include <stdint.h>
     # include <inttypes.h>
     # include <string.h>
-    # define __USE_XOPEN
+    # define __USE_XOPEN /* strptime() */
     # include <time.h>
     # undef __USE_XOPEN
-    # include <png.h>
 
 /*
     header - preprocessor definitions
@@ -123,9 +122,6 @@
 /*
     header - preprocessor macros
  */
-
-    /* string comparison */
-    # define lc_strc( a, b )     ( strcmp( ( char * ) a, ( char * ) b ) == 0 ? LC_TRUE : LC_FALSE )
 
     /* strict clamping */
     # define lc_clamp( v, a, b ) ( ( v ) < ( a ) ? ( a ) : ( ( v ) > ( b ) ? ( b ) : ( v ) ) )

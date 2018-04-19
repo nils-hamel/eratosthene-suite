@@ -44,7 +44,6 @@
  */
 
     # include "common-args.h"
-    # include "common-image.h"
     # include "common-time.h"
 
 /*
