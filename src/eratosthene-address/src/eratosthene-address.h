@@ -117,7 +117,7 @@
     # define ER_ADDRESS_R2D ( 180.0 / LE_PI )
 
     /* display format specifier */
-    # define ER_ADDRESS_PFS "%" _LE_REAL_P ", %" _LE_REAL_P ", %" _LE_REAL_P "\n"
+    # define ER_ADDRESS_P   "%" _LE_REAL_P ", %" _LE_REAL_P ", %" _LE_REAL_P "\n"
 
 /*
     header - preprocessor macros

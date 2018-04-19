@@ -38,7 +38,7 @@
         er_pose[2] = lc_read_double( argc, argv, "--altitude" , "-h", 0.0 );
 
         /* display original coordinates */
-        fprintf( stdout, ER_ADDRESS_PFS, er_pose[0], er_pose[1], er_pose[2] );
+        fprintf( stdout, ER_ADDRESS_P, er_pose[0], er_pose[1], er_pose[2] );
 
         /* convert to radians */
         er_pose[0] *= ER_ADDRESS_D2R;
@@ -55,7 +55,7 @@
         er_pose[1] *= ER_ADDRESS_R2D;
 
         /* display reconverted coordinates */
-        fprintf( stdout, ER_ADDRESS_PFS, er_pose[0], er_pose[1], er_pose[2] );
+        fprintf( stdout, ER_ADDRESS_P, er_pose[0], er_pose[1], er_pose[2] );
 
         /* display address */
         for ( le_size_t er_parse = 0; er_parse < le_address_get_size( & er_addr ); er_parse ++ ) {
@@ -84,7 +84,7 @@
         if ( er_date == NULL ) {
 
             /* display message */
-            fprintf( stderr, "eratosthene-suite : error : date not specified" );
+            lc_error( "date specification" );
 
             /* abort process */
             return;
@@ -105,7 +105,7 @@
 
     int main( int argc, char ** argv ) {
 
-        /* search flag */
+        /* switch on flag */
         if ( lc_read_flag( argc, argv, "--time", "-t" ) == LC_TRUE ) {
 
             /* specialised method */
