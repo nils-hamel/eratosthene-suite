@@ -298,8 +298,14 @@
         /* limit value variable */
         le_size_t er_limit = 0;
 
+        /* host variable */
+        le_char_t * er_host = ( le_char_t * ) lc_read_string( argc, argv, "--ip", "-i" );
+
+        /* service variable */
+        le_enum_t er_port = lc_read_unsigned( argc, argv, "--port", "-p", _LE_USE_PORT );
+
         /* exportation path variable */
-        le_char_t * er_path = ( le_char_t * ) lc_read_string( argc, argv, "--export", "-e" );;
+        le_char_t * er_path = ( le_char_t * ) lc_read_string( argc, argv, "--export", "-e" );
 
         /* array variable */
         le_array_t er_auth = LE_ARRAY_C;
@@ -308,10 +314,10 @@
         le_address_t er_addr = LE_ADDRESS_C;
 
         /* create socket */
-        if ( ( er_socket = le_client_create( ( le_char_t * ) lc_read_string( argc, argv, "--ip", "-i" ), lc_read_signed( argc, argv, "--port", "-p", _LE_USE_PORT ) ) ) == _LE_SOCK_NULL ) {
+        if ( ( er_socket = le_client_create( er_host, er_port ) ) == _LE_SOCK_NULL ) {
 
             /* display message */
-            fprintf( stderr, "eratosthene-suite : error : unable to establish connection to server\n" );
+            lc_error( "service connection" );
 
             /* push message */
             er_message = EXIT_FAILURE;
@@ -328,7 +334,7 @@
             if ( le_array_io_get( & er_auth, NULL, er_socket ) != LE_MODE_AUTH ) {
 
                 /* display message */
-                fprintf( stderr, "eratosthene-suite : error : bad server response\n" );
+                lc_error( "unknown service" );
 
                 /* push message */
                 er_message = EXIT_FAILURE;
@@ -351,7 +357,7 @@
                 if ( er_raster_enum( & er_addr, er_size, er_size + er_depth, er_limit, er_path, er_socket ) != _LE_TRUE ) {
 
                     /* display message */
-                    fprintf( stderr, "eratostehen-suite : error : raster query/exportation\n" );
+                    lc_error( "raster exportation" );
 
                     /* push message */
                     er_message = EXIT_FAILURE;
