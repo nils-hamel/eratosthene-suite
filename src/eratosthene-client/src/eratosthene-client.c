@@ -400,8 +400,7 @@
                 } break;
 
                 /* event type : button */
-                case ( SDL_MOUSEBUTTONDOWN ) :
-                case ( SDL_MOUSEBUTTONUP   ) : {
+                case ( SDL_MOUSEBUTTONDOWN ) : {
 
                     /* event-specific callback */
                     er_client_callback_button( er_event.button, er_client );
@@ -645,25 +644,15 @@
 
     le_void_t er_client_callback_button( SDL_MouseButtonEvent er_event, er_client_t * const er_client ) {
 
-        /* check button event type */
-        if ( er_event.type == SDL_MOUSEBUTTONUP ) {
+        /* check button state */
+        if ( ( er_event.button == SDL_BUTTON_LEFT ) || ( er_event.button == SDL_BUTTON_RIGHT ) ) {
 
-            /* mouse position to screen center */
-            SDL_WarpMouseGlobal( er_client->cl_width >> 1, er_client->cl_height >> 1 );
+            /* push motion origin */
+            er_client->cl_x = er_client->cl_width  >> 1;
+            er_client->cl_y = er_client->cl_height >> 1;
 
-        } else {
-
-            /* check button state */
-            if ( ( er_event.button == SDL_BUTTON_LEFT ) || ( er_event.button == SDL_BUTTON_RIGHT ) ) {
-
-                /* compute inertia */
-                er_client->cl_inertia = er_view_get_inertia( & er_client->cl_view, SDL_GetModState() );
-
-                /* update click position */
-                er_client->cl_x = er_event.x;
-                er_client->cl_y = er_event.y;
-
-            }
+            /* reset mouse position */
+            SDL_WarpMouseGlobal( er_client->cl_x, er_client->cl_y );
 
         }
 
@@ -672,30 +661,48 @@
     le_void_t er_client_callback_motion( SDL_MouseMotionEvent er_event, er_client_t * const er_client ) {
 
         /* motion variable */
-        le_real_t er_dx = ( le_real_t ) er_event.x - er_client->cl_x;
-        le_real_t er_dy = ( le_real_t ) er_event.y - er_client->cl_y;
+        le_size_t er_dx = er_event.x - er_client->cl_x;
+        le_size_t er_dy = er_event.y - er_client->cl_y;
+
+        /* motion variable */
+        le_real_t er_mx = er_dx;
+        le_real_t er_my = er_dy;
+
+        /* position variable */
+        le_size_t er_cx = er_client->cl_width  >> 1;
+        le_size_t er_cy = er_client->cl_height >> 1;
 
         /* switch on button */
         if ( ( er_event.state & SDL_BUTTON_LMASK ) != 0 ) {
 
+            /* compute inertia */
+            er_client->cl_inertia = er_view_get_inertia( & er_client->cl_view, SDL_GetModState() );
+
             /* apply inertia */
-            er_dx *= ER_COMMON_INP * er_client->cl_inertia;
-            er_dy *= ER_COMMON_INP * er_client->cl_inertia;
+            er_mx *= ER_COMMON_INP * er_client->cl_inertia;
+            er_my *= ER_COMMON_INP * er_client->cl_inertia;
 
             /* update view position */
-            er_view_set_plan( & er_client->cl_view, er_dx, er_dy );
+            er_view_set_plan( & er_client->cl_view, er_mx, er_my );
 
         } else if ( ( er_event.state & SDL_BUTTON_RMASK ) != 0 ) {
 
             /* apply inertia */
-            er_dx *= ER_COMMON_INR;
-            er_dy *= ER_COMMON_INR;
+            er_mx *= ER_COMMON_INR;
+            er_my *= ER_COMMON_INR;
 
             /* update view direction */
-            er_view_set_azm( & er_client->cl_view, - er_dx );
-            er_view_set_gam( & er_client->cl_view, + er_dy );
+            er_view_set_azm( & er_client->cl_view, - er_mx );
+            er_view_set_gam( & er_client->cl_view, + er_my );
 
         }
+
+        /* continuous motion management */
+        er_client->cl_x = er_cx - er_dx;
+        er_client->cl_y = er_cy - er_dy;
+
+        /* reset mouse position */
+        SDL_WarpMouseGlobal( er_cx, er_cy );
 
     }
 

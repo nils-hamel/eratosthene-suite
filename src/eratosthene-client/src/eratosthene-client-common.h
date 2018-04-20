@@ -74,10 +74,10 @@
 
     /* define inertial coefficients */
     # define ER_COMMON_INE     ( 1.0 / 100.0 )
-    # define ER_COMMON_IML     ( 1.0 / 10.0 )
-    # define ER_COMMON_IMU     ( 10.0 )
-    # define ER_COMMON_INR     ( 1.0 / 500.0 )
-    # define ER_COMMON_INP     ( 3.0 * LE_PI / ( LE_ADDRESS_WGS_A * 180.0 ) )
+    # define ER_COMMON_IML     ( 1.0 / 8.0 )
+    # define ER_COMMON_IMU     ( 8.0 )
+    # define ER_COMMON_INP     ( 2.0 * LE_PI / ( LE_ADDRESS_WGS_A * 180.0 ) )
+    # define ER_COMMON_INR     ( 1.0 / 800.0 )
 
     /* define altitude clamped range */
     # define ER_COMMON_ALL     ( LE_ADDRESS_WGS_A * 0.75 )
