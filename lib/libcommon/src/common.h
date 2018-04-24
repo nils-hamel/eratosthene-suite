@@ -127,7 +127,7 @@
  */
 
     /* standard display */
-    # define lc_error( m )       fprintf( stderr, LC_PROJECT " : error " m "\n" )
+    # define lc_error( m )       fprintf( stderr, LC_PROJECT " : error : " m "\n" )
 
     /* strict clamping */
     # define lc_clamp( v, a, b ) ( ( v ) < ( a ) ? ( a ) : ( ( v ) > ( b ) ? ( b ) : ( v ) ) )
