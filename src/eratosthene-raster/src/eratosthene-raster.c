@@ -175,7 +175,6 @@
 
         /* array variable */
         static le_array_t er_data = LE_ARRAY_C;
-        static le_array_t er_dual = LE_ARRAY_C;
 
         /* check scale */
         if ( er_scale < er_target ) {
@@ -196,10 +195,10 @@
             le_address_set_span( er_addr, er_span );
 
             /* write socket-array */
-            le_array_io_put( & er_data, & er_dual, LE_MODE_QUER, er_socket );
+            le_array_io_write( & er_data, LE_MODE_QUER, er_socket );
 
             /* read socket-array */
-            if ( le_array_io_get( & er_data, & er_dual, er_socket ) != LE_MODE_QUER ) {
+            if ( le_array_io_read( & er_data, er_socket ) != LE_MODE_QUER ) {
 
                 /* push message */
                 er_message = _LE_FALSE;
@@ -242,10 +241,10 @@
             le_address_serial( er_addr, & er_data, 0, _LE_SET );
 
             /* write socket-array */
-            le_array_io_put( & er_data, & er_dual, LE_MODE_QUER, er_socket );
+            le_array_io_write( & er_data, LE_MODE_QUER, er_socket );
 
             /* read socket-array */
-            if ( le_array_io_get( & er_data, & er_dual, er_socket ) != LE_MODE_QUER ) {
+            if ( le_array_io_read( & er_data, er_socket ) != LE_MODE_QUER ) {
 
                 /* push message */
                 er_message = _LE_FALSE;
@@ -328,10 +327,10 @@
             le_array_set_size( & er_auth, 0 );
 
             /* write authorisation array */
-            le_array_io_put( & er_auth, NULL, LE_MODE_AUTH, er_socket );
+            le_array_io_write( & er_auth, LE_MODE_AUTH, er_socket );
 
             /* read authorisation response */
-            if ( le_array_io_get( & er_auth, NULL, er_socket ) != LE_MODE_AUTH ) {
+            if ( le_array_io_read( & er_auth, er_socket ) != LE_MODE_AUTH ) {
 
                 /* display message */
                 lc_error( "unknown service" );

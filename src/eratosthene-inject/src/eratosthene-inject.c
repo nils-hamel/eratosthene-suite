@@ -35,7 +35,6 @@
         /* socket-array variables */
         le_array_t er_head = LE_ARRAY_C;
         le_array_t er_data = LE_ARRAY_C;
-        le_array_t er_dual = LE_ARRAY_C;
 
         /* message variable */
         le_enum_t er_message = EXIT_SUCCESS;
@@ -78,7 +77,7 @@
                         le_array_serial( & er_head, & er_time, sizeof( le_time_t ), 0, _LE_SET );
 
                         /* write socket-array */
-                        if ( le_array_io_put( & er_head, NULL, LE_MODE_INJE, er_socket ) != LE_MODE_INJE ) {
+                        if ( le_array_io_write( & er_head, LE_MODE_INJE, er_socket ) != LE_MODE_INJE ) {
 
                             /* display message */
                             lc_error( "request dispatch" );
@@ -92,7 +91,7 @@
                             le_array_set_size( & er_data, er_read );
 
                             /* write socket array */
-                            if ( le_array_io_put( & er_data, & er_dual, LE_MODE_INJE, er_socket ) != LE_MODE_INJE ) {
+                            if ( le_array_io_write( & er_data, LE_MODE_INJE, er_socket ) != LE_MODE_INJE ) {
 
                                 /* display message */
                                 lc_error( "data dispatch" );
@@ -103,7 +102,7 @@
                             } else {
 
                                 /* read socket-array */
-                                if ( le_array_io_get( & er_data, NULL, er_socket ) != LE_MODE_INJE ) {
+                                if ( le_array_io_read( & er_data, er_socket ) != LE_MODE_INJE ) {
 
                                     /* display message */
                                     lc_error( "synchronisation message" );
@@ -132,7 +131,6 @@
         /* delete socket array */
         le_array_delete( & er_head );
         le_array_delete( & er_data );
-        le_array_delete( & er_dual );
 
         /* send message */
         return( er_message );
@@ -169,7 +167,7 @@
             le_array_serial( & er_array, & er_time, sizeof( le_time_t ), 0, _LE_SET );
 
             /* write socket-array */
-            if ( le_array_io_put( & er_array, NULL, LE_MODE_OPTM, er_socket ) != LE_MODE_OPTM ) {
+            if ( le_array_io_write( & er_array, LE_MODE_OPTM, er_socket ) != LE_MODE_OPTM ) {
 
                 /* display message */
                 lc_error( "request dispatch" );
@@ -180,7 +178,7 @@
             } else {
 
                 /* read socket-array */
-                if ( le_array_io_get( & er_array, NULL, er_socket ) != LE_MODE_OPTM ) {
+                if ( le_array_io_read( & er_array, er_socket ) != LE_MODE_OPTM ) {
 
                     /* display message */
                     lc_error( "synchronisation message" );

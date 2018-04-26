@@ -319,7 +319,7 @@
         if ( ( er_serial = er_model_set_sync_pack( er_model ) ) > 0 ) {
 
             /* write socket-array on socket */
-            le_array_io_put( & er_model->md_addr, & er_model->md_dual, LE_MODE_QUER, er_model->md_sock );
+            le_array_io_write( & er_model->md_addr, LE_MODE_QUER, er_model->md_sock );
 
             /* parsing v-cell array segment */
             while ( er_parse < er_serial ) {
@@ -331,7 +331,7 @@
                 er_cell_set_zero( er_model->md_cell + er_model->md_free, ER_CELL_DIS );
 
                 /* read socket-array */
-                le_array_io_get( er_cell_get_array( er_model->md_cell + er_model->md_free ), & er_model->md_dual, er_model->md_sock );
+                le_array_io_read( er_cell_get_array( er_model->md_cell + er_model->md_free ), er_model->md_sock );
 
                 /* sychronise cell addres */
                 er_parse = er_cell_set_sync( er_model->md_cell + er_model->md_free, & er_model->md_addr, er_parse );
