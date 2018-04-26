@@ -216,8 +216,13 @@
                                 /* push address to v-cell array */
                                 er_cell_set_push( er_model->md_virt + er_model->md_push, er_enum );
 
-                                /* push deepest scale */
-                                if ( er_scale >= er_model->md_synb ) er_model->md_synb = er_scale + 1;
+                                /* search for deepest scale */
+                                if ( er_scale >= er_model->md_synb ) {
+
+                                    /* update deepest scale */
+                                    er_model->md_synb = er_scale + 1;
+
+                                }
 
                                 /* update synchronisation index */
                                 er_model->md_push ++;
