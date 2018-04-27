@@ -9,6 +9,8 @@
     CONFIG_CODE:=c
     CONFIG_TYPE:=libcommon
 
+    OPENMP=false
+
     MAKE_BINARY:=bin
     MAKE_DOCUME:=doc
     MAKE_LIBRAR:=lib
@@ -26,7 +28,7 @@
     MAKE_STABLD:=gcc-ar
     MAKE_DOCBLD:=doxygen
 
-    BUILD_FLAGS:=-Wall -funsigned-char -pedantic -O3  -flto
+    BUILD_FLAGS:=-Wall -funsigned-char -pedantic -O3 -flto
     BUILD_LINKD:=-flto
     BUILD_SUBMD:=
 

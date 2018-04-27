@@ -298,19 +298,14 @@
             /* execution loop */
             while ( er_client->cl_loops != ER_COMMON_EXIT ) {
 
-                /* principale execution loop */
-                while ( er_client->cl_loops == ER_COMMON_VIEW ) {
+                /* interface events procedure */
+                er_client_loops_event( er_client );
 
-                    /* interface events procedure */
-                    er_client_loops_event( er_client );
+                /* model display procedure */
+                er_client_loops_render( er_client );
 
-                    /* model display procedure */
-                    er_client_loops_render( er_client );
-
-                    /* swap buffers */
-                    SDL_GL_SwapWindow( er_window );
-
-                }
+                /* swap buffers */
+                SDL_GL_SwapWindow( er_window );
 
             }
 
@@ -319,13 +314,8 @@
             /* execution loop */
             while ( er_client->cl_loops != ER_COMMON_EXIT ) {
 
-                /* principale execution loop */
-                while ( er_client->cl_loops == ER_COMMON_VIEW ) {
-
-                    /* model update procedure */
-                    er_client_loops_update( er_client );
-
-                }
+                /* model update procedure */
+                er_client_loops_update( er_client );
 
             }
 

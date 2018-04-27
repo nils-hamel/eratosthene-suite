@@ -94,23 +94,10 @@
                             if ( le_array_io_write( & er_data, LE_MODE_INJE, er_socket ) != LE_MODE_INJE ) {
 
                                 /* display message */
-                                lc_error( "data dispatch" );
+                                lc_error( "data dispatch / server locked" );
 
                                 /* push message */
                                 er_message = EXIT_FAILURE;
-
-                            } else {
-
-                                /* read socket-array */
-                                if ( le_array_io_read( & er_data, er_socket ) != LE_MODE_INJE ) {
-
-                                    /* display message */
-                                    lc_error( "synchronisation message" );
-
-                                    /* push message */
-                                    er_message = EXIT_FAILURE;
-
-                                }
 
                             }
 
@@ -174,19 +161,6 @@
 
                 /* push message */
                 er_message = EXIT_FAILURE;
-
-            } else {
-
-                /* read socket-array */
-                if ( le_array_io_read( & er_array, er_socket ) != LE_MODE_OPTM ) {
-
-                    /* display message */
-                    lc_error( "synchronisation message" );
-
-                    /* push message */
-                    er_message = EXIT_FAILURE;
-
-                }
 
             }
 

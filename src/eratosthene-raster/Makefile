@@ -9,6 +9,8 @@
     CONFIG_CODE:=c
     CONFIG_TYPE:=suite
 
+    OPENMP=false
+
     MAKE_BINARY:=bin
     MAKE_DOCUME:=doc
     MAKE_LIBRAR:=lib
