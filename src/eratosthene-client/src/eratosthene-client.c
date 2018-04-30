@@ -419,6 +419,9 @@
         /* motion detection */
         if ( er_view_get_equal( & er_client->cl_push, & er_client->cl_view ) == _LE_FALSE ) {
 
+            /* push considered view */
+            er_client->cl_push = er_client->cl_view;
+
             /* retreive address times */
             er_enum = er_view_get_times( & er_client->cl_view );
 
@@ -430,9 +433,6 @@
 
             /* model/target fast synchronisation */
             er_model_set_fast( & er_client->cl_model );
-
-            /* push considered view */
-            er_client->cl_push = er_client->cl_view;
 
         }
 
@@ -472,6 +472,9 @@
         /* apply scale factor to projection matrix */
         glScaled( er_client->cl_scale, er_client->cl_scale, er_client->cl_scale );
 
+        /* enable depth test */
+        glEnable( GL_DEPTH_TEST );
+
         /* fog configuration */
         glFogf( GL_FOG_START, er_farc * 0.8 ), glFogf( GL_FOG_END, er_farc );
 
@@ -496,6 +499,9 @@
 
         /* set matrix to identity */
         glLoadIdentity();
+
+        /* disable depth test */
+        glDisable( GL_DEPTH_TEST );
 
         /* disable fog feature */
         glDisable( GL_FOG );

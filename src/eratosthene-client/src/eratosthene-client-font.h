@@ -236,7 +236,7 @@
      *  char width, height and count.
      *
      *  The font follows the ANSI standard char encoding. Nevertheless, it can
-     *  come with fewer char as indicated by the count field.
+     *  come with fewer characters, like ASCII, as indicated by the count field.
      *
      *  \var er_font_struct::ft_w
      *  Font character fixed width, in bits/pixels
@@ -268,7 +268,7 @@
      *
      *  \param er_font Font structure
      *
-     *  \return Returns the font char width
+     *  \return Returns the font char width, in bits/pixels
      */
 
     le_size_t er_font_get_width( er_font_t const * const er_font );
@@ -280,7 +280,7 @@
      *
      *  \param er_font Font structure
      *
-     *  \return Returns the font char height
+     *  \return Returns the font char height, in bits/pixels
      */
 
     le_size_t er_font_get_height( er_font_t const * const er_font );

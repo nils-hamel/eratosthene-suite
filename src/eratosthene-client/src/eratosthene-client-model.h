@@ -162,8 +162,8 @@
      *  Cells stack (target)
      *  \var er_model_struct::md_addr
      *  Communication socket-array
-     *  \var er_model_struct::md_dual
-     *  Communication socket-array
+     *  \var er_model_struct::_status
+     *  Standard status field
      */
 
     typedef struct er_model_struct {

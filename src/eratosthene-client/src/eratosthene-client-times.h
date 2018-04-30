@@ -122,6 +122,8 @@
      *  Time interface horizontal middle position - buffer & screen position
      *  \var er_times_struct::tm_font
      *  Interface font structure
+     *  \var er_times_struct::_status
+     *  Standard status field
      */
 
     typedef struct er_times_struct {

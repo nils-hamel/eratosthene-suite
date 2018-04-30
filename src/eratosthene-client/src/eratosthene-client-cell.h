@@ -91,8 +91,8 @@
      *
      *  The structure contains also an array structure that holds the actual
      *  data of the cell. This array is used by the model update process to
-     *  retrieve and decompress the data coming from the remote server. It is
-     *  also used by the graphical process to display the cell content.
+     *  retrieve the data coming from the remote server. It is also used by the
+     *  graphical process to display the cell content.
      *
      *  The last field hold by the structure is the cell edge. This vector is
      *  used to translate the coordinates contained in the cell data array to
@@ -150,10 +150,10 @@
     /*! \brief accessor methods
      *
      *  This function returns the bits of the cell flag field corresponding to
-     *  the provided bit pattern \b er_state.
+     *  the provided bits pattern \b er_state.
      *
      *  Practically, the function performs a logical and between the cell flag
-     *  field and the provided bit pattern.
+     *  field and the provided bits pattern.
      *
      *  \param er_cell  Cell structure
      *  \param er_state Bits pattern
@@ -164,13 +164,13 @@
     /*! \brief accessor methods
      *
      *  This function compares the two provided cell addresses and return the
-     *  _LE_TRUE value if both address are strictly identical and _LE_FALSE
+     *  _LE_TRUE value if both addresses are strictly identical and _LE_FALSE
      *  otherwise.
      *
      *  \param er_cell Cell structure
      *  \param er_targ Cell structure
      *
-     *  \return Returns _LE_TRUE on address identity, _LE_FALSE otherwise
+     *  \return Returns _LE_TRUE on addresses identity, _LE_FALSE otherwise
      */
 
     le_enum_t er_cell_get_equal( er_cell_t const * const er_cell, er_cell_t const * const er_targ );
@@ -184,19 +184,19 @@
      *  \param er_cell Cell structure
      *  \param er_addr Address structure
      *
-     * \return Returns _LE_TRUE on identity, _LE_FALSE otherwise
+     * \return Returns _LE_TRUE on addresses identity, _LE_FALSE otherwise
      */
 
     le_enum_t er_cell_get_drop( er_cell_t const * const er_cell, le_address_t const * const er_addr );
 
     /*! \brief accessor methods
      *
-     *  This function returns the number of points contained in the cell data
-     *  array.
+     *  This function returns the number of points, that is the number of UF3
+     *  records contained in the cell data array.
      *
      *  \param er_cell Cell structure
      *
-     *  \return Cell points (UF3 records) count
+     *  \return Cell number of points - UF3 records
      */
 
     le_size_t er_cell_get_record( er_cell_t const * const er_cell );
@@ -208,7 +208,7 @@
      *
      *  \param er_cell Cell structure
      *
-     *  \return Returns cell address size
+     *  \return Returns cell address size - number of digit
      */
 
     le_size_t er_cell_get_size( er_cell_t const * const er_cell );
@@ -258,7 +258,7 @@
      *
      *  This function allows to serialise the provided cell address structure
      *  in the provided array at the specified offset. After serialisation, the
-     *  function returns the next serialisation offset.
+     *  function returns the next serialisation offset of the array.
      *
      *  \param er_cell   Cell structure
      *  \param er_array  Array structure
@@ -271,7 +271,8 @@
 
     /*! \brief accessor methods
      *
-     *  This function returns the socket-array of the provided cell.
+     *  This function returns the pointer to the socket-array of the provided
+     *  cell.
      *
      *  \param  er_cell Cell structure
      *
@@ -334,7 +335,7 @@
     /*! mutator methods
      *
      *  This function process the array received from the remote server after
-     *  a query.
+     *  a query of the provided cell.
      *
      *  The cell edge position is computed by considering the array first point.
      *  It is then converted from the geographic coordinates to Cartesian
@@ -342,7 +343,7 @@
      *
      *  The rest of the point contained in the array are then processed. Each
      *  point is converted, in terms if its coordinates, from geographic to
-     *  Cartesian, as expected by the display functions.
+     *  Cartesian coordinates, as expected by the display functions.
      *
      *  The incoming array is assumed to provided the longitude, in radian, the
      *  latitude, in radian, and the height above the WGS84 ellipsoid, expressed

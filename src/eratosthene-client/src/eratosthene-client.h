@@ -159,7 +159,7 @@
      *  \var er_client_struct::cl_socket
      *  Client socket
      *  \var er_client_struct::cl_loops
-     *  Execution loop mode
+     *  Execution loop state
      *  \var er_client_struct::cl_model
      *  Model management sub-structure
      *  \var er_client_struct::cl_times
@@ -180,6 +180,8 @@
      *  Point of view inertia factor
      *  \var er_client_struct::cl_scale
      *  Model dynamic scale factor
+     *  \var er_client_struct::_status
+     *  Standard status field
      */
 
     typedef struct er_client_struct {
@@ -234,11 +236,9 @@
     /*! \brief constructor/destructor methods
      *
      *  This function deletes the provided client structure. It deletes the
-     *  sub-modules structure using their related deletion functions.
-     *
-     *  The socket to the remote server is deleted after having sent the server
-     *  termination request. It then clears the structure fields using default
-     *  values.
+     *  sub-modules structures using their related deletion functions. The
+     *  socket toward the remote server is closed and the structure fields are
+     *  cleared.
      *
      *  \param er_client Client structure
      */
@@ -247,21 +247,21 @@
 
     /*! \brief main method
      *
-     *  The eratosthene-client software allows to query and display a four
-     *  dimensional model of the earth :
+     *  The main function allows to query and display a four dimensional model
+     *  of the earth :
      *
-     *      ./eratosthene-client --ip/-i --port/-p
+     *      ./-client --ip/-i, --port/-p [remote server access]
      *
      *  The main function starts by creating the graphical context of the
-     *  client by creating the display window. It also configure its graphical
-     *  context.
+     *  client by creating the display window. It also configure the opengl
+     *  graphical context.
      *
      *  It then initialises the client main structure that is responsible of
-     *  sub-structure creation and connection to the remove server creation. The
-     *  IP address of the remote server is provided through the --ip argument
-     *  while the service port is set through the --port argument.
+     *  sub-structures creation and connection to the remove server creation.
+     *  The IP address of the remote server is provided through the '--ip'
+     *  argument while the service port is set through the '--port' argument.
      *
-     *  As both graphical client and client structure are created, the main
+     *  As both graphical context and client structure are created, the main
      *  function invoke the function responsible of the main execution loop and
      *  thread management.
      *
@@ -278,27 +278,18 @@
 
     /*! \brief loop methods
      *
-     *  This function is responsible of the OpenGL configuration and the threads
-     *  and execution loops management.
+     *  This function is responsible of the OpenGL configuration and the main
+     *  loops management.
      *
      *  Two threads are instanced by this function. The principal thread is
      *  responsible of the graphical process of the client. The secondary thread
      *  is responsible of the earth model update according to the motion of the
-     *  point of view. When the 'movie' mode is enabled, the secondary thread
-     *  remains in idle mode while the principal thread is in charge of both
-     *  graphical and update processes, in addition to the automatic motion of
-     *  the point of view.
+     *  point of view.
      *
      *  The user events are processed through the principal thread. As an event
      *  is catch, the specialised callback process are called to handle the
-     *  event.
-     *
-     *  Three execution mode are implemented. The standard mode is enable to
-     *  ensure the display and update of the earth model according to the point
-     *  of view motion. The 'movie' mode is triggered to produce video frames
-     *  along the pushed point of views stack. The last mode, called the 'exit'
-     *  mode tells the thread to stop their process to allow the end of the
-     *  execution of the client.
+     *  event. The user events are also used to interrupt the main loop causing
+     *  the function to exit.
      *
      *  \param er_client Client structure
      *  \param er_window SDL window structure
@@ -362,7 +353,8 @@
      *
      *  It applies a projection matrix with dynamic near and far planes driven
      *  by specific functions of the geodesy module. Using the geodesy module
-     *  function, is also computes and applies the model scale factor.
+     *  functions, is also computes and applies the model scale factor. Finally,
+     *  the function enables the OpenGL depth test.
      *
      *  This function also manage the dynamic configuration of the OpenGL fog
      *  and enable it.
@@ -378,7 +370,7 @@
      *  time navigation interface display.
      *
      *  It applies an orthogonal projection matrix used by the time module to
-     *  render the time interface.
+     *  render the time interface. It also disable the OpenGL depth test.
      *
      *  This function also disable the OpenGL fog.
      *
@@ -405,7 +397,7 @@
      *  This function implements the mouse wheel callback function.
      *
      *  Depending on the keyboard modifier state, the function updates the time
-     *  or the point of view.
+     *  position, the time area range or the spatial position.
      *
      *  \param er_event  SDL event structure
      *  \param er_client Client structure
@@ -417,8 +409,8 @@
      *
      *  This function implements the mouse button callback function.
      *
-     *  Depending on the mouse button state, this function computes the point of
-     *  view inertia factor and update the position of the click.
+     *  Depending on the mouse button state, stacks the middle position of the
+     *  screens and moves the mouse cursor to this position.
      *
      *  \param er_event  SDL event structure
      *  \param er_client Client structure
@@ -430,8 +422,10 @@
      *
      *  This function implements the mouse button callback function.
      *
-     *  Depending on the mouse button state, this function updates the point of
-     *  view.
+     *  Depending on the mouse button state, the function updates the point of
+     *  view position or orientation. In addition, the function also moves the
+     *  position of the mouse cursor to implement a virtual limit-less screen,
+     *  allowing infinite motion.
      *
      *  \param er_event  SDL event structure
      *  \param er_client Client structure
