@@ -176,7 +176,7 @@
      *  The main function searches in the arguments and parameters the switches
      *  that are used to determine the execution mode :
      *
-     *      ./*-address --time/-t, --space/-s [execution switch]
+     *      ./-address --time/-t, --space/-s [execution switch]
      *                  --date/-d [date specification]
      *                  --scale/-s [index scale specification]
      *                  --longitude/-l

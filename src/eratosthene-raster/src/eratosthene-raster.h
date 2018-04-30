@@ -83,8 +83,8 @@
     header - inclusion guard
  */
 
-    # ifndef __ER_ISOMETRY__
-    # define __ER_ISOMETRY__
+    # ifndef __ER_RASTER__
+    # define __ER_RASTER__
 
 /*
     header - C/C++ compatibility
@@ -153,10 +153,10 @@
      *  array. The array has to be the answered array by a remote server using
      *  the provided address structure as query.
      *
-     *  The function parses the array points and compose a binary 3D raster that
-     *  it exports using the provided path. The raster size, in terms of array,
-     *  boundaries, corresponds to two to the power of the address span. Each
-     *  point of the array is then placed in the raster according to its
+     *  The function parses the array points and composes the binary 3D raster
+     *  that it exports using the provided path. The raster size, in terms of
+     *  array, boundaries, corresponds to two to the power of the address span.
+     *  Each point of the array is then placed in the raster according to its
      *  position in the limit of the discretisation of the spatial index and
      *  span.
      *
@@ -189,12 +189,12 @@
      *  to an empty cell, it follows that any of its subsequent cell is empty
      *  and the address is dropped from enumeration.
      *
-     *  \param er_addr   Enumeration address
+     *  \param er_addr   Address structure (enumeration)
      *  \param er_scale  Current scale
      *  \param er_target Target scale
      *  \param er_limit  Exportation limit
      *  \param er_path   Exportation directory path
-     *  \param er_socket Socket to the remove server
+     *  \param er_socket Socket to the remote server
      *
      *  \return Returns _LE_TRUE on success, _LE_FALSE otherwise
      */
@@ -203,15 +203,19 @@
 
     /*! \brief main function
      *
-     *  This software is used to compute and export rasters from the cells
-     *  queried to the specified remote server :
+     *  This software is used to compute and export rasters from cells queried
+     *  to the specified remote server :
      *
-     *      ./eratosthene-raster --query/-q --depth/-d --export/-e --limit/-l
-     *                           --ip/-i --port/-p
+     *      ./-raster --ip/-i, --port/-p [remote server access]
+     *                 --query/-q [query string specification]
+     *                 --depth/-d [enumeration depth specification]
+     *                 --export/-e [raster exportation path]
+     *                 --limit/-l [raster minimal size]
      *
      *  The main function starts by establishing a connection to the remote
      *  server using the provided ip address and port number. The main function
-     *  performs the authentication procedure.
+     *  performs the authentication procedure to retrieve the parameter of the
+     *  server configuration.
      *
      *  The main function then reads the provided address strings and depth
      *  value that is uses to invoke the raster enumeration procedure. The
@@ -220,7 +224,7 @@
      *  perform query and to compute the subsequent rasters.
      *
      *  In addition, the limit value provided as parameter is also sent to the
-     *  enumeration process. This value is used to discard all cell that have
+     *  enumeration process. This value is used to discard all cells that have
      *  an amount of point that is less than the limit value. The default value
      *  is zero, meaning all cells are used to compute and export raster, even
      *  when empty.

@@ -174,7 +174,7 @@
      *  The main function is responsible of models injection and optimisation in
      *  the remote server :
      *
-     *      ./*-inject --inject/-j, --optimise/-o [execution switch]
+     *      ./-inject --inject/-j, --optimise/-o [execution switch]
      *                 --ip/-i, --port/-p [remote server access]
      *                 --time/-t [time specification]
      *                 --uf3 [model file path specification]
