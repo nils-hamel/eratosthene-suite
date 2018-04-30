@@ -210,7 +210,7 @@
         } else {
 
             /* flags detection */
-            if ( lc_read_flag( argc, argv, "--inject", "-i" ) == LC_TRUE ) {
+            if ( lc_read_flag( argc, argv, "--inject", "-j" ) == LC_TRUE ) {
 
                 /* switch on format */
                 if ( ( er_path = ( le_char_t * ) lc_read_string( argc, argv, "--uf3", "" ) ) != NULL ) {

@@ -130,7 +130,7 @@
     header - function prototypes
  */
 
-    /*! \brief injection procedure
+    /*! \brief injection method - uf3
      *
      *  This function is responsible of data injection in the specified server
      *  that come from a file of format uf3 (universal format 3-bytes).
@@ -140,7 +140,7 @@
      *  It then starts to read the file content by chunks and sends them to
      *  the remote server using the provided socket.
      *
-     *  The injection time has to be provided in UTC through a UNIX timestamp
+     *  The injection time has to be provided in UTC through a UNIX timestamps
      *  format.
      *
      *  \param er_path   UF3 stream path
@@ -152,20 +152,49 @@
 
     le_enum_t er_inject_uf3( le_char_t const * const er_path, le_time_t er_time, le_sock_t const er_socket );
 
-    /* *** */
+    /*! \brief injection method - uf3
+     *
+     *  This function is responsible of asking the optimisation of the storage
+     *  of data pointed by the provided timestamps in the remote server.
+     *
+     *  The function prepares the optimisation query by packing the provided
+     *  time and sends it to the remote server to trigger the time storage unit
+     *  optimisation. The function exits immediately after sending the query.
+     *
+     *  \param er_time   Injection time
+     *  \param er_socket Remote server socket
+     *
+     *  \return Returns EXIT_SUCCESS on success, EXIT_FAILURE otherwise
+     */
 
     le_enum_t er_inject_optimise( le_time_t er_time, le_sock_t const er_socket );
 
     /*! \brief main function
      *
-     *  The main function reads the arguments and parameters to retrieve the
-     *  remote server IP address and service port. It also search for the
-     *  injection time, given as a UNIX timestamp string.
+     *  The main function is responsible of models injection and optimisation in
+     *  the remote server :
      *
-     *  It the creates a socket toward the remote server. After connection
-     *  establishment, the function calls the specific injection function
-     *  \b er_inject_uf3() searching for the UF3 path in the arguments and
-     *  parameters.
+     *      ./*-inject --inject/-j, --optimise/-o [execution switch]
+     *                 --ip/-i, --port/-p [remote server access]
+     *                 --time/-t [time specification]
+     *                 --uf3 [model file path specification]
+     *
+     *  The main function starts by reading the remote server access elements
+     *  and creates a connection toward it.
+     *
+     *  If the '--inject' execution switch is found, the main function invokes
+     *  the specialised injection process. This process expects the time and
+     *  model path specification to perform the injection.
+     *
+     *  If the '--optimise' execution switch is found, the main function invokes
+     *  the specialised optimisation function. The procedure only expects a time
+     *  specification.
+     *
+     *  Considering a specified time value and a model path, both injection and
+     *  optimisation switch can be provided. The main function starts by the
+     *  injection of the model and the triggers the optimisation process in a
+     *  single execution. If no execution switch is provided, the connection is
+     *  created and immediately closed, doing nothing toward the server.
      *
      *  \param argc Main function parameters
      *  \param argv Main function parameters
