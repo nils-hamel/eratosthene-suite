@@ -305,7 +305,7 @@
         le_size_t er_parse = 0;
 
         /* check synchronisation state */
-        if ( ( er_model->md_syna == er_model->md_push ) && ( er_model->md_synb == ER_COMMON_ENUM ) ) {
+        if ( er_model->md_synb < ER_COMMON_ENUM ) {
 
             /* send message */
             return( _LE_TRUE );
@@ -354,7 +354,7 @@
         }
 
         /* check synchronisation state */
-        if ( ( er_model->md_syna == er_model->md_push ) && ( er_model->md_synb == ER_COMMON_ENUM ) ) {
+        if ( er_model->md_synb < ER_COMMON_ENUM ) {
 
             /* processs d-cell array tail */
             er_model_set_sync_tail( er_model );
@@ -373,7 +373,7 @@
         le_size_t er_serial = 0;
 
         /* parsing v-cell array segment */
-        while ( ( er_model->md_syna < er_model->md_push ) && ( er_model->md_synb > ER_COMMON_ENUM ) && ( er_serial < LE_ARRAY_ADDR * ER_COMMON_PACK ) ) {
+        while ( ( er_model->md_synb >= ER_COMMON_ENUM ) && ( er_serial < LE_ARRAY_ADDR * ER_COMMON_PACK ) ) {
 
             /* select unsynchronised v-cell */
             if ( er_cell_get_flag( er_model->md_virt + er_model->md_syna, ER_CELL_SYN ) != ER_CELL_SYN ) {
@@ -398,12 +398,10 @@
             if ( ( ++ er_model->md_syna ) == er_model->md_push ) {
 
                 /* update synchronisation index */
-                if ( ( -- er_model->md_synb ) > ER_COMMON_ENUM ) {
+                er_model->md_synb --;
 
-                    /* reset synchronisation index */
-                    er_model->md_syna = 0;
-
-                }
+                /* reset synchronisation index */
+                er_model->md_syna = 0;
 
             }
 
