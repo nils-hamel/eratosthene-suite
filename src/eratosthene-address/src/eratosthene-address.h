@@ -163,7 +163,7 @@
      *  the provided date and converts it into a UNIX timestamps. After the
      *  conversion, the function displays the result on the standard output.
      *
-     *  The date has to be provided following the pattern : YYYY-MM-DD-hh-mm-ss
+     *  The date has to be provided following the pattern : YYYY-MM-DD-hh-mm-ss.
      *
      *  \param argc Main function parameters
      *  \param argv Main function parameters
@@ -173,9 +173,23 @@
 
     /*! \brief main function
      *
-     *  The main function searches in the arguments and parameters the execution
-     *  switches. Depending on the provided switch, the main function calls the
-     *  related specialised process.
+     *  The main function searches in the arguments and parameters the switches
+     *  that are used to determine the execution mode :
+     *
+     *      ./*-address --time/-t, --space/-s [execution switch]
+     *                  --date/-d [date specification]
+     *                  --scale/-s [index scale specification]
+     *                  --longitude/-l
+     *                  --latitude/-a
+     *                  --altitude/-h [geographic coordinates specification]
+     *
+     *  If the '--space' switch is found, the main function invokes the spatial
+     *  index computation function. It expects the 'scale' parameters and a
+     *  geographic position through its coordinates.
+     *
+     *  If the '--time' switch is found, the main function invokes the date
+     *  conversion function. It expects a date specification according to the
+     *  specialised function format.
      *
      *  \param argc Main function parameters
      *  \param argv Main function parameters
