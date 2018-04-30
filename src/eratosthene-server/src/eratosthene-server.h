@@ -129,13 +129,18 @@
 
     /*! \brief main function
      *
-     *  The main function creates an instance of the eratosthene server. It
-     *  reads the storage path and the service port from the provided arguments
-     *  and parameters to create the server instance structure.
+     *  The main function instance an eratosthene server that points on the
+     *  provided storage structure path :
      *
-     *  It then calls the server main function responsible of client connections
-     *  management and client thread creation. The server structure is then
-     *  deleted using its specific method.
+     *      ./-server --path/-p [storage structure path]
+     *                --port/-t [service port specification]
+     *
+     *  After arguments and parameters reading, the main function creates the
+     *  server main structure. The server main instance function is then called
+     *  establishing the services.
+     *
+     *  As the main server instance exits, the main function deletes the server
+     *  structure and exits.
      *
      *  \param argc Main function parameters
      *  \param argv Main function parameters
