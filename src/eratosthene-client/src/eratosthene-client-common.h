@@ -21,7 +21,7 @@
     /*! \file   eratosthene-client-common.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  eratosthene-suite - client - common header
+     *  eratosthene-suite - client - common
      */
 
 /*
@@ -62,42 +62,38 @@
  */
 
     /* define execution modes */
-    # define ER_COMMON_EXIT    ( 0x00 )
-    # define ER_COMMON_VIEW    ( 0x01 )
+    # define ER_COMMON_EXIT  ( 0x00 )
+    # define ER_COMMON_VIEW  ( 0x01 )
 
     /* define trigonometric factors */
-    # define ER_COMMON_D2R     ( 3.1415926535 / 180.0 )
-    # define ER_COMMON_R2D     ( 180.0 / 3.1415926535 )
+    # define ER_COMMON_D2R   ( 3.1415926535 / 180.0 )
+    # define ER_COMMON_R2D   ( 180.0 / 3.1415926535 )
 
     /* define time range */
-    # define ER_COMMON_LIMIT   ( _LE_TIME_L( 28382400000000 ) )
+    # define ER_COMMON_LIMIT ( _LE_TIME_L( 28382400000000 ) )
 
     /* define inertial coefficients */
-    # define ER_COMMON_INE     ( 1.0 / 100.0 )
-    # define ER_COMMON_IML     ( 1.0 / 8.0 )
-    # define ER_COMMON_IMU     ( 8.0 )
-    # define ER_COMMON_INP     ( 2.0 * LE_PI / ( LE_ADDRESS_WGS_A * 180.0 ) )
-    # define ER_COMMON_INR     ( 1.0 / 800.0 )
+    # define ER_COMMON_INE   ( 1.0 / 100.0 )
+    # define ER_COMMON_IML   ( 1.0 / 8.0 )
+    # define ER_COMMON_IMU   ( 8.0 )
+    # define ER_COMMON_INP   ( 2.0 * LE_PI / ( LE_ADDRESS_WGS_A * 180.0 ) )
+    # define ER_COMMON_INR   ( 1.0 / 800.0 )
 
     /* define altitude clamped range */
-    # define ER_COMMON_ALL     ( LE_ADDRESS_WGS_A * 0.75 )
-    # define ER_COMMON_ALU     ( LE_ADDRESS_WGS_A * 3.00 )
+    # define ER_COMMON_ALL   ( LE_ADDRESS_WGS_A * 0.75 )
+    # define ER_COMMON_ALU   ( LE_ADDRESS_WGS_A * 3.00 )
 
     /* define model parameters */
-    # define ER_COMMON_ENUM    (  4 )
-    # define ER_COMMON_SPAN    (  7 )
-    # define ER_COMMON_PACK    ( 16 )
-
-    /* define mouse button */
-    # define ER_COMMON_WUP     ( 3 )
-    # define ER_COMMON_WDOWN   ( 4 )
+    # define ER_COMMON_ENUM  (  4 )
+    # define ER_COMMON_SPAN  (  7 )
+    # define ER_COMMON_PACK  ( 16 )
 
     /* define keyboard modifiers */
-    # define ER_COMMON_KMALL   ( KMOD_LCTRL | KMOD_LALT | KMOD_LSHIFT )
-    # define ER_COMMON_KMAAC   ( KMOD_LCTRL | KMOD_LALT )
-    # define ER_COMMON_KMCTL   ( KMOD_LCTRL )
-    # define ER_COMMON_KMALT   ( KMOD_LALT )
-    # define ER_COMMON_KMSHF   ( KMOD_LSHIFT )
+    # define ER_COMMON_KMALL ( KMOD_LCTRL | KMOD_LALT | KMOD_LSHIFT )
+    # define ER_COMMON_KMAAC ( KMOD_LCTRL | KMOD_LALT )
+    # define ER_COMMON_KMCTL ( KMOD_LCTRL )
+    # define ER_COMMON_KMALT ( KMOD_LALT )
+    # define ER_COMMON_KMSHF ( KMOD_LSHIFT )
 
 /*
     header - preprocessor macros

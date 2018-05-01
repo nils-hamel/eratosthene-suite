@@ -21,7 +21,7 @@
     /*! \file   eratosthene-client-font.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  eratosthene-suite - client - font module
+     *  eratosthene-suite - client - font
      */
 
 /*

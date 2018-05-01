@@ -25,7 +25,7 @@
     /*! \file   eratosthene-client-model.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  eratosthene-suite - client - model module
+     *  eratosthene-suite - client - model
      */
 
 /*

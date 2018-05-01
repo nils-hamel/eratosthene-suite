@@ -21,7 +21,7 @@
     /*! \file   common-time.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  eratosthene-suite - common library - times module
+     *  eratosthene-suite - common library - time
      */
 
 /*

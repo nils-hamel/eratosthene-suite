@@ -21,7 +21,7 @@
     /*! \file   common-include.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  eratosthene-suite - common library - inclusion module
+     *  eratosthene-suite - common library - include
      */
 
 /*
