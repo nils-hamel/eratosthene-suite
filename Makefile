@@ -1,92 +1,125 @@
-
 #
-#   make - Configuration
-#
-
-    MAKE_BINARY:=bin
-    MAKE_DOCENT:=doc
-    MAKE_LIBRAR:=lib
-    MAKE_SOURCE:=src
-    MAKE_INPATH:=/media/dhlab-linux/bin/eratosthene-suite/bin
-    MAKE_CMCOPY:=cp
-    MAKE_CMRMFL:=rm -f
-    MAKE_CMMKDR:=mkdir -p
-    MAKE_CMMKLN:=ln -sf
-
-    BUILD_SUBMD:=$(MAKE_LIBRAR)/liberatosthene $(MAKE_LIBRAR)/libcommon
-
-#
-#   make - Modules
+#   makefile - configuration
 #
 
-    MAKE_MODULE:=$(foreach LIBS, $(BUILD_SUBMD), $(if $(findstring /lib/, $(LIBS)), , $(LIBS)))
+    # LANG = c/cpp
+    # TYPE = suite-base/suite/library
+    MAKE_NAME:=eratosthene-suite
+    MAKE_LANG:=c
+    MAKE_TYPE:=suite-base
+
+    MAKE_DBIN:=bin
+    MAKE_DDOC:=doc
+    MAKE_DLIB:=lib
+    MAKE_DSRC:=src
+    MAKE_DOBJ:=obj
+
+    MAKE_CMKD:=mkdir -p
+    MAKE_CRMF:=rm -f
+    MAKE_CRMD:=rm -rf
+
+    MAKE_CCMP:=gcc
+    MAKE_CLNK:=gcc-ar rcs
+    MAKE_CDOC:=doxygen
+
+    MAKE_FCMP:=
+    MAKE_FLNK:=
 
 #
-#   make - Enumeration
+#   makefile - configuration
 #
 
-    MAKE_BUILDS:=$(notdir $(wildcard $(MAKE_SOURCE)/*) )
+ifeq ($(MAKE_TYPE),suite)
+    MAKE_SWAP:=../../
+else
+    MAKE_SWAP:=
+endif
+    MAKE_SUBS:=$(wildcard $(MAKE_SWAP)$(MAKE_DLIB)/*)
+    MAKE_SEGS:=$(wildcard $(MAKE_DSRC)/*)
+    MAKE_FSRC:=$(wildcard $(MAKE_DSRC)/*.$(MAKE_LANG))
+    MAKE_FOBJ:=$(addprefix $(MAKE_DOBJ)/,$(addsuffix .o,$(notdir $(basename $(MAKE_FSRC)))))
+ifeq ($(MAKE_TYPE),suite)
+    MAKE_FLNK:=$(addsuffix /bin/*.a,$(MAKE_SUBS)) $(MAKE_FLNK)
+else
+ifeq ($(MAKE_TYPE),library)
+    MAKE_FLNK:=$(addsuffix /bin/*.a,$(MAKE_SUBS))
+endif
+endif
+    MAKE_FCMP:=$(MAKE_FCMP) $(addprefix -I$(MAKE_LIB),$(addsuffix /src,$(MAKE_SUBS)))
 
 #
-#   make - Targets
+#   makefile - target
 #
 
-    all:make-directories make-modules make-build
-    build:make-directories make-build
-    modules:make-modules
-    documentation:make-directories make-documentation
-    clean:make-clean
-    clean-all:make-clean make-clean-modules
-    clean-modules:make-clean-modules
-    clean-documentation:make-clean-documentation
-    install:make-install
-    uninstall:make-uninstall
+    all:module build
+    clean-all:clean clean-module
+    module:make-module
+    clean-module:make-clean-module
+ifeq ($(MAKE_TYPE),suite-base)
+    build:make-base
+    clean:make-clean-base
+    doc:make-module-doc make-segment-doc
+    clean-doc:make-clean-module-doc make-clean-segment-doc
+else
+    build:make-directories make-$(MAKE_NAME)
+    clean:make-clean-$(MAKE_NAME)
+    all-doc:doc module-doc
+    clean-all-doc:clean-doc clean-module-doc
+    doc:make-doc
+    clean-doc:make-clean-doc
+    module-doc:make-module-doc
+    clean-module-doc:make-clean-module-doc
+endif
 
 #
-#   make - Directives
+#   makefile - directive
 #
 
-    make-build:
-	@$(foreach SOFT, $(MAKE_BUILDS), $(MAKE) -C $(MAKE_SOURCE)/$(SOFT) all OPENMP=$(OPENMP) && $(MAKE_CMCOPY) $(MAKE_SOURCE)/$(SOFT)/$(MAKE_BINARY)/$(SOFT) $(MAKE_BINARY)/ && ) true
+    make-$(MAKE_NAME):$(MAKE_FOBJ)
+ifeq ($(MAKE_TYPE),suite)
+	$(MAKE_CCMP) -o $(MAKE_DBIN)/$(MAKE_NAME) $^ $(MAKE_FLNK)
+else
+ifeq ($(MAKE_TYPE),library)
+	$(MAKE_CLNK) $(MAKE_DBIN)/$(MAKE_NAME).a $^ $(MAKE_FLNK)
+endif
+endif
 
-    make-modules:
-	@$(foreach LIBS, $(MAKE_MODULE), $(MAKE) -C $(LIBS) all OPENMP=$(OPENMP) && ) true
+    $(MAKE_DOBJ)/%.o:$(MAKE_DSRC)/%.$(MAKE_LANG)
+	$(MAKE_CCMP) -c -o $@ $< $(MAKE_FCMP)
 
-    make-documentation:
-	@$(foreach SOFT, $(MAKE_BUILDS), $(MAKE) -C $(MAKE_SOURCE)/$(SOFT) documentation && $(MAKE_CMMKLN) ../../$(MAKE_SOURCE)/$(SOFT)/$(MAKE_DOCENT)/html $(MAKE_DOCENT)/html/$(SOFT) && ) true
-	@$(foreach LIBS, $(MAKE_MODULE), $(MAKE) -C $(LIBS) documentation && ) true
+    make-clean-$(MAKE_NAME):
+	$(MAKE_CRMF) $(MAKE_DBIN)/* $(MAKE_DOBJ)/*
 
-#
-#   make - Cleaning
-#
+    make-base:
+	@$(foreach LIB, $(MAKE_SEGS), $(MAKE) -C $(LIB) build && ) true
 
-    make-clean:
-	$(MAKE_CMRMFL) $(MAKE_BINARY)/*
-	@$(foreach SOFT, $(MAKE_BUILDS), $(MAKE) -C $(MAKE_SOURCE)/$(SOFT) clean && ) true
+    make-clean-base:
+	@$(foreach LIB, $(MAKE_SEGS), $(MAKE) -C $(LIB) clean && ) true
 
-    make-clean-modules:
-	@$(foreach LIBS, $(MAKE_MODULE), $(MAKE) -C $(LIBS) clean-all && ) true
+    make-module:
+	@$(foreach LIB, $(MAKE_SUBS), $(MAKE) -C $(LIB) all && ) true
 
-    make-clean-documentation:
-	$(MAKE_CMRMFL) $(MAKE_DOCENT)/html/*
-	@$(foreach SOFT, $(MAKE_BUILDS), $(MAKE) -C $(MAKE_SOURCE)/$(SOFT) clean-documentation && ) true
-	@$(foreach LIBS, $(MAKE_MODULE), $(MAKE) -C $(LIBS) clean-documentation && ) true
+    make-clean-module:
+	@$(foreach LIB, $(MAKE_SUBS), $(MAKE) -C $(LIB) clean-all && ) true
 
-#
-#   make - Implementation
-#
+    make-doc:
+	$(MAKE_CDOC)
 
-    make-install:
-	$(MAKE_CMMKDR) $(MAKE_INPATH)
-	@$(foreach SOFT, $(MAKE_BUILDS), $(MAKE) -C $(MAKE_SOURCE)/$(SOFT) install && ) true
+    make-clean-doc:
+	$(MAKE_CRMD) $(MAKE_DDOC)/html
 
-    make-uninstall:
-	@$(foreach SOFT, $(MAKE_BUILDS), $(MAKE) -C $(MAKE_SOURCE)/$(SOFT) uninstall && ) true
+    make-module-doc:
+	@$(foreach LIB, $(MAKE_SUBS), $(MAKE) -C $(LIB) all-doc && ) true
 
-#
-#   make - Directories
-#
+    make-clean-module-doc:
+	@$(foreach LIB, $(MAKE_SUBS), $(MAKE) -C $(LIB) clean-all-doc && ) true
+
+    make-segment-doc:
+	@$(foreach SEG, $(MAKE_SEGS), $(MAKE) -C $(SEG) doc && ) true
+
+    make-clean-segment-doc:
+	@$(foreach SEG, $(MAKE_SEGS), $(MAKE) -C $(SEG) clean-doc && ) true
 
     make-directories:
-	$(MAKE_CMMKDR) $(MAKE_BINARY) $(MAKE_DOCENT) $(MAKE_DOCENT)/html
+	$(MAKE_CMKD) $(MAKE_DBIN) $(MAKE_DDOC) $(MAKE_DOBJ)
 

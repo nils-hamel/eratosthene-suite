@@ -86,10 +86,6 @@
     # ifndef __ER_CLIENT__
     # define __ER_CLIENT__
 
-    # ifndef __OPENMP__
-    # error "OpenMP required"
-    # endif
-
 /*
     header - C/C++ compatibility
  */

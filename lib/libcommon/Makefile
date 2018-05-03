@@ -1,227 +1,125 @@
-
-    include Version
-
 #
-#   make - Configuration
+#   makefile - configuration
 #
 
-    CONFIG_NAME:=libcommon
-    CONFIG_CODE:=c
-    CONFIG_TYPE:=libcommon
+    # LANG = c/cpp
+    # TYPE = suite-base/suite/library
+    MAKE_NAME:=libcommon
+    MAKE_LANG:=c
+    MAKE_TYPE:=library
 
-    OPENMP=false
+    MAKE_DBIN:=bin
+    MAKE_DDOC:=doc
+    MAKE_DLIB:=lib
+    MAKE_DSRC:=src
+    MAKE_DOBJ:=obj
 
-    MAKE_BINARY:=bin
-    MAKE_DOCUME:=doc
-    MAKE_LIBRAR:=lib
-    MAKE_OBJECT:=obj
-    MAKE_SOURCE:=src
-    MAKE_BNPATH:=/media/dhlab-linux/lib
-    MAKE_HDPATH:=/media/dhlab-linux/usr/include
-    MAKE_CMCOPY:=cp
-    MAKE_CMRMFL:=rm -f
-    MAKE_CMRMRF:=rm -rf
-    MAKE_CMMKDR:=mkdir -p
-    MAKE_CMRMDR:=rmdir -p --ignore-fail-on-non-empty
-    MAKE_CC_BLD:=gcc
-    MAKE_CPPBLD:=g++
-    MAKE_STABLD:=gcc-ar
-    MAKE_DOCBLD:=doxygen
+    MAKE_CMKD:=mkdir -p
+    MAKE_CRMF:=rm -f
+    MAKE_CRMD:=rm -rf
 
-    BUILD_FLAGS:=-Wall -funsigned-char -pedantic -O3 -flto
-    BUILD_LINKD:=-flto
-    BUILD_SUBMD:=
+    MAKE_CCMP:=gcc
+    MAKE_CLNK:=gcc-ar rcs
+    MAKE_CDOC:=doxygen
+
+    MAKE_FCMP:=-std=c99 -Wall -funsigned-char -pedantic -O3 -D _BSD_SOURCE -flto
+    MAKE_FLNK:=-flto
 
 #
-#   make - Modules
+#   makefile - configuration
 #
 
-    MAKE_MODULE:=$(foreach LIBS,$(BUILD_SUBMD),$(if $(findstring /lib/,$(LIBS)),,$(LIBS)))
+ifeq ($(MAKE_TYPE),suite)
+    MAKE_SWAP:=../../
+else
+    MAKE_SWAP:=
+endif
+    MAKE_SUBS:=$(wildcard $(MAKE_SWAP)$(MAKE_DLIB)/*)
+    MAKE_SEGS:=$(wildcard $(MAKE_DSRC)/*)
+    MAKE_FSRC:=$(wildcard $(MAKE_DSRC)/*.$(MAKE_LANG))
+    MAKE_FOBJ:=$(addprefix $(MAKE_DOBJ)/,$(addsuffix .o,$(notdir $(basename $(MAKE_FSRC)))))
+ifeq ($(MAKE_TYPE),suite)
+    MAKE_FLNK:=$(addsuffix /bin/*.a,$(MAKE_SUBS)) $(MAKE_FLNK)
+else
+ifeq ($(MAKE_TYPE),library)
+    MAKE_FLNK:=$(addsuffix /bin/*.a,$(MAKE_SUBS))
+endif
+endif
+    MAKE_FCMP:=$(MAKE_FCMP) $(addprefix -I$(MAKE_LIB),$(addsuffix /src,$(MAKE_SUBS)))
 
 #
-#   make - Auto-configuration
+#   makefile - target
 #
 
-ifeq ($(CONFIG_TYPE),suite)
-    MAKE_LIBSWAP:=../../
+    all:module build
+    clean-all:clean clean-module
+    module:make-module
+    clean-module:make-clean-module
+ifeq ($(MAKE_TYPE),suite-base)
+    build:make-base
+    clean:make-clean-base
+    doc:make-module-doc make-segment-doc
+    clean-doc:make-clean-module-doc make-clean-segment-doc
 else
-ifeq ($(CONFIG_TYPE),libcommon)
-    MAKE_LIBSWAP:=../../
-else
-    MAKE_LIBSWAP:=
-endif
-endif
-ifeq ($(CONFIG_TYPE),libstatic)
-ifeq ($(STATIC),true)
-    MAKE_SUFFIX:=.a
-else
-    MAKE_SUFFIX:=.so
-endif
-else
-ifeq ($(CONFIG_TYPE),libcommon)
-    MAKE_SUFFIX:=.a
-else
-    MAKE_SUFFIX:=
-endif
-endif
-ifeq ($(CONFIG_CODE),c)
-ifeq ($(CONFIG_TYPE),libstatic)
-ifeq ($(STATIC),true)
-    MAKE_LINKER:=$(MAKE_STABLD)
-else
-    MAKE_LINKER:=$(MAKE_CC_BLD)
-    MAKE_OPTION:=$(MAKE_OPTION) -fpic
-endif
-else
-ifeq ($(CONFIG_TYPE),libcommon)
-    MAKE_LINKER:=$(MAKE_STABLD)
-else
-    MAKE_LINKER:=$(MAKE_CC_BLD)
-endif
-endif
-    MAKE_HEADEX:=h
-    MAKE_COMPIL:=$(MAKE_CC_BLD)
-    MAKE_OPTION:=$(MAKE_OPTION) -std=gnu99
-else
-ifeq ($(CONFIG_CODE),cpp)
-ifeq ($(CONFIG_TYPE),libstatic)
-ifeq ($(STATIC),true)
-    MAKE_LINKER:=$(MAKE_STABLD)
-else
-    MAKE_LINKER:=$(MAKE_CPPBLD)
-    MAKE_OPTION:=$(MAKE_OPTION) -fpic
-endif
-else
-ifeq ($(CONFIG_TYPE),libcommon)
-    MAKE_LINKER:=$(MAKE_STABLD)
-else
-    MAKE_LINKER:=$(MAKE_CPPBLD)
-endif
-endif
-    MAKE_HEADEX:=hpp
-    MAKE_COMPIL:=$(MAKE_CPPBLD)
-    MAKE_OPTION:=$(MAKE_OPTION) -std=c++11
-endif
-endif
-ifneq ($(OPENMP),false)
-    MAKE_OPTION:=$(MAKE_OPTION) -fopenmp -D __OPENMP__
-    BUILD_LINKD:=$(BUILD_LINKD) -lgomp
-endif
-    MAKE_OPTION:=$(MAKE_OPTION) $(BUILD_FLAGS) $(addprefix -I./$(MAKE_LIBSWAP),$(addsuffix /src,$(BUILD_SUBMD)))
-    MAKE_BUILDD:=$(MAKE_BUILDD) $(addprefix -l,$(subst lib,,$(notdir $(BUILD_SUBMD)))) $(BUILD_LINKD) $(addprefix -L./$(MAKE_LIBSWAP),$(addsuffix /bin,$(BUILD_SUBMD)))
-
-ifeq ($(CONFIG_TYPE),libstatic)
-    MAKE_VERSIO:=$(VER_MAJ).$(VER_MIN)$(if $(filter $(VER_REV),0),,.$(VER_REV))
-    MAKE_HDPATH:=$(MAKE_HDPATH)/$(subst lib,,$(CONFIG_NAME))/$(MAKE_VERSIO)
+    build:make-directories make-$(MAKE_NAME)
+    clean:make-clean-$(MAKE_NAME)
+    all-doc:doc module-doc
+    clean-all-doc:clean-doc clean-module-doc
+    doc:make-doc
+    clean-doc:make-clean-doc
+    module-doc:make-module-doc
+    clean-module-doc:make-clean-module-doc
 endif
 
 #
-#   make - Enumeration
+#   makefile - directive
 #
 
-    MAKE_SRCFILE:=$(wildcard $(MAKE_SOURCE)/*.$(CONFIG_CODE))
-    MAKE_OBJFILE:=$(addprefix $(MAKE_OBJECT)/,$(addsuffix .o,$(notdir $(basename $(MAKE_SRCFILE)))))
-
-#
-#   make - Targets
-#
-
-ifeq ($(CONFIG_TYPE),suite)
-    all:make-directories $(CONFIG_NAME)
-    build:all
-    modules:
-    clean:make-clean
-    clean-all:clean
-    clean-modules:
+    make-$(MAKE_NAME):$(MAKE_FOBJ)
+ifeq ($(MAKE_TYPE),suite)
+	$(MAKE_CCMP) -o $(MAKE_DBIN)/$(MAKE_NAME) $^ $(MAKE_FLNK)
 else
-ifeq ($(CONFIG_TYPE),libcommon)
-    all:make-directories $(CONFIG_NAME)
-    build:all
-    modules:
-    clean:make-clean
-    clean-all:clean
-    clean-modules:
-else
-    all:make-directories make-modules $(CONFIG_NAME)
-    build:make-directories $(CONFIG_NAME)
-    modules:make-modules
-    clean:make-clean
-    clean-all:make-clean make-clean-modules
-    clean-modules:make-clean-modules
-endif
-endif
-    documentation:make-directories make-documentation
-    clean-documentation:make-clean-documentation
-    install:make-install
-    uninstall:make-uninstall
-
-#
-#   make - Directives
-#
-
-    $(CONFIG_NAME):$(MAKE_OBJFILE)
-ifeq ($(CONFIG_TYPE),libstatic)
-ifneq ($(STATIC),false)
-	$(MAKE_LINKER) rcs $(MAKE_BINARY)/$(CONFIG_NAME)$(MAKE_SUFFIX) $^
-else
-	$(MAKE_LINKER) -shared -Wl,-soname,$(CONFIG_NAME)$(MAKE_SUFFIX).$(MAKE_VERSIO) -o $(MAKE_BINARY)/$(CONFIG_NAME)$(MAKE_SUFFIX) $^
-endif
-else
-ifeq ($(CONFIG_TYPE),libcommon)
-	$(MAKE_LINKER) rcs $(MAKE_BINARY)/$(CONFIG_NAME)$(MAKE_SUFFIX) $^
-else
-	$(MAKE_LINKER) -o $(MAKE_BINARY)/$(CONFIG_NAME)$(MAKE_SUFFIX) $^ $(MAKE_BUILDD)
+ifeq ($(MAKE_TYPE),library)
+	$(MAKE_CLNK) $(MAKE_DBIN)/$(MAKE_NAME).a $^ $(MAKE_FLNK)
 endif
 endif
 
-    $(MAKE_OBJECT)/%.o:$(MAKE_SOURCE)/%.$(CONFIG_CODE)
-	$(MAKE_COMPIL) -c -o $@ $< $(MAKE_OPTION)
+    $(MAKE_DOBJ)/%.o:$(MAKE_DSRC)/%.$(MAKE_LANG)
+	$(MAKE_CCMP) -c -o $@ $< $(MAKE_FCMP)
 
-    make-modules:
-	@$(foreach LIB, $(MAKE_MODULE), $(MAKE) -C $(LIB) all OPENMP=$(OPENMP) && ) true
+    make-clean-$(MAKE_NAME):
+	$(MAKE_CRMF) $(MAKE_DBIN)/* $(MAKE_DOBJ)/*
 
-    make-documentation:make-directories
-	$(MAKE_DOCBLD)
+    make-base:
+	@$(foreach LIB, $(MAKE_SEGS), $(MAKE) -C $(LIB) build && ) true
 
-#
-#   make - Cleaning
-#
+    make-clean-base:
+	@$(foreach LIB, $(MAKE_SEGS), $(MAKE) -C $(LIB) clean && ) true
 
-    make-clean:
-	$(MAKE_CMRMFL) $(MAKE_BINARY)/* $(MAKE_OBJECT)/*.o
+    make-module:
+	@$(foreach LIB, $(MAKE_SUBS), $(MAKE) -C $(LIB) all && ) true
 
-    make-clean-modules:
-	@$(foreach LIBS, $(MAKE_MODULE), $(MAKE) -C $(LIBS) clean-all && ) true
+    make-clean-module:
+	@$(foreach LIB, $(MAKE_SUBS), $(MAKE) -C $(LIB) clean-all && ) true
 
-    make-clean-documentation:
-	$(MAKE_CMRMRF) $(MAKE_DOCUME)/html
+    make-doc:
+	$(MAKE_CDOC)
 
-#
-#   make - Implementation
-#
+    make-clean-doc:
+	$(MAKE_CRMD) $(MAKE_DDOC)/html
 
-    make-install:
-ifeq ($(CONFIG_TYPE),libstatic)
-	$(MAKE_CMCOPY) $(MAKE_BINARY)/$(CONFIG_NAME)$(MAKE_SUFFIX) $(MAKE_BNPATH)/$(CONFIG_NAME)$(MAKE_SUFFIX).$(MAKE_VERSIO)
-	$(MAKE_CMMKDR) $(MAKE_HDPATH)
-	$(MAKE_CMCOPY) $(addprefix $(MAKE_SOURCE)/,$(notdir $(wildcard $(MAKE_SOURCE)/*.$(MAKE_HEADEX)))) $(MAKE_HDPATH)
-else
-	$(MAKE_CMCOPY) $(MAKE_BINARY)/$(CONFIG_NAME)$(MAKE_SUFFIX) $(MAKE_BNPATH)/$(CONFIG_NAME)$(MAKE_SUFFIX)
-endif
+    make-module-doc:
+	@$(foreach LIB, $(MAKE_SUBS), $(MAKE) -C $(LIB) all-doc && ) true
 
-    make-uninstall:
-ifeq ($(CONFIG_TYPE),libstatic)
-	$(MAKE_CMRMFL) $(addprefix $(MAKE_HDPATH)/,$(notdir $(wildcard $(MAKE_SOURCE)/*.$(MAKE_HEADEX))))
-	$(MAKE_CMRMDR) $(MAKE_HDPATH)
-	$(MAKE_CMRMFL) $(MAKE_BNPATH)/$(CONFIG_NAME)$(MAKE_SUFFIX).$(MAKE_VERSIO)
-else
-	$(MAKE_CMRMFL) $(MAKE_BNPATH)/$(CONFIG_NAME)$(MAKE_SUFFIX)
-endif
+    make-clean-module-doc:
+	@$(foreach LIB, $(MAKE_SUBS), $(MAKE) -C $(LIB) clean-all-doc && ) true
 
-#
-#   make - Directories
-#
+    make-segment-doc:
+	@$(foreach SEG, $(MAKE_SEGS), $(MAKE) -C $(SEG) doc && ) true
+
+    make-clean-segment-doc:
+	@$(foreach SEG, $(MAKE_SEGS), $(MAKE) -C $(SEG) clean-doc && ) true
 
     make-directories:
-	$(MAKE_CMMKDR) $(MAKE_BINARY) $(MAKE_DOCUME) $(MAKE_OBJECT)
+	$(MAKE_CMKD) $(MAKE_DBIN) $(MAKE_DDOC) $(MAKE_DOBJ)
 
