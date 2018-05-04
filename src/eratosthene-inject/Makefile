@@ -2,8 +2,7 @@
 #   makefile - configuration
 #
 
-    # LANG = c/cpp
-    # TYPE = suite-base/suite/library
+    # LANG = c/cpp; TYPE = suite-base/suite/library
     MAKE_NAME:=eratosthene-inject
     MAKE_LANG:=c
     MAKE_TYPE:=suite
@@ -17,6 +16,7 @@
     MAKE_CMKD:=mkdir -p
     MAKE_CRMF:=rm -f
     MAKE_CRMD:=rm -rf
+    MAKE_CFCP:=cp
 
     MAKE_CCMP:=gcc
     MAKE_CLNK:=gcc-ar rcs
@@ -91,10 +91,11 @@ endif
 	$(MAKE_CRMF) $(MAKE_DBIN)/* $(MAKE_DOBJ)/*
 
     make-base:
-	@$(foreach LIB, $(MAKE_SEGS), $(MAKE) -C $(LIB) build && ) true
+	@$(foreach SEG, $(MAKE_SEGS), $(MAKE) -C $(SEG) build && $(MAKE_CFCP) $(SEG)/$(MAKE_DBIN)/* $(MAKE_DBIN) && ) true
 
     make-clean-base:
-	@$(foreach LIB, $(MAKE_SEGS), $(MAKE) -C $(LIB) clean && ) true
+	$(MAKE_CRMF) $(MAKE_DBIN)/*
+	@$(foreach SEG, $(MAKE_SEGS), $(MAKE) -C $(SEG) clean && ) true
 
     make-module:
 	@$(foreach LIB, $(MAKE_SUBS), $(MAKE) -C $(LIB) all && ) true

@@ -1,6 +1,5 @@
 bin
 dev
-doc/html
 obj
 src/*/bin
 src/*/dev
@@ -10,4 +9,3 @@ lib/*/bin
 lib/*/dev
 lib/*/doc/html
 lib/*/obj
-src/eratosthene-client/src/eratosthene-client-cinema*
