@@ -92,7 +92,7 @@ In addition to scales continuity, the server is also able to sustain the continu
 
 These last images show the ability of the server to take advantage of the standardisation of space-time to perform on the fly computation of differential models comparing two times. On the previous example, the AND operator exhibit black spots that indicates where structures have changed during the specified period of time.
 
-The _eratosthen_ solution provides a network based solution allowing to manage large models of different scale and type representing the reality at different epochs within a single solution. It ensures a fluid communication and continuity between the models offering a way to efficiently browse the earth through space and time.
+The _eratosthene_ solution provides a network based solution allowing to manage large models of different scale and type representing the reality at different epochs within a single solution. It ensures a fluid communication and continuity between the models offering a way to efficiently browse the earth through space and time.
 
 ## Copyright and License
 
