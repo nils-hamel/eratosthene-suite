@@ -86,7 +86,7 @@ In addition to scales continuity, the server is also able to sustain the continu
 &nbsp;
 <img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-6b.jpg?raw=true" width="384">
 <br />
-<i>View of the AND logical operator applied on the LIDAR models of Geneva in 2005 and 2009 - The data come from aerial LIDAR campaigns conducted by the Geneva SITG in 2005 and 2009</i>
+<i>View of the AND logical operator applied on the LIDAR models of Geneva in 2005 and 2009 - The data come from aerial LIDAR campaigns conducted by the Geneva SITG</i>
 </p>
 <br />
 
