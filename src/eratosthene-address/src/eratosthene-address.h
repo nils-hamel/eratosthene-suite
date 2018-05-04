@@ -34,13 +34,17 @@
      *  the eratosthene library.
      *
      *  The principal software implements the server itself allowing to simply
-     *  create instances and maintain services. The suite also offers a
-     *  front-end software for the data injection in the available servers. It
-     *  also offers a graphical software allowing to browse the 4D worlds
-     *  offered by the available servers.
-     *
-     *  Other tools are also available as the isometric projection creation and
-     *  the address and time conversion softwares.
+     *  create server instances and to maintain services. The suite also offers
+     *  a front-end software for the data injection in the available servers. It
+     *  also offers a graphical 4D solution allowing to browse the 4D earth
+     *  model offered by the available servers.
+     *  
+     *  In addition to the server, client data injection and the 4D graphical
+     *  client softwares, the suite also provides a tools allowing to massively
+     *  query 4D earth cells, following the _liberatosthene_ indexation
+     *  formalism, to build large 3D-raster datasets. Such datasets can be used
+     *  to train and validate machine learning algorithms working on 3D/4D
+     *  geographic information.
      *
      *  \section project Eratosthene Project
      *
