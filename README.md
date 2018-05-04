@@ -18,41 +18,69 @@ The subsequent indexation formalism used to drive the storage and access of the 
 
 ## Server and Client
 
-The following illustrations give an overview of the interface of the graphical client as it communicates with an experimental server hosted by the DHLAB. The following image gives an illustration of the view offered by the graphical client looking at the whole Europa from a very high altitude :
+The following illustrations give an overview of the interface of the 4D graphical client as it communicates with a demonstration remote server hosted by the DHLAB. Different models have been injected in the demonstration server including large scale models such as SRTM and LIDAR along with photogrammetric models computed at the laboratory using both aerial and ground based photographies.
 
 <p align="center">
-<img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-0.jpg?raw=true" width="256">
+<img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-1a.jpg?raw=true" width="384">
 &nbsp;
-<img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-0.jpg?raw=true" width="256">
+<img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-1b.jpg?raw=true" width="384">
 <br />
-<i>View of Europa using eratosthene-suite graphical client</i>
+<i>View of Europa and the Swiss Alps - The data come from the NASA SRTM topographic model coloured using NASA Visible Earth images</i>
 </p>
 
-At such position and time, the server provides a topographic model built using the SRTM data it holds. The following image shows a view of the Swiss Alps looking in the direction of Geneva city :
+The previous images give an example of a large scale model showing details of the earth topography. Such models are not able to provided small scale details but they cover the entire earth surface providing a world wide topographic view of the earth.
 
 <p align="center">
-<img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-1.jpg?raw=true" width="512">
+<img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-2a.jpg?raw=true" width="384">
+&nbsp;
+<img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-2b.jpg?raw=true" width="384">
 <br />
-<i>View of Swiss Alps using eratosthene-suite graphical client</i>
+<i>View of the city of Geneva - The data come from an aerial LIDAR campaign conducted by the Geneva SITG in 2009</i>
 </p>
 
-Again, the information provided by the server to the graphical client are mainly based on the SRTM according to the position in space and time of the point of view. The following image shows a closer view of the Geneva city with a position in time in the year 2009 :
+The previous images show an illustration of LIDAR data of Geneva covering the entire Geneva State with a high spatial resolution. It shows how the server is able to store and give access to medium scale models and how it is able to ensure the continuity between topographic models and such regional high resolution models.
 
 <p align="center">
-<img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-2.jpg?raw=true" width="512">
+<img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-3a.jpg?raw=true" width="384">
+&nbsp;
+<img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-3b.jpg?raw=true" width="384">
 <br />
-<i>View the city of Geneva using eratosthene-suite graphical client</i>
+<i>View of the city of Venice in 2010 - The data come from a photogrammetric model computed at the DHLAB using IUAV University aerial images, openMVG and openMVS open source solutions</i>
 </p>
 
-In this case, the model is dominantly made of points coming from the SITG lidar model of the city of Geneva and that has been injected in the remote server. Finally, this last illustration shows a view of the city Venice using a point of view in time in the year 2010 :
+In addition to be able to maintain the continuity between models of different scale, the server is also able to sustain the continuity of models regardless of their type. Models coming from topographic radar, LIDAR campaign or from photogrammetric computation on images can easily coexist and communicate within the same solution. This allows to compare the models, each providing specific information and details.
 
 <p align="center">
-<img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-3.jpg?raw=true" width="512">
+<img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-4a.jpg?raw=true" width="384">
+&nbsp;
+<img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-4b.jpg?raw=true" width="384">
 <br />
-<i>View of the city of Venice using eratosthene-suite graphical client</i>
+<i>View of the Fontainebleau Castle in 2017 - The data come from a photogrammetric model computed at the DHLAB using openMVG and openMVS open source solutions</i>
 </p>
 
-On this last image, the model provided by the remote server is mainly composed of points coming from a photogrammetric model of the city of Venice computed at the DHLAB using aerial images.
+The previous images show how the continuity between models scale and type can be ensured from global topographic models to very local models. The server is able to provided a view of the earth from mountain chains to fine details of building structures. When communicating with the server, the 4D client is able to provide a powerful way of browsing through space on a large amount of scales.
+
+<p align="center">
+<img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-5a.jpg?raw=true" width="384">
+&nbsp;
+<img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-5b.jpg?raw=true" width="384">
+<br />
+<i>View of the city of Geneva in 2009 and 2013 - The data come from a photogrammetric model computed at the DHLAB using SITG aerial images, openMVG and openMVS open source solutions</i>
+</p>
+
+In addition to scales continuity, the server is also able to sustain the continuity of the models through time. The previous images shows an example of the same spatial point of view but at two distinct temporal positions. The _eratosthene_ solution provides a reliable way of browsing through both space and time on large amount of scales and large periods of time.
+
+<p align="center">
+<img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-6a.jpg?raw=true" width="384">
+&nbsp;
+<img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-6b.jpg?raw=true" width="384">
+<br />
+<i>View of the AND logical operator applied on the LIDAR models of Geneva in 2005 and 2009 - The data come from aerial LIDAR campaigns conducted by the Geneva SITG in 2005 and 2009</i>
+</p>
+
+These last images show the ability of the server to take advantage of the standardisation of space-time to perform on the fly computation of differential models comparing two times. On the previous example, the AND operator exhibit black spots that indicates where structures have changed during the specified period of time.
+
+The _eratosthen_ solution provides a network based solution allowing to manage large models of different scale and type representing the reality at different epochs within a single solution. It ensures a fluid communication and continuity between the models offering a way to efficiently browse the earth through space and time.
 
 ## Copyright and License
 
