@@ -21,7 +21,9 @@ The subsequent indexation formalism used to drive the storage and access of the 
 The following illustrations give an overview of the interface of the graphical client as it communicates with an experimental server hosted by the DHLAB. The following image gives an illustration of the view offered by the graphical client looking at the whole Europa from a very high altitude :
 
 <p align="center">
-<img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-0.jpg?raw=true" width="512">
+<img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-0.jpg?raw=true" width="256">
+&nbsp;
+<img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-0.jpg?raw=true" width="256">
 <br />
 <i>View of Europa using eratosthene-suite graphical client</i>
 </p>

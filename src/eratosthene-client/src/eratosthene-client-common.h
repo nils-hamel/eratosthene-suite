@@ -85,7 +85,7 @@
 
     /* define model parameters */
     # define ER_COMMON_ENUM  (  4 )
-    # define ER_COMMON_SPAN  ( 8 ) //(  7 )
+    # define ER_COMMON_SPAN  (  7 )
     # define ER_COMMON_PACK  ( 16 )
 
     /* define keyboard modifiers */
