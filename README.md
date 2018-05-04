@@ -73,18 +73,24 @@ The code documentation is built using Doxygen.
 
 ## Compilation
 
-To build sub-modules and binaries with make, use the command :
+To build the project, including the sub-modules, use make with the following targets :
 
-    $ make clean-all && make
+    $ make clean-all && make all
 
-To rebuild the binaries without rebuilding sub-modules :
+To rebuild the binaries without rebuilding sub-modules, use the make targets :
 
     $ make clean && make build
 
-To rebuild sub-modules only, use the command :
+To only rebuild sub-modules, use the make command with the targets :
 
-    $ make clean-modules && make modules
+    $ make clean-module && make module
 
-To generate the documentation, use the command :
+To generate the documentation of the project, use the targets :
 
-    $ make clean-documentation && make documentation
+    $ make clean-doc && make doc
+
+and the targets :
+
+    $ make clean-all-doc && make all-doc
+
+to generate the documentation of the project and its sub-modules.
