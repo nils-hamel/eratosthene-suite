@@ -424,7 +424,7 @@
 
     /*! \brief mutator methods
      *
-     *  This function update the time value of the provided view structure using
+     *  This function updates the time value of the provided view structure using
      *  its respective area. The provided value is used as a factor applied to
      *  the area for the time update.
      *
@@ -439,7 +439,7 @@
 
     /*! \brief mutator methods
      *
-     *  This function update the area value of the time corresponding to the
+     *  This function updates the area value of the time corresponding to the
      *  active mode.
      *
      *  \param er_view  View structure
@@ -448,7 +448,15 @@
 
     le_void_t er_view_set_area( er_view_t * const er_view, le_real_t const er_value );
 
-    /* *** */
+    /*! \brief mutator methods
+     *
+     *  This function updates the span value of the provided view structure. It
+     *  adds the provided value, that can be negative or positive, to the span
+     *  value of the view before to clamp the result in the predefined range.
+     *
+     *  \param er_view  View structure
+     *  \param er_value Span shift value
+     */
 
     le_void_t er_view_set_span( er_view_t * const er_view, le_size_t const er_value );
 
