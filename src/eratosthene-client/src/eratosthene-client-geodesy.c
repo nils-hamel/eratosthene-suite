@@ -88,10 +88,10 @@
 
     }
 
-    le_enum_t er_geodesy_select( le_real_t const er_distance, le_real_t const er_scfg, le_real_t const er_scale ) {
+    le_enum_t er_geodesy_select( le_real_t const er_distance, er_view_t const * const er_view, le_real_t const er_scfg, le_real_t const er_scale ) {
 
         /* clamping variables */
-        le_real_t er_clamp = er_scfg - ER_COMMON_SPAN - 2;
+        le_real_t er_clamp = er_scfg - er_view_get_span( er_view ) - 2;
 
         /* computation variables */
         le_real_t er_normal = log( ( LE_ADDRESS_WGS_A / 2.0 ) / ( er_distance * 30.0 ) ) / M_LN2 + 9.5;

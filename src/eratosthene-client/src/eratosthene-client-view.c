@@ -213,6 +213,13 @@
 
     }
 
+    le_size_t er_view_get_span( er_view_t const * const er_view ) {
+
+        /* return view span */
+        return( er_view->vw_spn );
+
+    }
+
 /*
     source - mutator methods
  */
@@ -338,7 +345,7 @@
     le_void_t er_view_set_span( er_view_t * const er_view, le_size_t const er_value ) {
 
         /* update and clamp span value */
-        er_view->vw_spn = lc_clamp( er_view->vw_spn + er_value, 4, 8 );
+        er_view->vw_spn = lc_clamp( er_view->vw_spn + er_value, ER_COMMON_SPL, ER_COMMON_SPH );
 
     }
 

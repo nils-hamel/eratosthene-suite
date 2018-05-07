@@ -69,8 +69,9 @@
     # define ER_COMMON_D2R   ( 3.1415926535 / 180.0 )
     # define ER_COMMON_R2D   ( 180.0 / 3.1415926535 )
 
-    /* define time range */
-    # define ER_COMMON_LIMIT ( _LE_TIME_L( 28382400000000 ) )
+    /* define model parameters */
+    # define ER_COMMON_ENUM  (  4 )
+    # define ER_COMMON_PACK  ( 16 )
 
     /* define inertial coefficients */
     # define ER_COMMON_INE   ( 1.0 / 100.0 )
@@ -79,14 +80,17 @@
     # define ER_COMMON_INP   ( 2.0 * LE_PI / ( LE_ADDRESS_WGS_A * 180.0 ) )
     # define ER_COMMON_INR   ( 1.0 / 800.0 )
 
-    /* define altitude clamped range */
+    /* define limit : time area */
+    # define ER_COMMON_LIMIT ( _LE_TIME_L( 28382400000000 ) )
+
+    /* define limit : address span */
+    # define ER_COMMON_SPD ( 7 )
+    # define ER_COMMON_SPL ( 4 )
+    # define ER_COMMON_SPH ( 8 )
+
+    /* define limit : altitude */
     # define ER_COMMON_ALL   ( LE_ADDRESS_WGS_A * 0.75 )
     # define ER_COMMON_ALU   ( LE_ADDRESS_WGS_A * 3.00 )
-
-    /* define model parameters */
-    # define ER_COMMON_ENUM  (  4 )
-    # define ER_COMMON_SPAN  (  7 )
-    # define ER_COMMON_PACK  ( 16 )
 
     /* define keyboard modifiers */
     # define ER_COMMON_KMALL ( KMOD_LCTRL | KMOD_LALT | KMOD_LSHIFT )

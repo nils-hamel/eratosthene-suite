@@ -43,6 +43,7 @@
     header - internal includes
  */
 
+    # include "eratosthene-client-cell.h"
     # include "eratosthene-client-common.h"
     # include "eratosthene-client-view.h"
 
@@ -157,7 +158,8 @@
      *  \return Returns the ideal depth value
      */
 
-    le_enum_t er_geodesy_select( le_real_t const er_distance, le_real_t const er_scfg, le_real_t const er_scale );
+    //le_enum_t er_geodesy_select( le_real_t const er_distance, le_real_t const er_scfg, le_real_t const er_scale );
+    le_enum_t er_geodesy_select( le_real_t const er_distance, er_view_t const * const er_view, le_real_t const er_scfg, le_real_t const er_scale );
 
     /*! \brief model functions
      *

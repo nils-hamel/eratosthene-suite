@@ -205,7 +205,7 @@
                 if ( ( er_line = er_geodesy_distance( er_enum, er_view ) ) < er_geodesy_face( er_view_get_alt( er_view ) ) ) {
 
                     /* check selection criterion */
-                    if ( er_geodesy_select( er_line, er_model->md_scfg, er_scale ) == _LE_TRUE ) {
+                    if ( er_geodesy_select( er_line, er_view, er_model->md_scfg, er_scale ) == _LE_TRUE ) {
 
                         /* check target size */
                         if ( er_model->md_push < er_model->md_size ) {
@@ -239,7 +239,7 @@
                     } else {
 
                         /* check enumeration boundary */
-                        if ( ( er_scale + 2 + ER_COMMON_SPAN ) < er_model->md_scfg ) {
+                        if ( ( er_scale + 2 + er_view_get_span( er_view ) ) < er_model->md_scfg ) {
 
                             /* drop condition */
                             if ( er_model_get_discare( er_model, er_enum ) == _LE_FALSE ) {

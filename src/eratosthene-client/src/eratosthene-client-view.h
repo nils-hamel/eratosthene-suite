@@ -54,10 +54,10 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_VIEW_C { 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, ER_COMMON_SPAN }
+    # define ER_VIEW_C { 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, ER_COMMON_SPD }
 
     /* define pseudo-constructor - default point of view */
-    # define ER_VIEW_D { 12.335435, 45.438531, LE_ADDRESS_WGS_A * 1.5, 0.0, 0.0, 1, 950486422, 0, 31536000, 31536000, ER_COMMON_SPAN }
+    # define ER_VIEW_D { 12.335435, 45.438531, LE_ADDRESS_WGS_A * 1.5, 0.0, 0.0, 1, 950486422, 0, 31536000, 31536000, ER_COMMON_SPD }
 
 /*
     header - preprocessor macros
@@ -340,6 +340,10 @@
      */
 
     le_time_t er_view_get_area( er_view_t const * const er_view, le_enum_t const er_time );
+
+    /* *** */
+
+    le_size_t er_view_get_span( er_view_t const * const er_view );
 
     /*! \brief mutator methods
      *
