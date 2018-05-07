@@ -62,6 +62,9 @@
         /* check mode component - return answer */
         if ( er_viewa->vw_mod != er_viewb->vw_mod ) return( _LE_FALSE );
 
+        /* check span component  - return answer */
+        if ( er_viewa->vw_spn != er_viewb->vw_spn ) return( _LE_FALSE );
+
         /* return answer */
         return( _LE_TRUE );
 
@@ -153,7 +156,7 @@
         le_address_set_mode( & er_addr, er_view->vw_mod );
 
         /* set address span */
-        le_address_set_span( & er_addr, ER_COMMON_SPAN );
+        le_address_set_span( & er_addr, er_view->vw_spn );
 
         /* check mode */
         if ( er_view->vw_mod != 2 ) {
@@ -329,6 +332,13 @@
             er_view->vw_ztb = lc_clamp( er_view->vw_ztb, 60, 32314982400 );
 
         }
+
+    }
+
+    le_void_t er_view_set_span( er_view_t * const er_view, le_size_t const er_value ) {
+
+        /* update and clamp span value */
+        er_view->vw_spn = lc_clamp( er_view->vw_spn + er_value, 4, 8 );
 
     }
 

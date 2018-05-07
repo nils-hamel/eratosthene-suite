@@ -576,6 +576,20 @@
 
             } break;
 
+            case ( SDLK_KP_PLUS ) : {
+
+                /* update span value */
+                er_view_set_span( & er_client->cl_view, +1 );
+
+            } break;
+
+            case ( SDLK_KP_MINUS ) : {
+
+                /* update span value */
+                er_view_set_span( & er_client->cl_view, -1 );
+
+            } break;
+
         }
 
     }
