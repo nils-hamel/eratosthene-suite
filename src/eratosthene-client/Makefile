@@ -2,6 +2,8 @@
 #   makefile - configuration
 #
 
+    MAKE_UNAM:=$(shell uname -s)
+
     # LANG = c/cpp; TYPE = suite-base/suite/library
     MAKE_NAME:=eratosthene-client
     MAKE_LANG:=c
@@ -19,11 +21,24 @@
     MAKE_CFCP:=cp
 
     MAKE_CCMP:=gcc
+ifeq ($(MAKE_UNAM),Linux)
     MAKE_CLNK:=gcc-ar rcs
+else
+ifeq ($(MAKE_UNAM,DARWIN)
+    MAKE_CLNK:=ar -rv
+endif
+endif
     MAKE_CDOC:=doxygen
 
+ifeq ($(MAKE_UNAM),Linux)
     MAKE_FCMP:=-std=c99 -Wall -funsigned-char -pedantic -O3 -D _BSD_SOURCE -fopenmp -flto -Wno-deprecated
     MAKE_FLNK:=-lm -lGL -lGLU -lSDL2 -lgomp -flto
+else
+ifeq ($(MAKE_UNAM,DARWIN)
+    MAKE_FCMP:=-std=c99 -Wall -funsigned-char -pedantic -O3 -D _BSD_SOURCE -fopenmp -flto -Wno-deprecated -Xpreprocessor -fopenmp -I/usr/local/opt/libomp/include
+    MAKE_FLNK:=-lm -framework OpenGL -framework SDL2 -lgomp -flto
+endif
+endif
 
 #
 #   makefile - configuration

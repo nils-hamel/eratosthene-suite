@@ -2,6 +2,8 @@
 #   makefile - configuration
 #
 
+    MAKE_UNAM:=$(shell uname -s)
+
     # LANG = c/cpp; TYPE = suite-base/suite/library
     MAKE_NAME:=eratosthene-server
     MAKE_LANG:=c
@@ -19,7 +21,13 @@
     MAKE_CFCP:=cp
 
     MAKE_CCMP:=gcc
+ifeq ($(MAKE_UNAM),Linux)
     MAKE_CLNK:=gcc-ar rcs
+else
+ifeq ($(MAKE_UNAM,DARWIN)
+    MAKE_CLNK:=ar -rv
+endif
+endif
     MAKE_CDOC:=doxygen
 
     MAKE_FCMP:=-std=c99 -Wall -funsigned-char -pedantic -O3 -D _BSD_SOURCE -flto -Wno-deprecated
