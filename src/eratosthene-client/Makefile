@@ -34,8 +34,8 @@ ifeq ($(MAKE_UNAM),Linux)
     MAKE_FCMP:=-std=c99 -Wall -funsigned-char -pedantic -O3 -D _BSD_SOURCE -fopenmp -flto -Wno-deprecated
     MAKE_FLNK:=-lm -lGL -lGLU -lSDL2 -lgomp -flto
 else
-ifeq ($(MAKE_UNAM,DARWIN)
-    MAKE_FCMP:=-std=c99 -Wall -funsigned-char -pedantic -O3 -D _BSD_SOURCE -fopenmp -flto -Wno-deprecated -Xpreprocessor -fopenmp -I/usr/local/opt/libomp/include
+ifeq ($(MAKE_UNAM),Darwin)
+    MAKE_FCMP:=-std=c99 -Wall -funsigned-char -pedantic -O3 -D _BSD_SOURCE -flto -Wno-deprecated -Xpreprocessor -fopenmp -I/usr/local/opt/libomp/include
     MAKE_FLNK:=-lm -framework OpenGL -framework SDL2 -lgomp -flto
 endif
 endif
