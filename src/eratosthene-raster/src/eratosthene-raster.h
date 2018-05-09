@@ -118,12 +118,12 @@
     header - external includes
  */
 
+    # include <eratosthene-include.h>
+    # include <common-include.h>
     # include <stdio.h>
     # include <stdlib.h>
     # include <string.h>
     # include <math.h>
-    # include <common-include.h>
-    # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions

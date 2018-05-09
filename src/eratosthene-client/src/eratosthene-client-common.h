@@ -47,20 +47,21 @@
     header - external includes
  */
 
+    # include <eratosthene-include.h>
+    # include <common-include.h>
     # include <stdio.h>
     # include <stdlib.h>
     # include <math.h>
     # include <omp.h>
-    # if defined ( __APPLE__ ) && defined ( __MACH__ )
+    # if defined ( __OS_APPLE )
     # include <OpenGL/gl.h>
     # include <OpenGL/glu.h>
-    # else
+    # endif
+    # if defined ( __OS_LINUX )
     # include <GL/gl.h>
     # include <GL/glu.h>
     # endif
     # include <SDL2/SDL.h>
-    # include <common-include.h>
-    # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions
