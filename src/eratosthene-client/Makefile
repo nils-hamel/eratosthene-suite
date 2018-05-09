@@ -22,7 +22,7 @@
     MAKE_CLNK:=gcc-ar rcs
     MAKE_CDOC:=doxygen
 
-    MAKE_FCMP:=-std=c99 -Wall -funsigned-char -pedantic -O3 -D _BSD_SOURCE -fopenmp -flto
+    MAKE_FCMP:=-std=c99 -Wall -funsigned-char -pedantic -O3 -D _BSD_SOURCE -fopenmp -flto -Wno-deprecated
     MAKE_FLNK:=-lm -lGL -lGLU -lSDL2 -lgomp -flto
 
 #
