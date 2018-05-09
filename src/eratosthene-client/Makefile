@@ -2,9 +2,7 @@
 #   makefile - configuration
 #
 
-    MAKE_UNAM:=$(shell uname -s)
-
-    # LANG = c/cpp; TYPE = suite-base/suite/library
+    # c/cpp, suite-base/suite/library #
     MAKE_NAME:=eratosthene-client
     MAKE_LANG:=c
     MAKE_TYPE:=suite
@@ -15,28 +13,30 @@
     MAKE_DSRC:=src
     MAKE_DOBJ:=obj
 
+    MAKE_OSYS:=$(shell uname -s)
+
     MAKE_CMKD:=mkdir -p
     MAKE_CRMF:=rm -f
     MAKE_CRMD:=rm -rf
     MAKE_CFCP:=cp
 
     MAKE_CCMP:=gcc
-ifeq ($(MAKE_UNAM),Linux)
+ifeq ($(MAKE_OSYS),Linux)
     MAKE_CLNK:=gcc-ar rcs
 else
-ifeq ($(MAKE_UNAM),Darwin)
+ifeq ($(MAKE_OSYS),Darwin)
     MAKE_CLNK:=ar -rv
 endif
 endif
     MAKE_CDOC:=doxygen
 
-ifeq ($(MAKE_UNAM),Linux)
-    MAKE_FCMP:=-std=c99 -Wall -funsigned-char -pedantic -O3 -D _BSD_SOURCE -fopenmp -flto -Wno-deprecated
+ifeq ($(MAKE_OSYS),Linux)
+    MAKE_FCMP:=-std=c99 -O3 -Wall -Wno-deprecated -funsigned-char -pedantic -D _BSD_SOURCE -flto -fopenmp
     MAKE_FLNK:=-lm -lGL -lGLU -lSDL2 -lgomp -flto
 else
-ifeq ($(MAKE_UNAM),Darwin)
-    MAKE_FCMP:=-std=c99 -Wall -funsigned-char -pedantic -O3 -D _BSD_SOURCE -flto -Wno-deprecated -Xpreprocessor -fopenmp -I/usr/local/opt/libomp/include
-    MAKE_FLNK:=-lm -framework OpenGL -framework SDL2 -lgomp -flto
+ifeq ($(MAKE_OSYS),Darwin)
+    MAKE_FCMP:=-std=c99 -O3 -Wall -Wno-deprecated -funsigned-char -pedantic -D _BSD_SOURCE -flto -Xpreprocessor -fopenmp -I/usr/local/opt/libomp/include
+    MAKE_FLNK:=-lm -lgomp -framework OpenGL -framework SDL2 -flto
 endif
 endif
 
@@ -71,7 +71,7 @@ endif
     module:make-module
     clean-module:make-clean-module
 ifeq ($(MAKE_TYPE),suite-base)
-    build:make-base
+    build:make-directories make-base
     clean:make-clean-base
     doc:make-module-doc make-segment-doc
     clean-doc:make-clean-module-doc make-clean-segment-doc
@@ -106,7 +106,7 @@ endif
 	$(MAKE_CRMF) $(MAKE_DBIN)/* $(MAKE_DOBJ)/*
 
     make-base:
-	@$(foreach SEG, $(MAKE_SEGS), $(MAKE) -C $(SEG) build && $(MAKE_CFCP) $(SEG)/$(MAKE_DBIN)/* $(MAKE_DBIN) && ) true
+	@$(foreach SEG, $(MAKE_SEGS), $(MAKE) -C $(SEG) build && $(MAKE_CFCP) $(SEG)/$(MAKE_DBIN)/* $(MAKE_DBIN)/ && ) true
 
     make-clean-base:
 	$(MAKE_CRMF) $(MAKE_DBIN)/*
