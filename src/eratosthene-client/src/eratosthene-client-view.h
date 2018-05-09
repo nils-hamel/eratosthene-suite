@@ -341,7 +341,14 @@
 
     le_time_t er_view_get_area( er_view_t const * const er_view, le_enum_t const er_time );
 
-    /* *** */
+    /*! \brief accessor methods
+     *
+     *  This function returns the span value of the provided view structure.
+     *
+     *  \param er_view View structure
+     * 
+     *  \return Returns view structure span value
+     */
 
     le_size_t er_view_get_span( er_view_t const * const er_view );
 
