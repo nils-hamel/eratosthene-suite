@@ -576,6 +576,7 @@
 
             } break;
 
+            case ( SDLK_s ) :
             case ( SDLK_KP_PLUS ) : {
 
                 /* update span value */
@@ -583,6 +584,7 @@
 
             } break;
 
+            case ( SDLK_a ) :
             case ( SDLK_KP_MINUS ) : {
 
                 /* update span value */
