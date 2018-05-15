@@ -39,79 +39,73 @@
         /* message variable */
         le_enum_t er_message = EXIT_SUCCESS;
 
-        /* check consistency */
-        if ( er_time == _LE_TIME_NULL ) {
+        /* create and check input stream */
+        if ( ( er_stream = fopen( ( char * ) er_path, "rb" ) ) == NULL ) {
 
             /* display message */
-            lc_error( "time specification" );
+            lc_error( "stream access" );
 
             /* push message */
             er_message = EXIT_FAILURE;
 
         } else {
 
-            /* create and check input stream */
-            if ( ( er_stream = fopen( ( char * ) er_path, "rb" ) ) == NULL ) {
+            /* update socket-array size */
+            le_array_set_size( & er_data, ER_INJECT );
 
-                /* display messsage */
-                lc_error( "input stream access" );
+            /* stream chunk injection */
+            while ( ( ( er_read = fread( le_array_get_byte( & er_data ), sizeof( le_byte_t ), ER_INJECT, er_stream ) ) > 0 ) && ( er_message == EXIT_SUCCESS ) ) {
 
-                /* push message */
-                er_message = EXIT_FAILURE;
+                /* update socket-array size */
+                le_array_set_size( & er_head, LE_ARRAY_INJE );
 
-            } else {
+                /* serialise time value */
+                le_array_serial( & er_head, & er_time, sizeof( le_time_t ), 0, _LE_SET );
 
-                /* update array size */
-                le_array_set_size( & er_data, ER_INJECT );
+                /* write socket-array */
+                if ( le_array_io_write( & er_head, LE_MODE_INJE, er_socket ) != LE_MODE_INJE ) {
 
-                /* stream injection */
-                do {
+                    /* display message */
+                    lc_error( "request dispatch" );
 
-                    /* read stream chunk */
-                    if ( ( er_read = fread( le_array_get_byte( & er_data ), sizeof ( le_byte_t ), ER_INJECT, er_stream ) ) > 0 ) {
+                    /* push message */
+                    er_message = EXIT_FAILURE;
 
-                        /* update array size */
-                        le_array_set_size( & er_head, LE_ARRAY_INJE );
+                } else {
 
-                        /* serialise injection time */
-                        le_array_serial( & er_head, & er_time, sizeof( le_time_t ), 0, _LE_SET );
+                    /* read socket-array */
+                    if ( le_array_io_read( & er_head, er_socket ) != LE_MODE_INJE ) {
+
+                        /* display message */
+                        lc_error( "service confirmation" );
+
+                        /* push message */
+                        er_message = EXIT_FAILURE;
+
+                    } else {
+
+                        /* update socket-array size */
+                        le_array_set_size( & er_data, er_read );
 
                         /* write socket-array */
-                        if ( le_array_io_write( & er_head, LE_MODE_INJE, er_socket ) != LE_MODE_INJE ) {
+                        if ( le_array_io_write( & er_data, LE_MODE_INJE, er_socket ) != LE_MODE_INJE ) {
 
                             /* display message */
-                            lc_error( "request dispatch" );
+                            lc_error( "data dispatch" );
 
                             /* push message */
                             er_message = EXIT_FAILURE;
-
-                        } else {
-
-                            /* update array size */
-                            le_array_set_size( & er_data, er_read );
-
-                            /* write socket array */
-                            if ( le_array_io_write( & er_data, LE_MODE_INJE, er_socket ) != LE_MODE_INJE ) {
-
-                                /* display message */
-                                lc_error( "data dispatch / server locked" );
-
-                                /* push message */
-                                er_message = EXIT_FAILURE;
-
-                            }
 
                         }
 
                     }
 
-                /* stream injection condition */
-                } while ( ( er_read > 0 ) && ( er_message == EXIT_SUCCESS ) );
-
-                /* delete input stream */
-                fclose( er_stream );
+                }
 
             }
+
+            /* delete input stream */
+            fclose( er_stream );
 
         }
 
@@ -136,28 +130,28 @@
         /* message variable */
         le_enum_t er_message = EXIT_SUCCESS;
 
-        /* check consistency */
-        if ( er_time == _LE_TIME_NULL ) {
+        /* update socket-array size */
+        le_array_set_size( & er_array, LE_ARRAY_OPTM );
+
+        /* serialise time */
+        le_array_serial( & er_array, & er_time, sizeof( le_time_t ), 0, _LE_SET );
+
+        /* write socket-array */
+        if ( le_array_io_write( & er_array, LE_MODE_OPTM, er_socket ) != LE_MODE_OPTM ) {
 
             /* display message */
-            lc_error( "time specification" );
+            lc_error( "request dispatch" );
 
             /* push message */
             er_message = EXIT_FAILURE;
 
         } else {
 
-            /* update array size */
-            le_array_set_size( & er_array, LE_ARRAY_OPTM );
-
-            /* serialise time */
-            le_array_serial( & er_array, & er_time, sizeof( le_time_t ), 0, _LE_SET );
-
-            /* write socket-array */
-            if ( le_array_io_write( & er_array, LE_MODE_OPTM, er_socket ) != LE_MODE_OPTM ) {
+            /* read socket-array */
+            if ( le_array_io_read( & er_array, er_socket ) != LE_MODE_OPTM ) {
 
                 /* display message */
-                lc_error( "request dispatch" );
+                lc_error( "service confirmation" );
 
                 /* push message */
                 er_message = EXIT_FAILURE;
@@ -202,25 +196,35 @@
         if ( ( er_socket = le_client_create( er_host, er_port ) ) == _LE_SOCK_NULL ) {
 
             /* display message */
-            lc_error( "service connection" );
+            lc_error( "service unavailable" );
 
             /* push message */
             er_message = EXIT_FAILURE;
 
         } else {
 
-            /* flags detection */
+            /* flag detection */
             if ( lc_read_flag( argc, argv, "--inject", "-j" ) == LC_TRUE ) {
 
                 /* switch on format */
                 if ( ( er_path = ( le_char_t * ) lc_read_string( argc, argv, "--uf3", "" ) ) != NULL ) {
 
-                    /* injection process */
-                    er_message = er_inject_uf3( er_path, er_time, er_socket );
+                    /* injection process - uf3 */
+                    if ( ( er_message = er_inject_uf3( er_path, er_time, er_socket ) ) == EXIT_SUCCESS ) {
+
+                        /* flag detection */
+                        if ( lc_read_flag( argc, argv, "--optimise", "-o" ) == LC_TRUE ) {
+
+                            /* optimisation process */
+                            er_message = er_inject_optimise( er_time, er_socket );
+
+                        }
+
+                    }
 
                 } else {
 
-                    /* display message */
+                    /* display messsage */
                     lc_error( "un-supported format" );
 
                     /* push message */
@@ -228,13 +232,15 @@
 
                 }
 
-            }
+            } else {
 
-            /* flags detection */
-            if ( lc_read_flag( argc, argv, "--optimise", "-o" ) == LC_TRUE ) {
+                /* flag detection */
+                if ( lc_read_flag( argc, argv, "--optimise", "-o" ) == LC_TRUE ) {
 
-                /* optimisation process */
-                er_message = er_inject_optimise( er_time, er_socket );
+                    /* optimisation process */
+                    er_message = er_inject_optimise( er_time, er_socket );
+
+                }
 
             }
 

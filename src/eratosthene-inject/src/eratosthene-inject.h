@@ -168,7 +168,7 @@
 
     le_enum_t er_inject_uf3( le_char_t const * const er_path, le_time_t er_time, le_sock_t const er_socket );
 
-    /*! \brief injection method - uf3
+    /*! \brief injection method - optimisation
      *
      *  This function is responsible of asking the optimisation of the storage
      *  of data pointed by the provided timestamps in the remote server.
