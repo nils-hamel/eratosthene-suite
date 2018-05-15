@@ -151,10 +151,11 @@
      *  This function is responsible of data injection in the specified server
      *  that come from a file of format uf3 (universal format 3-bytes).
      *
-     *  It opens and checks the provided uf3. It also prepare the injection
+     *  It opens and checks the provided uf3 file. It also prepare the injection
      *  array containing the injection time, needed at each injection segment.
-     *  It then starts to read the file content by chunks and sends them to
-     *  the remote server using the provided socket.
+     *  After the function receives the server confirmation array, it starts to
+     *  read the file content by chunks and sends them to the remote server
+     *  using the provided socket.
      *
      *  The injection time has to be provided in UTC through a UNIX timestamps
      *  format.
@@ -175,7 +176,8 @@
      *
      *  The function prepares the optimisation query by packing the provided
      *  time and sends it to the remote server to trigger the time storage unit
-     *  optimisation. The function exits immediately after sending the query.
+     *  optimisation. The function waits the server confirmation array before
+     *  to exit.
      *
      *  \param er_time   Injection time
      *  \param er_socket Remote server socket
