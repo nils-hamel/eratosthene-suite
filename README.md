@@ -6,6 +6,8 @@ The principal software implements the server itself allowing to simply create se
 
 In addition to the server, client data injection and the 4D graphical client softwares, the suite also provides a tools allowing to massively query 4D earth cells, following the _liberatosthene_ indexation formalism, to build large 3D-raster datasets. Such datasets can be used to train and validate machine learning algorithms working on 3D/4D geographic information.
 
+See the [usage page](USAGE.md) for more information on the usage of the _eratosthene-suite_ and to find complements for the compilation of the code on specific plateforms.
+
 ## Eratosthene Project
 
 The Eratosthene Project was initially imagined to answer the question of very large point-based models of cities and environments. Indeed, mapping a whole city at the level of the centimetre induces very large and heavy models that are difficult to manipulate, explore and exploit. Moreover, considering the time dimension implies a quick increase of the size of the models, making them impossible to handle as a single and monolithic object.

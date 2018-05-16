@@ -27,11 +27,11 @@ An _eratosthene_ service instance is obtained using the _eratosthene-server_ sof
 
 In the first place, the storage structure has to be created in order for the service to be linked to it. The storage structure is a simple directory that has to be initialised with a single text file containing two values : the spatial and temporal parameters.
 
-The spatial parameter gives the amount of scales considered in each temporal unit storage. The more scale are used, the more spatial resolution it allows. The following formula gives the size of the spatial equivelence classes for a given scale value _s_ :
+The spatial parameter gives the amount of scales considered in each temporal unit storage. The more scale are used, the more spatial resolution it allows. The following formula gives the size of the spatial equivalence classes for a given scale value _s_ :
 
     w = ( pi * R ) / ( 2 ^ ( s - 1 ) )
 
-where _R_ gives the WGS84 ellipsoid main radius, in metres. The _w_ value gives the size at the equator of the spatial equivelence classes at the considered scale and so, the spatial resolution it allows. For example, considering _32_ as the number of scales allows a spatial resolution of _0.9 cm_ in the lower scale on the entire earth surface. Of course, considering more spatial scales also increase the amount of storage.
+where _R_ gives the WGS84 ellipsoid main radius, in metres. The _w_ value gives the size at the equator of the spatial equivalence classes at the considered scale and so, the spatial resolution it allows. For example, considering _32_ as the number of scales allows a spatial resolution of _0.9 cm_ in the lower scale on the entire earth surface. Of course, considering more spatial scales also increase the amount of storage.
 
 The temporal parameter gives to the server instance the size of the temporal units it has to handle. This value is given in _seconds_ and can be any non-zero positive whole number. It gives the size that is considered to segment the time dimension in temporal units in which data are collapsed. It means that any injected data that falls in the same temporal unit are treated as equivalent by the server.
 
@@ -39,7 +39,7 @@ On an UNIX-like system, you can initialise simply a storage structure for an _er
 
     $ mkdir /.../server-data
 
-to create the directoy and :
+to create the directory and :
 
     $ echo "32 86400" >> /.../server-data/system
 
