@@ -2,21 +2,24 @@
 
 This page gives an overview of the basic usage of the _eratosthene-suite_ softwares. It explains how to instance an _eratosthene_ service and how to feed it with data. It also gives the basic usage of the graphical client that communicates with the service instance.
 
-## Compilation on macOS plateforms
+## Compilation on other plateforms
 
-The _eratosthene-suite_ is built through the provided _makefile_ on UNIX-like plateforms such as GNU/Linux. The provided _makefile_ should be working to build the _eratosthene-suite_ on macOS plateform. The following elements are required before compilation :
+This first section gives additional information on the compilation of the _eratosthene-suite_ on other plateforms than GNU/Linux. Complements or alternate procedures are welcomed and can be submitted through issues or pull-requests.
 
-* C compiler (gcc, clang)
-* make
-* OpenMP (libiomp-dev)
+### macOS plateforms
+
+The _eratosthene-suite_ can be built through the provided _makefile_ on macOS plateforms. Before compiling the code, make sure the following dependencies are available on the system :
+
+* C compiler (gcc, clang) and make
 * OpenGL headers (GL, GLU)
-* SDL2 (libsdl2)
+* OpenMP (libomp)
+* SDL2
 
-As the dependencies are fulfilled, simply use the make directive :
+As soon as all dependencies are fulfilled, use the make directive :
 
     $ make clean-all && make all
 
-to build to _eratosthene-suite_.
+in the _eratosthene-suite_ directory.
 
 ## Server instance
 
