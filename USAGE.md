@@ -71,7 +71,7 @@ The --ip parameter has to give the TCP/IP address of the computer on which the _
 
 In addition, the injection client also allows to ask the remote _eratosthene_ service to optimise the storage structure of a temporal unit. Optimisation of the storage structure allows to considerably increase the access performances on the temporal unit :
 
-    $ ./eratosthene-inject --ip 192.168.0.55 --port 12345 --inject --time 1526460005
+    $ ./eratosthene-inject --ip 192.168.0.55 --port 12345 --optimise --time 1526460005
 
 Note that in both injection or optimisation cases, the temporal unit on which the operation is conducted is locked by the service in order to disallow redundant operation to occur. It follows that such unit will remains hidden even in graphical client until the injection or optimisation operation ends.
 
