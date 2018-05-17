@@ -76,8 +76,8 @@
     # define ER_COMMON_R2D   ( 180.0 / 3.1415926535 )
 
     /* define model parameters */
-    # define ER_COMMON_ENUM  (  4 )
-    # define ER_COMMON_PACK  ( 16 )
+    # define ER_COMMON_ENUM  ( 4 )
+    # define ER_COMMON_PACK  ( 8 )
 
     /* define inertial coefficients */
     # define ER_COMMON_INE   ( 1.0 / 100.0 )
