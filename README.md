@@ -115,7 +115,7 @@ and the following external dependencies provided as sub-modules :
 
 * liberatosthene 1.0
 
-The code documentation is built using Doxygen.
+See the [usage page](USAGE.md) for more information about compilation on other plateforms. The code documentation is built using Doxygen.
 
 ## Compilation
 
