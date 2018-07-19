@@ -1,5 +1,6 @@
 bin
 dev
+doc/html
 obj
 src/*/bin
 src/*/dev
