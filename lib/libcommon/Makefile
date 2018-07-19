@@ -5,7 +5,7 @@
     # c/cpp, suite-base/suite/library #
     MAKE_NAME:=libcommon
     MAKE_LANG:=c
-    MAKE_TYPE:=library
+    MAKE_TYPE:=libcommon
 
     MAKE_DBIN:=bin
     MAKE_DDOC:=doc
@@ -37,19 +37,23 @@ endif
 #   makefile - configuration
 #
 
-ifeq ($(MAKE_TYPE),suite)
+ifneq (,$(filter $(MAKE_TYPE),suite libcommon))
     MAKE_SWAP:=../../
 else
     MAKE_SWAP:=
 endif
+ifeq ($(MAKE_TYPE),libcommon)
+    MAKE_SUBS:=$(filter-out $(MAKE_SWAP)$(MAKE_DLIB)/libcommon, $(wildcard $(MAKE_SWAP)$(MAKE_DLIB)/*))
+else
     MAKE_SUBS:=$(wildcard $(MAKE_SWAP)$(MAKE_DLIB)/*)
+endif
     MAKE_SEGS:=$(wildcard $(MAKE_DSRC)/*)
     MAKE_FSRC:=$(wildcard $(MAKE_DSRC)/*.$(MAKE_LANG))
     MAKE_FOBJ:=$(addprefix $(MAKE_DOBJ)/,$(addsuffix .o,$(notdir $(basename $(MAKE_FSRC)))))
 ifeq ($(MAKE_TYPE),suite)
     MAKE_FLNK:=$(addsuffix /bin/*.a,$(MAKE_SUBS)) $(MAKE_FLNK)
 else
-ifeq ($(MAKE_TYPE),library)
+ifneq (,$(filter $(MAKE_TYPE),library libcommon))
     MAKE_FLNK:=$(addsuffix /bin/*.a,$(MAKE_SUBS))
 endif
 endif
@@ -87,7 +91,7 @@ endif
 ifeq ($(MAKE_TYPE),suite)
 	$(MAKE_CCMP) -o $(MAKE_DBIN)/$(MAKE_NAME) $^ $(MAKE_FLNK)
 else
-ifeq ($(MAKE_TYPE),library)
+ifneq (,$(filter $(MAKE_TYPE),library libcommon))
 	$(MAKE_CLNK) $(MAKE_DBIN)/$(MAKE_NAME).a $^ $(MAKE_FLNK)
 endif
 endif
