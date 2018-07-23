@@ -79,7 +79,7 @@
     le_size_t er_cell_get_record( er_cell_t const * const er_cell ) {
 
         /* return number of uf3 records */
-        return( le_array_get_size( & er_cell->ce_data ) / LE_ARRAY_UF3 );
+        return( le_array_get_size( & er_cell->ce_data ) / LE_ARRAY_UV3 );
 
     }
 
@@ -100,7 +100,7 @@
     le_data_t * er_cell_get_data( er_cell_t * const er_cell ) {
 
         /* return data pointer */
-        return( ( le_data_t * ) ( le_array_get_byte( & er_cell->ce_data ) + LE_ARRAY_UF3_POSE ) );
+        return( ( le_data_t * ) ( le_array_get_byte( & er_cell->ce_data ) + LE_ARRAY_UV3_POSE + LE_ARRAY_UV3_TYPE ) );
 
     }
 
@@ -196,7 +196,7 @@
         ( ( le_real_t * ) er_head )[2] = 0.0;
 
         /* parsing socket array */
-        while ( ( ( er_head += LE_ARRAY_UF3 ) - er_base ) < er_size ) {
+        while ( ( ( er_head += LE_ARRAY_UV3 ) - er_base ) < er_size ) {
 
             /* coordinates conversion - points */
             ( ( le_real_t * ) er_head )[2] += LE_ADDRESS_WGS_A;

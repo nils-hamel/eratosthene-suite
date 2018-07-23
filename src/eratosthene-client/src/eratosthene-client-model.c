@@ -464,8 +464,8 @@
             if ( er_cell_get_flag( er_model->md_cell + er_parse, ER_CELL_DIS ) == ER_CELL_DIS ) {
 
                 /* assign d-cell vertex and color pointers */
-                glVertexPointer( 3, ER_MODEL_VERTEX, LE_ARRAY_UF3, er_cell_get_pose( er_model->md_cell + er_parse ) );
-                glColorPointer ( 3, ER_MODEL_COLORS, LE_ARRAY_UF3, er_cell_get_data( er_model->md_cell + er_parse ) );
+                glVertexPointer( 3, ER_MODEL_VERTEX, LE_ARRAY_UV3, er_cell_get_pose( er_model->md_cell + er_parse ) );
+                glColorPointer ( 3, ER_MODEL_COLORS, LE_ARRAY_UV3, er_cell_get_data( er_model->md_cell + er_parse ) );
 
                 /* retrieve d-cell edge array */
                 er_edge = er_cell_get_edge( er_model->md_cell + er_parse );
