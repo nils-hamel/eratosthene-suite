@@ -108,8 +108,8 @@
     le_void_t er_view_get_pose( er_view_t const * const er_view, le_real_t * const er_pose ) {
 
         /* assign position */
-        er_pose[0] = er_view->vw_lon * ER_COMMON_D2R;
-        er_pose[1] = er_view->vw_lat * ER_COMMON_D2R;
+        er_pose[0] = er_view->vw_lon * LE_D2R;
+        er_pose[1] = er_view->vw_lat * LE_D2R;
         er_pose[2] = er_view->vw_alt;
 
     }
@@ -227,8 +227,8 @@
     le_void_t er_view_set_plan( er_view_t * const er_view, le_real_t const er_xvalue, le_real_t const er_yvalue ) {
 
         /* azimuthal angles variables */
-        le_real_t er_cos = cos( er_view->vw_azm * ER_COMMON_D2R );
-        le_real_t er_sin = sin( er_view->vw_azm * ER_COMMON_D2R );
+        le_real_t er_cos = cos( er_view->vw_azm * LE_D2R );
+        le_real_t er_sin = sin( er_view->vw_azm * LE_D2R );
 
         /* update planimetric coordinates */
         er_view->vw_lon += er_yvalue * er_sin - er_xvalue * er_cos;

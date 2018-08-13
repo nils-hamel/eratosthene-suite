@@ -331,7 +331,7 @@
                 er_cell_set_zero( er_model->md_cell + er_model->md_free, ER_CELL_DIS );
 
                 /* read socket-array */
-                le_array_io_read( er_cell_get_array( er_model->md_cell + er_model->md_free ), er_model->md_sock );
+                er_cell_set_array( er_model->md_cell + er_model->md_free, er_model->md_sock );
 
                 /* sychronise cell addres */
                 er_parse = er_cell_set_sync( er_model->md_cell + er_model->md_free, & er_model->md_addr, er_parse );
@@ -435,18 +435,15 @@
 
     le_void_t er_model_display_cell( er_model_t const * const er_model, er_view_t const * const er_view ) {
 
-        /* view position variables */
+        /* angle variable */
         le_real_t er_lon = er_view_get_lon( er_view );
         le_real_t er_lat = er_view_get_lat( er_view );
 
-        /* cell edge variables */
-        le_real_t * er_edge = NULL;
-
-        /* optimisation variables */
-        le_real_t er_cosl = cos( - er_lon * ER_COMMON_D2R );
-        le_real_t er_sinl = sin( - er_lon * ER_COMMON_D2R );
-        le_real_t er_cosa = cos( + er_lat * ER_COMMON_D2R );
-        le_real_t er_sina = sin( + er_lat * ER_COMMON_D2R );
+        /* trigonometric variable */
+        le_real_t er_cl = cos( - er_lon * LE_D2R );
+        le_real_t er_sl = sin( - er_lon * LE_D2R );
+        le_real_t er_ca = cos( + er_lat * LE_D2R );
+        le_real_t er_sa = sin( + er_lat * LE_D2R );
 
         /* motion management - tilt rotation */
         glRotated( - er_view_get_gam( er_view ), 1.0, 0.0, 0.0 );
@@ -463,32 +460,11 @@
             /* check d-cell flag */
             if ( er_cell_get_flag( er_model->md_cell + er_parse, ER_CELL_DIS ) == ER_CELL_DIS ) {
 
-                /* assign d-cell vertex and color pointers */
-                glVertexPointer( 3, ER_MODEL_VERTEX, LE_ARRAY_UV3, er_cell_get_pose( er_model->md_cell + er_parse ) );
-                glColorPointer ( 3, ER_MODEL_COLORS, LE_ARRAY_UV3, er_cell_get_data( er_model->md_cell + er_parse ) );
-
-                /* retrieve d-cell edge array */
-                er_edge = er_cell_get_edge( er_model->md_cell + er_parse );
-
                 /* d-cell matrix */
                 glPushMatrix();
 
-                    /* compute cell translation */
-                    er_edge[3] = er_sinl * er_edge[0];
-                    er_edge[4] = er_cosl * er_edge[2];
-                    er_edge[5] = er_cosa * er_edge[4] + er_sina * er_edge[1] - er_cosa * er_edge[3];
-                    er_edge[4] = er_sina * er_edge[3] + er_cosa * er_edge[1] - er_sina * er_edge[4];
-                    er_edge[3] = er_cosl * er_edge[0] + er_sinl * er_edge[2];
-
-                    /* motion management - cell translation */
-                    glTranslated( er_edge[3], er_edge[4], er_edge[5] - LE_ADDRESS_WGS_A );
-
-                    /* motion management - planimetric rotation */
-                    glRotated( + er_lat, 1.0, 0.0, 0.0 );
-                    glRotated( - er_lon, 0.0, 1.0, 0.0 );
-
-                    /* display graphical primitives */
-                    glDrawArrays( GL_POINTS, 0, er_cell_get_record( er_model->md_cell + er_parse ) );
+                    /* cell rendering */
+                    er_cell_get_render( er_model->md_cell + er_parse, er_lon, er_lat, er_cl, er_sl, er_ca, er_sa );
 
                 /* d-cell matrix */
                 glPopMatrix();
@@ -526,11 +502,17 @@
         /* configure quadric */
         gluQuadricDrawStyle( er_earth, GLU_LINE );
 
+        /* enable blending */
+        glEnable( GL_BLEND );
+
         /* earth color */
         glColor4f( 0.6, 0.6, 0.6, 0.09 );
 
         /* display quadric */
         gluSphere( er_earth, LE_ADDRESS_WGS_A, 360, 180 );
+
+        /* disable blending */
+        glEnable( GL_BLEND );
 
         /* delete quadric */
         gluDeleteQuadric( er_earth );

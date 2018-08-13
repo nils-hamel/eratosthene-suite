@@ -55,7 +55,8 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_CELL_C   { 0, LE_ADDRESS_C, LE_ARRAY_C, { 0.0 } }
+    //# define ER_CELL_C   { 0, LE_ADDRESS_C, LE_ARRAY_C, { 0.0 } }
+    # define ER_CELL_C   { 0, LE_ADDRESS_C, LE_ARRAY_C, { 0.0 }, LE_ARRAY_C, { 0 } }
 
     /* define flags */
     # define ER_CELL_SYN ( 0x01 << 0 )
@@ -119,6 +120,9 @@
         le_address_t ce_addr;
         le_array_t   ce_data;
         le_real_t    ce_edge[6];
+        le_array_t   ce_norm;
+        le_array_t   ce_list;
+        le_size_t    ce_type[3];
 
     } er_cell_t;
 
@@ -215,47 +219,6 @@
 
     /*! \brief accessor methods
      *
-     *  This function returns the base pointer to the cell points array. One has
-     *  to take into account that the cell data array interlaces the points
-     *  coordinates and colours. A stride value has to be considered to jump
-     *  from points to points.
-     *
-     *  \param er_cell Cell structure
-     *
-     *  \return Cell points coordinates base pointer
-     */
-
-    le_real_t * er_cell_get_pose( er_cell_t * const er_cell );
-
-    /*! \brief accessor methods
-     *
-     *  This function returns the base pointer to the cell colour array. One has
-     *  to take into account that colours are interlaced with points coordinates
-     *  in the cell data array. A stride value has to be considered to jump
-     *  from colours to colours.
-     *
-     *  \param er_cell Cell structure
-     *
-     *  \return Cell points colours base pointer
-     */
-
-    le_data_t * er_cell_get_data( er_cell_t * const er_cell );
-
-    /*! \brief accessor methods
-     *
-     *  This function returns a pointer to the 3-array holding the coordinates
-     *  of the cell translation vector. The points hold in the cell data array
-     *  are expressed in a frame having this translation vector as origin.
-     *
-     *  \param er_cell Cell structure
-     *
-     *  \return Pointer to the array of cell frame origin
-     */
-
-    le_real_t * er_cell_get_edge( er_cell_t * const er_cell );
-
-    /*! \brief accessor methods
-     *
      *  This function allows to serialise the provided cell address structure
      *  in the provided array at the specified offset. After serialisation, the
      *  function returns the next serialisation offset of the array.
@@ -269,17 +232,9 @@
 
     le_size_t er_cell_get_sync( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset );
 
-    /*! \brief accessor methods
-     *
-     *  This function returns the pointer to the socket-array of the provided
-     *  cell.
-     *
-     *  \param  er_cell Cell structure
-     *
-     *  \return Returns a pointer to the cell array
-     */
+    /* *** */
 
-    le_array_t * er_cell_get_array( er_cell_t const * const er_cell );
+    le_void_t er_cell_get_render( er_cell_t * const er_cell, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_cl, le_real_t const er_sl, le_real_t const er_ca, le_real_t const er_sa );
 
     /*! mutator methods
      *
@@ -332,6 +287,10 @@
 
     le_size_t er_cell_set_sync( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset );
 
+    /* *** */
+
+    le_void_t er_cell_set_array( er_cell_t * const er_cell, le_sock_t const er_socket );
+
     /*! mutator methods
      *
      *  This function process the array received from the remote server after
@@ -366,6 +325,10 @@
      */
 
     le_size_t er_cell_set_data( er_cell_t * const er_cell );
+
+    /* *** */
+
+    le_void_t er_cell_set_render( er_cell_t * const er_cell );
 
 /*
     header - C/C++ compatibility

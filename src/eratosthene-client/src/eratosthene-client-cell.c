@@ -90,27 +90,6 @@
 
     }
 
-    le_real_t * er_cell_get_pose( er_cell_t * const er_cell ) {
-
-        /* return position pointer */
-        return( ( le_real_t * ) le_array_get_byte( & er_cell->ce_data ) );
-
-    }
-
-    le_data_t * er_cell_get_data( er_cell_t * const er_cell ) {
-
-        /* return data pointer */
-        return( ( le_data_t * ) ( le_array_get_byte( & er_cell->ce_data ) + LE_ARRAY_UV3_POSE + LE_ARRAY_UV3_TYPE ) );
-
-    }
-
-    le_real_t * er_cell_get_edge( er_cell_t * const er_cell ) {
-
-        /* return edge pointer */
-        return( er_cell->ce_edge );
-
-    }
-
     le_size_t er_cell_get_sync( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset ) {
 
         /* de-serialise address */
@@ -118,10 +97,82 @@
 
     }
 
-    le_array_t * er_cell_get_array( er_cell_t const * const er_cell ) {
+    le_void_t er_cell_get_render( er_cell_t * const er_cell, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_cl, le_real_t const er_sl, le_real_t const er_ca, le_real_t const er_sa ) {
 
-        /* return array */
-        return( ( le_array_t * ) & er_cell->ce_data );
+        /* buffer pointer variable */
+        le_byte_t * er_base = le_array_get_byte( & er_cell->ce_data );
+
+        /* compute cell translation */
+        er_cell->ce_edge[4] = er_cell->ce_edge[0] * er_sl - er_cell->ce_edge[2] * er_cl;
+        er_cell->ce_edge[5] = er_cell->ce_edge[1] * er_sa - er_cell->ce_edge[4] * er_ca;
+        er_cell->ce_edge[4] = er_cell->ce_edge[1] * er_ca + er_cell->ce_edge[4] * er_sa;
+        er_cell->ce_edge[3] = er_cell->ce_edge[0] * er_cl + er_cell->ce_edge[2] * er_sl;
+
+        /* cell translation */
+        glTranslated( er_cell->ce_edge[3], er_cell->ce_edge[4], er_cell->ce_edge[5] - LE_ADDRESS_WGS_A );
+
+        /* cell rotation - planimetric rotation */
+        glRotated( + er_lat, 1.0, 0.0, 0.0 );
+        glRotated( - er_lon, 0.0, 1.0, 0.0 );
+
+        /* cell primitive count */
+        if ( er_cell->ce_type[0] ) {
+
+            /* assign vertex array pointer */
+            glVertexPointer( 3, GL_DOUBLE, LE_UV3_RECORD, er_base );
+
+            /* assign color array pointer */
+            glColorPointer( 3, GL_UNSIGNED_BYTE, LE_UV3_RECORD, er_base + LE_UV3_POSE + LE_UV3_TYPE );
+
+            /* display cell primitive */
+            glDrawArrays( GL_POINTS, 0, er_cell->ce_type[0] );
+
+        }
+
+        /* cell primitive count */
+        if ( er_cell->ce_type[1] | er_cell->ce_type[2] ) {
+
+            /* assign vertex array pointer */
+            glVertexPointer( 3, GL_DOUBLE, LE_UV3_RECORD, er_base + er_cell->ce_type[0] * LE_UV3_RECORD );
+
+            /* assign color array pointer */
+            glColorPointer( 3, GL_UNSIGNED_BYTE, LE_UV3_RECORD, er_base + LE_UV3_POSE + LE_UV3_TYPE );
+
+            /* cell primitive index pointer */
+            er_base = le_array_get_byte( & er_cell->ce_list );
+
+            /* cell primitive count */
+            if ( er_cell->ce_type[1] ) {
+
+                /* display cell primitive */
+                glDrawElements( GL_LINES, er_cell->ce_type[1], GL_UNSIGNED_INT, er_base );
+
+            }
+
+            /* cell primitive count */
+            if ( er_cell->ce_type[2] ) {
+
+                /* assign normal array */
+                glNormalPointer( GL_DOUBLE, 0, le_array_get_byte( & er_cell->ce_norm ) );
+
+                /* enable model light */
+                glEnable( GL_LIGHTING );
+
+                /* enable normal array */
+                glEnableClientState( GL_NORMAL_ARRAY );
+
+                /* display cell primitive */
+                glDrawElements( GL_TRIANGLES, er_cell->ce_type[2], GL_UNSIGNED_INT, er_base + er_cell->ce_type[1] * sizeof( GLuint ) );
+
+                /* disable normal array */
+                glDisableClientState( GL_NORMAL_ARRAY );
+
+                /* disable model light */
+                glDisable( GL_LIGHTING );
+
+            }         
+
+        }
 
     }
 
@@ -157,18 +208,30 @@
 
     }
 
+    le_void_t er_cell_set_array( er_cell_t * const er_cell, le_sock_t const er_socket ) {
+
+        /* read cell socket-array */
+        le_array_io_read( & er_cell->ce_data, er_socket );
+
+    }
+
     le_size_t er_cell_set_data( er_cell_t * const er_cell ) {
 
         /* pointer variables */
         le_byte_t * er_head = NULL;
         le_byte_t * er_base = NULL;
 
+        /* optimisation variables */
+        le_real_t er_optima = 0.0;
+        le_real_t er_optimb = 0.0;
+
         /* size variables */
         le_size_t er_size = 0;
 
-        /* optimisation variables */
-        le_real_t er_opta = 0.0;
-        le_real_t er_optb = 0.0;
+        /* reset primitive count */
+        er_cell->ce_type[0] = 0;
+        er_cell->ce_type[1] = 0;
+        er_cell->ce_type[2] = 0;
 
         /* retrieve array size */
         if ( ( er_size = le_array_get_size( & er_cell->ce_data ) ) == 0 ) {
@@ -181,40 +244,171 @@
         /* retrieve array pointer */
         er_head = er_base = le_array_get_byte( & er_cell->ce_data );
 
-        /* coordinates conversion - edge */
+        /* cell edge computation */
         er_cell->ce_edge[2] = ( ( le_real_t * ) er_head )[2] + LE_ADDRESS_WGS_A;
 
-        /* coordinates conversion - edge */
+        /* cell edge computation */
         er_cell->ce_edge[1] = er_cell->ce_edge[2] * sin( ( ( le_real_t * ) er_head )[1] );
         er_cell->ce_edge[2] = er_cell->ce_edge[2] * cos( ( ( le_real_t * ) er_head )[1] );
         er_cell->ce_edge[0] = er_cell->ce_edge[2] * sin( ( ( le_real_t * ) er_head )[0] );
         er_cell->ce_edge[2] = er_cell->ce_edge[2] * cos( ( ( le_real_t * ) er_head )[0] );
 
-        /* inital points coordinates */
-        ( ( le_real_t * ) er_head )[0] = 0.0;
-        ( ( le_real_t * ) er_head )[1] = 0.0;
-        ( ( le_real_t * ) er_head )[2] = 0.0;
-
         /* parsing socket array */
-        while ( ( ( er_head += LE_ARRAY_UV3 ) - er_base ) < er_size ) {
+        while ( ( er_head - er_base ) < er_size ) {
 
-            /* coordinates conversion - points */
+            /* coordinates conversion */
             ( ( le_real_t * ) er_head )[2] += LE_ADDRESS_WGS_A;
 
-            /* coordinates conversion - points */
-            er_opta = ( ( le_real_t * ) er_head )[0];
-            er_optb = ( ( le_real_t * ) er_head )[1];
+            /* coordinates conversion */
+            er_optima = ( ( le_real_t * ) er_head )[0];
+            er_optimb = ( ( le_real_t * ) er_head )[1];
 
-            /* coordinates conversion - points */
-            ( ( le_real_t * ) er_head )[1] = ( ( le_real_t * ) er_head )[2] * sin( er_optb ) - er_cell->ce_edge[1];
-            ( ( le_real_t * ) er_head )[2] = ( ( le_real_t * ) er_head )[2] * cos( er_optb );
-            ( ( le_real_t * ) er_head )[0] = ( ( le_real_t * ) er_head )[2] * sin( er_opta ) - er_cell->ce_edge[0];
-            ( ( le_real_t * ) er_head )[2] = ( ( le_real_t * ) er_head )[2] * cos( er_opta ) - er_cell->ce_edge[2];
+            /* coordinates conversion */
+            ( ( le_real_t * ) er_head )[1] = ( ( le_real_t * ) er_head )[2] * sin( er_optimb ) - er_cell->ce_edge[1];
+            ( ( le_real_t * ) er_head )[2] = ( ( le_real_t * ) er_head )[2] * cos( er_optimb );
+            ( ( le_real_t * ) er_head )[0] = ( ( le_real_t * ) er_head )[2] * sin( er_optima ) - er_cell->ce_edge[0];
+            ( ( le_real_t * ) er_head )[2] = ( ( le_real_t * ) er_head )[2] * cos( er_optima ) - er_cell->ce_edge[2];
+
+            /* update primitive count */
+            er_cell->ce_type[er_head[LE_UV3_POSE] - 1] ++;
+
+            /* update head */
+            er_head += LE_UV3_RECORD;
+
+        }
+
+        /* check multivertex count */
+        if ( ( er_cell->ce_type[1] | er_cell->ce_type[2] ) != 0 ) {
+
+            /* multivertex rendering complement */
+            er_cell_set_render( er_cell );
 
         }
 
         /* return cell size */
         return( er_size );
+
+    }
+
+    le_void_t er_cell_set_render( er_cell_t * const er_cell ) {
+
+        /* count variable */
+        le_size_t er_count = er_cell->ce_type[1] + er_cell->ce_type[2];
+
+        /* size variable */
+        le_size_t er_size = le_array_get_size( & er_cell->ce_data );
+
+        /* buffer pointer variable */
+        le_byte_t * er_dhead = NULL;
+        le_byte_t * er_dbase = NULL;
+
+        /* buffer pointer variable */
+        le_real_t * er_nbase = NULL;
+
+        /* buffer pointer variable */
+        GLuint * er_lbase = NULL;
+        GLuint * er_tbase = NULL;
+
+        /* vector variable */
+        le_real_t er_vector[6];
+
+        /* offset variable */
+        le_size_t er_offset = 0;
+
+        /* modular variable */
+        le_size_t er_module = LE_UV3_POINT;
+
+        /* compute buffer pointer */
+        er_dhead = ( er_dbase = le_array_get_byte( & er_cell->ce_data ) + er_cell->ce_type[0] * LE_UV3_RECORD );
+
+        /* update array size */
+        le_array_set_size( & er_cell->ce_list, sizeof( GLuint ) * er_count );
+
+        /* compute buffer pointer */
+        er_tbase = ( er_lbase = ( GLuint * ) le_array_get_byte( & er_cell->ce_list ) ) + er_cell->ce_type[1];
+
+        /* update array size */
+        le_array_set_size( & er_cell->ce_norm, sizeof( le_real_t ) * er_count * 3 );
+
+        /* compute buffer pointer */
+        er_nbase = ( le_real_t * ) le_array_get_byte( & er_cell->ce_norm );
+
+        /* parsing data socket-array */
+        while ( ( er_offset = ( er_dhead - er_dbase ) ) < er_size ) {
+
+            /* check modular variable */
+            if ( ( -- er_module ) == 0 ) {
+
+                /* update modular variable */
+                er_module = er_dhead[LE_UV3_POSE];
+
+            }
+
+            /* switch on primitive */
+            if ( er_dhead[LE_UV3_POSE] == LE_UV3_LINE ) {
+
+                /* compute render index */
+                ( * ( er_lbase ++ ) ) = er_offset / LE_UV3_RECORD;
+
+            } else {
+
+                /* compute render index */
+                ( * ( er_tbase ++ ) ) = er_offset / LE_UV3_RECORD;
+
+                /* normal computation */
+                if ( er_module == 3 ) {
+
+                    /* edge computation */
+                    er_vector[0] = ( ( le_real_t * ) er_dhead )[0];
+                    er_vector[1] = ( ( le_real_t * ) er_dhead )[1];
+                    er_vector[2] = ( ( le_real_t * ) er_dhead )[2];
+
+                } else if ( er_module == 2 ) {
+
+                    /* edge computation */
+                    er_vector[0] += ( er_vector[3] = - ( ( le_real_t * ) er_dhead )[0] );
+                    er_vector[1] += ( er_vector[4] = - ( ( le_real_t * ) er_dhead )[1] );
+                    er_vector[2] += ( er_vector[5] = - ( ( le_real_t * ) er_dhead )[2] );
+
+                } else {
+
+                    /* edge computation */
+                    er_vector[3] += ( ( le_real_t * ) er_dhead )[0];
+                    er_vector[4] += ( ( le_real_t * ) er_dhead )[1];
+                    er_vector[5] += ( ( le_real_t * ) er_dhead )[2];
+
+                    /* compute normal vector */
+                    er_nbase[0] = er_vector[2] * er_vector[4] - er_vector[1] * er_vector[5];
+                    er_nbase[1] = er_vector[0] * er_vector[5] - er_vector[2] * er_vector[3];
+                    er_nbase[2] = er_vector[1] * er_vector[3] - er_vector[0] * er_vector[4];
+
+                    /* compute normal norm */
+                    er_vector[0] = 1.0 / sqrtf( er_nbase[0] * er_nbase[0] + er_nbase[1] * er_nbase[1] + er_nbase[2] * er_nbase[2] );
+
+                    /* normal correction */
+                    er_nbase[0] *= er_vector[0];
+                    er_nbase[1] *= er_vector[0];
+                    er_nbase[2] *= er_vector[0];
+
+                    /* normal backward broadcasting */
+                    er_nbase[-6] = er_nbase[0];
+                    er_nbase[-5] = er_nbase[1];
+                    er_nbase[-4] = er_nbase[2];
+                    er_nbase[-3] = er_nbase[0];
+                    er_nbase[-2] = er_nbase[1];
+                    er_nbase[-1] = er_nbase[2];
+
+                }
+
+            }
+
+            /* update pointer */
+            er_nbase += 3;
+
+            /* update pointer */
+            er_dhead += LE_UV3_RECORD;
+
+        }
 
     }
 

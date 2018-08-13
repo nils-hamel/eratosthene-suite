@@ -167,6 +167,8 @@
      *  \return Returns EXIT_SUCCESS on success, EXIT_FAILURE otherwise
      */
 
+    le_enum_t er_inject_uv3_beta( le_char_t const * const er_path, le_time_t er_time, le_sock_t const er_socket );
+
     le_enum_t er_inject_uf3( le_char_t const * const er_path, le_time_t er_time, le_sock_t const er_socket );
 
     /*! \brief injection method - optimisation

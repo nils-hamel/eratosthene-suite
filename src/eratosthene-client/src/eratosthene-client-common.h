@@ -72,8 +72,8 @@
     # define ER_COMMON_VIEW  ( 0x01 )
 
     /* define trigonometric factors */
-    # define ER_COMMON_D2R   ( 3.1415926535 / 180.0 )
-    # define ER_COMMON_R2D   ( 180.0 / 3.1415926535 )
+    //# define ER_COMMON_D2R   ( 3.1415926535 / 180.0 )
+    //# define ER_COMMON_R2D   ( 180.0 / 3.1415926535 )
 
     /* define model parameters */
     # define ER_COMMON_ENUM  ( 4 )
@@ -90,9 +90,9 @@
     # define ER_COMMON_LIMIT ( _LE_TIME_L( 28382400000000 ) )
 
     /* define limit : address span */
-    # define ER_COMMON_SPD ( 7 )
-    # define ER_COMMON_SPL ( 4 )
-    # define ER_COMMON_SPH ( 8 )
+    # define ER_COMMON_SPD   ( 7 )
+    # define ER_COMMON_SPL   ( 4 )
+    # define ER_COMMON_SPH   ( 8 )
 
     /* define limit : altitude */
     # define ER_COMMON_ALL   ( LE_ADDRESS_WGS_A * 0.75 )
