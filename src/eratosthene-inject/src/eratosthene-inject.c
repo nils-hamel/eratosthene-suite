@@ -21,7 +21,7 @@
     # include "eratosthene-inject.h"
 
 /*
-    source - injection method - uf3
+    source - injection method - uv3
  */
 
     le_enum_t er_inject_uv3_beta( le_char_t const * const er_path, le_time_t er_time, le_sock_t const er_socket ) {
