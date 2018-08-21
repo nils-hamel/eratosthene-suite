@@ -53,8 +53,7 @@
             printf( LC_PROJECT " : listening on TCP/IP on %" _LE_ENUM_P "\n", er_port );
 
             /* server process */
-            //le_server_io( & er_server );
-            le_server_io_beta( & er_server );
+            le_server_io( & er_server );
 
             /* delete server */
             le_server_delete( & er_server );
