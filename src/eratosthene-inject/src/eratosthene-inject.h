@@ -128,7 +128,7 @@
  */
 
     /* define segmentation size */
-    # define ER_INJECT ( LE_UV3_CHUNK * LE_ARRAY_UV3 )
+    # define ER_INJECT ( LE_UV3_CHUNK * LE_UV3_RECORD )
 
 /*
     header - preprocessor macros

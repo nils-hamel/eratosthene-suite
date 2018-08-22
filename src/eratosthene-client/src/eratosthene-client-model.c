@@ -242,12 +242,12 @@
                         if ( ( er_scale + 2 + er_view_get_span( er_view ) ) < er_model->md_scfg ) {
 
                             /* drop condition */
-                            if ( er_model_get_discare( er_model, er_enum ) == _LE_FALSE ) {
+                            //if ( er_model_get_discare( er_model, er_enum ) == _LE_FALSE ) {
 
                                 /* continue enumeration */
                                 er_model_set_enum( er_model, er_enum, er_scale + 1, er_view );
 
-                            }
+                            //}
 
                         }
 

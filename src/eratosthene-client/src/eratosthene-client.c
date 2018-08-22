@@ -260,6 +260,15 @@
         /* color array variable */
         GLfloat er_vector[4] = { 0.0 };
 
+        /* shade model */
+        glShadeModel( GL_SMOOTH );
+
+        /* face culling */
+        glCullFace( GL_BACK );
+
+        /* enable culling */
+        glEnable( GL_CULL_FACE );
+
         /* enable depth test */
         glEnable( GL_DEPTH_TEST );
 
