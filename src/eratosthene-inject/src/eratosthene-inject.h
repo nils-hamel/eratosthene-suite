@@ -146,7 +146,7 @@
     header - function prototypes
  */
 
-    /*! \brief injection method - uf3
+    /*! \brief injection method - uf3 ( revoked )
      *
      *  This function is responsible of data injection in the specified server
      *  that come from a file of format uf3 (universal format 3-bytes).
@@ -167,11 +167,9 @@
      *  \return Returns EXIT_SUCCESS on success, EXIT_FAILURE otherwise
      */
 
-    le_enum_t er_inject_uv3_beta( le_char_t const * const er_path, le_time_t er_time, le_sock_t const er_socket );
+    le_enum_t er_inject_uv3( le_char_t const * const er_path, le_time_t er_time, le_sock_t const er_socket );
 
-    le_enum_t er_inject_uf3( le_char_t const * const er_path, le_time_t er_time, le_sock_t const er_socket );
-
-    /*! \brief injection method - optimisation
+    /*! \brief injection method - optimisation ( revoked )
      *
      *  This function is responsible of asking the optimisation of the storage
      *  of data pointed by the provided timestamps in the remote server.
@@ -189,7 +187,7 @@
 
     le_enum_t er_inject_optimise( le_time_t er_time, le_sock_t const er_socket );
 
-    /*! \brief main function
+    /*! \brief main function ( revoked )
      *
      *  The main function is responsible of models injection and optimisation in
      *  the remote server :

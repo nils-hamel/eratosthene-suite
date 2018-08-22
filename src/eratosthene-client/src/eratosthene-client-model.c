@@ -117,31 +117,6 @@
 
     }
 
-    le_enum_t er_model_get_discare( er_model_t const * const er_model, le_address_t const * const er_addr ) {
-
-        /* parsing d-cell array */
-        for ( le_size_t er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
-
-            /* check cell state */
-            if ( er_cell_get_record( er_model->md_cell + er_parse ) == 0 ) {
-
-                /* compare to cell address */
-                if ( er_cell_get_drop( er_model->md_cell + er_parse, er_addr ) == _LE_TRUE ) {
-
-                    /* send message */
-                    return( _LE_TRUE );
-
-                }
-
-            }
-
-        }
-
-        /* send message */
-        return( _LE_FALSE );
-
-    }
-
 /*
     source - mutator methods
  */
@@ -241,13 +216,8 @@
                         /* check enumeration boundary */
                         if ( ( er_scale + 2 + er_view_get_span( er_view ) ) < er_model->md_scfg ) {
 
-                            /* drop condition */
-                            //if ( er_model_get_discare( er_model, er_enum ) == _LE_FALSE ) {
-
-                                /* continue enumeration */
-                                er_model_set_enum( er_model, er_enum, er_scale + 1, er_view );
-
-                            //}
+                            /* continue enumeration */
+                            er_model_set_enum( er_model, er_enum, er_scale + 1, er_view );
 
                         }
 

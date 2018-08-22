@@ -24,7 +24,7 @@
     source - injection method - uv3
  */
 
-    le_enum_t er_inject_uv3_beta( le_char_t const * const er_path, le_time_t er_time, le_sock_t const er_socket ) {
+    le_enum_t er_inject_uv3( le_char_t const * const er_path, le_time_t er_time, le_sock_t const er_socket ) {
 
         /* stream variable */
         le_file_t er_stream = NULL;
@@ -181,8 +181,7 @@
                 if ( ( er_path = ( le_char_t * ) lc_read_string( argc, argv, "--uv3", "" ) ) != NULL ) {
 
                     /* injection process - uf3 */
-                    //if ( ( er_message = er_inject_uf3( er_path, er_time, er_socket ) ) == EXIT_SUCCESS ) {
-                    if ( ( er_message = er_inject_uv3_beta( er_path, er_time, er_socket ) ) == EXIT_SUCCESS ) {
+                    if ( ( er_message = er_inject_uv3( er_path, er_time, er_socket ) ) == EXIT_SUCCESS ) {
 
                         /* flag detection */
                         if ( lc_read_flag( argc, argv, "--optimise", "-o" ) == LC_TRUE ) {

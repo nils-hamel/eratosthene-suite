@@ -236,23 +236,6 @@
 
     le_size_t er_model_get_drop( er_model_t const * const er_model, le_address_t const * const er_addr );
 
-    /*! \brief accessor methods
-     *
-     *  This function search in the display cell array if a cell has the same
-     *  address as the one provided as parameter.
-     *
-     *  If such a cell is found and if the cell is empty, the function returns
-     *  _LE_TRUE. If the cell is not found or found but not empty, the function
-     *  returns _LE_FALSE.
-     *
-     *  \param er_model Model structure
-     *  \param er_addr  Address structure
-     *
-     *  \return Returns _LE_TRUE if empty cell is found, _LE_FALSE otherwise
-     */
-
-    le_enum_t er_model_get_discare( er_model_t const * const er_model, le_address_t const * const er_addr );
-
     /*! \brief mutator methods
      *
      *  This function is used to prepare an update of the earth model contain in
