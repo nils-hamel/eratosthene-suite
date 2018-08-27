@@ -71,10 +71,6 @@
     # define ER_COMMON_EXIT  ( 0x00 )
     # define ER_COMMON_VIEW  ( 0x01 )
 
-    /* define trigonometric factors */
-    //# define ER_COMMON_D2R   ( 3.1415926535 / 180.0 )
-    //# define ER_COMMON_R2D   ( 180.0 / 3.1415926535 )
-
     /* define model parameters */
     # define ER_COMMON_ENUM  ( 4 )
     # define ER_COMMON_PACK  ( 8 )
@@ -86,17 +82,22 @@
     # define ER_COMMON_INP   ( 2.0 * LE_PI / ( LE_ADDRESS_WGS_A * 180.0 ) )
     # define ER_COMMON_INR   ( 1.0 / 800.0 )
 
-    /* define limit : time area */
-    # define ER_COMMON_LIMIT ( _LE_TIME_L( 28382400000000 ) )
+    /* define limit and default : time */
+    # define ER_COMMON_UTIME ( _LE_TIME_MAX )
 
-    /* define limit : address span */
-    # define ER_COMMON_SPD   ( 7 )
-    # define ER_COMMON_SPL   ( 4 )
-    # define ER_COMMON_SPH   ( 8 )
+    /* define limit and default : comb */
+    # define ER_COMMON_DCOMB ( 31536000 )
+    # define ER_COMMON_LCOMB ( 2 )
+    # define ER_COMMON_UCOMB ( _LE_TIME_MAX )
 
-    /* define limit : altitude */
-    # define ER_COMMON_ALL   ( LE_ADDRESS_WGS_A * 0.75 )
-    # define ER_COMMON_ALU   ( LE_ADDRESS_WGS_A * 3.00 )
+    /* define limit and default : address span */
+    # define ER_COMMON_DSPAN ( 7 )
+    # define ER_COMMON_LSPAN ( 4 )
+    # define ER_COMMON_USPAN ( 8 )
+
+    /* define limit and default : altitude */
+    # define ER_COMMON_LALTI ( LE_ADDRESS_WGS_A * 0.75 )
+    # define ER_COMMON_UALTI ( LE_ADDRESS_WGS_A * 3.00 )
 
     /* define keyboard modifiers */
     # define ER_COMMON_KMALL ( KMOD_LCTRL | KMOD_LALT | KMOD_LSHIFT )

@@ -54,11 +54,11 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_VIEW_C { 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, ER_COMMON_SPD }
+    # define ER_VIEW_C { 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, ER_COMMON_DSPAN }
 
     /* define pseudo-constructor - default point of view */
-    //# define ER_VIEW_D { 12.335435, 45.438531, LE_ADDRESS_WGS_A * 1.5, 0.0, 0.0, 1, 950486422, 0, 31536000, 31536000, ER_COMMON_SPD }
-    # define ER_VIEW_D { 6.148642, 46.201003, LE_ADDRESS_WGS_A * 1.001, 0.0, 0.0, 1, 950486422, 0, 31536000, 31536000, ER_COMMON_SPD }
+    //# define ER_VIEW_D { 12.335435, 45.438531, LE_ADDRESS_WGS_A * 1.5, 0.0, 0.0, 1, 950486422, 950486422, ER_COMMON_DCOMB, ER_COMMON_DCOMB, ER_COMMON_DSPAN }
+    # define ER_VIEW_D { 6.148642, 46.201003, LE_ADDRESS_WGS_A * 1.001, 0.0, 0.0, 1, 950486422, 950486422, ER_COMMON_DCOMB, ER_COMMON_DCOMB, ER_COMMON_DSPAN }
 
 /*
     header - preprocessor macros

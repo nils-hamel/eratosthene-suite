@@ -242,7 +242,7 @@
         er_view->vw_alt += er_value;
 
         /* clamp altitude value */
-        er_view->vw_alt = lc_clamp( er_view->vw_alt, ER_COMMON_ALL, ER_COMMON_ALU );
+        er_view->vw_alt = lc_clamp( er_view->vw_alt, ER_COMMON_LALTI, ER_COMMON_UALTI );
 
     }
 
@@ -305,7 +305,7 @@
             er_view->vw_tia += ( le_real_t ) er_view->vw_zta * er_value;
 
             /* clamp time range */
-            er_view->vw_tia = lc_clamp( er_view->vw_tia, -ER_COMMON_LIMIT, +ER_COMMON_LIMIT );
+            er_view->vw_tia = lc_clamp( er_view->vw_tia, -ER_COMMON_UTIME, +ER_COMMON_UTIME );
 
         } else if ( er_view->vw_mod == 2 ) {
 
@@ -313,7 +313,7 @@
             er_view->vw_tib += ( le_real_t ) er_view->vw_ztb * er_value;
 
             /* clamp time range */
-            er_view->vw_tib = lc_clamp( er_view->vw_tib, -ER_COMMON_LIMIT, +ER_COMMON_LIMIT );
+            er_view->vw_tib = lc_clamp( er_view->vw_tib, -ER_COMMON_UTIME, +ER_COMMON_UTIME );
 
         }
 
@@ -328,7 +328,7 @@
             er_view->vw_zta *= er_value;
 
             /* clamp area value */
-            er_view->vw_zta = lc_clamp( er_view->vw_zta, 60, 32314982400 );
+            er_view->vw_zta = lc_clamp( er_view->vw_zta, ER_COMMON_LCOMB, ER_COMMON_UCOMB );
 
         } else if ( er_view->vw_mod == 2 ) {
 
@@ -336,7 +336,7 @@
             er_view->vw_ztb *= er_value;
 
             /* clamp area value */
-            er_view->vw_ztb = lc_clamp( er_view->vw_ztb, 60, 32314982400 );
+            er_view->vw_ztb = lc_clamp( er_view->vw_ztb, ER_COMMON_LCOMB, ER_COMMON_UCOMB );
 
         }
 
@@ -345,7 +345,7 @@
     le_void_t er_view_set_span( er_view_t * const er_view, le_size_t const er_value ) {
 
         /* update and clamp span value */
-        er_view->vw_spn = lc_clamp( er_view->vw_spn + er_value, ER_COMMON_SPL, ER_COMMON_SPH );
+        er_view->vw_spn = lc_clamp( er_view->vw_spn + er_value, ER_COMMON_LSPAN, ER_COMMON_USPAN );
 
     }
 
