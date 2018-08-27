@@ -654,12 +654,12 @@
             if ( er_event.y > 0 ) {
 
                 /* update time area */
-                er_view_set_area( & er_client->cl_view, 1.0990 );
+                er_view_set_comb( & er_client->cl_view, 1.0990 );
 
             } else {
 
                 /* update time area */
-                er_view_set_area( & er_client->cl_view, 0.9099 );
+                er_view_set_comb( & er_client->cl_view, 0.9099 );
 
             }
 

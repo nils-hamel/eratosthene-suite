@@ -54,11 +54,15 @@
  */
 
     /* define pseudo-constructor */
+    //# define ER_VIEW_C { 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, ER_COMMON_DSPAN }
     # define ER_VIEW_C { 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, ER_COMMON_DSPAN }
 
     /* define pseudo-constructor - default point of view */
-    //# define ER_VIEW_D { 12.335435, 45.438531, LE_ADDRESS_WGS_A * 1.5, 0.0, 0.0, 1, 950486422, 950486422, ER_COMMON_DCOMB, ER_COMMON_DCOMB, ER_COMMON_DSPAN }
-    # define ER_VIEW_D { 6.148642, 46.201003, LE_ADDRESS_WGS_A * 1.001, 0.0, 0.0, 1, 950486422, 950486422, ER_COMMON_DCOMB, ER_COMMON_DCOMB, ER_COMMON_DSPAN }
+    ////# define ER_VIEW_D { 12.335435, 45.438531, LE_ADDRESS_WGS_A * 1.5, 0.0, 0.0, 1, 950486422, 950486422, ER_COMMON_DCOMB, ER_COMMON_DCOMB, ER_COMMON_DSPAN }
+    //# define ER_VIEW_D { 6.148642, 46.201003, LE_ADDRESS_WGS_A * 1.001, 0.0, 0.0, 1, 950486422, 950486422, ER_COMMON_DCOMB, ER_COMMON_DCOMB, ER_COMMON_DSPAN }
+
+    //# define ER_VIEW_D { 12.335435, 45.438531, LE_ADDRESS_WGS_A * 1.5, 0.0, 0.0, 1, 950486422, 950486422, ER_COMMON_DCOMB, ER_COMMON_DSPAN }
+    # define ER_VIEW_D { 6.148642, 46.201003, LE_ADDRESS_WGS_A * 1.001, 0.0, 0.0, 1, 950486422, 950486422, ER_COMMON_DCOMB, ER_COMMON_DSPAN }
 
 /*
     header - preprocessor macros
@@ -73,7 +77,7 @@
  */
 
     /*! \struct er_view_struct
-     *  \brief View structure
+     *  \brief View structure ( revoked )
      *
      *  This structure contains the information describing a model point of
      *  view. It includes the point of view position and angles of sight, and
@@ -138,8 +142,9 @@
         le_enum_t vw_mod;
         le_time_t vw_tia;
         le_time_t vw_tib;
-        le_time_t vw_zta;
-        le_time_t vw_ztb;
+        //le_time_t vw_zta;
+        //le_time_t vw_ztb;
+        le_time_t vw_cmb;
 
         le_size_t vw_spn;
 
@@ -328,7 +333,7 @@
 
     le_time_t er_view_get_time( er_view_t const * const er_view, le_enum_t const er_time );
 
-    /*! \brief accessor methods
+    /*! \brief accessor methods ( revoked )
      *
      *  This function returns the time area size contained in the provided view
      *  structure. According to the provided index, the function returns the
@@ -340,14 +345,14 @@
      *  \return Returns view structure time area size
      */
 
-    le_time_t er_view_get_area( er_view_t const * const er_view, le_enum_t const er_time );
+    le_time_t er_view_get_comb( er_view_t const * const er_view );
 
     /*! \brief accessor methods
      *
      *  This function returns the span value of the provided view structure.
      *
      *  \param er_view View structure
-     * 
+     *
      *  \return Returns view structure span value
      */
 
@@ -420,7 +425,7 @@
 
     le_void_t er_view_set_mode( er_view_t * const er_view, le_enum_t const er_mode );
 
-    /*! \brief mutator methods
+    /*! \brief mutator methods ( revoked )
      *
      *  This function is used for alignment of the two times of the provided
      *  view structure.
@@ -434,7 +439,7 @@
 
     le_void_t er_view_set_times( er_view_t * const er_view );
 
-    /*! \brief mutator methods
+    /*! \brief mutator methods ( revoked )
      *
      *  This function updates the time value of the provided view structure using
      *  its respective area. The provided value is used as a factor applied to
@@ -449,7 +454,7 @@
 
     le_void_t er_view_set_time( er_view_t * const er_view, le_real_t const er_value );
 
-    /*! \brief mutator methods
+    /*! \brief mutator methods ( revoked )
      *
      *  This function updates the area value of the time corresponding to the
      *  active mode.
@@ -458,7 +463,7 @@
      *  \param er_value Time area size value
      */
 
-    le_void_t er_view_set_area( er_view_t * const er_view, le_real_t const er_value );
+    le_void_t er_view_set_comb( er_view_t * const er_view, le_real_t const er_value );
 
     /*! \brief mutator methods
      *

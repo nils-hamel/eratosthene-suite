@@ -195,7 +195,7 @@
         er_times_set_buffer( er_times );
 
         /* display slider */
-        er_times_set_slider( er_times, er_view_get_time( er_view, er_active ), er_view_get_area( er_view, er_active ) );
+        er_times_set_slider( er_times, er_view_get_time( er_view, er_active ), er_view_get_comb( er_view ) );
 
         /* display cursor */
         er_times_display_text( er_times, er_text[0], 64, er_times->tm_middle, er_times->tm_sh2, ER_TIMES_CENTER );
