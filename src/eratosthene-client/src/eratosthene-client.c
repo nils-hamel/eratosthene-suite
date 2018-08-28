@@ -275,6 +275,9 @@
         /* enable light */
         glEnable( GL_LIGHT0 );
 
+        /* face culling */
+        glCullFace( GL_BACK );
+
         /* opengl blending configuration */
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
