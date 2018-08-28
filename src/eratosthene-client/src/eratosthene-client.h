@@ -38,7 +38,7 @@
      *  a front-end software for the data injection in the available servers. It
      *  also offers a graphical 4D solution allowing to browse the 4D earth
      *  model offered by the available servers.
-     *  
+     *
      *  In addition to the server, client data injection and the 4D graphical
      *  client softwares, the suite also provides a tools allowing to massively
      *  query 4D earth cells, following the _liberatosthene_ indexation
@@ -129,10 +129,10 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_CLIENT_C      { _LE_SOCK_NULL, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_VIEW_D, ER_VIEW_C, 0, 0, 0, 0, 1.0, 1.0, _LE_FALSE }
+    # define ER_CLIENT_C      { _LE_SOCK_NULL, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_VIEW_D, ER_VIEW_C, _LE_TIME_MAX, 0, 0, 0, 0, 1.0, 1.0, _LE_FALSE }
 
     /* define pseudo-constructor */
-    # define ER_CLIENT_I(w,h) { _LE_SOCK_NULL, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_VIEW_D, ER_VIEW_C, w, h, 0, 0, 1.0, 1.0, _LE_FALSE }
+    # define ER_CLIENT_I(w,h) { _LE_SOCK_NULL, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_VIEW_D, ER_VIEW_C, _LE_TIME_MAX, w, h, 0, 0, 1.0, 1.0, _LE_FALSE }
 
     /* define window properties */
     # define ER_SDL_FLAGS     ( SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL )
@@ -206,6 +206,7 @@
 
         er_view_t  cl_view;
         er_view_t  cl_push;
+        le_time_t  cl_last;
 
         le_size_t  cl_width;
         le_size_t  cl_height;
@@ -339,7 +340,7 @@
 
     le_void_t er_client_loops_event( er_client_t * const er_client );
 
-    /*! \brief loop methods
+    /*! \brief loop methods ( revoked )
      *
      *  This function is called by the main loop function to trigger the earth
      *  model update according to the point of view.
@@ -355,7 +356,7 @@
      *
      *  \param er_client Client structure
      */
-
+    le_void_t er_client_loops_update_beta( er_client_t * const er_client );
     le_void_t er_client_loops_update( er_client_t * const er_client );
 
     /*! \brief projection methods
