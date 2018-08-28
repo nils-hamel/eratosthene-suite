@@ -361,7 +361,7 @@
             while ( er_client->cl_loops != ER_COMMON_EXIT ) {
 
                 /* model update procedure */
-                er_client_loops_update_beta( er_client );
+                er_client_loops_update( er_client );
 
             }
 
@@ -457,7 +457,7 @@
 
     }
 
-    le_void_t er_client_loops_update_beta( er_client_t * const er_client ) {
+    le_void_t er_client_loops_update( er_client_t * const er_client ) {
 
         /* address variable */
         le_address_t er_address = LE_ADDRESS_C;
@@ -494,36 +494,6 @@
         }
 
         /* synchronisation process */
-        er_model_set_sync( & er_client->cl_model );
-
-    }
-
-    le_void_t er_client_loops_update( er_client_t * const er_client ) {
-
-        /* address variables */
-        le_address_t er_enum = LE_ADDRESS_C;
-
-        /* motion detection */
-        if ( er_view_get_equal( & er_client->cl_push, & er_client->cl_view ) == _LE_FALSE ) {
-
-            /* push considered view */
-            er_client->cl_push = er_client->cl_view;
-
-            /* retreive address times */
-            er_enum = er_view_get_times( & er_client->cl_view );
-
-            /* prepare model update */
-            er_model_set_prep( & er_client->cl_model );
-
-            /* update model target */
-            er_model_set_enum( & er_client->cl_model, & er_enum, 0, & er_client->cl_view );
-
-            /* model/target fast synchronisation */
-            er_model_set_fast( & er_client->cl_model );
-
-        }
-
-        /* synchronisation process - step-process */
         er_model_set_sync( & er_client->cl_model );
 
     }
