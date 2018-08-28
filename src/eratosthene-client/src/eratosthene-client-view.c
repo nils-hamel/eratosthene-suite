@@ -177,6 +177,9 @@
 
         }
 
+        /* set address comb */
+        le_address_set_time( & er_addr, 2, er_view->vw_cmb );
+
         /* return address structure */
         return( er_addr );
 
