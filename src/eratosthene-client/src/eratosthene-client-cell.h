@@ -55,7 +55,6 @@
  */
 
     /* define pseudo-constructor */
-    //# define ER_CELL_C   { 0, LE_ADDRESS_C, LE_ARRAY_C, { 0.0 } }
     # define ER_CELL_C   { 0, LE_ADDRESS_C, LE_ARRAY_C, { 0.0 }, LE_ARRAY_C, { 0 } }
 
     /* define flags */
@@ -75,7 +74,7 @@
  */
 
     /*! \struct er_cell_struct
-     *  \brief cell structure
+     *  \brief cell structure ( revoked )
      *
      *  This structure holds the definition and data of an equivalence class
      *  obtained through a query to the remote server.
@@ -291,7 +290,7 @@
 
     le_void_t er_cell_set_array( er_cell_t * const er_cell, le_sock_t const er_socket );
 
-    /*! mutator methods
+    /*! mutator methods ( revoked )
      *
      *  This function process the array received from the remote server after
      *  a query of the provided cell.

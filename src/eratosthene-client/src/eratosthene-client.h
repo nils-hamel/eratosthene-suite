@@ -150,7 +150,7 @@
  */
 
     /*! \struct er_client_struct
-     *  \brief Client structure
+     *  \brief Client structure ( revoked )
      *
      *  This structure holds the graphical client main instance. It holds
      *  fields related to point of view motion management and sub-structures

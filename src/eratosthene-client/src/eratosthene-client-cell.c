@@ -79,7 +79,7 @@
     le_size_t er_cell_get_record( er_cell_t const * const er_cell ) {
 
         /* return number of uf3 records */
-        return( le_array_get_size( & er_cell->ce_data ) / LE_ARRAY_UV3 );
+        return( le_array_get_size( & er_cell->ce_data ) / LE_ARRAY_DATA );
 
     }
 
@@ -170,7 +170,7 @@
                 /* disable model light */
                 glDisable( GL_LIGHTING );
 
-            }         
+            }
 
         }
 

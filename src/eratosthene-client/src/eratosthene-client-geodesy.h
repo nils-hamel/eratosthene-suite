@@ -139,7 +139,7 @@
 
     le_real_t er_geodesy_radius( le_real_t const er_altitude );
 
-    /*! \brief model methods
+    /*! \brief model methods ( revoked )
      *
      *  This function computes, according to the distance between the cell and
      *  the point of view, the ideal scale (i.e. the ideal number of digits of
@@ -158,7 +158,6 @@
      *  \return Returns the ideal depth value
      */
 
-    //le_enum_t er_geodesy_select( le_real_t const er_distance, le_real_t const er_scfg, le_real_t const er_scale );
     le_enum_t er_geodesy_select( le_real_t const er_distance, er_view_t const * const er_view, le_real_t const er_scfg, le_real_t const er_scale );
 
     /*! \brief model functions

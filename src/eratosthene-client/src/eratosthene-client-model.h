@@ -69,13 +69,6 @@
     /* define model stack */
     # define ER_MODEL_STACK    ( 6144 )
 
-    /* define display array types */
-    # define ER_MODEL_VERTEX   ( GL_DOUBLE )
-    # define ER_MODEL_COLORS   ( GL_UNSIGNED_BYTE )
-
-    /* define model color */
-    //# define ER_MODEL_SPACE    { 0.03, 0.04, 0.05, 1.00 }
-
 /*
     header - preprocessor macros
  */
@@ -412,8 +405,6 @@
      *  \param er_model Model structure
      *  \param er_view  View structure
      */
-
-    le_void_t er_model_display_cell_beta( er_model_t const * const er_model, er_view_t const * const er_view );
 
     le_void_t er_model_display_cell( er_model_t const * const er_model, er_view_t const * const er_view );
 
