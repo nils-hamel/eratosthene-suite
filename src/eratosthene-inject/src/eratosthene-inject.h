@@ -38,7 +38,7 @@
      *  a front-end software for the data injection in the available servers. It
      *  also offers a graphical 4D solution allowing to browse the 4D earth
      *  model offered by the available servers.
-     *  
+     *
      *  In addition to the server, client data injection and the 4D graphical
      *  client softwares, the suite also provides a tools allowing to massively
      *  query 4D earth cells, following the _liberatosthene_ indexation
@@ -128,7 +128,7 @@
  */
 
     /* define segmentation size */
-    # define ER_INJECT ( LE_UV3_CHUNK * LE_UV3_RECORD )
+    # define ER_INJECT ( LE_UV3_CHUNK * LE_ARRAY_DATA )
 
 /*
     header - preprocessor macros
@@ -168,24 +168,6 @@
      */
 
     le_enum_t er_inject_uv3( le_char_t const * const er_path, le_time_t er_time, le_sock_t const er_socket );
-
-    /*! \brief injection method - optimisation ( revoked )
-     *
-     *  This function is responsible of asking the optimisation of the storage
-     *  of data pointed by the provided timestamps in the remote server.
-     *
-     *  The function prepares the optimisation query by packing the provided
-     *  time and sends it to the remote server to trigger the time storage unit
-     *  optimisation. The function waits the server confirmation array before
-     *  to exit.
-     *
-     *  \param er_time   Injection time
-     *  \param er_socket Remote server socket
-     *
-     *  \return Returns EXIT_SUCCESS on success, EXIT_FAILURE otherwise
-     */
-
-    le_enum_t er_inject_optimise( le_time_t er_time, le_sock_t const er_socket );
 
     /*! \brief main function ( revoked )
      *

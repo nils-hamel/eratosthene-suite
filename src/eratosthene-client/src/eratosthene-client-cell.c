@@ -119,10 +119,10 @@
         if ( er_cell->ce_type[0] ) {
 
             /* assign vertex array pointer */
-            glVertexPointer( 3, GL_DOUBLE, LE_UV3_RECORD, er_base );
+            glVertexPointer( 3, GL_DOUBLE, LE_ARRAY_DATA, er_base );
 
             /* assign color array pointer */
-            glColorPointer( 3, GL_UNSIGNED_BYTE, LE_UV3_RECORD, er_base + LE_UV3_POSE + LE_UV3_TYPE );
+            glColorPointer( 3, GL_UNSIGNED_BYTE, LE_ARRAY_DATA, er_base + LE_ARRAY_DATA_POSE + LE_ARRAY_DATA_TYPE );
 
             /* display cell primitive */
             glDrawArrays( GL_POINTS, 0, er_cell->ce_type[0] );
@@ -133,10 +133,10 @@
         if ( er_cell->ce_type[1] | er_cell->ce_type[2] ) {
 
             /* assign vertex array pointer */
-            glVertexPointer( 3, GL_DOUBLE, LE_UV3_RECORD, er_base + er_cell->ce_type[0] * LE_UV3_RECORD );
+            glVertexPointer( 3, GL_DOUBLE, LE_ARRAY_DATA, er_base + er_cell->ce_type[0] * LE_ARRAY_DATA );
 
             /* assign color array pointer */
-            glColorPointer( 3, GL_UNSIGNED_BYTE, LE_UV3_RECORD, er_base + LE_UV3_POSE + LE_UV3_TYPE );
+            glColorPointer( 3, GL_UNSIGNED_BYTE, LE_ARRAY_DATA, er_base + LE_ARRAY_DATA_POSE + LE_ARRAY_DATA_TYPE );
 
             /* cell primitive index pointer */
             er_base = le_array_get_byte( & er_cell->ce_list );
@@ -270,10 +270,10 @@
             ( ( le_real_t * ) er_head )[2] = ( ( le_real_t * ) er_head )[2] * cos( er_optima ) - er_cell->ce_edge[2];
 
             /* update primitive count */
-            er_cell->ce_type[er_head[LE_UV3_POSE] - 1] ++;
+            er_cell->ce_type[er_head[LE_ARRAY_DATA_POSE] - 1] ++;
 
             /* update head */
-            er_head += LE_UV3_RECORD;
+            er_head += LE_ARRAY_DATA;
 
         }
 
@@ -319,7 +319,7 @@
         le_size_t er_module = LE_UV3_POINT;
 
         /* compute buffer pointer */
-        er_dhead = ( er_dbase = le_array_get_byte( & er_cell->ce_data ) + er_cell->ce_type[0] * LE_UV3_RECORD );
+        er_dhead = ( er_dbase = le_array_get_byte( & er_cell->ce_data ) + er_cell->ce_type[0] * LE_ARRAY_DATA );
 
         /* update array size */
         le_array_set_size( & er_cell->ce_list, sizeof( GLuint ) * er_count );
@@ -340,20 +340,20 @@
             if ( ( -- er_module ) == 0 ) {
 
                 /* update modular variable */
-                er_module = er_dhead[LE_UV3_POSE];
+                er_module = er_dhead[LE_ARRAY_DATA_POSE];
 
             }
 
             /* switch on primitive */
-            if ( er_dhead[LE_UV3_POSE] == LE_UV3_LINE ) {
+            if ( er_dhead[LE_ARRAY_DATA_POSE] == LE_UV3_LINE ) {
 
                 /* compute render index */
-                ( * ( er_lbase ++ ) ) = er_offset / LE_UV3_RECORD;
+                ( * ( er_lbase ++ ) ) = er_offset / LE_ARRAY_DATA;
 
             } else {
 
                 /* compute render index */
-                ( * ( er_tbase ++ ) ) = er_offset / LE_UV3_RECORD;
+                ( * ( er_tbase ++ ) ) = er_offset / LE_ARRAY_DATA;
 
                 /* normal computation */
                 if ( er_module == 3 ) {
@@ -406,7 +406,7 @@
             er_nbase += 3;
 
             /* update pointer */
-            er_dhead += LE_UV3_RECORD;
+            er_dhead += LE_ARRAY_DATA;
 
         }
 
