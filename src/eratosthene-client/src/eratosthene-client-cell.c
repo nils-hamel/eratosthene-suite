@@ -296,7 +296,7 @@
         le_size_t er_count = er_cell->ce_type[1] + er_cell->ce_type[2];
 
         /* size variable */
-        le_size_t er_size = le_array_get_size( & er_cell->ce_data );
+        le_size_t er_size = le_array_get_size( & er_cell->ce_data ) - er_cell->ce_type[0] * LE_ARRAY_DATA;
 
         /* buffer pointer variable */
         le_byte_t * er_dhead = NULL;
