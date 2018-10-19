@@ -136,7 +136,7 @@
             glVertexPointer( 3, GL_DOUBLE, LE_ARRAY_DATA, er_base + er_cell->ce_type[0] * LE_ARRAY_DATA );
 
             /* assign color array pointer */
-            glColorPointer( 3, GL_UNSIGNED_BYTE, LE_ARRAY_DATA, er_base + LE_ARRAY_DATA_POSE + LE_ARRAY_DATA_TYPE );
+            glColorPointer( 3, GL_UNSIGNED_BYTE, LE_ARRAY_DATA, er_base + er_cell->ce_type[0] * LE_ARRAY_DATA + LE_ARRAY_DATA_POSE + LE_ARRAY_DATA_TYPE );
 
             /* cell primitive index pointer */
             er_base = le_array_get_byte( & er_cell->ce_list );
