@@ -589,8 +589,18 @@
             case ( SDLK_3 ) :
             case ( SDLK_4 ) : {
 
-                /* update model parameter */
-                glPointSize( er_event.keysym.sym - SDLK_1 + 1 );
+                /* check modifier */
+                if ( ( SDL_GetModState() & KMOD_LSHIFT ) != 0 ) {
+
+                    /* update model parameter */
+                    glLineWidth( er_event.keysym.sym - SDLK_1 + 1 );
+
+                } else {
+
+                    /* update model parameter */
+                    glPointSize( er_event.keysym.sym - SDLK_1 + 1 );
+
+                }
 
             } break;
 
