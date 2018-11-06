@@ -38,7 +38,7 @@
      *  a front-end software for the data injection in the available servers. It
      *  also offers a graphical 4D solution allowing to browse the 4D earth
      *  model offered by the available servers.
-     *  
+     *
      *  In addition to the server, client data injection and the 4D graphical
      *  client softwares, the suite also provides a tools allowing to massively
      *  query 4D earth cells, following the _liberatosthene_ indexation
@@ -154,10 +154,10 @@
     /*! \brief space conversion methods
      *
      *  This function, that expects the standard main function parameters, reads
-     *  the provided geographic coordinates and the scale. It then computes the
-     *  spatial index obtained using the geographic coordinates. Considering the
-     *  provided scale, it computes the geographic coordinates back from the
-     *  spatial index.
+     *  the provided geographic coordinates and the scale from them. It then
+     *  computes the spatial index obtained using the geographic coordinates.
+     *  Considering the provided scale, it computes the geographic coordinates
+     *  back from the spatial index.
      *
      *  It then displays on the standard output the original coordinates, the
      *  computed spatial index and the coordinates obtained by converting back
@@ -176,7 +176,7 @@
     /*! \brief time conversion methods
      *
      *  This function, that expects the standard main function parameters, reads
-     *  the provided date and converts it into a UNIX timestamps. After the
+     *  the provided date and converts it into a UNIX timestamp. After the
      *  conversion, the function displays the result on the standard output.
      *
      *  The date has to be provided following the pattern : YYYY-MM-DD-hh-mm-ss.
@@ -189,23 +189,25 @@
 
     /*! \brief main function
      *
-     *  The main function searches in the arguments and parameters the switches
-     *  that are used to determine the execution mode :
+     *  The main function starts by searching in the arguments and parameters
+     *  the switches used to determine the execution mode of the software :
      *
      *      ./-address --time/-t, --space/-s [execution switch]
-     *                  --date/-d [date specification]
-     *                  --scale/-s [index scale specification]
-     *                  --longitude/-l
-     *                  --latitude/-a
-     *                  --altitude/-h [geographic coordinates specification]
+     *                 --date/-d [date specification]
+     *                 --scale/-s [index scale specification]
+     *                 --longitude/-l
+     *                 --latitude/-a
+     *                 --altitude/-h [geographic coordinates specification]
      *
      *  If the '--space' switch is found, the main function invokes the spatial
      *  index computation function. It expects the 'scale' parameters and a
-     *  geographic position through its coordinates.
+     *  geographic position through its coordinates. The function converts the
+     *  provided coordinates into a spatial index before to display it.
      *
      *  If the '--time' switch is found, the main function invokes the date
      *  conversion function. It expects a date specification according to the
-     *  specialised function format.
+     *  specialised function format. The function simply converts the data into
+     *  a UNIX timestamp before to display it.
      *
      *  \param argc Main function parameters
      *  \param argv Main function parameters
