@@ -38,7 +38,7 @@
      *  a front-end software for the data injection in the available servers. It
      *  also offers a graphical 4D solution allowing to browse the 4D earth
      *  model offered by the available servers.
-     *  
+     *
      *  In addition to the server, client data injection and the 4D graphical
      *  client softwares, the suite also provides a tools allowing to massively
      *  query 4D earth cells, following the _liberatosthene_ indexation
@@ -149,11 +149,12 @@
      *  provided storage structure path :
      *
      *      ./-server --path/-p [storage structure path]
-     *                --port/-t [service port specification]
+     *                --port/-t [service port]
      *
      *  After arguments and parameters reading, the main function creates the
      *  server main structure. The server main instance function is then called
-     *  establishing the services.
+     *  to establish the services. The services are maintained by the called
+     *  specialised function.
      *
      *  As the main server instance exits, the main function deletes the server
      *  structure and exits.
