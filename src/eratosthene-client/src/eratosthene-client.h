@@ -36,12 +36,12 @@
      *  The principal software implements the server itself allowing to simply
      *  create server instances and to maintain services. The suite also offers
      *  a front-end software for the data injection in the available servers. It
-     *  also offers a graphical 4D solution allowing to browse the 4D earth
+     *  also offers a graphical 4D solution allowing to browse the 4D Earth
      *  model offered by the available servers.
      *
      *  In addition to the server, client data injection and the 4D graphical
      *  client softwares, the suite also provides a tools allowing to massively
-     *  query 4D earth cells, following the _liberatosthene_ indexation
+     *  query 4D Earth cells, following the _liberatosthene_ indexation
      *  formalism, to build large 3D-raster datasets. Such datasets can be used
      *  to train and validate machine learning algorithms working on 3D/4D
      *  geographic information.
@@ -60,7 +60,7 @@
      *  implementing an space-time indexation formalism able to handle, store
      *  and access very large 4D models of cities and environments. The
      *  indexation formalism is used to implement a server able to manage, store
-     *  and broadcast very large 4D models distributed all over the earth
+     *  and broadcast very large 4D models distributed all over the Earth
      *  surface and covering large period of time. In addition to the server,
      *  the Eratosthene Project also implements a graphical client able to
      *  communicate with the server and to offer a convenient way of browsing
@@ -71,8 +71,8 @@
      *  efficient ways of addressing queries to the server allowing models
      *  broadcasting. The space-time indexation also allows to perform queries
      *  to the server in a intuitive way giving the possibility to both address
-     *  the questions of the earth structures level of detail and time
-     *  management. This allows to explore the entire earth surface in terms of
+     *  the questions of the Earth structures level of detail and time
+     *  management. This allows to explore the entire Earth surface in terms of
      *  4D structures from large mountain chains in 2000 to very small details
      *  of cities in 1850.
      *
@@ -150,48 +150,60 @@
  */
 
     /*! \struct er_client_struct
-     *  \brief Client structure ( revoked )
+     *  \brief Client structure
      *
-     *  This structure holds the graphical client main instance. It holds
-     *  fields related to point of view motion management and sub-structures
-     *  related to the different client features.
+     *  This structure is the main graphical client structure. It holds fields
+     *  related to graphical instance, sub-modules and event management.
      *
-     *  The structure holds the client socket descriptor created with this
-     *  structure. It contains also the value used to maintain the software
+     *  In the first place, the structure holds two fields used for socket
+     *  descriptor toward the remote server and the maintaining of the execution
      *  loop.
      *
-     *  In addition to sub-structures and point of view, this structures also
-     *  holds fields related to the management of the mouse motion.
+     *  The two next fields holds the structures of the sub-modules. Sub-modules
+     *  are initialised and used through their representation in this structure.
      *
-     *  Finally, this structure also holds a scale value used to adapt the
-     *  displayed model scale according to the point of view to avoid the
-     *  saturation of the single precision format, as the client has to be able
-     *  to provide the display of earth-scale centimetric models.
+     *  The next three fields are related to the management of the point of
+     *  view. The actual point of view structure is hold along with the pushed
+     *  point of view to detect motion. A clock value is also used to delay a
+     *  bit the trigger of the model update after a modification of the point of
+     *  view.
+     *
+     *  The two next fields are holding the size, in pixels, of the interface
+     *  display.
+     *
+     *  The three next fields are related to mouse click management and motion
+     *  inertia, allowing to move to point of view.
+     *
+     *  The last field is holding the overall Earth model scale factor. This
+     *  factor is dynamically adapted to keep the Earth model in a reasonable
+     *  range to handle simple precision of most display devices.
      *
      *  \var er_client_struct::cl_socket
-     *  Client socket
+     *  Socket toward remote server - main connection
      *  \var er_client_struct::cl_loops
-     *  Execution loop state
+     *  Execution state value
      *  \var er_client_struct::cl_model
-     *  Model management sub-structure
+     *  Model sub-module structure
      *  \var er_client_struct::cl_times
-     *  Time interface sub-structure
+     *  Time sub-module structure
      *  \var er_client_struct::cl_view
-     *  Active point of view structure
+     *  Active point of view
      *  \var er_client_struct::cl_push
-     *  Pushed point of view structure
+     *  Pushed point of view
+     *  \var er_client_struct::cl_last
+     *  Delayed model update clock
      *  \var er_client_struct::cl_width
-     *  Display resolution width, in pixels
+     *  Display x-resolution, in pixels
      *  \var er_client_struct::cl_height
-     *  Display resolution height, in pixels
+     *  Display y-resolution, in pixels
      *  \var er_client_struct::cl_x
-     *  Mouse click x-position
+     *  Mouse click x-position - according to screen
      *  \var er_client_struct::cl_y
-     *  Mouse click y-position
+     *  Mouse click y-position - according to screen
      *  \var er_client_struct::cl_inertia
-     *  Point of view inertia factor
+     *  Motion inertial factor
      *  \var er_client_struct::cl_scale
-     *  Model dynamic scale factor
+     *  Overall model dynamical scale value
      *  \var er_client_struct::_status
      *  Standard status field
      */
@@ -214,6 +226,7 @@
         le_size_t  cl_x;
         le_size_t  cl_y;
         le_real_t  cl_inertia;
+
         le_real_t  cl_scale;
 
     le_enum_t _status; } er_client_t;
@@ -236,7 +249,7 @@
      *  This function returning the created structure, the status is stored in
      *  the structure itself using the reserved \b _status field.
      *
-     *  \param er_ip     Server ip address
+     *  \param er_ip     Server IP address
      *  \param er_port   Server service port
      *  \param er_width  Screen horizontal resolution, in pixels
      *  \param er_height Screen vertical resolution, in pixels
@@ -249,9 +262,10 @@
     /*! \brief constructor/destructor methods
      *
      *  This function deletes the provided client structure. It deletes the
-     *  sub-modules structures using their related deletion functions. The
-     *  socket toward the remote server is closed and the structure fields are
-     *  cleared.
+     *  sub-modules structures using their related deletion functions.
+     *
+     *  In addition, the socket toward the remote server is closed and the
+     *  structure fields are cleared using default values.
      *
      *  \param er_client Client structure
      */
@@ -261,16 +275,16 @@
     /*! \brief main method
      *
      *  The main function allows to query and display a four dimensional model
-     *  of the earth :
+     *  of the Earth :
      *
      *      ./-client --ip/-i, --port/-p [remote server access]
      *
      *  The main function starts by creating the graphical context of the
-     *  client by creating the display window. It also configure the opengl
+     *  client by creating the display window. It also configure the OpenGL
      *  graphical context.
      *
      *  It then initialises the client main structure that is responsible of
-     *  sub-structures creation and connection to the remove server creation.
+     *  sub-modules creation and connection to the remove server creation.
      *  The IP address of the remote server is provided through the '--ip'
      *  argument while the service port is set through the '--port' argument.
      *
@@ -292,15 +306,15 @@
     /*! \brief loop methods
      *
      *  This function is responsible of the OpenGL configuration and the main
-     *  loops management.
+     *  execution loops management.
      *
-     *  Two threads are instanced by this function. The principal thread is
+     *  Two threads are created by this function. The principal thread is
      *  responsible of the graphical process of the client. The secondary thread
-     *  is responsible of the earth model update according to the motion of the
+     *  is responsible of the Earth model update according to the motion of the
      *  point of view.
      *
      *  The user events are processed through the principal thread. As an event
-     *  is catch, the specialised callback process are called to handle the
+     *  is catch, the specialised callback processes are called to handle the
      *  event. The user events are also used to interrupt the main loop causing
      *  the function to exit.
      *
@@ -312,14 +326,14 @@
 
     /*! \brief loop methods
      *
-     *  This function is called by the main loop function to trigger earth model
+     *  This function is called by the main loop function to trigger Earth model
      *  rendering according to the point of view.
      *
      *  It starts by clearing buffers and, depending on the scene elements to
      *  render, it calls the specific projection configuration functions.
      *
-     *  The function displays the earth model itself, the time navigation
-     *  interface and a simple wireframe model of the earth used as a guide
+     *  The function displays the Earth model itself, the time navigation
+     *  interface and a simple wire frame model of the Earth used as a guide.
      *
      *  \param er_client Client structure
      */
@@ -328,8 +342,8 @@
 
     /*! \brief loop methods
      *
-     *  This function is responsible of the user event catching and processing.
-     *  It is called by the main loop function.
+     *  This function is responsible of the user events catching and processing.
+     *  It is called by the principal thread.
      *
      *  As the event stack is not empty, the function pop each event one by one
      *  and call they respective specific processing callbacks. The function
@@ -340,19 +354,27 @@
 
     le_void_t er_client_loops_event( er_client_t * const er_client );
 
-    /*! \brief loop methods ( revoked )
+    /*! \brief loop methods
      *
-     *  This function is called by the main loop function to trigger the earth
+     *  This function is called by the secondary thread to trigger the Earth
      *  model update according to the point of view.
      *
-     *  Using the pushed point of view, the function starts by determining if
-     *  the point of view has changed. If the point of view has changed, the
-     *  function update the target model. It then calls the synchronisation
-     *  process that updates the actual model to fit the target model using
-     *  a step by step procedure. The current point of view is finally pushed.
+     *  Using the pushed point of view, the function determine if a modification
+     *  of the point of view occurs. Before to trigger a model update, the
+     *  function waits half a second. This allows to reduce the frequency, and
+     *  bandwidth usage, when successive and close modification of the point of
+     *  view are performed.
      *
-     *  If the point of view has not changed, only the synchronisation takes
-     *  place.
+     *  As the delay passed, the function prepare and triggers the model update
+     *  procedure. The virtual cell stack is updated and the quick update
+     *  process is executed. The delay clock is also reset.
+     *
+     *  In any case, the function ends with the cell stacks synchronisation
+     *  process. This allows to perform model update by small chunk allowing to
+     *  cancel a model update as a new one is necessary.
+     *
+     *  If the point of view has not changed, only this last synchronisation
+     *  takes place.
      *
      *  \param er_client Client structure
      */
@@ -362,7 +384,7 @@
     /*! \brief projection methods
      *
      *  This function is used to set the rendering projection matrix for the
-     *  earth model display.
+     *  Earth model display.
      *
      *  It applies a projection matrix with dynamic near and far planes driven
      *  by specific functions of the geodesy module. Using the geodesy module
@@ -385,7 +407,7 @@
      *  It applies an orthogonal projection matrix used by the time module to
      *  render the time interface. It also disable the OpenGL depth test.
      *
-     *  This function also disable the OpenGL fog.
+     *  This function also disable the OpenGL fog feature.
      *
      *  \param er_client Client structure
      */
@@ -409,7 +431,7 @@
      *
      *  This function implements the mouse wheel callback function.
      *
-     *  Depending on the keyboard modifier state, the function updates the time
+     *  Depending on the keyboard modifiers state, the function updates the time
      *  position, the time area range or the spatial position.
      *
      *  \param er_event  SDL event structure
@@ -422,8 +444,9 @@
      *
      *  This function implements the mouse button callback function.
      *
-     *  Depending on the mouse button state, stacks the middle position of the
-     *  screens and moves the mouse cursor to this position.
+     *  Depending on the mouse buttons state, the function pushes the screen
+     *  middle pixel on the mouse click fields of the provided client structure
+     *  and moves the position of the mouse to it.
      *
      *  \param er_event  SDL event structure
      *  \param er_client Client structure
@@ -435,7 +458,7 @@
      *
      *  This function implements the mouse button callback function.
      *
-     *  Depending on the mouse button state, the function updates the point of
+     *  Depending on the mouse buttons state, the function updates the point of
      *  view position or orientation. In addition, the function also moves the
      *  position of the mouse cursor to implement a virtual limit-less screen,
      *  allowing infinite motion.
