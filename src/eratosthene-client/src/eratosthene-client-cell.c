@@ -32,6 +32,8 @@
         /* create array structure */
         er_cell.ce_data = le_array_create();
 
+        /* missing initialisation of array */
+
         /* return created structure */
         return( er_cell );
 
@@ -44,6 +46,8 @@
 
         /* delete array structure */
         le_array_delete( & er_cell->ce_data );
+
+        /* missing unallocation or array */
 
         /* delete structure */
         ( * er_cell ) = er_delete;
