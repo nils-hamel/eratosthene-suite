@@ -74,7 +74,7 @@
  */
 
     /*! \struct er_cell_struct
-     *  \brief cell structure
+     *  \brief Cell structure
      *
      *  This structure holds the definition and data of an equivalence class
      *  obtained through a query to the remote server.

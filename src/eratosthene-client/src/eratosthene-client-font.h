@@ -228,20 +228,20 @@
  */
 
     /*! \struct er_font_struct
-     *  \brief font structure
+     *  \brief Font structure
      *
-     *  This structure simply holds the bitmap definition of a font. The font
-     *  is a simple bitmap in which bits define char graphical structure. In
-     *  addition to the bitmap, the structure holds fields providing the font
-     *  char width, height and count.
+     *  This structure simply holds the bitmap definition of a font used on the
+     *  client interface display. In addition to the font bitmap itself, the
+     *  structure also holds the font fixed char width, the font height and the
+     *  character count.
      *
-     *  The font follows the ANSI standard char encoding. Nevertheless, it can
-     *  come with fewer characters, like ASCII, as indicated by the count field.
+     *  The font has to follows the ANSI char-set encoding standard. Usually,
+     *  the used font only gives the graphical definition of the ASCII chars.
      *
      *  \var er_font_struct::ft_w
-     *  Font character fixed width, in bits/pixels
+     *  Font characters fixed width, in bits/pixels
      *  \var er_font_struct::ft_h
-     *  Font character fixed height, in bits/pixels
+     *  Font characters fixed height, in bits/pixels
      *  \var er_font_struct::ft_c
      *  Font character count, according to ANSI standard
      *  \var er_font_struct::ft_bits
@@ -263,36 +263,36 @@
 
     /*! \brief accessor methods
      *
-     *  This function returns the font character width, in bits/pixels, of the
+     *  This function returns the characters fixed width, in bits/pixels, of the
      *  provided font.
      *
      *  \param er_font Font structure
      *
-     *  \return Returns the font char width, in bits/pixels
+     *  \return Returns the font characters width, in bits/pixels
      */
 
     le_size_t er_font_get_width( er_font_t const * const er_font );
 
     /*! \brief accessor methods
      *
-     *  This function returns the font character height, bits/in pixels, of the
-     *  provided font.
+     *  This function returns the characters fixed height, bits/in pixels, of
+     *  the provided font.
      *
      *  \param er_font Font structure
      *
-     *  \return Returns the font char height, in bits/pixels
+     *  \return Returns the font characters height, in bits/pixels
      */
 
     le_size_t er_font_get_height( er_font_t const * const er_font );
 
     /*! \brief accessor methods
      *
-     *  This function returns the amount of character contained in the provided
+     *  This function returns the amount of characters contained in the provided
      *  font.
      *
      *  \param er_font Font structure
      *
-     *  \return Returns the font char count
+     *  \return Returns the font characters count
      */
 
     le_size_t er_font_get_count( er_font_t const * const er_font );
@@ -301,21 +301,21 @@
      *
      *  This function displays the provided string in the provided graphical
      *  buffer using the specified font. The properties of the strings and the
-     *  graphical buffer have to be provided.
+     *  graphical buffer have to be provided to the function.
      *
      *  The x and y coordinates of the string are the lower-left corner of the
      *  area on which the string is displayed. The graphical buffer is seen as
      *  a standard OpenGL graphical buffer that is reverse in terms of y. In
      *  addition, it is assumed to be in RGBA format.
      *
-     *  Due to the implemented interface, only the alpha component of the string
-     *  can be specified. This allows to increase the efficiency of the string
-     *  display.
+     *  This function draws the characters of the provided string in the alpha
+     *  layer of the graphical buffer only, the color values being left
+     *  unchanged.
      *
      *  \param er_font   Font structure
      *  \param er_string String to display
-     *  \param er_length Length of the string, in chars
-     *  \param er_value  Alpha value of the displayed string
+     *  \param er_length Length of the string
+     *  \param er_value  String display alpha value
      *  \param er_buffer Pointer to the graphical buffer
      *  \param er_width  Width of the graphical buffer, in pixels
      *  \param er_height Height of the graphical buffer, in pixels
