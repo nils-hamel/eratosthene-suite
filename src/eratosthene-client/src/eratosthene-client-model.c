@@ -440,7 +440,7 @@
 
     }
 
-    le_void_t er_model_display_earth( er_view_t const * const er_view ) {
+    le_void_t er_model_display_earth( er_view_t const * const er_view ) { /* dev-note : weak link with model module */
 
         /* tilt rotation */
         glRotated( - er_view_get_gam( er_view ), 1.0, 0.0, 0.0 );
