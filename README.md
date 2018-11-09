@@ -112,7 +112,7 @@ The previous illustrations show examples of land register and polygonal models i
 &nbsp;
 <img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-8b.jpg?raw=true" width="384">
 <br />
-<i>View of mixed models of the city of Chaud-de-Fonds : 2004 land register and 2018 volumetric model (left) 2004 land register and 2016 colored lidar model (right)</i>
+<i>View of mixed models of the city of Chaud-de-Fonds : 2004 land register and 2018 volumetric model (left) 2004 land register and 2016 colored lidar model (right) - Data : SITN</i>
 </p>
 <br />
 
