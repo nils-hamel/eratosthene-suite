@@ -415,7 +415,7 @@
      *  \param er_view View structure
      */
 
-    le_void_t er_model_display_Earth( er_view_t const * const er_view );
+    le_void_t er_model_display_earth( er_view_t const * const er_view );
 
 /*
     header - C/C++ compatibility
