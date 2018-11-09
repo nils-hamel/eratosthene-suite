@@ -73,58 +73,61 @@
  */
 
     /*! \struct er_view_struct
-     *  \brief View structure ( revoked )
+     *  \brief View structure
      *
      *  This structure contains the information describing a model point of
-     *  view. It includes the point of view position and angles of sight, and
-     *  also fields related to the position in times and time management.
+     *  view. It includes the point of view position, angles of sight, and also
+     *  fields related to the position in time.
      *
      *  The position and orientation of the point of view is stored through
      *  fives fields that gives the longitude, the latitude, the height above
      *  WGS84 ellipsoid and the two angles of sight.
      *
-     *  A structure field holds the times comparison mode. As the graphical
-     *  client allows to browse two different times simultaneously, the mode
-     *  describes how their are handled. The remote server implements five
-     *  comparison modes :
+     *  A structure field holds the times comparison mode. As the interface
+     *  allows to browse two different times simultaneously, the mode describes
+     *  how to handle them. The remote server implements five comparison modes
+     *  through queries :
      *
-     *      mode = 1 : first time only
-     *      mode = 2 : second time only
-     *      mode = 3 : first time (logical or) second time
-     *      mode = 4 : first time (logical and) second time
-     *      mode = 5 : first time (logical xor) second time
+     *      mode = 1 : Primary time only
+     *      mode = 2 : Secondary time only
+     *      mode = 3 : Primary time (logical or) secondary time
+     *      mode = 4 : Primary time (logical and) secondary time
+     *      mode = 5 : Primary time (logical xor) secondary time
      *
      *  These modes allow to emphasise the similarities and differences through
-     *  time of the earth model.
+     *  time of the earth model and to manage composition of mixed models.
      *
      *  The two times are then part of the point of view and their value is kept
-     *  in this structure through two fields. In addition to their value, each
-     *  of the two times comes with an temporal area size. This size is used by
-     *  the time interface during graduation display. Changing the size of the
-     *  time area affects the way the time is modified through the time
-     *  interface. A large area size induces large modification of the related
-     *  time.
+     *  in this structure through two fields. In addition to their value, a
+     *  temporal range is also kept by the structure. This time range indicates
+     *  the remote server to which extent element have to be considered
+     *  according to the position in time. This allows to reduce or increase the
+     *  view span in the time dimension.
+     *
+     *  The last field of the structure holds the value of the model cells
+     *  query depth (span). This allows user to modulate the density of the
+     *  displayed model by simply changing this value.
      *
      *  \var er_view_struct::vw_lon
-     *  Point of view longitude angle, in decimal degrees
+     *  Longitude angle, in decimal degrees
      *  \var er_view_struct::vw_lat
-     *  Point of view latitude angle, in decimal degrees
+     *  Latitude angle, in decimal degrees
      *  \var er_view_struct::vw_alt
-     *  Point of view height above WGS84 ellipsoid, in metres
+     *  Height above WGS84 ellipsoid, in metres
      *  \var er_view_struct::vw_azm
-     *  Point of view azimuthal angle, in decimal degrees
+     *  Azimuthal angle, in decimal degrees
      *  \var er_view_struct::vw_gam
-     *  Point of view tilt (gamma) angle, in decimal degrees
+     *  Tilt (gamma) angle, in decimal degrees
      *  \var er_view_struct::vw_mod
-     *  Point of view times comparison mode
+     *  Times comparison mode
      *  \var er_view_struct::vw_tia
-     *  Point of view first time value
+     *  Primary time value
      *  \var er_view_struct::vw_tib
-     *  Point of view second time value
-     *  \var er_view_struct::vw_zta
-     *  Point of view first time area size (according to time interface)
-     *  \var er_view_struct::vw_ztb
-     *  Point of view second time area size (according to time interface)
+     *  Secondary time value
+     *  \var er_view_struct::vw_cmb
+     *  Temporal range (comb)
+     *  \var er_view_struct::vw_spn
+     *  Model cells query depth (span)
      */
 
     typedef struct er_view_struct {
@@ -162,24 +165,27 @@
     /*! \brief constructor/destructor methods
      *
      *  This function deletes the view structure provided as parameter. It
-     *  simply clears the structure fields.
+     *  simply clears the structure fields using default values.
      *
      *  \param er_view View structure
      */
 
     le_void_t er_view_delete( er_view_t * const er_view );
 
-    /*! \brief accessor methods ( revoked )
+    /*! \brief accessor methods
      *
      *  This function compare the content of the two provided view structures
-     *  and returns _LE_TRUE if the proper point of view values, those able to
-     *  trigger a model update, are identical. The _LE_FALSE value is returned
-     *  otherwise.
+     *  and checks for the identity of the field used to trigger a model update
+     *  procedure (longitude, latitude, altitude, mode, times and range).
+     *
+     *  If all the considered fields are identical, the function returns the
+     *  \b _LE_TRUE value, _LE_FALSE otherwise. This function is used to check
+     *  for a motion of the point of view that requires a update of the model.
      *
      *  \param  er_viewa View structure
      *  \param  er_viewb View structure
      *
-     *  \return Returns _LE_TRUE on identity, _LE_FALSE otherwise
+     *  \return Returns _LE_TRUE on pseudo-identity, _LE_FALSE otherwise
      */
 
     le_enum_t er_view_get_equal( er_view_t const * const er_viewa, er_view_t const * const er_viewb );
@@ -259,7 +265,7 @@
     /*! \brief accessor methods
      *
      *  This function computes and return the inertia factor that is used to
-     *  modulate the point of view modification. In addition to the position
+     *  modulate the point of view motion. In addition to the position
      *  coordinates, the function also checks the keyboard modifiers to adapt
      *  the inertia value.
      *
@@ -270,7 +276,7 @@
      *  decreased to allow fine tune of the point of view.
      *
      *  \param er_view     View structure
-     *  \param er_modifier Keyboard modifier flags
+     *  \param er_modifier Keyboard modifier bit-field
      *
      *  \return Returns the computed inertia value
      */
@@ -289,7 +295,7 @@
 
     le_enum_t er_view_get_mode( er_view_t const * const er_view );
 
-    /*! \brief accessor methods ( revoked )
+    /*! \brief accessor methods
      *
      *  This function creates and returns an address structure initialised using
      *  the provided view structure.
@@ -301,10 +307,11 @@
      *  only).
      *
      *  In addition, the function also sets the address additional depth (span)
-     *  using the graphical client default value \b ER_COMMON_SPAN.
+     *  using the view structure corresponding value. The value of the temporal
+     *  range is also packed in the provided address structure.
      *
      *  This function is usually used by the model update process to initialise
-     *  the enumeration address.
+     *  the enumeration address structure.
      *
      *  \param  er_view View structure
      *
@@ -327,16 +334,14 @@
 
     le_time_t er_view_get_time( er_view_t const * const er_view, le_enum_t const er_time );
 
-    /*! \brief accessor methods ( revoked )
+    /*! \brief accessor methods
      *
-     *  This function returns the time area size contained in the provided view
-     *  structure. According to the provided index, the function returns the
-     *  first or second time area size contained in the view structure.
+     *  This function returns the temporal range value stored in the provided
+     *  view structure.
      *
      *  \param er_view View structure
-     *  \param er_time View structure time index
      *
-     *  \return Returns view structure time area size
+     *  \return Returns view structure temporal range
      */
 
     le_time_t er_view_get_comb( er_view_t const * const er_view );
@@ -363,8 +368,8 @@
      *  azimuthal direction.
      *
      *  \param er_view   View structure
-     *  \param er_xvalue Motion amplitude - prograde
-     *  \param er_yvalue Motion amplitude - orthograde
+     *  \param er_xvalue Motion amplitude - Pro-grade
+     *  \param er_yvalue Motion amplitude - Ortho-grade
      */
 
     le_void_t er_view_set_plan( er_view_t * const er_view, le_real_t const er_xvalue, le_real_t const er_yvalue );
@@ -372,7 +377,7 @@
     /*! \brief mutator methods
      *
      *  This function adds the provided motion amplitude value to the height of
-     *  the view provided as parameter.
+     *  the view structure provided as parameter.
      *
      *  After height modification, the function checks its value and correct it
      *  as it goes beyond the authorised range.
@@ -419,42 +424,45 @@
 
     le_void_t er_view_set_mode( er_view_t * const er_view, le_enum_t const er_mode );
 
-    /*! \brief mutator methods ( revoked )
+    /*! \brief mutator methods
      *
      *  This function is used for alignment of the two times of the provided
      *  view structure.
      *
      *  If the mode is 1, the second time is aligned on the first one. If the
-     *  mode is two, the first time is aligned on the second one. This also
-     *  align the respective area fields of each time.
+     *  mode is two, the first time is aligned on the second one.
      *
      *  \param er_view View structure
      */
 
     le_void_t er_view_set_times( er_view_t * const er_view );
 
-    /*! \brief mutator methods ( revoked )
+    /*! \brief mutator methods
      *
-     *  This function updates the time value of the provided view structure using
-     *  its respective area. The provided value is used as a factor applied to
-     *  the area for the time update.
+     *  This function updates the value of the provided view structure of the
+     *  primary or secondary time depending on the structure mode value.
      *
-     *  As the structure holds two times, the time that correspond to the active
-     *  mode is updated through a call to this function.
+     *  Considering the active time, the function uses the provided value to
+     *  change the position in time. The temporal range of the provided view
+     *  structure is also used to adapt the temporal motion speed.
      *
      *  \param er_view  View structure
-     *  \param er_value Time value
+     *  \param er_value Motion amplitude and direction (through its sign)
      */
 
     le_void_t er_view_set_time( er_view_t * const er_view, le_real_t const er_value );
 
-    /*! \brief mutator methods ( revoked )
+    /*! \brief mutator methods
      *
-     *  This function updates the area value of the time corresponding to the
-     *  active mode.
+     *  This function updates the temporal range value of the provided view
+     *  structure using the provided value.
+     *
+     *  The provided value, in floating point format, is multiplied with the
+     *  temporal range value before clamping the result. The clamped value is
+     *  then assigned as the new temporal range.
      *
      *  \param er_view  View structure
-     *  \param er_value Time area size value
+     *  \param er_value Modification factor
      */
 
     le_void_t er_view_set_comb( er_view_t * const er_view, le_real_t const er_value );
@@ -463,10 +471,11 @@
      *
      *  This function updates the span value of the provided view structure. It
      *  adds the provided value, that can be negative or positive, to the span
-     *  value of the view before to clamp the result in the predefined range.
+     *  value of the view structure before to clamp the result in the predefined
+     *  range.
      *
      *  \param er_view  View structure
-     *  \param er_value Span shift value
+     *  \param er_value Span modification value
      */
 
     le_void_t er_view_set_span( er_view_t * const er_view, le_size_t const er_value );
