@@ -100,7 +100,7 @@ These last images show the ability of the server to take advantage of the standa
 &nbsp;
 <img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-7b.jpg?raw=true" width="384">
 <br />
-<i>View of a volumetric polygonal of the city of Geneva in 2018 and the land register of the city of Chaud-de-Fonds in 2004 - Data : SITG building model and SITN land register</i>
+<i>View of a volumetric polygonal of the city of Geneva in 2018 and the land register of the city of Chaux-de-Fonds in 2004 - Data : SITG building model and SITN land register</i>
 </p>
 <br />
 
@@ -112,7 +112,7 @@ The previous illustrations show examples of land register and polygonal models i
 &nbsp;
 <img src="https://github.com/nils-hamel/eratosthene-suite/blob/master/doc/image/client-8b.jpg?raw=true" width="384">
 <br />
-<i>View of mixed models of the city of Chaud-de-Fonds : 2004 land register and 2018 volumetric model (left) 2004 land register and 2016 colored lidar model (right) - Data : SITN</i>
+<i>View of mixed models of the city of Chaux-de-Fonds : 2004 land register and 2018 volumetric model (left) 2004 land register and 2016 colored lidar model (right) - Data : SITN</i>
 </p>
 <br />
 
