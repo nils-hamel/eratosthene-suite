@@ -434,6 +434,15 @@
                 /* d-cell matrix */
                 glPopMatrix();
 
+                // DEBUG //
+                glPushMatrix();
+
+                    // DEBUG : cell edges rendering //
+                    er_cell_get_shell( er_model->md_cell + er_parse, er_lon, er_lat );
+
+                // DEBUG //
+                glPopMatrix();
+
             }
 
         }
