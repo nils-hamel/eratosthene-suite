@@ -138,10 +138,10 @@
         /* reset cells state */
         for ( le_size_t er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
 
-            /* reset v-cell state */
+            /* reset d-cell state */
             er_cell_set_zero( er_model->md_cell + er_parse, ER_CELL_SYN );
 
-            /* reset d-cell state */
+            /* reset v-cell state */
             er_cell_set_zero( er_model->md_virt + er_parse, ER_CELL_SYN );
 
         }

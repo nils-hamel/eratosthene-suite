@@ -21,6 +21,26 @@
     # include "eratosthene-client-geodesy.h"
 
 /*
+    source - conversion methods
+ */
+
+    le_void_t er_geodesy_cartesian( le_real_t * const er_point ) {
+
+        /* angles variable */
+        le_real_t er_angle[2] = { er_point[0], er_point[1] };
+
+        /* compute coodinates conversion */
+        er_point[2] += LE_ADDRESS_WGS_A;
+
+        /* compute coodinates conversion */
+        er_point[1] = er_point[2] * sin( er_angle[1] );
+        er_point[2] = er_point[2] * cos( er_angle[1] );
+        er_point[0] = er_point[2] * sin( er_angle[0] );
+        er_point[2] = er_point[2] * cos( er_angle[0] );
+
+    }
+
+/*
     source - distance methods
  */
 
