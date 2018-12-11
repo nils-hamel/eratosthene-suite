@@ -477,7 +477,7 @@
         }
 
         /* model update delay */
-        if ( ( clock() - er_client->cl_last ) > ( CLOCKS_PER_SEC >> 1 ) ) {
+        if ( ( clock() - er_client->cl_last ) > ( CLOCKS_PER_SEC >> 2 ) ) {
 
             /* retreive address times */
             er_address = er_view_get_times( & er_client->cl_view );
