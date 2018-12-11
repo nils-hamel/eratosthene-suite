@@ -156,9 +156,6 @@
         /* distance variables */
         le_real_t er_line = 0.0;
 
-        /* push condition variable */
-        le_size_t er_index = 0;
-
         /* scale digit enumeration */
         for ( le_size_t er_digit = 0; er_digit < er_base; er_digit ++ ) {
 
@@ -169,12 +166,7 @@
             le_address_set_digit( er_enum, er_scale, er_digit );
 
             /* enumeration constraint */
-            if ( er_scale < ER_COMMON_ENUM ) {
-
-                /* continue enumeration */
-                er_model_set_enum( er_model, er_enum, er_scale + 1, er_view );
-
-            } else {
+            if ( er_scale >= ER_COMMON_ENUM ) {
 
                 /* compute and check distance */
                 if ( ( er_line = er_geodesy_distance( er_enum, er_view ) ) < er_geodesy_face( er_view_get_alt( er_view ) ) ) {
@@ -185,35 +177,16 @@
                         /* check target size - failsafe */
                         if ( er_model->md_push < er_model->md_size ) {
 
-                            // DEBUG : drop un-necessary (performed by the _fast process) //
+                            /* push address to v-cell array */
+                            er_cell_set_push( er_model->md_virt + ( er_model->md_push ++ ), er_enum );
 
-                            /* check push condition */
-                            //if ( ( er_index = er_model_get_drop( er_model, er_enum ) ) == er_model->md_size ) {
+                            /* search for deepest scale */
+                            if ( er_scale >= er_model->md_synb ) {
 
-                                /* push address to v-cell array */
-                                er_cell_set_push( er_model->md_virt + er_model->md_push, er_enum );
+                                /* update deepest scale */
+                                er_model->md_synb = er_scale + 1;
 
-                                /* search for deepest scale */
-                                if ( er_scale >= er_model->md_synb ) {
-
-                                    /* update deepest scale */
-                                    er_model->md_synb = er_scale + 1;
-
-                                }
-
-                                /* update synchronisation index */
-                                er_model->md_push ++;
-
-                            //} else {
-
-                                /* update d-cell state */
-                            //    er_cell_set_flag( er_model->md_cell + er_index, ER_CELL_SYN | ER_CELL_DIS );
-
-                                // possible missing flag on virtual stack (ER_CELL_SYN) //
-
-                            //    er_cell_set_flag( er_model->md_virt + er_model->md_push, ER_CELL_SYN );
-
-                            //}
+                            }
 
                         }
 
@@ -230,6 +203,11 @@
                     }
 
                 }
+
+            } else {
+
+                /* continue enumeration */
+                er_model_set_enum( er_model, er_enum, er_scale + 1, er_view );
 
             }
 
