@@ -182,11 +182,13 @@
                     /* check selection criterion */
                     if ( er_geodesy_select( er_line, er_view, er_model->md_scfg, er_scale ) == _LE_TRUE ) {
 
-                        /* check target size */
+                        /* check target size - failsafe */
                         if ( er_model->md_push < er_model->md_size ) {
 
+                            // DEBUG : drop un-necessary (performed by the _fast process) //
+
                             /* check push condition */
-                            if ( ( er_index = er_model_get_drop( er_model, er_enum ) ) == er_model->md_size ) {
+                            //if ( ( er_index = er_model_get_drop( er_model, er_enum ) ) == er_model->md_size ) {
 
                                 /* push address to v-cell array */
                                 er_cell_set_push( er_model->md_virt + er_model->md_push, er_enum );
@@ -202,12 +204,16 @@
                                 /* update synchronisation index */
                                 er_model->md_push ++;
 
-                            } else {
+                            //} else {
 
                                 /* update d-cell state */
-                                er_cell_set_flag( er_model->md_cell + er_index, ER_CELL_SYN | ER_CELL_DIS );
+                            //    er_cell_set_flag( er_model->md_cell + er_index, ER_CELL_SYN | ER_CELL_DIS );
 
-                            }
+                                // possible missing flag on virtual stack (ER_CELL_SYN) //
+
+                            //    er_cell_set_flag( er_model->md_virt + er_model->md_push, ER_CELL_SYN );
+
+                            //}
 
                         }
 
@@ -237,13 +243,17 @@
         le_size_t er_index = 0;
 
         /* parsing v-cells array */
-        for ( le_size_t er_parse = 0; er_parse < er_model->md_push; er_index = 0, er_parse ++ ) {
+        for ( le_size_t er_parse = 0; er_parse < er_model->md_push; er_parse ++ ) {
 
             /* reset parsing index */
             er_index = 0;
 
             /* parsing d-cells array */
             while ( er_index < er_model->md_size ) {
+
+                // DEBUG  : possible missing condition on display //
+
+                if ( er_cell_get_flag( er_model->md_cell + er_index, ER_CELL_DIS ) == ER_CELL_DIS ) {
 
                 /* detect cell identity */
                 if ( er_cell_get_equal( er_model->md_virt + er_parse, er_model->md_cell + er_index ) == _LE_TRUE ) {
@@ -258,6 +268,8 @@
                     er_index = er_model->md_size;
 
                 /* update index */
+                } else { er_index ++; }
+
                 } else { er_index ++; }
 
             }
@@ -295,7 +307,12 @@
             while ( er_parse < er_serial ) {
 
                 /* search usable d-cell */
-                while ( er_cell_get_flag( er_model->md_cell + er_model->md_free, ER_CELL_SYN ) == ER_CELL_SYN ) er_model->md_free ++;
+                while ( er_cell_get_flag( er_model->md_cell + er_model->md_free, ER_CELL_SYN ) == ER_CELL_SYN ) {
+
+                    /* update index */
+                    er_model->md_free ++;
+
+                }
 
                 /* update d-cell state */
                 er_cell_set_zero( er_model->md_cell + er_model->md_free, ER_CELL_DIS );
@@ -378,6 +395,8 @@
     }
 
     le_void_t er_model_set_sync_tail( er_model_t * const er_model ) {
+
+        // DEBUG : possible remaining cell in the first segment of the actual stack //
 
         /* parsing d-cell array tail */
         for ( le_size_t er_parse = er_model->md_free + 1; er_parse < er_model->md_size; er_parse ++ ) {
