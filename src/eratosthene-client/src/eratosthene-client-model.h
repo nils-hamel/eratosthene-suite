@@ -243,7 +243,7 @@
 
     le_void_t er_model_set_prep( er_model_t * const er_model );
 
-    /*! \brief mutator methods
+    /*! \brief mutator methods (revoked)
      *
      *  The role of this function is to enumerates all possible cells and to
      *  select the ones that are relevant to query and display according to the
@@ -283,7 +283,7 @@
 
     le_void_t er_model_set_enum( er_model_t * const er_model, le_address_t * const er_enum, le_size_t const er_scale, er_view_t const * const er_view );
 
-    /*! mutator methods
+    /*! mutator methods (revoked)
      *
      *  This function is used just after the target stacks updates. Its role is
      *  to rapidly checks which cells of the target stack are already in the

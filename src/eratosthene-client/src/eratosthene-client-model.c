@@ -218,39 +218,44 @@
     le_void_t er_model_set_fast( er_model_t * const er_model ) {
 
         /* parsing variables */
+        le_size_t er_parse = 0;
+
+        /* parsing variables */
         le_size_t er_index = 0;
 
-        /* parsing v-cells array */
-        for ( le_size_t er_parse = 0; er_parse < er_model->md_push; er_parse ++ ) {
+        /* parsing d-cells array */
+        while ( er_parse < er_model->md_size ) {
 
-            /* reset parsing index */
-            er_index = 0;
+            /* check v-cell state */
+            if ( er_cell_get_flag( er_model->md_cell + er_parse, ER_CELL_DIS ) == ER_CELL_DIS ) {
 
-            /* parsing d-cells array */
-            while ( er_index < er_model->md_size ) {
+                /* reset index */
+                er_index = 0;
 
-                // DEBUG  : possible missing condition on display //
+                /* parsing v-cells array */
+                while ( er_index < er_model->md_push ) {
 
-                if ( er_cell_get_flag( er_model->md_cell + er_index, ER_CELL_DIS ) == ER_CELL_DIS ) {
+                    /* address identity detection */
+                    if ( er_cell_get_equal( er_model->md_cell + er_parse, er_model->md_virt + er_index ) == _LE_TRUE ) {
 
-                /* detect cell identity */
-                if ( er_cell_get_equal( er_model->md_virt + er_parse, er_model->md_cell + er_index ) == _LE_TRUE ) {
+                        /* update d-cell state */
+                        er_cell_set_flag( er_model->md_cell + er_parse, ER_CELL_SYN );
 
-                    /* update v-cell flag */
-                    er_cell_set_flag( er_model->md_virt + er_parse, ER_CELL_SYN );
+                        /* update v-cell state */
+                        er_cell_set_flag( er_model->md_virt + er_index, ER_CELL_SYN );
 
-                    /* update d-cell flag */
-                    er_cell_set_flag( er_model->md_cell + er_index, ER_CELL_SYN | ER_CELL_DIS );
+                        /* resume detection */
+                        er_index = er_model->md_push;
 
-                    /* resume search */
-                    er_index = er_model->md_size;
+                    /* update index */
+                    } else { er_index ++; }
 
-                /* update index */
-                } else { er_index ++; }
-
-                } else { er_index ++; }
+                }
 
             }
+
+            /* update index */
+            er_parse ++;
 
         }
 
