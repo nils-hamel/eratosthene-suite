@@ -212,7 +212,7 @@
 
     le_void_t er_model_delete( er_model_t * const er_model );
 
-    /*! \brief accessor methods
+    /*! \brief accessor methods (deletion)
      *
      *  This function checks if the provided address is identical to a cell that
      *  is already present in the display cell stack (actual stack).
@@ -228,6 +228,10 @@
      */
 
     le_size_t er_model_get_drop( er_model_t const * const er_model, le_address_t const * const er_addr );
+
+    /* *** */
+
+    le_void_t er_model_set_next( er_model_t * const er_model );
 
     /*! \brief mutator methods
      *
