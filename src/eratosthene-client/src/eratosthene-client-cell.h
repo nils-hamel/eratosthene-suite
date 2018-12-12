@@ -280,10 +280,6 @@
 
     le_void_t er_cell_get_render( er_cell_t * const er_cell, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_cl, le_real_t const er_sl, le_real_t const er_ca, le_real_t const er_sa );
 
-    // DEBUG //
-
-    le_void_t er_cell_get_shell( er_cell_t * const er_cell, le_real_t const er_lon, le_real_t const er_lat );
-
     /*! mutator methods
      *
      *  This function allows to set bits of the flag field of the provided cell
