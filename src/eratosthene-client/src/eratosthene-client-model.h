@@ -305,7 +305,7 @@
 
     le_void_t er_model_set_fast( er_model_t * const er_model );
 
-    /*! mutator methods
+    /*! mutator methods (revoked)
      *
      *  This function is responsible of the step by step synchronisation
      *  process of the target and actual cell stacks. At each function call,
@@ -343,7 +343,7 @@
 
     le_enum_t er_model_set_sync( er_model_t * const er_model );
 
-    /*! mutator methods
+    /*! mutator methods (revoked)
      *
      *  This function is responsible of the composition of the query pack to
      *  the remote server.
@@ -358,7 +358,7 @@
 
     le_size_t er_model_set_sync_pack( er_model_t * const er_model );
 
-    /*! mutator methods
+    /*! mutator methods (revoked)
      *
      *  This function is responsible of the cleaning of the tail of the actual
      *  cell stack as the end of the synchronisation is reached.
