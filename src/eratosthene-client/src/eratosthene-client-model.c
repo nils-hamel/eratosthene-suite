@@ -296,7 +296,7 @@
 
         }
 
-        /* update socket-array size */
+        /* update socket-array size */ // DEBUG : move to er_model_set_sync_pack for coherence //
         le_array_set_size( & er_model->md_addr, 0 );
 
         /* compose address pack */
@@ -308,13 +308,8 @@
             /* parsing v-cell array segment */
             while ( er_parse < er_serial ) {
 
-                /* search usable d-cell */
-                while ( er_cell_get_flag( er_model->md_cell + er_model->md_free, ER_CELL_SYN ) == ER_CELL_SYN ) {
-
-                    /* update index */
-                    er_model->md_free ++;
-
-                }
+                /* search available d-cell */
+                er_model_set_next( er_model );
 
                 /* update d-cell state */
                 er_cell_set_zero( er_model->md_cell + er_model->md_free, ER_CELL_DIS );
@@ -322,16 +317,17 @@
                 /* read socket-array */
                 er_cell_set_array( er_model->md_cell + er_model->md_free, er_model->md_sock );
 
-                /* sychronise cell address */
-                er_parse = er_cell_set_sync( er_model->md_cell + er_model->md_free, & er_model->md_addr, er_parse );
-
                 /* process d-cell */
                 if ( er_cell_set_data( er_model->md_cell + er_model->md_free ) != 0 ) {
+
+                    /* sychronise cell address */
+                    er_parse = er_cell_set_sync( er_model->md_cell + er_model->md_free, & er_model->md_addr, er_parse );
 
                     /* update d-cell state */
                     er_cell_set_flag( er_model->md_cell + er_model->md_free, ER_CELL_SYN | ER_CELL_DIS );
 
-                }
+                /* update parser */
+                } else { er_parse += LE_ARRAY_ADDR; }
 
             }
 
