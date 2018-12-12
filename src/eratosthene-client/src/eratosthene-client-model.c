@@ -102,7 +102,7 @@
 
     le_enum_t er_model_get_tail( er_model_t const * const er_model ) {
 
-        /* return synchornisation flag */
+        /* return synchronisation flag */
         return( er_model->md_tail );
 
     }
@@ -188,7 +188,7 @@
                     /* check selection criterion */
                     if ( er_geodesy_select( er_line, er_view, er_model->md_scfg, er_scale ) == _LE_TRUE ) {
 
-                        /* check target size - failsafe */
+                        /* check target size - fail-safe */
                         if ( er_model->md_push < er_model->md_size ) {
 
                             /* push address to v-cell array */
@@ -304,7 +304,7 @@
                 /* process d-cell */
                 if ( er_cell_set_data( er_model->md_cell + er_model->md_free ) != 0 ) {
 
-                    /* sychronise cell address */
+                    /* synchronise cell address */
                     er_parse = er_cell_set_sync( er_model->md_cell + er_model->md_free, & er_model->md_addr, er_parse );
 
                     /* update d-cell state */
@@ -317,7 +317,7 @@
 
         } else {
 
-            /* update synchornisation flag */
+            /* update synchronisation flag */
             er_model->md_sync = _LE_TRUE;
 
         }
@@ -338,7 +338,7 @@
             /* scale-based v-cell selection */
             if ( er_cell_get_size( er_model->md_virt + er_model->md_syna ) == er_model->md_synb ) {
 
-                /* select unsynchronised v-cell */
+                /* select un-synchronised v-cell */
                 if ( er_cell_get_flag( er_model->md_virt + er_model->md_syna, ER_CELL_SYN ) != ER_CELL_SYN ) {
 
                     /* update socket-array size */
@@ -367,7 +367,7 @@
 
         }
 
-        /* retrun offset */
+        /* return offset */
         return( er_serial );
 
     }
@@ -447,7 +447,7 @@
 
     }
 
-    le_void_t er_model_display_earth( er_view_t const * const er_view ) { /* dev-note : weak link with model module */
+    le_void_t er_model_display_earth( er_view_t const * const er_view ) {
 
         /* tilt rotation */
         glRotated( - er_view_get_gam( er_view ), 1.0, 0.0, 0.0 );

@@ -82,7 +82,7 @@
  */
 
     /*! \struct er_model_struct
-     *  \brief Model structure (revoked)
+     *  \brief Model structure
      *
      *  This structure is responsible of maintaining the content of Earth model
      *  provided by the remote server. Its role is to maintain the Earth model
@@ -127,8 +127,17 @@
      *  the amount of requests to the server and also allows to cushion high
      *  frequency motion of the point of view.
      *
-     *  The last field is a socket-array used for the communication with the
-     *  server.
+     *  The \b md_addr socket-array is used during model update to pack the
+     *  cell address by group before to send them to the remove server. Using
+     *  addresses pack for query allows to decrease the bandwidth between the
+     *  client and the remote server.
+     *
+     *  The two last fields are synchronisation flags used to determine the
+     *  synchronisation state between the target and actual cell stacks. These
+     *  flag are used during synchronisation process to drive the remaining
+     *  process to perform. The \b md_sync is set to \b _LE_FALSE if the actual
+     *  stack is not identical to the target one and \b md_tail is set to
+     *  \b _LE_FALSE if the synchronisation post-process is not performed.
      *
      *  \var er_model_struct::md_sock
      *  Socket descriptor toward remote server
@@ -152,6 +161,10 @@
      *  Cells stack (target)
      *  \var er_model_struct::md_addr
      *  Communication socket-array
+     *  \var er_model_struct::md_sync
+     *  Synchronisation state
+     *  \var er_model_struct::md_tail
+     *  Synchronisation post-process state
      *  \var er_model_struct::_status
      *  Standard status field
      */
@@ -215,15 +228,41 @@
 
     le_void_t er_model_delete( er_model_t * const er_model );
 
-    /* *** */
+    /*! \brief accessor methods
+     *
+     *  This function allows to retrieve the synchronisation process state flag
+     *  used during model update.
+     *
+     *  \param er_model Model Structure
+     *
+     *  \return Returns synchronisation process state flag
+     */
 
     le_enum_t er_model_get_sync( er_model_t const * const er_model );
 
-    /* *** */
+    /*! \brief accessor methods
+     *
+     *  This function allows to retrieve the synchronisation post-process state
+     *  flag used during model update.
+     *
+     *  \param er_model Model structure
+     *
+     *  \return Returns synchronisation post-process state flag
+     */
 
     le_enum_t er_model_get_tail( er_model_t const * const er_model );
 
-    /* *** */
+    /*! \brief mutator methods
+     *
+     *  This function sets the free cell index on the immediate next available
+     *  cell for data reception. The function uses the value of the free cell
+     *  index and increases it until an available is pointed by it.
+     *
+     *  This function is used during model update to find a cell able to read
+     *  the answer of a query made toward the remote server.
+     *
+     *  \param er_model Model structure
+     */
 
     le_void_t er_model_set_next( er_model_t * const er_model );
 
@@ -241,7 +280,7 @@
 
     le_void_t er_model_set_prep( er_model_t * const er_model );
 
-    /*! \brief mutator methods (revoked)
+    /*! \brief mutator methods
      *
      *  The role of this function is to enumerates all possible cells and to
      *  select the ones that are relevant to query and display according to the
@@ -264,15 +303,6 @@
      *  display, the function calls itself to continue enumeration with the
      *  updated address.
      *
-     *  To be selected during enumeration, the cell has to be judged relevant
-     *  for display, in terms of size and point density, and has to pass through
-     *  two distance tests. Despite the two distance tests look similar, one is
-     *  performed before relevance test while the second is made after. This is
-     *  so for the following reason : if the second test replaces the first one,
-     *  a cell can be discarded as judge to far always while its an effect of
-     *  its large size. This would discard all its daughters cells that could
-     *  have satisfied the criterion at their own scale.
-     *
      *  \param er_model Model structure
      *  \param er_enum  Enumeration address structure
      *  \param er_scale Enumeration address explicit size
@@ -281,7 +311,7 @@
 
     le_void_t er_model_set_enum( er_model_t * const er_model, le_address_t * const er_enum, le_size_t const er_scale, er_view_t const * const er_view );
 
-    /*! mutator methods (revoked)
+    /*! mutator methods
      *
      *  This function is used just after the target stacks updates. Its role is
      *  to rapidly checks which cells of the target stack are already in the
@@ -299,7 +329,7 @@
 
     le_void_t er_model_set_fast( er_model_t * const er_model );
 
-    /*! mutator methods (revoked)
+    /*! mutator methods
      *
      *  This function is responsible of the step by step synchronisation
      *  process of the target and actual cell stacks. At each function call,
@@ -314,36 +344,29 @@
      *  process is repeated at each function call until the synchronisation is
      *  complete.
      *
-     *  In the first place, the function checks if the synchronisation is done
-     *  or incomplete. It case of fully synchronised stacks, the function does
-     *  nothing.
-     *
-     *  After the last query, the function checks the actual stack for cells
-     *  that were displayed at the previous state and that no more used in the
-     *  current state in order to disable their graphical representation.
-     *
      *  Such step by step strategy allows to be able to interrupt Earth model
-     *  update. Indeed, updating the model leads to a process that consume time.
-     *  Motion of the point of view will only be considered at end of such a
-     *  global process. Using the step by step synchronisation allows to stop
-     *  one model update to ensure a better tracking of the point of view
-     *  motion, saving also large amounts of data transfer between the client
-     *  and server.
+     *  update. Indeed, updating the model in a single step leads to a process
+     *  that consume time and bandwidth. Motion of the point of view will only
+     *  be considered at end of such a global process. Using the step by step
+     *  synchronisation allows to cancel a model update to quickly take into
+     *  account a motion of the point of view, saving time and bandwidth while
+     *  being more relevant for the user.
      *
      *  \param er_model Model structure
-     *
-     *  \return Returns _LE_TRUE on synchronised stacks, _LE_FALSE otherwise
      */
 
     le_void_t er_model_set_sync( er_model_t * const er_model );
 
-    /*! mutator methods (revoked)
+    /*! mutator methods
      *
      *  This function is responsible of the composition of the query pack to
      *  the remote server.
      *
      *  The function search in the target stack which cell have to be queried
-     *  and pack them into a single query socket-array.
+     *  and pack them into a single query socket-array. The cells are searched
+     *  in such a way deepest cells are considered first, as more close to the
+     *  point of view. This allows to update the cells closer to the point of
+     *  view in the first place, leading to a better user experience.
      *
      *  \param er_model Model structure
      *
@@ -352,7 +375,7 @@
 
     le_size_t er_model_set_sync_pack( er_model_t * const er_model );
 
-    /*! mutator methods (revoked)
+    /*! mutator methods
      *
      *  This function is responsible of the cleaning of the tail of the actual
      *  cell stack as the end of the synchronisation is reached.
