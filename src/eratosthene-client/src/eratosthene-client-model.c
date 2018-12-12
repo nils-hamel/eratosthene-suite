@@ -309,12 +309,7 @@
         le_size_t er_parse = 0;
 
         /* compose address pack */
-        if ( ( er_serial = er_model_set_sync_pack( er_model ) ) == 0 ) {
-
-            /* update synchornisation flag */
-            er_model->md_sync = _LE_TRUE;
-
-        } else {
+        if ( ( er_serial = er_model_set_sync_pack( er_model ) ) != 0 ) {
 
             /* write socket-array on socket */
             le_array_io_write( & er_model->md_addr, LE_MODE_QUER, er_model->md_sock );
@@ -345,6 +340,11 @@
 
             }
 
+        } else {
+
+            /* update synchornisation flag */
+            er_model->md_sync = _LE_TRUE;
+
         }
 
     }
@@ -360,11 +360,11 @@
         /* parsing v-cell array segment */
         while ( ( er_model->md_synb >= ER_COMMON_ENUM ) && ( er_serial < ( LE_ARRAY_ADDR * ER_COMMON_PACK ) ) ) {
 
-            /* select unsynchronised v-cell */
-            if ( er_cell_get_flag( er_model->md_virt + er_model->md_syna, ER_CELL_SYN ) != ER_CELL_SYN ) {
+            /* scale-based v-cell selection */
+            if ( er_cell_get_size( er_model->md_virt + er_model->md_syna ) == er_model->md_synb ) {
 
-                /* scale-based v-cell selection */
-                if ( er_cell_get_size( er_model->md_virt + er_model->md_syna ) == er_model->md_synb ) {
+                /* select unsynchronised v-cell */
+                if ( er_cell_get_flag( er_model->md_virt + er_model->md_syna, ER_CELL_SYN ) != ER_CELL_SYN ) {
 
                     /* update socket-array size */
                     le_array_set( & er_model->md_addr, LE_ARRAY_ADDR );
