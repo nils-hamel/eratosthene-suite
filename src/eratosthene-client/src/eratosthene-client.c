@@ -496,8 +496,23 @@
 
         }
 
-        /* synchronisation process */
-        er_model_set_sync( & er_client->cl_model );
+        /* check synchronisation flag */
+        if ( er_model_get_sync( & er_client->cl_model ) == _LE_FALSE ) {
+
+            /* model synchronisation process */
+            er_model_set_sync( & er_client->cl_model );
+
+        } else {
+
+            /* check synchronisation flag */
+            if ( er_model_get_tail( & er_client->cl_model ) == _LE_FALSE ) {
+
+                /* model synchronisation tail process */
+                er_model_set_tail( & er_client->cl_model );
+
+            }
+
+        }
 
     }
 

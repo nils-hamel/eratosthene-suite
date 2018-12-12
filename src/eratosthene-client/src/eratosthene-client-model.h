@@ -61,7 +61,7 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_MODEL_C        { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, _LE_FALSE }
+    # define ER_MODEL_C        { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, _LE_FALSE, _LE_FALSE, _LE_FALSE }
 
     /* define pseudo-initialiser */
     # define ER_MODEL_I(s,p,t) { s, p, t, ER_MODEL_STACK, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, _LE_FALSE }
@@ -82,7 +82,7 @@
  */
 
     /*! \struct er_model_struct
-     *  \brief Model structure
+     *  \brief Model structure (revoked)
      *
      *  This structure is responsible of maintaining the content of Earth model
      *  provided by the remote server. Its role is to maintain the Earth model
@@ -173,6 +173,9 @@
 
         le_array_t  md_addr;
 
+        le_enum_t   md_sync;
+        le_enum_t   md_tail;
+
     le_enum_t _status; } er_model_t;
 
 /*
@@ -228,6 +231,14 @@
      */
 
     le_size_t er_model_get_drop( er_model_t const * const er_model, le_address_t const * const er_addr );
+
+    /* *** */
+
+    le_enum_t er_model_get_sync( er_model_t const * const er_model );
+
+    /* *** */
+
+    le_enum_t er_model_get_tail( er_model_t const * const er_model );
 
     /* *** */
 
@@ -341,7 +352,7 @@
      *  \return Returns _LE_TRUE on synchronised stacks, _LE_FALSE otherwise
      */
 
-    le_enum_t er_model_set_sync( er_model_t * const er_model );
+    le_void_t er_model_set_sync( er_model_t * const er_model );
 
     /*! mutator methods (revoked)
      *
@@ -370,7 +381,7 @@
      *  \param er_model Model structure
      */
 
-    le_void_t er_model_set_sync_tail( er_model_t * const er_model );
+    le_void_t er_model_set_tail( er_model_t * const er_model );
 
     /*! \brief display methods
      *

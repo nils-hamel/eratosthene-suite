@@ -118,6 +118,20 @@
 
     }
 
+    le_enum_t er_model_get_sync( er_model_t const * const er_model ) {
+
+        /* return synchronisation flag */
+        return( er_model->md_sync );
+
+    }
+
+    le_enum_t er_model_get_tail( er_model_t const * const er_model ) {
+
+        /* return synchornisation flag */
+        return( er_model->md_tail );
+
+    }
+
 /*
     source - mutator methods
  */
@@ -153,6 +167,12 @@
 
         /* reset synchronisation index */
         er_model->md_push = 0;
+
+        /* reset synchronisation flag */
+        er_model->md_sync = _LE_FALSE;
+
+        /* reset synchronisation flag */
+        er_model->md_tail = _LE_FALSE;
 
         /* reset cells state */
         for ( le_size_t er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
@@ -280,7 +300,7 @@
 
     }
 
-    le_enum_t er_model_set_sync( er_model_t * const er_model ) {
+    le_void_t er_model_set_sync( er_model_t * const er_model ) {
 
         /* package size variable */
         le_size_t er_serial = 0;
@@ -288,16 +308,13 @@
         /* segment parsing variable */
         le_size_t er_parse = 0;
 
-        /* check synchronisation state */
-        if ( er_model->md_synb < ER_COMMON_ENUM ) {
-
-            /* send message */
-            return( _LE_TRUE );
-
-        }
-
         /* compose address pack */
-        if ( ( er_serial = er_model_set_sync_pack( er_model ) ) > 0 ) {
+        if ( ( er_serial = er_model_set_sync_pack( er_model ) ) == 0 ) {
+
+            /* update synchornisation flag */
+            er_model->md_sync = _LE_TRUE;
+
+        } else {
 
             /* write socket-array on socket */
             le_array_io_write( & er_model->md_addr, LE_MODE_QUER, er_model->md_sock );
@@ -329,18 +346,6 @@
             }
 
         }
-
-        /* check synchronisation state */
-        if ( er_model->md_synb < ER_COMMON_ENUM ) {
-
-            /* processs d-cell array tail */
-            er_model_set_sync_tail( er_model );
-
-            /* send message */
-            return( _LE_TRUE );
-
-        /* send message */
-        } else { return( _LE_FALSE ); }
 
     }
 
@@ -392,7 +397,7 @@
 
     }
 
-    le_void_t er_model_set_sync_tail( er_model_t * const er_model ) {
+    le_void_t er_model_set_tail( er_model_t * const er_model ) {
 
         /* parsing d-cell array tail */
         for ( le_size_t er_parse = er_model->md_free; er_parse < er_model->md_size; er_parse ++ ) {
@@ -406,6 +411,9 @@
             }
 
         }
+
+        /* update synchronisation flag */
+        er_model->md_tail = _LE_TRUE;
 
     }
 
