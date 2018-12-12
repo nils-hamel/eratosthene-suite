@@ -208,20 +208,6 @@
 
     /*! \brief accessor methods
      *
-     *  This function compare the address of the provided cell to the address
-     *  provided as parameter. If both are identical, the function returns the
-     *  _LE_TRUE value, _LE_FALSE otherwise.
-     *
-     *  \param er_cell Cell structure
-     *  \param er_addr Address structure
-     *
-     * \return Returns _LE_TRUE on addresses identity, _LE_FALSE otherwise
-     */
-
-    le_enum_t er_cell_get_drop( er_cell_t const * const er_cell, le_address_t const * const er_addr );
-
-    /*! \brief accessor methods
-     *
      *  This function returns the number of points, that is the number of uv3
      *  records contained in the cell data array.
      *

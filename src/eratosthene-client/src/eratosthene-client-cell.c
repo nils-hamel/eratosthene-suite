@@ -81,13 +81,6 @@
 
     }
 
-    le_enum_t er_cell_get_drop( er_cell_t const * const er_cell, le_address_t const * const er_addr ) {
-
-        /* compare addresses */
-        return( le_address_get_equal( & er_cell->ce_addr, er_addr ) );
-
-    }
-
     le_size_t er_cell_get_record( er_cell_t const * const er_cell ) {
 
         /* return number of uv3 records */

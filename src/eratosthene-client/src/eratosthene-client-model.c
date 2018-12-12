@@ -93,31 +93,6 @@
     source - accessor methods
  */
 
-    // deletion //
-    le_size_t er_model_get_drop( er_model_t const * const er_model, le_address_t const * const er_addr ) {
-
-        /* parsing variable */
-        le_size_t er_parse = 0;
-
-        /* parsing d-cell array */
-        while ( er_parse < er_model->md_size ) {
-
-            /* compare to cell address */
-            if ( er_cell_get_drop( er_model->md_cell + er_parse, er_addr ) == _LE_TRUE ) {
-
-                /* return index */
-                return( er_parse );
-
-            /* update index */
-            } else { er_parse ++; }
-
-        }
-
-        /* return index */
-        return( er_parse );
-
-    }
-
     le_enum_t er_model_get_sync( er_model_t const * const er_model ) {
 
         /* return synchronisation flag */

@@ -215,23 +215,6 @@
 
     le_void_t er_model_delete( er_model_t * const er_model );
 
-    /*! \brief accessor methods (deletion)
-     *
-     *  This function checks if the provided address is identical to a cell that
-     *  is already present in the display cell stack (actual stack).
-     *
-     *  In case such cell is found, the function returns the index of the cell
-     *  in the actual stack. Otherwise, the size of the actual cell stack is
-     *  returned.
-     *
-     *  \param er_model Model structure
-     *  \param er_addr  Address structure
-     *
-     *  \return Returns the stack cell index if found, the stack size otherwise
-     */
-
-    le_size_t er_model_get_drop( er_model_t const * const er_model, le_address_t const * const er_addr );
-
     /* *** */
 
     le_enum_t er_model_get_sync( er_model_t const * const er_model );
