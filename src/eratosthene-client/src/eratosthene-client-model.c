@@ -296,9 +296,6 @@
 
         }
 
-        /* update socket-array size */ // DEBUG : move to er_model_set_sync_pack for coherence //
-        le_array_set_size( & er_model->md_addr, 0 );
-
         /* compose address pack */
         if ( ( er_serial = er_model_set_sync_pack( er_model ) ) > 0 ) {
 
@@ -352,8 +349,11 @@
         /* returned value variable */
         le_size_t er_serial = 0;
 
+        /* reset address pack array */
+        le_array_set_size( & er_model->md_addr, 0 );
+
         /* parsing v-cell array segment */
-        while ( ( er_model->md_synb >= ER_COMMON_ENUM ) && ( er_serial < LE_ARRAY_ADDR * ER_COMMON_PACK ) ) {
+        while ( ( er_model->md_synb >= ER_COMMON_ENUM ) && ( er_serial < ( LE_ARRAY_ADDR * ER_COMMON_PACK ) ) ) {
 
             /* select unsynchronised v-cell */
             if ( er_cell_get_flag( er_model->md_virt + er_model->md_syna, ER_CELL_SYN ) != ER_CELL_SYN ) {
