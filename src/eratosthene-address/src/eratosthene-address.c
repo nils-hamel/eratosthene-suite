@@ -63,8 +63,10 @@
             /* display address digit */
             fprintf( stdout, "%c", le_address_get_digit( & er_addr, er_parse ) + 48 );
 
-        /* output format */
-        } fprintf( stdout, ", %" _LE_BYTE_P "\n", le_address_get_size( & er_addr ) );
+        }
+
+        /* display address size */
+        fprintf( stdout, ", %" _LE_BYTE_P "\n", le_address_get_size( & er_addr ) );
 
     }
 
@@ -86,16 +88,15 @@
             /* display message */
             lc_error( "date specification" );
 
-            /* abort process */
-            return;
+        } else {
+
+            /* convert date to timestamps */
+            er_time = ( le_time_t ) lc_time_from_string( er_date, ( unsigned char * ) "%Y-%m-%d-%H-%M-%S" );
+
+            /* display result */
+            fprintf( stdout, "%s\n%" _LE_TIME_P "\n", er_date, er_time );
 
         }
-
-        /* convert date to timestamps */
-        er_time = ( le_time_t ) lc_time_from_string( er_date, ( unsigned char * ) "%Y-%m-%d-%H-%M-%S" );
-
-        /* display result */
-        fprintf( stdout, "%s\n%" _LE_TIME_P "\n", er_date, er_time );
 
     }
 
@@ -115,6 +116,14 @@
 
             /* specialised method */
             er_address_space( argc, argv );
+
+        } else {
+
+            /* display message */
+            lc_error( "unknown mode" );
+
+            /* send message */
+            return( EXIT_FAILURE );
 
         }
 
