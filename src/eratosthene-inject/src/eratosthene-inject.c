@@ -95,6 +95,9 @@
 
             }
 
+            /* delete stream */
+            fclose( er_stream );
+
         }
 
         /* send message */
@@ -118,10 +121,10 @@
         le_char_t * er_host = ( le_char_t * ) lc_read_string( argc, argv, "--ip", "-i" );
 
         /* server service variable */
-        le_enum_t er_port = lc_read_unsigned( argc, argv, "--port", "-p", _LE_USE_PORT );
+        le_enum_t er_port = ( le_enum_t ) lc_read_unsigned( argc, argv, "--port", "-p", _LE_USE_PORT );
 
         /* time variable */
-        le_time_t er_time = lc_read_signed( argc, argv, "--time", "-t", _LE_TIME_NULL );
+        le_time_t er_time = ( le_time_t ) lc_read_signed( argc, argv, "--time", "-t", _LE_TIME_NULL );
 
         /* message variable */
         le_enum_t er_message = EXIT_SUCCESS;
