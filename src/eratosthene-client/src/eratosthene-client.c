@@ -26,16 +26,6 @@
 
     er_client_t er_client_create( le_char_t * const er_ip, le_sock_t const er_port, le_size_t const er_width, le_size_t const er_height ) {
 
-        /* array variables */
-        le_array_t er_array = LE_ARRAY_C;
-
-        /* server configuration variables */
-        le_size_t er_space = 0;
-        le_time_t er_times = 0;
-
-        /* serialisation variables */
-        le_size_t er_serial = 0;
-
         /* created structure variables */
         er_client_t er_client = ER_CLIENT_I( er_width, er_height );
 
@@ -47,45 +37,21 @@
 
         }
 
-        /* update socket-array size */
-        le_array_set_size( & er_array, 0 );
+        /* query server configuration */
+        if ( er_client_set_server( & er_client ) == _LE_FALSE ) {
 
-        /* write socket-array */
-        le_array_io_write( & er_array, LE_MODE_AUTH, er_client.cl_socket );
-
-        /* read socket array */
-        if ( le_array_io_read( & er_array, er_client.cl_socket ) != LE_MODE_AUTH ) {
-
-            /* delete client socket */
+            /* delete client structure */
             er_client_delete( & er_client );
 
             /* return created structure */
             return( er_client );
 
         }
-
-        /* check consistency */
-        if ( le_array_get_size( & er_array ) != LE_ARRAY_AUTH ) {
-
-            /* delete client socket */
-            er_client_delete( & er_client );
-
-            /* return created structure */
-            return( er_client );
-
-        }
-
-        /* serialise server configuration */
-        er_serial = le_array_serial( & er_array, & er_space, sizeof( le_size_t ), er_serial, _LE_GET );
-        er_serial = le_array_serial( & er_array, & er_times, sizeof( le_time_t ), er_serial, _LE_GET );
-
-        /* delete array */
-        le_array_delete( & er_array );
 
         /* create client model */
-        if ( le_get_status( er_client.cl_model = er_model_create( er_client.cl_socket, er_space, er_times ) ) == _LE_FALSE ) {
+        if ( le_get_status( er_client.cl_model = er_model_create( er_client.cl_socket, er_client.cl_scfg, er_client.cl_tcfg ) ) == _LE_FALSE ) {
 
-            /* delete client socket */
+            /* delete client structure */
             er_client_delete( & er_client );
 
             /* return created structure */
@@ -96,7 +62,7 @@
         /* create client times */
          if ( le_get_status( er_client.cl_times = er_times_create( er_width, er_height ) ) == _LE_FALSE ) {
 
-            /* delete client socket */
+            /* delete client structure */
             er_client_delete( & er_client );
 
             /* return created structure */
@@ -129,13 +95,69 @@
     }
 
 /*
+    source - mutator methods
+ */
+
+    le_enum_t er_client_set_server( er_client_t * const er_client ) {
+
+        /* socket-array variable */
+        le_array_t er_array = LE_ARRAY_C;
+
+        /* message variable */
+        le_enum_t er_message = _LE_TRUE;
+
+        /* update socket-array size */
+        le_array_set_size( & er_array, 0 );
+
+        /* write socket-array */
+        if ( le_array_io_write( & er_array, LE_MODE_AUTH, er_client->cl_socket ) != LE_MODE_AUTH ) {
+
+            /* push message */
+            er_message = _LE_FALSE;
+
+        } else {
+
+            /* read socket-array */
+            if ( le_array_io_read( & er_array, er_client->cl_socket ) != LE_MODE_AUTH ) {
+
+                /* push message */
+                er_message = _LE_FALSE;
+
+            } else {
+
+                /* check consistency */
+                if ( le_array_get_size( & er_array ) != LE_ARRAY_AUTH ) {
+
+                    /* push message */
+                    er_message = _LE_FALSE;
+
+                } else {
+
+                    /* server parameter serialisation */
+                    le_array_serial( & er_array, & er_client->cl_scfg, sizeof( le_size_t ), 0, _LE_GET );
+
+                    /* server parameter serialisation */
+                    le_array_serial( & er_array, & er_client->cl_scfg, sizeof( le_time_t ), sizeof( le_size_t ), _LE_GET );
+
+                }
+
+            }
+
+        }
+
+        /* delete socket-array */
+        le_array_delete( & er_array );
+
+        /* send message */
+        return( er_message );
+
+    }
+
+/*
     source - main method
  */
 
     int main( int argc, char ** argv ) {
-
-        /* messasge variable */
-        int er_message = EXIT_SUCCESS;
 
         /* display mode variable */
         SDL_DisplayMode er_display;
@@ -146,14 +168,17 @@
         /* opengl context variable */
         SDL_GLContext er_context;
 
+        /* server address variables */
+        le_char_t * er_svip = ( le_char_t * ) lc_read_string( argc, argv, "--ip"  , "-i" );
+
+        /* server service variables */
+        le_sock_t er_port = ( le_sock_t ) lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT );
+
         /* client structure variable */
         er_client_t er_client = ER_CLIENT_C;
 
-        /* server address variables */
-        le_char_t * er_svip = NULL;
-
-        /* server service variables */
-        le_sock_t er_port = 0;
+        /* messasge variable */
+        le_enum_t er_message = EXIT_SUCCESS;
 
         /* initialise sdl */
         if ( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
@@ -205,12 +230,6 @@
                     er_message = EXIT_FAILURE;
 
                 } else {
-
-                    /* read server address */
-                    er_svip = ( le_char_t * ) lc_read_string( argc, argv, "--ip"  , "-i" );
-
-                    /* read server service */
-                    er_port = ( le_sock_t ) lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT );
 
                     /* create client */
                     if ( ( er_client = er_client_create( er_svip, er_port, er_display.w, er_display.h ) )._status == _LE_FALSE ) {

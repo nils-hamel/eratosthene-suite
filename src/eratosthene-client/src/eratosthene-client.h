@@ -129,10 +129,10 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_CLIENT_C      { _LE_SOCK_NULL, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_VIEW_D, ER_VIEW_C, _LE_TIME_MAX, 0, 0, 0, 0, 1.0, 1.0, _LE_FALSE }
+    # define ER_CLIENT_C      { _LE_SOCK_NULL, 0, 0, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_VIEW_D, ER_VIEW_C, _LE_TIME_MAX, 0, 0, 0, 0, 1.0, 1.0, _LE_FALSE }
 
     /* define pseudo-constructor */
-    # define ER_CLIENT_I(w,h) { _LE_SOCK_NULL, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_VIEW_D, ER_VIEW_C, _LE_TIME_MAX, w, h, 0, 0, 1.0, 1.0, _LE_FALSE }
+    # define ER_CLIENT_I(w,h) { _LE_SOCK_NULL, 0, 0, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_VIEW_D, ER_VIEW_C, _LE_TIME_MAX, w, h, 0, 0, 1.0, 1.0, _LE_FALSE }
 
     /* define window properties */
     # define ER_SDL_FLAGS     ( SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL )
@@ -155,9 +155,14 @@
      *  This structure is the main graphical client structure. It holds fields
      *  related to graphical instance, sub-modules and event management.
      *
-     *  In the first place, the structure holds two fields used for socket
-     *  descriptor toward the remote server and the maintaining of the execution
-     *  loop.
+     *  In the first place, the structure holds the socket descriptor used for
+     *  communication with the remote server.
+     *
+     *  The two next field holds the server configuration parameters that are
+     *  asked through a query just after connection establishment.
+     *
+     *  The next field is used to control the state of the execution as it
+     *  indicates the execution loop to continue or interrupt their tasks.
      *
      *  The two next fields holds the structures of the sub-modules. Sub-modules
      *  are initialised and used through their representation in this structure.
@@ -180,6 +185,10 @@
      *
      *  \var er_client_struct::cl_socket
      *  Socket toward remote server - main connection
+     *  \var er_client_struct::cl_scfg
+     *  Remote server spatial configuration parameter
+     *  \var er_client_struct::cl_tcfg
+     *  Remote server temporal configuration parameter
      *  \var er_client_struct::cl_loops
      *  Execution state value
      *  \var er_client_struct::cl_model
@@ -211,6 +220,10 @@
     typedef struct er_client_struct {
 
         le_sock_t  cl_socket;
+
+        le_size_t  cl_scfg;
+        le_time_t  cl_tcfg;
+
         le_enum_t  cl_loops;
 
         er_model_t cl_model;
@@ -235,16 +248,16 @@
     header - function prototypes
  */
 
-    /*! \brief constructor/destructor methods
+    /*! \brief constructor/destructor methods (revoked)
      *
      *  This function creates the client structure and returns it. It mainly
      *  calls the sub-modules structure creation functions to initialise them.
      *
      *  In addition to sub-modules creation, this function also creates the
      *  socket to the remote server according to the IP address and service
-     *  port. It then requests the configuration of the remote server, needed
-     *  to perform data queries. The received configuration is then broadcast
-     *  to the sub-modules.
+     *  port. It also retrieves the server configuration parameter through a
+     *  call to the specialised function. The received configuration is then
+     *  broadcast to the sub-modules.
      *
      *  This function returning the created structure, the status is stored in
      *  the structure itself using the reserved \b _status field.
@@ -271,6 +284,21 @@
      */
 
     le_void_t er_client_delete( er_client_t * const er_client );
+
+    /*! \brief mutator methods
+     *
+     *  This function allows to query the remote server configuration values and
+     *  to store them in the provided client structure.
+     *
+     *  The configuration query is made toward the remote server and the answer
+     *  is analysed to extract the parameters.
+     *
+     *  \param er_client Client structure
+     *
+     *  \return Return _LE_TRUE on success, _LE_FALSE otherwise
+     */
+
+    le_enum_t er_client_set_server( er_client_t * const er_client );
 
     /*! \brief main method
      *
