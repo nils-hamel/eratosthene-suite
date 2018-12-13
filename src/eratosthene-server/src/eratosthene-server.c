@@ -33,7 +33,7 @@
         le_char_t * er_path = ( le_char_t * ) lc_read_string( argc, argv, "--path", "-p" );
 
         /* service port variable */
-        le_enum_t er_port = lc_read_unsigned( argc, argv, "--port", "-t", _LE_USE_PORT );
+        le_enum_t er_port = ( le_enum_t ) lc_read_unsigned( argc, argv, "--port", "-t", _LE_USE_PORT );
 
         /* message variable */
         le_enum_t er_message = EXIT_SUCCESS;
@@ -50,7 +50,7 @@
         } else {
 
             /* display message */
-            printf( LC_PROJECT " : listening on TCP/IP on %" _LE_ENUM_P "\n", er_port );
+            printf( LC_PROJECT " : listening on TCP/IP with port %" _LE_ENUM_P "\n", er_port );
 
             /* server process */
             le_server_io( & er_server );

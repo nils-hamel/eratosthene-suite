@@ -141,7 +141,7 @@
     header - preprocessor macros
  */
 
-    /* standard display */
+    /* standard error */
     # define lc_error( m )       fprintf( stderr, LC_PROJECT " : error : " m "\n" )
 
     /* strict clamping */
