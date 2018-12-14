@@ -181,7 +181,7 @@
         le_enum_t er_message = EXIT_SUCCESS;
 
         /* initialise sdl */
-        if ( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
+        if ( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_EVENTS ) < 0 ) {
 
             /* display message */
             lc_error( "SDL library initialisation" );
@@ -197,9 +197,6 @@
             /* hide mouse cursor */
             SDL_ShowCursor( SDL_DISABLE );
 
-            /* enable double buffer */
-            SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-
             /* color buffer bits */
             SDL_GL_SetAttribute( SDL_GL_RED_SIZE  , 8 );
             SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
@@ -208,6 +205,9 @@
 
             /* depth buffer bits */
             SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
+
+            /* enable double buffer */
+            SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
             /* create window */
             if ( ( er_window = SDL_CreateWindow( LC_PROJECT, 0, 0, er_display.w, er_display.h, ER_SDL_FLAGS ) ) == NULL ) {
