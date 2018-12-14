@@ -287,32 +287,36 @@
         if ( ( er_serial = er_model_set_sync_pack( er_model ) ) != 0 ) {
 
             /* write socket-array on socket */
-            le_array_io_write( & er_model->md_addr, LE_MODE_QUER, er_model->md_sock );
+            if ( le_array_io_write( & er_model->md_addr, LE_MODE_QUER, er_model->md_sock ) == LE_MODE_QUER ) {
 
-            /* parsing v-cell array segment */
-            while ( er_parse < er_serial ) {
+                /* parsing v-cell array segment */
+                while ( er_parse < er_serial ) {
 
-                /* search available d-cell */
-                er_model_set_next( er_model );
-
-                /* update d-cell state */
-                er_cell_set_zero( er_model->md_cell + er_model->md_free, ER_CELL_DIS );
-
-                /* read socket-array */
-                //er_cell_set_array( er_model->md_cell + er_model->md_free, er_model->md_sock );
-                er_cell_set_read( er_model->md_cell + er_model->md_free, er_model->md_sock );
-
-                /* process d-cell */
-                if ( er_cell_set_data( er_model->md_cell + er_model->md_free ) != 0 ) {
-
-                    /* synchronise cell address */
-                    er_parse = er_cell_set_sync( er_model->md_cell + er_model->md_free, & er_model->md_addr, er_parse );
+                    /* search available d-cell */
+                    er_model_set_next( er_model );
 
                     /* update d-cell state */
-                    er_cell_set_flag( er_model->md_cell + er_model->md_free, ER_CELL_SYN | ER_CELL_DIS );
+                    er_cell_set_zero( er_model->md_cell + er_model->md_free, ER_CELL_DIS );
 
-                /* update parser */
-                } else { er_parse += LE_ARRAY_ADDR; }
+                    /* read d-cell data */
+                    if ( er_cell_set_read( er_model->md_cell + er_model->md_free, er_model->md_sock ) == LE_ERROR_SUCCESS ) {
+
+                        /* process d-cell */
+                        if ( er_cell_set_data( er_model->md_cell + er_model->md_free ) != 0 ) {
+
+                            /* synchronise d-cell address */
+                            er_parse = er_cell_set_sync( er_model->md_cell + er_model->md_free, & er_model->md_addr, er_parse );
+
+                            /* update d-cell state */
+                            er_cell_set_flag( er_model->md_cell + er_model->md_free, ER_CELL_SYN | ER_CELL_DIS );
+
+                        /* update parser */
+                        } else { er_parse += LE_ARRAY_ADDR; }
+
+                    /* update parser */
+                    } else { er_parse += LE_ARRAY_ADDR; }
+
+                }
 
             }
 
@@ -404,10 +408,10 @@
         le_real_t er_lat = er_view_get_lat( er_view );
 
         /* trigonometric variable */
-        le_real_t er_cl = cos( - er_lon * LE_D2R );
-        le_real_t er_sl = sin( - er_lon * LE_D2R );
-        le_real_t er_ca = cos( + er_lat * LE_D2R );
-        le_real_t er_sa = sin( + er_lat * LE_D2R );
+        le_real_t er_cosl = cos( - er_lon * LE_D2R );
+        le_real_t er_sinl = sin( - er_lon * LE_D2R );
+        le_real_t er_cosa = cos( + er_lat * LE_D2R );
+        le_real_t er_sina = sin( + er_lat * LE_D2R );
 
         /* motion management - tilt rotation */
         glRotated( - er_view_get_gam( er_view ), 1.0, 0.0, 0.0 );
@@ -428,7 +432,7 @@
                 glPushMatrix();
 
                     /* cell rendering */
-                    er_cell_get_render( er_model->md_cell + er_parse, er_lon, er_lat, er_cl, er_sl, er_ca, er_sa );
+                    er_cell_get_render( er_model->md_cell + er_parse, er_lon, er_lat, er_cosl, er_sinl, er_cosa, er_sina );
 
                 /* d-cell matrix */
                 glPopMatrix();
