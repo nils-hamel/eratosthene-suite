@@ -299,7 +299,8 @@
                 er_cell_set_zero( er_model->md_cell + er_model->md_free, ER_CELL_DIS );
 
                 /* read socket-array */
-                er_cell_set_array( er_model->md_cell + er_model->md_free, er_model->md_sock );
+                //er_cell_set_array( er_model->md_cell + er_model->md_free, er_model->md_sock );
+                er_cell_set_read( er_model->md_cell + er_model->md_free, er_model->md_sock );
 
                 /* process d-cell */
                 if ( er_cell_set_data( er_model->md_cell + er_model->md_free ) != 0 ) {

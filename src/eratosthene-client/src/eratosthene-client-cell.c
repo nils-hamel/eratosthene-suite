@@ -102,26 +102,32 @@
 
     }
 
-    le_void_t er_cell_get_render( er_cell_t * const er_cell, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_cl, le_real_t const er_sl, le_real_t const er_ca, le_real_t const er_sa ) {
+    le_void_t er_cell_get_render( er_cell_t * const er_cell, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_cosl, le_real_t const er_sinl, le_real_t const er_cosa, le_real_t const er_sina ) {
 
         /* buffer pointer variable */
         le_byte_t * er_base = le_array_get_byte( & er_cell->ce_data );
 
+        /* cell translation variable */
+        le_real_t er_trans[3] = {
+
+        er_cell->ce_edge[0] * er_cosl + er_cell->ce_edge[2] * er_sinl,
+        er_cell->ce_edge[0] * er_sinl - er_cell->ce_edge[2] * er_cosl,
+
+        };
+
         /* compute cell translation */
-        er_cell->ce_edge[4] = er_cell->ce_edge[0] * er_sl - er_cell->ce_edge[2] * er_cl;
-        er_cell->ce_edge[5] = er_cell->ce_edge[1] * er_sa - er_cell->ce_edge[4] * er_ca;
-        er_cell->ce_edge[4] = er_cell->ce_edge[1] * er_ca + er_cell->ce_edge[4] * er_sa;
-        er_cell->ce_edge[3] = er_cell->ce_edge[0] * er_cl + er_cell->ce_edge[2] * er_sl;
+        er_trans[2] = er_cell->ce_edge[1] * er_sina - er_trans[1] * er_cosa;
+        er_trans[1] = er_cell->ce_edge[1] * er_cosa + er_trans[1] * er_sina;
 
         /* cell translation */
-        glTranslated( er_cell->ce_edge[3], er_cell->ce_edge[4], er_cell->ce_edge[5] - LE_ADDRESS_WGS_A );
+        glTranslated( er_trans[0], er_trans[1], er_trans[2] - LE_ADDRESS_WGS_A );
 
         /* cell rotation - planimetric rotation */
         glRotated( + er_lat, 1.0, 0.0, 0.0 );
         glRotated( - er_lon, 0.0, 1.0, 0.0 );
 
         /* cell primitive count */
-        if ( er_cell->ce_type[0] ) {
+        if ( er_cell->ce_type[0] != 0 ) {
 
             /* assign vertex array pointer */
             glVertexPointer( 3, GL_DOUBLE, LE_ARRAY_DATA, er_base );
@@ -135,19 +141,22 @@
         }
 
         /* cell primitive count */
-        if ( er_cell->ce_type[1] | er_cell->ce_type[2] ) {
+        if ( ( er_cell->ce_type[1] | er_cell->ce_type[2] ) != 0 ) {
+
+            /* update base pointer */
+            er_base += er_cell->ce_type[0] * LE_ARRAY_DATA;
 
             /* assign vertex array pointer */
-            glVertexPointer( 3, GL_DOUBLE, LE_ARRAY_DATA, er_base + er_cell->ce_type[0] * LE_ARRAY_DATA );
+            glVertexPointer( 3, GL_DOUBLE, LE_ARRAY_DATA, er_base );
 
             /* assign color array pointer */
-            glColorPointer( 3, GL_UNSIGNED_BYTE, LE_ARRAY_DATA, er_base + er_cell->ce_type[0] * LE_ARRAY_DATA + LE_ARRAY_DATA_POSE + LE_ARRAY_DATA_TYPE );
+            glColorPointer( 3, GL_UNSIGNED_BYTE, LE_ARRAY_DATA, er_base + LE_ARRAY_DATA_POSE + LE_ARRAY_DATA_TYPE );
 
             /* cell primitive index pointer */
             er_base = le_array_get_byte( & er_cell->ce_list );
 
             /* cell primitive count */
-            if ( er_cell->ce_type[1] ) {
+            if ( er_cell->ce_type[1] != 0 ) {
 
                 /* display cell primitive */
                 glDrawElements( GL_LINES, er_cell->ce_type[1], GL_UNSIGNED_INT, er_base );
@@ -155,7 +164,7 @@
             }
 
             /* cell primitive count */
-            if ( er_cell->ce_type[2] ) {
+            if ( er_cell->ce_type[2] != 0 ) {
 
                 /* assign normal array */
                 glNormalPointer( GL_DOUBLE, 0, le_array_get_byte( & er_cell->ce_norm ) );
@@ -213,10 +222,16 @@
 
     }
 
-    le_void_t er_cell_set_array( er_cell_t * const er_cell, le_sock_t const er_socket ) {
+    le_enum_t er_cell_set_read( er_cell_t * const er_cell, le_sock_t const er_socket ) {
 
-        /* read cell socket-array */
-        le_array_io_read( & er_cell->ce_data, er_socket );
+        /* read socket-array */
+        if ( le_array_io_read( & er_cell->ce_data, er_socket ) == LE_MODE_QUER ) {
+
+            /* send message */
+            return( LE_ERROR_SUCCESS );
+
+        /* send message */
+        } else { return( LE_ERROR_IO_READ ); }
 
     }
 

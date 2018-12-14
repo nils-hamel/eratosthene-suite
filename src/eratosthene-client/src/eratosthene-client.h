@@ -248,7 +248,7 @@
     header - function prototypes
  */
 
-    /*! \brief constructor/destructor methods (revoked)
+    /*! \brief constructor/destructor methods
      *
      *  This function creates the client structure and returns it. It mainly
      *  calls the sub-modules structure creation functions to initialise them.

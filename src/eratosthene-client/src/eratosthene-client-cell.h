@@ -143,7 +143,7 @@
         le_byte_t    ce_flag;
         le_address_t ce_addr;
         le_array_t   ce_data;
-        le_real_t    ce_edge[6];
+        le_real_t    ce_edge[3];
         le_array_t   ce_norm;
         le_array_t   ce_list;
         le_size_t    ce_type[3];
@@ -272,13 +272,13 @@
      *  \param er_cell Cell structure
      *  \param er_lon  Point of view longitude
      *  \param er_lat  Point of view latitude
-     *  \param er_cl   Point of view longitude cosine
-     *  \param er_sl   Point of view longitude sine
-     *  \param er_ca   Point of view latitude cosine
-     *  \param er_sa   Point of view latitude sine
+     *  \param er_cosl Point of view longitude cosine
+     *  \param er_sinl Point of view longitude sine
+     *  \param er_cosa Point of view latitude cosine
+     *  \param er_sina Point of view latitude sine
      */
 
-    le_void_t er_cell_get_render( er_cell_t * const er_cell, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_cl, le_real_t const er_sl, le_real_t const er_ca, le_real_t const er_sa );
+    le_void_t er_cell_get_render( er_cell_t * const er_cell, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_cosl, le_real_t const er_sinl, le_real_t const er_cosa, le_real_t const er_sina );
 
     /*! mutator methods
      *
@@ -332,7 +332,7 @@
 
     le_size_t er_cell_set_sync( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset );
 
-    /*! mutator methods
+    /*! mutator methods (revoked)
      *
      *  This function allows to use the data socket-array of the provided cell
      *  structure for reading data from the remote server through the provided
@@ -346,7 +346,7 @@
      *  \param er_socket Remote server socket descriptor
      */
 
-    le_void_t er_cell_set_array( er_cell_t * const er_cell, le_sock_t const er_socket );
+    le_enum_t er_cell_set_read( er_cell_t * const er_cell, le_sock_t const er_socket );
 
     /*! mutator methods
      *
