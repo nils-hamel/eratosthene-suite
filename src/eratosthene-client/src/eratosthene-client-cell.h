@@ -332,7 +332,7 @@
 
     le_size_t er_cell_set_sync( er_cell_t * const er_cell, le_array_t * const er_array, le_size_t const er_offset );
 
-    /*! mutator methods (revoked)
+    /*! mutator methods
      *
      *  This function allows to use the data socket-array of the provided cell
      *  structure for reading data from the remote server through the provided
@@ -344,6 +344,8 @@
      *
      *  \param er_cell   Cell structure
      *  \param er_socket Remote server socket descriptor
+     *
+     *  \return Returns LE_ERROR_SUCCESS on success, an error code otherwise
      */
 
     le_enum_t er_cell_set_read( er_cell_t * const er_cell, le_sock_t const er_socket );
