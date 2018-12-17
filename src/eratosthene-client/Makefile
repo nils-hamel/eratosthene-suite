@@ -31,11 +31,11 @@ endif
     MAKE_CDOC:=doxygen
 
 ifeq ($(MAKE_OSYS),Linux)
-    MAKE_FCMP:=-std=c99 -O3 -Wall -Wno-deprecated -funsigned-char -pedantic -D _DEFAULT_SOURCE -flto -fopenmp
+    MAKE_FCMP:=-std=c11 -O3 -Wall -Wno-deprecated -funsigned-char -pedantic -D _DEFAULT_SOURCE -flto -fopenmp
     MAKE_FLNK:=-lm -lGL -lGLU -lSDL2 -lgomp -flto
 else
 ifeq ($(MAKE_OSYS),Darwin)
-    MAKE_FCMP:=-std=c99 -O3 -Wall -Wno-deprecated -funsigned-char -pedantic -D _DEFAULT_SOURCE -flto -Xpreprocessor -fopenmp -I/usr/local/opt/libomp/include
+    MAKE_FCMP:=-std=c11 -O3 -Wall -Wno-deprecated -funsigned-char -pedantic -D _DEFAULT_SOURCE -flto -Xpreprocessor -fopenmp -I/usr/local/opt/libomp/include
     MAKE_FLNK:=-lm -lgomp -framework OpenGL -framework SDL2 -flto
 endif
 endif
