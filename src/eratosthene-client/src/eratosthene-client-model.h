@@ -67,7 +67,7 @@
     # define ER_MODEL_I(s,p,t) { s, p, t, ER_MODEL_STACK, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, _LE_FALSE }
 
     /* define model stack */
-    # define ER_MODEL_STACK    ( 6144 )
+    # define ER_MODEL_STACK    ( 8192 ) // ( 6144 )
 
 /*
     header - preprocessor macros
