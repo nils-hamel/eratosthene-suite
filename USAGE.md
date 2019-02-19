@@ -62,7 +62,7 @@ The injection client only allows UV3 format for data injection. This format is s
 
 A typical UV3 file can be illustrated as follows :
 
-    UF3 sequence : [x][y][z][t][r][g][b][x][y][z][t][r][g][b] ... [x][y][z][t][r][g][b]
+    UV3 sequence : [x][y][z][t][r][g][b][x][y][z][t][r][g][b] ... [x][y][z][t][r][g][b]
 
 As the considered model is correctly expressed in the WGS84 coordinates system and stored in a UV3 file, the injection client can be used to send the data to the selected remote _eratosthene_ service :
 
