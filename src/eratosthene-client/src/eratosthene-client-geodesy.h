@@ -71,10 +71,6 @@
     header - function prototypes
  */
 
-    /* *** */
-
-    le_void_t er_geodesy_cartesian( le_real_t * const er_point );
-
     /*! \brief distance methods
      *
      *  This function computes the distance that separates the point of view
