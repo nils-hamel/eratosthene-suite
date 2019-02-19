@@ -2,7 +2,7 @@
  *  eratosthene-suite - client
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016-2018 DHLAB, EPFL
+ *      Copyright (c) 2016-2019 DHLAB, EPFL
  *
  *  Contributors
  *
