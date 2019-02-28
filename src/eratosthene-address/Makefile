@@ -31,7 +31,7 @@ endif
     MAKE_CDOC:=doxygen
 
     MAKE_FCMP:=-std=c11 -O3 -Wall -Wno-deprecated -fno-strict-aliasing -funsigned-char -pedantic -D _DEFAULT_SOURCE -U _FORTIFY_SOURCE -D _FORTIFY_SOURCE=0 -flto
-    MAKE_FLNK:=-flto
+    MAKE_FLNK:=-lm -flto
 
 #
 #   makefile - configuration
