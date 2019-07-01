@@ -26,36 +26,12 @@
 
     int lc_image_write( char const * const lc_path, int const lc_width, int const lc_height, unsigned char * const lc_bytes ) {
 
-        /* stream variables */
-        FILE * lc_stream = NULL;
-
-        /* components variables */
-        //int lc_component = 0;
-        //int lc_colortype = 0;
-
-        /* portable network graphics variables */
+        /* portable network graphics variable */
         png_structp lc_pngs = NULL;
         png_infop   lc_info = NULL;
 
-        /* check image depth */
-        //if ( lc_format == LC_IMAGE_RGB ) {
-
-            /* assign png color type */
-        //    lc_component = 3;
-        //    lc_colortype = PNG_COLOR_TYPE_RGB;
-
-        //} else if ( lc_format == LC_IMAGE_RGBA ) {
-
-            /* assign png color type */
-        //    lc_component = 4;
-        //    lc_colortype = PNG_COLOR_TYPE_RGBA;
-
-        //} else {
-
-            /* send message */
-        //    return( LC_FALSE );
-
-        //}
+        /* stream variable */
+        FILE * lc_stream = NULL;
 
         /* check consistency */
         if ( lc_bytes == NULL ) {
