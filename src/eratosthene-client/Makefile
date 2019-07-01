@@ -32,11 +32,11 @@ endif
 
 ifeq ($(MAKE_OSYS),Linux)
     MAKE_FCMP:=-std=c11 -O3 -Wall -Wno-deprecated -fno-strict-aliasing -funsigned-char -pedantic -D _DEFAULT_SOURCE -U _FORTIFY_SOURCE -D _FORTIFY_SOURCE=0 -flto -fopenmp
-    MAKE_FLNK:=-lm -lGL -lGLU -lSDL2 -lgomp -flto
+    MAKE_FLNK:=-lm -lGL -lGLU -lSDL2 -lpng -lgomp -flto
 else
 ifeq ($(MAKE_OSYS),Darwin)
     MAKE_FCMP:=-std=c11 -O3 -Wall -Wno-deprecated -fno-strict-aliasing -funsigned-char -pedantic -D _DEFAULT_SOURCE -U _FORTIFY_SOURCE -D _FORTIFY_SOURCE=0 -flto -Xpreprocessor -fopenmp -I/usr/local/opt/libomp/include
-    MAKE_FLNK:=-lm -lgomp -framework OpenGL -framework SDL2 -flto
+    MAKE_FLNK:=-lm -lpng -lgomp -framework OpenGL -framework SDL2 -flto
 endif
 endif
 
