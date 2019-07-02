@@ -383,8 +383,11 @@
         /* master swicth switch */
         if ( omp_get_thread_num() == 0 ) {
 
+            /* critical region variable */
+            le_enum_t er_loop = _LE_TRUE;
+
             /* execution loop */
-            while ( er_client->cl_loops != ER_COMMON_EXIT ) {
+            while ( er_loop == _LE_TRUE ) {
 
                 if ( er_client->cl_loops == ER_COMMON_AUTO ) {
 
@@ -392,7 +395,7 @@
                     er_client->cl_view = er_video_get( & er_client->cl_video );
 
                     // full model update with parameter //
-                    er_client_loops_update( er_client );
+                    er_client_loops_update( er_client, ER_COMMON_SIZE, 0 );
 
                 } else {
 
@@ -410,25 +413,35 @@
                 if ( er_client->cl_loops == ER_COMMON_AUTO ) {
 
                     // export //
-                    # pragma omp critical
                     er_client->cl_loops = er_video_set( & er_client->cl_video );
 
                 }
+
+                /* execution mode synchronisation */
+                # pragma omp critical
+                er_loop = er_client->cl_loops == ER_COMMON_EXIT ? _LE_FALSE : _LE_TRUE;
 
             }
 
         } else {
 
-            /* execution loop */
-            while ( er_client->cl_loops != ER_COMMON_EXIT ) {
+            /* critical region variable */
+            le_enum_t er_loop = _LE_TRUE;
 
-                # pragma omp critical
+            /* execution loop */
+            while ( er_loop == _LE_TRUE ) {
+
+                /* switch on execution mode */
                 if ( er_client->cl_loops == ER_COMMON_VIEW ) {
 
                     /* model update procedure */
-                    er_client_loops_update( er_client );
+                    er_client_loops_update( er_client, ER_COMMON_PACK, CLOCKS_PER_SEC >> 2 );
 
                 }
+
+                /* execution mode synchronisation */
+                # pragma omp critical
+                er_loop = er_client->cl_loops == ER_COMMON_EXIT ? _LE_FALSE : _LE_TRUE;
 
             }
 
@@ -524,7 +537,7 @@
 
     }
 
-    le_void_t er_client_loops_update( er_client_t * const er_client ) {
+    le_void_t er_client_loops_update( er_client_t * const er_client, le_size_t const er_pack, le_size_t const er_delay ) {
 
         /* address variable */
         le_address_t er_address = LE_ADDRESS_C;
@@ -541,7 +554,7 @@
         }
 
         /* model update delay */
-        if ( ( clock() - er_client->cl_last ) > ( CLOCKS_PER_SEC >> 2 ) ) {
+        if ( ( clock() - er_client->cl_last ) > er_delay ) {
 
             /* retreive address times */
             er_address = er_view_get_times( & er_client->cl_view );
@@ -564,7 +577,7 @@
         if ( er_model_get_sync( & er_client->cl_model ) == _LE_FALSE ) {
 
             /* model synchronisation process */
-            er_model_set_sync( & er_client->cl_model );
+            er_model_set_sync( & er_client->cl_model, er_pack );
 
         } else {
 
@@ -665,11 +678,16 @@
 
             case ( SDLK_p ) : {
 
-                /* check stack state */
-                if ( er_video_get_state( & er_client->cl_video ) == _LE_TRUE ) {
+                /* check model update state */
+                if ( er_model_get_tail( & er_client->cl_model ) == _LE_TRUE ) {
 
-                    /* update execution mode */
-                    er_client->cl_loops = ER_COMMON_AUTO;
+                    /* check stack state */
+                    if ( er_video_get_state( & er_client->cl_video ) == _LE_TRUE ) {
+
+                        /* update execution mode */
+                        er_client->cl_loops = ER_COMMON_AUTO;
+
+                    }
 
                 }
 

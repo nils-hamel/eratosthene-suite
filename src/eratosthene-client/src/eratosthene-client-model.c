@@ -275,7 +275,7 @@
 
     }
 
-    le_void_t er_model_set_sync( er_model_t * const er_model ) {
+    le_void_t er_model_set_sync( er_model_t * const er_model, le_size_t const er_pack ) {
 
         /* package size variable */
         le_size_t er_serial = 0;
@@ -284,7 +284,7 @@
         le_size_t er_parse = 0;
 
         /* compose address pack */
-        if ( ( er_serial = er_model_set_sync_pack( er_model ) ) != 0 ) {
+        if ( ( er_serial = er_model_set_sync_pack( er_model, er_pack ) ) != 0 ) {
 
             /* write socket-array on socket */
             if ( le_array_io_write( & er_model->md_addr, LE_MODE_QUER, er_model->md_sock ) == LE_MODE_QUER ) {
@@ -329,7 +329,7 @@
 
     }
 
-    le_size_t er_model_set_sync_pack( er_model_t * const er_model ) {
+    le_size_t er_model_set_sync_pack( er_model_t * const er_model, le_size_t const le_pack ) {
 
         /* returned value variable */
         le_size_t er_serial = 0;
@@ -338,7 +338,7 @@
         le_array_set_size( & er_model->md_addr, 0 );
 
         /* parsing v-cell array segment */
-        while ( ( er_model->md_synb >= ER_COMMON_ENUM ) && ( er_serial < ( LE_ARRAY_ADDR * ER_COMMON_PACK ) ) ) {
+        while ( ( er_model->md_synb >= ER_COMMON_ENUM ) && ( er_serial < ( LE_ARRAY_ADDR * le_pack ) ) ) {
 
             /* scale-based v-cell selection */
             if ( er_cell_get_size( er_model->md_virt + er_model->md_syna ) == er_model->md_synb ) {

@@ -61,13 +61,10 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_MODEL_C        { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_MODEL_STACK, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, _LE_FALSE, _LE_FALSE, _LE_FALSE }
+    # define ER_MODEL_C        { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_COMMON_SIZE, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, _LE_FALSE, _LE_FALSE, _LE_FALSE }
 
     /* define pseudo-initialiser */
-    # define ER_MODEL_I(s,p,t) { s, p, t, ER_MODEL_STACK, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, _LE_FALSE }
-
-    /* define model stack */
-    # define ER_MODEL_STACK    ( 16384 )
+    # define ER_MODEL_I(s,p,t) { s, p, t, ER_COMMON_SIZE, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, _LE_FALSE }
 
 /*
     header - preprocessor macros
@@ -355,7 +352,7 @@
      *  \param er_model Model structure
      */
 
-    le_void_t er_model_set_sync( er_model_t * const er_model );
+    le_void_t er_model_set_sync( er_model_t * const er_model, le_size_t const er_pack );
 
     /*! mutator methods
      *
@@ -373,7 +370,7 @@
      *  \return Returns address array size, in bytes
      */
 
-    le_size_t er_model_set_sync_pack( er_model_t * const er_model );
+    le_size_t er_model_set_sync_pack( er_model_t * const er_model, le_size_t const le_pack );
 
     /*! mutator methods
      *

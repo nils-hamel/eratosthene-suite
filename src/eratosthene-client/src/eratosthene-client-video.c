@@ -82,7 +82,7 @@
         er_view_t er_view = er_video->vd_view[0];
 
         /* interpolant parameter variable */
-        le_real_t er_param = ( ( le_real_t ) er_video->vd_index / ( le_real_t ) er_video->vd_count ) * ( er_video->vd_push - 1 );
+        le_real_t er_param = ( ( le_real_t ) er_video->vd_index / ( le_real_t ) ( er_video->vd_count - 1 ) ) * ( er_video->vd_push - 1 );
 
         /* interpolation variable - position */
         le_real_t er_ilon = 0.0;

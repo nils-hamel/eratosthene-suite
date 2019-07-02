@@ -74,7 +74,8 @@
 
     /* define model parameters */
     # define ER_COMMON_ENUM  ( 4 )
-    # define ER_COMMON_PACK  ( 8 )
+    # define ER_COMMON_SIZE  ( 16384 )
+    # define ER_COMMON_PACK  ( 4 )
 
     /* define inertial coefficients */
     # define ER_COMMON_INE   ( 1.0 / 100.0 )

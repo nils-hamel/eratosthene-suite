@@ -409,7 +409,7 @@
      *  \param er_client Client structure
      */
 
-    le_void_t er_client_loops_update( er_client_t * const er_client );
+    le_void_t er_client_loops_update( er_client_t * const er_client, le_size_t const er_pack, le_size_t const er_delay );
 
     /*! \brief projection methods
      *
