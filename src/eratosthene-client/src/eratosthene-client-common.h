@@ -70,6 +70,7 @@
     /* define execution modes */
     # define ER_COMMON_EXIT  ( 0x00 )
     # define ER_COMMON_VIEW  ( 0x01 )
+    # define ER_COMMON_AUTO  ( 0x02 )
 
     /* define model parameters */
     # define ER_COMMON_ENUM  ( 4 )

@@ -24,7 +24,7 @@
     source - constructor/destructor methods
  */
 
-    er_client_t er_client_create( le_char_t * const er_ip, le_sock_t const er_port, le_size_t const er_width, le_size_t const er_height ) {
+    er_client_t er_client_create( le_char_t * const er_ip, le_sock_t const er_port, le_size_t const er_width, le_size_t const er_height, le_char_t * const er_export, le_size_t const er_frame ) {
 
         /* created structure variables */
         er_client_t er_client = ER_CLIENT_I( er_width, er_height );
@@ -70,6 +70,17 @@
 
         }
 
+        /* create client video */
+        if ( le_get_status( er_client.cl_video = er_video_create( er_export, er_frame, er_width, er_height ) ) == _LE_FALSE ) {
+
+            /* delete client structure */
+            er_client_delete( & er_client );
+
+            /* return created structure */
+            return( er_client );
+
+        }
+
         /* return created structure */
         return( le_set_status( er_client, _LE_TRUE ) );
 
@@ -79,6 +90,9 @@
 
         /* deleted structure variables */
         er_client_t er_delete = ER_CLIENT_C;
+
+        /* delete client video */
+        er_video_delete( & er_client->cl_video );
 
         /* delete client times */
         er_times_delete( & er_client->cl_times );
@@ -174,6 +188,12 @@
         /* server service variables */
         le_sock_t er_port = ( le_sock_t ) lc_read_signed( argc, argv, "--port", "-t", _LE_USE_PORT );
 
+        /* video path variable */
+        le_char_t * er_export = ( le_char_t * ) lc_read_string( argc, argv, "--export", "-e" );
+
+        /* video frame variable */
+        le_size_t er_frame = ( le_size_t ) lc_read_unsigned( argc, argv, "--frame", "-f", 1800 );
+
         /* client structure variable */
         er_client_t er_client = ER_CLIENT_C;
 
@@ -232,7 +252,7 @@
                 } else {
 
                     /* create client */
-                    if ( ( er_client = er_client_create( er_svip, er_port, er_display.w, er_display.h ) )._status == _LE_FALSE ) {
+                    if ( ( er_client = er_client_create( er_svip, er_port, er_display.w, er_display.h, er_export, er_frame ) )._status == _LE_FALSE ) {
 
                         /* display message */
                         lc_error( "client creation" );
@@ -366,14 +386,34 @@
             /* execution loop */
             while ( er_client->cl_loops != ER_COMMON_EXIT ) {
 
-                /* interface events procedure */
-                er_client_loops_event( er_client );
+                if ( er_client->cl_loops == ER_COMMON_AUTO ) {
+
+                    // set view point //
+                    er_client->cl_view = er_video_get( & er_client->cl_video );
+
+                    // full model update with parameter //
+                    er_client_loops_update( er_client );
+
+                } else {
+
+                    /* interface events procedure */
+                    er_client_loops_event( er_client );
+
+                }
 
                 /* model display procedure */
                 er_client_loops_render( er_client );
 
                 /* swap buffers */
                 SDL_GL_SwapWindow( er_window );
+
+                if ( er_client->cl_loops == ER_COMMON_AUTO ) {
+
+                    // export //
+                    # pragma omp critical
+                    er_client->cl_loops = er_video_set( & er_client->cl_video );
+
+                }
 
             }
 
@@ -382,8 +422,13 @@
             /* execution loop */
             while ( er_client->cl_loops != ER_COMMON_EXIT ) {
 
-                /* model update procedure */
-                er_client_loops_update( er_client );
+                # pragma omp critical
+                if ( er_client->cl_loops == ER_COMMON_VIEW ) {
+
+                    /* model update procedure */
+                    er_client_loops_update( er_client );
+
+                }
 
             }
 
@@ -618,6 +663,18 @@
 
             } break;
 
+            case ( SDLK_p ) : {
+
+                /* check stack state */
+                if ( er_video_get_state( & er_client->cl_video ) == _LE_TRUE ) {
+
+                    /* update execution mode */
+                    er_client->cl_loops = ER_COMMON_AUTO;
+
+                }
+
+            } break;
+
             case ( SDLK_1 ) :
             case ( SDLK_2 ) :
             case ( SDLK_3 ) :
@@ -693,6 +750,20 @@
 
                 /* update span value */
                 er_view_set_span( & er_client->cl_view, -1 );
+
+            } break;
+
+            case ( SDLK_i ) : {
+
+                /* push current view on stack */
+                er_video_set_push( & er_client->cl_video, & er_client->cl_view );
+
+            } break;
+
+            case ( SDLK_o ) : {
+
+                /* reset current view stack */
+                er_video_set_reset( & er_client->cl_video );
 
             } break;
 

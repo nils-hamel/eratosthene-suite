@@ -118,6 +118,7 @@
     # include "eratosthene-client-geodesy.h"
     # include "eratosthene-client-times.h"
     # include "eratosthene-client-model.h"
+    # include "eratosthene-client-video.h"
     # include "eratosthene-client-view.h"
 
 /*
@@ -129,10 +130,10 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_CLIENT_C      { _LE_SOCK_NULL, 0, 0, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_VIEW_D, ER_VIEW_C, _LE_TIME_MAX, 0, 0, 0, 0, 1.0, 1.0, _LE_FALSE }
+    # define ER_CLIENT_C      { _LE_SOCK_NULL, 0, 0, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_VIDEO_C, ER_VIEW_D, ER_VIEW_C, _LE_TIME_MAX, 0, 0, 0, 0, 1.0, 1.0, _LE_FALSE }
 
     /* define pseudo-constructor */
-    # define ER_CLIENT_I(w,h) { _LE_SOCK_NULL, 0, 0, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_VIEW_D, ER_VIEW_C, _LE_TIME_MAX, w, h, 0, 0, 1.0, 1.0, _LE_FALSE }
+    # define ER_CLIENT_I(w,h) { _LE_SOCK_NULL, 0, 0, ER_COMMON_VIEW, ER_MODEL_C, ER_TIMES_C, ER_VIDEO_C, ER_VIEW_D, ER_VIEW_C, _LE_TIME_MAX, w, h, 0, 0, 1.0, 1.0, _LE_FALSE }
 
     /* define window properties */
     # define ER_SDL_FLAGS     ( SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN )
@@ -228,6 +229,7 @@
 
         er_model_t cl_model;
         er_times_t cl_times;
+        er_video_t cl_video;
 
         er_view_t  cl_view;
         er_view_t  cl_push;
@@ -270,7 +272,7 @@
      *  \return Returns the created client structure
      */
 
-    er_client_t er_client_create( le_char_t * const er_ip, le_sock_t const er_port, le_size_t const er_width, le_size_t const er_height );
+    er_client_t er_client_create( le_char_t * const er_ip, le_sock_t const er_port, le_size_t const er_width, le_size_t const er_height, le_char_t * const er_export, le_size_t const er_frame );
 
     /*! \brief constructor/destructor methods
      *

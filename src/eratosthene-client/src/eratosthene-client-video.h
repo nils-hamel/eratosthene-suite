@@ -44,6 +44,7 @@
  */
 
     # include "eratosthene-client-common.h"
+    # include "eratosthene-client-view.h"
 
 /*
     header - external includes
@@ -54,7 +55,10 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_VIDEO_C { NULL, 0, 0, 0, NULL, _LE_FALSE }
+    # define ER_VIDEO_C     { NULL, 0, 0, 0, 0, NULL, 0, { ER_VIEW_C }, _LE_FALSE }
+
+    /* define view stack size */
+    # define ER_VIDEO_STACK ( 16 )
 
 /*
     header - preprocessor macros
@@ -77,10 +81,14 @@
         le_char_t * vd_path;
 
         le_size_t   vd_index;
+        le_size_t   vd_count;
 
         le_size_t   vd_width;
         le_size_t   vd_height;
         le_byte_t * vd_buffer;
+
+        le_size_t   vd_push;
+        er_view_t   vd_view[ER_VIDEO_STACK];
 
     int _status; } er_video_t;
 
@@ -91,11 +99,31 @@
 
     /* *** */
 
-    er_video_t er_video_create( le_char_t * const er_path, le_size_t const er_width, le_size_t const er_height );
+    er_video_t er_video_create( le_char_t * const er_path, le_size_t const er_count, le_size_t const er_width, le_size_t const er_height );
 
     /* *** */
 
     le_void_t er_video_delete( er_video_t * const er_video );
+
+    /* *** */
+
+    er_view_t er_video_get( er_video_t const * const er_video );
+
+    /* *** */
+
+    le_enum_t er_video_get_state( er_video_t const * const er_video );
+
+    /* *** */
+
+    le_enum_t er_video_set( er_video_t * const er_video );
+
+    /* *** */
+
+    le_enum_t er_video_set_push( er_video_t * const er_video, er_view_t const * const er_view );
+
+    /* *** */
+
+    le_void_t er_video_set_reset( er_video_t * const er_video );
 
 /*
     header - C/C++ compatibility

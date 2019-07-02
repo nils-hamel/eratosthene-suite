@@ -24,13 +24,16 @@
     source - constructor/destructor methods
  */
 
-    er_video_t er_video_create( le_char_t * const er_path, le_size_t const er_width, le_size_t const er_height ) {
+    er_video_t er_video_create( le_char_t * const er_path, le_size_t const er_count, le_size_t const er_width, le_size_t const er_height ) {
 
         /* created structure variable */
         er_video_t er_video = ER_VIDEO_C;
 
         /* assign path value */
         er_video.vd_path = er_path;
+
+        /* assign frame count */
+        er_video.vd_count = er_count;
 
         /* assign image dimension */
         er_video.vd_width = er_width;
@@ -73,8 +76,168 @@
     source - accessor methods
  */
 
+    er_view_t er_video_get( er_video_t const * const er_video ) {
+
+        /* returned structure variable */
+        er_view_t er_view = er_video->vd_view[0];
+
+        /* interpolant parameter variable */
+        le_real_t er_param = ( ( le_real_t ) er_video->vd_index / ( le_real_t ) er_video->vd_count ) * ( er_video->vd_push - 1 );
+
+        /* interpolation variable - position */
+        le_real_t er_ilon = 0.0;
+        le_real_t er_ilat = 0.0;
+        le_real_t er_ialt = 0.0;
+        le_real_t er_iazm = 0.0;
+        le_real_t er_igam = 0.0;
+
+        /* interpolation variable - time */
+        le_real_t er_itia = 0.0;
+        le_real_t er_itib = 0.0;
+
+        /* interpolation variable - comb */
+        le_real_t er_icmb = 0.0;
+
+        /* interpolation parameter variable */
+        le_real_t er_local  = 0.0;
+        le_real_t er_weight = 0.0;
+
+        /* parsing stack */
+        for ( le_size_t er_parse = 0; er_parse < er_video->vd_push; er_parse ++ ) {
+
+            /* compute interpolation parameter and weight accumulation */
+            er_weight += ( er_local = exp( - _LE_REAL_L( 5.0 ) * ( er_param - er_parse ) * ( er_param - er_parse ) ) );
+
+            /* interpolant accumulation - position */
+            er_ilon += er_local * er_view_get_lon( & er_video->vd_view[er_parse] );
+            er_ilat += er_local * er_view_get_lat( & er_video->vd_view[er_parse] );
+            er_ialt += er_local * er_view_get_alt( & er_video->vd_view[er_parse] );
+            er_iazm += er_local * er_view_get_azm( & er_video->vd_view[er_parse] );
+            er_igam += er_local * er_view_get_gam( & er_video->vd_view[er_parse] );
+
+            /* interpolant accumulation - time */
+            er_itia += er_local * er_view_get_time( & er_video->vd_view[er_parse], 0 );
+            er_itib += er_local * er_view_get_time( & er_video->vd_view[er_parse], 1 );
+
+            /* interpolant accumulation - comb */
+            er_icmb += er_local * er_view_get_comb( & er_video->vd_view[er_parse] );
+
+        }
+
+        // encapsulation fault - position //
+        er_view.vw_lon = er_ilon / er_weight;
+        er_view.vw_lat = er_ilat / er_weight;
+        er_view.vw_alt = er_ialt / er_weight;
+        er_view.vw_azm = er_iazm / er_weight;
+        er_view.vw_gam = er_igam / er_weight;
+
+        // encapsulation fault - time //
+        er_view.vw_tia = er_itia / er_weight;
+        er_view.vw_tib = er_itib / er_weight;
+
+        // encapsulation fault - comb //
+        er_view.vw_cmb = er_icmb / er_weight;
+
+        /* return created structure */
+        return( er_view );
+
+    }
+
+    le_enum_t er_video_get_state( er_video_t const * const er_video ) {
+
+        /* check exportation path */
+        if ( er_video->vd_path == NULL ) {
+
+            /* send message */
+            return( _LE_FALSE );
+
+        }
+
+        /* check frame count */
+        if ( er_video->vd_count == 0 ) {
+
+            /* send message */
+            return( _LE_FALSE );
+
+        }
+
+        /* check stack state */
+        if ( er_video->vd_push == 0 ) {
+
+            /* send message */
+            return( _LE_FALSE );
+
+        }
+
+        /* send message */
+        return( _LE_TRUE );
+
+    }
+
 /*
     source - mutator methods
  */
 
+    le_enum_t er_video_set( er_video_t * const er_video ) {
+
+        /* path variable */
+        le_char_t er_path[_LE_USE_PATH] = { 0 };
+
+        /* compose exportation path */
+        sprintf( ( char * ) er_path, "%s/%06" _LE_SIZE_P ".png", er_video->vd_path, er_video->vd_index );
+
+        /* opengl buffer selection */
+        glReadBuffer( GL_BACK );
+
+        /* read buffer pixels */
+        glReadPixels( 0, 0, er_video->vd_width, er_video->vd_height, GL_RGB, GL_UNSIGNED_BYTE, er_video->vd_buffer );
+
+        /* buffer content exportation */
+        lc_image_write( ( char * ) er_path, er_video->vd_width, er_video->vd_height, er_video->vd_buffer );
+
+        /* update frame index and check limit */
+        if ( ( ++ er_video->vd_index ) == er_video->vd_count ) {
+
+            /* reset index */
+            er_video->vd_index = 0;
+
+            /* send message */
+            return( ER_COMMON_VIEW );
+
+        } else {
+
+            /* send message */
+            return( ER_COMMON_AUTO );
+
+        }
+
+    }
+
+    le_enum_t er_video_set_push( er_video_t * const er_video, er_view_t const * const er_view ) {
+
+        /* check stack state */
+        if ( er_video->vd_push == ER_VIDEO_STACK ) {
+
+            /* send message */
+            return( _LE_FALSE );
+
+        }
+
+        /* push view on stack */
+        er_video->vd_view[er_video->vd_push] = ( * er_view );
+
+        /* update stack state */
+        er_video->vd_push ++;
+
+        /* send message */
+        return( _LE_TRUE );
+
+    }
+
+    le_void_t er_video_set_reset( er_video_t * const er_video ) {
+
+        /* reset stack state */
+        er_video->vd_push = 0;
+
+    }
 
