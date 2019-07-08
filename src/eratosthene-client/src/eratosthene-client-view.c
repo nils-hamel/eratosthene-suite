@@ -59,7 +59,7 @@
         if ( er_viewa->vw_tia != er_viewb->vw_tia ) return( _LE_FALSE );
         if ( er_viewa->vw_tib != er_viewb->vw_tib ) return( _LE_FALSE );
 
-        /* check comb components - return anwser */
+        /* check comb components - return answer */
         if ( er_viewa->vw_cmb != er_viewb->vw_cmb ) return( _LE_FALSE );
 
         /* check mode component - return answer */
@@ -238,7 +238,7 @@
 
     le_void_t er_view_set_plan( er_view_t * const er_view, le_real_t const er_xvalue, le_real_t const er_yvalue ) {
 
-        /* azimuthal angles variables */
+        /* azimuths angles variables */
         le_real_t er_cos = cos( er_view->vw_azm * LE_D2R );
         le_real_t er_sin = sin( er_view->vw_azm * LE_D2R );
 

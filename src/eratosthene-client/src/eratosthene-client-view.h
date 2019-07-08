@@ -356,7 +356,24 @@
 
     le_size_t er_view_get_span( er_view_t const * const er_view );
 
-    /* *** */
+    /*! \brief mutator methods
+     *
+     *  This function allows to set the spatial and temporal position of the
+     *  provided view structure.
+     *
+     *  It uses the provided spatial values to set the position of the view in
+     *  space and the temporal values to set its position in time.
+     *
+     *  \param er_view View structure
+     *  \param er_lon  Longitude value (WGS84 radian)
+     *  \param er_lat  Latitude value (WGS84 radian)
+     *  \param er_alt  Altitude value (height above WGS84 ellipsoid, in metres)
+     *  \param er_azm  Azimuth angle value (in degree)
+     *  \param er_gam  Tilt angle value (in degree)
+     *  \param er_tia  First time value (in seconds, UTC timestamp)
+     *  \param er_tib  Second time value (in seconds, UTC timestamp)
+     *  \param er_cmb  Temporal comb value (in seconds)
+     */
 
     le_void_t er_view_set( er_view_t * const er_view, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt, le_real_t const er_azm, le_real_t const er_gam, le_time_t const er_tia, le_time_t const er_tib, le_time_t const er_cmb );
 
