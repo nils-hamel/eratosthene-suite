@@ -21,7 +21,7 @@
     # include "common-image.h"
 
 /*
-    source - portable network graphics i/o function
+    source - i/o methods
  */
 
     int lc_image_write( char const * const lc_path, int const lc_width, int const lc_height, unsigned char * const lc_bytes ) {

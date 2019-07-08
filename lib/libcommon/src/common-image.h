@@ -75,19 +75,25 @@
     header - function prototypes
  */
 
-    /*! \brief portable network graphics i/o function (revoked)
+    /*! \brief i/o methods
      *
      *  This function exports the image provided through the bytes array in a
-     *  portable network graphic file.
+     *  portable network graphic file using the provided exportation path and
+     *  image byte buffer.
      *
-     *  The supported image format are the 24 bits RGB and the 32 bits RGBA
-     *  formats : LC_IMAGE_RGB and LC_IMAGE_RGBA.
+     *  The byte buffer is expected to encode the image in row-wise RGB format
+     *  using one byte per pixel components. The buffer is then expected to be :
      *
-     *  \param  lc_path   Exportation file path
+     *      lc_width * lc_height * 3
+     *
+     *  bytes long.
+     *
+     *  On success, the function returns LC_TRUE and LC_FALSE on error.
+     *
+     *  \param  lc_path   Exportation path
      *  \param  lc_width  Width, in pixels, of the image
      *  \param  lc_height Height, in pixels, of the image
-     *  \param  lc_format Image color format
-     *  \param  lc_bytes  Image bytes
+     *  \param  lc_bytes  Image bytes (24 bpp RGB)
      *
      *  \return Returns LC_TRUE on success, LC_FALSE otherwise
      */
