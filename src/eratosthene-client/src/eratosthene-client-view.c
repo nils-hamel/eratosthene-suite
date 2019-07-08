@@ -220,6 +220,22 @@
     source - mutator methods
  */
 
+    le_void_t er_view_set( er_view_t * const er_view, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt, le_real_t const er_azm, le_real_t const er_gam, le_time_t const er_tia, le_time_t const er_tib, le_time_t const er_cmb ) {
+
+        /* assign spatial position */
+        er_view->vw_lon = er_lon;
+        er_view->vw_lat = er_lat;
+        er_view->vw_alt = er_alt;
+        er_view->vw_azm = er_azm;
+        er_view->vw_gam = er_gam;
+
+        /* assign time position */
+        er_view->vw_tia = er_tia;
+        er_view->vw_tib = er_tib;
+        er_view->vw_cmb = er_cmb;
+
+    }
+
     le_void_t er_view_set_plan( er_view_t * const er_view, le_real_t const er_xvalue, le_real_t const er_yvalue ) {
 
         /* azimuthal angles variables */

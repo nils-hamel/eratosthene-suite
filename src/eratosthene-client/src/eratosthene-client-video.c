@@ -81,32 +81,33 @@
         /* returned structure variable */
         er_view_t er_view = er_video->vd_view[0];
 
+        /* interpolation variable */
+        le_size_t er_index = 0;
+
+        /* interpolation variable */
+        le_real_t er_local  = 0.0;
+        le_real_t er_weight = 0.0;
+
         /* interpolant parameter variable */
         le_real_t er_param = ( ( le_real_t ) er_video->vd_index / ( le_real_t ) ( er_video->vd_count - 1 ) ) * ( er_video->vd_push - 1 );
 
-        /* interpolation variable - position */
+        /* interpolant value variable */
         le_real_t er_ilon = 0.0;
         le_real_t er_ilat = 0.0;
         le_real_t er_ialt = 0.0;
         le_real_t er_iazm = 0.0;
         le_real_t er_igam = 0.0;
 
-        /* interpolation variable - time */
-        le_real_t er_itia = 0.0;
-        le_real_t er_itib = 0.0;
+        /* interpolant value variable */
+        le_time_t er_itia = _LE_TIME_NULL;
+        le_time_t er_itib = _LE_TIME_NULL;
+        le_time_t er_icmb = _LE_TIME_NULL;
 
-        /* interpolation variable - comb */
-        le_real_t er_icmb = 0.0;
-
-        /* interpolation parameter variable */
-        le_real_t er_local  = 0.0;
-        le_real_t er_weight = 0.0;
-
-        /* parsing stack */
+        /* position interpolation - accumulation */
         for ( le_size_t er_parse = 0; er_parse < er_video->vd_push; er_parse ++ ) {
 
             /* compute interpolation parameter and weight accumulation */
-            er_weight += ( er_local = exp( - _LE_REAL_L( 5.0 ) * ( er_param - er_parse ) * ( er_param - er_parse ) ) );
+            er_weight += ( er_local = exp( - 5.0 * ( er_param - er_parse ) * ( er_param - er_parse ) ) );
 
             /* interpolant accumulation - position */
             er_ilon += er_local * er_view_get_lon( & er_video->vd_view[er_parse] );
@@ -115,28 +116,36 @@
             er_iazm += er_local * er_view_get_azm( & er_video->vd_view[er_parse] );
             er_igam += er_local * er_view_get_gam( & er_video->vd_view[er_parse] );
 
-            /* interpolant accumulation - time */
-            er_itia += er_local * er_view_get_time( & er_video->vd_view[er_parse], 0 );
-            er_itib += er_local * er_view_get_time( & er_video->vd_view[er_parse], 1 );
-
-            /* interpolant accumulation - comb */
-            er_icmb += er_local * er_view_get_comb( & er_video->vd_view[er_parse] );
-
         }
 
-        // encapsulation fault - position //
-        er_view.vw_lon = er_ilon / er_weight;
-        er_view.vw_lat = er_ilat / er_weight;
-        er_view.vw_alt = er_ialt / er_weight;
-        er_view.vw_azm = er_iazm / er_weight;
-        er_view.vw_gam = er_igam / er_weight;
+        /* position interpolation - compute */
+        er_ilon /= er_weight;
+        er_ilat /= er_weight;
+        er_ialt /= er_weight;
+        er_iazm /= er_weight;
+        er_igam /= er_weight;
 
-        // encapsulation fault - time //
-        er_view.vw_tia = er_itia / er_weight;
-        er_view.vw_tib = er_itib / er_weight;
+        /* compute interpolation index */
+        er_index = ( le_size_t ) er_param;
 
-        // encapsulation fault - comb //
-        er_view.vw_cmb = er_icmb / er_weight;
+        /* range boundary check */
+        er_index = ( er_index == er_video->vd_push - 1 ) ? er_index - 1 : er_index;
+
+        /* compute interpolation parameter */
+        er_param -= er_index;
+
+        /* compute interpolation parameter */
+        er_local = 1.0 - er_param;
+
+        /* time interpolation - compute */
+        er_itia = er_view_get_time( & er_video->vd_view[er_index], 0 ) * er_local + er_view_get_time( & er_video->vd_view[er_index + 1], 0 ) * er_param;
+        er_itib = er_view_get_time( & er_video->vd_view[er_index], 1 ) * er_local + er_view_get_time( & er_video->vd_view[er_index + 1], 1 ) * er_param;
+
+        /* comb interpolation - compute */
+        er_icmb = er_view_get_comb( & er_video->vd_view[er_index] ) * er_local + er_view_get_comb( & er_video->vd_view[er_index + 1] ) * er_param;
+
+        /* assign position and time to view */
+        er_view_set( & er_view, er_ilon, er_ilat, er_ialt, er_iazm, er_igam, er_itia, er_itib, er_icmb );
 
         /* return created structure */
         return( er_view );

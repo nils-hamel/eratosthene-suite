@@ -356,6 +356,10 @@
 
     le_size_t er_view_get_span( er_view_t const * const er_view );
 
+    /* *** */
+
+    le_void_t er_view_set( er_view_t * const er_view, le_real_t const er_lon, le_real_t const er_lat, le_real_t const er_alt, le_real_t const er_azm, le_real_t const er_gam, le_time_t const er_tia, le_time_t const er_tib, le_time_t const er_cmb );
+
     /*! \brief mutator methods
      *
      *  This function updates the position of the point of view provided by the

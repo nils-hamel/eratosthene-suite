@@ -389,12 +389,13 @@
             /* execution loop */
             while ( er_loop == _LE_TRUE ) {
 
+                /* switch on execution mode */
                 if ( er_client->cl_loops == ER_COMMON_AUTO ) {
 
-                    // set view point //
+                    /* compute video-motion view */
                     er_client->cl_view = er_video_get( & er_client->cl_video );
 
-                    // full model update with parameter //
+                    /* model update procedure */
                     er_client_loops_update( er_client, ER_COMMON_SIZE, 0 );
 
                 } else {
@@ -410,9 +411,10 @@
                 /* swap buffers */
                 SDL_GL_SwapWindow( er_window );
 
+                /* switch on execution mode */
                 if ( er_client->cl_loops == ER_COMMON_AUTO ) {
 
-                    // export //
+                    /* export video frame */
                     er_client->cl_loops = er_video_set( & er_client->cl_video );
 
                 }
