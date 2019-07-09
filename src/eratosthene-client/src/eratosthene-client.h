@@ -165,7 +165,7 @@
      *  The next field is used to control the state of the execution as it
      *  indicates the execution loop to continue or interrupt their tasks.
      *
-     *  The two next fields holds the structures of the sub-modules. Sub-modules
+     *  The two three fields holds the structure of the sub-modules. Sub-modules
      *  are initialised and used through their representation in this structure.
      *
      *  The next three fields are related to the management of the point of
@@ -196,6 +196,8 @@
      *  Model sub-module structure
      *  \var er_client_struct::cl_times
      *  Time sub-module structure
+     *  \var er_client_struct::cl_video
+     *  Video sub-module structure
      *  \var er_client_struct::cl_view
      *  Active point of view
      *  \var er_client_struct::cl_push
@@ -268,6 +270,8 @@
      *  \param er_port   Server service port
      *  \param er_width  Screen horizontal resolution, in pixels
      *  \param er_height Screen vertical resolution, in pixels
+     *  \param er_export Video frame exportation path
+     *  \param er_frame  Video frame count
      *
      *  \return Returns the created client structure
      */
@@ -386,14 +390,14 @@
 
     /*! \brief loop methods
      *
-     *  This function is called by the secondary thread to trigger the Earth
-     *  model update according to the point of view.
+     *  This function is called by the main and secondary thread to trigger the
+     *  Earth model update according to the point of view.
      *
      *  Using the pushed point of view, the function determine if a modification
      *  of the point of view occurs. Before to trigger a model update, the
-     *  function waits half a second. This allows to reduce the frequency, and
-     *  bandwidth usage, when successive and close modification of the point of
-     *  view are performed.
+     *  function waits for a delay value, provided as parameter. This allows to
+     *  reduce the frequency, and bandwidth usage, when successive and close
+     *  modification of the point of view are performed.
      *
      *  As the delay passed, the function prepare and triggers the model update
      *  procedure. The virtual cell stack is updated and the quick update
@@ -407,6 +411,8 @@
      *  takes place.
      *
      *  \param er_client Client structure
+     *  \param er_pack   Queries package maximum size
+     *  \param er_delay  Model update delay on point of view motion
      */
 
     le_void_t er_client_loops_update( er_client_t * const er_client, le_size_t const er_pack, le_size_t const er_delay );
