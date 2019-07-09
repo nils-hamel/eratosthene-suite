@@ -171,7 +171,7 @@
         }
 
         /* check stack state */
-        if ( er_video->vd_push == 0 ) {
+        if ( er_video->vd_push < 2 ) {
 
             /* send message */
             return( _LE_FALSE );

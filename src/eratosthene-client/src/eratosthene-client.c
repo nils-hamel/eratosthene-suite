@@ -390,6 +390,14 @@
             while ( er_loop == _LE_TRUE ) {
 
                 /* switch on execution mode */
+                if ( er_client->cl_loops == ER_COMMON_VIEW ) {
+
+                    /* interface events procedure */
+                    er_client_loops_event( er_client );
+
+                }
+
+                /* switch on execution mode */
                 if ( er_client->cl_loops == ER_COMMON_AUTO ) {
 
                     /* compute video-motion view */
@@ -397,11 +405,6 @@
 
                     /* model update procedure */
                     er_client_loops_update( er_client, ER_COMMON_SIZE, 0 );
-
-                } else {
-
-                    /* interface events procedure */
-                    er_client_loops_event( er_client );
 
                 }
 
