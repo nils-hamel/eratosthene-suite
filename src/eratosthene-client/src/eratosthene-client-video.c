@@ -38,7 +38,7 @@
         /* assign image dimension */
         er_video.vd_width = er_width;
 
-        /* assign image dimenstion */
+        /* assign image dimension */
         er_video.vd_height = er_height;
 
         /* allocate buffer memory */
@@ -195,7 +195,7 @@
         /* compose exportation path */
         sprintf( ( char * ) er_path, "%s/%06" _LE_SIZE_P ".png", er_video->vd_path, er_video->vd_index );
 
-        /* opengl buffer selection */
+        /* OpenGL buffer selection */
         glReadBuffer( GL_BACK );
 
         /* read buffer pixels */
