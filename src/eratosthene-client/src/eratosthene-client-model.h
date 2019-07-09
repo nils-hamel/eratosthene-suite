@@ -335,7 +335,7 @@
      *  After a target stack update, usually following a modification of the
      *  point of view, the synchronisation index is set to zero. At each call,
      *  the function searches in the target stack the cells that have to be
-     *  queried to the remote server. Cell query are packed together to limit
+     *  queried to the remote server. Cells queries are packed together to limit
      *  communication with the server. As the server answer the query, the
      *  function receives and stores the data in cells determined as free. The
      *  process is repeated at each function call until the synchronisation is
@@ -349,7 +349,12 @@
      *  account a motion of the point of view, saving time and bandwidth while
      *  being more relevant for the user.
      *
+     *  If the provided package size is equal to the cells stack size of the
+     *  Earth model, the function updates the model within a single large query
+     *  to the remote server.
+     *
      *  \param er_model Model structure
+     *  \param er_pack  Queries package maximum size
      */
 
     le_void_t er_model_set_sync( er_model_t * const er_model, le_size_t const er_pack );
@@ -366,11 +371,12 @@
      *  view in the first place, leading to a better user experience.
      *
      *  \param er_model Model structure
+     *  \param er_pack  Queries package maximum size
      *
      *  \return Returns address array size, in bytes
      */
 
-    le_size_t er_model_set_sync_pack( er_model_t * const er_model, le_size_t const le_pack );
+    le_size_t er_model_set_sync_pack( er_model_t * const er_model, le_size_t const er_pack );
 
     /*! mutator methods
      *

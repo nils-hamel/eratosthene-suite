@@ -329,7 +329,7 @@
 
     }
 
-    le_size_t er_model_set_sync_pack( er_model_t * const er_model, le_size_t const le_pack ) {
+    le_size_t er_model_set_sync_pack( er_model_t * const er_model, le_size_t const er_pack ) {
 
         /* returned value variable */
         le_size_t er_serial = 0;
@@ -338,7 +338,7 @@
         le_array_set_size( & er_model->md_addr, 0 );
 
         /* parsing v-cell array segment */
-        while ( ( er_model->md_synb >= ER_COMMON_ENUM ) && ( er_serial < ( LE_ARRAY_ADDR * le_pack ) ) ) {
+        while ( ( er_model->md_synb >= ER_COMMON_ENUM ) && ( er_serial < ( LE_ARRAY_ADDR * er_pack ) ) ) {
 
             /* scale-based v-cell selection */
             if ( er_cell_get_size( er_model->md_virt + er_model->md_syna ) == er_model->md_synb ) {
