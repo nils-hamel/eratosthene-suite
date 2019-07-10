@@ -294,7 +294,7 @@
     source - loop methods
  */
 
-    le_void_t er_client_loops(  er_client_t * const er_client, SDL_Window * const er_window ) {
+    le_void_t er_client_loops( er_client_t * const er_client, SDL_Window * const er_window ) {
 
         /* color array variable */
         GLfloat er_vector[4] = { 0.0 };

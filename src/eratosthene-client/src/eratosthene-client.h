@@ -356,7 +356,7 @@
      *  \param er_window SDL window structure
      */
 
-    le_void_t er_client_loops(  er_client_t * const er_client, SDL_Window * const er_window );
+    le_void_t er_client_loops( er_client_t * const er_client, SDL_Window * const er_window );
 
     /*! \brief loop methods
      *
