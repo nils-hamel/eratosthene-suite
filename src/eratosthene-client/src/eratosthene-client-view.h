@@ -54,10 +54,10 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_VIEW_C { 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, ER_COMMON_DSPAN }
+    # define ER_VIEW_C { 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, ER_COMMON_DSPAN }
 
     /* define pseudo-constructor - default point of view */
-    # define ER_VIEW_D { 0.0, 0.0, LE_ADDRESS_WGS_A * 2.0, 0.0, 0.0, 1, 1117584000, 1117584000, ER_COMMON_DCOMB, ER_COMMON_DSPAN }
+    # define ER_VIEW_D { 0.0, 0.0, LE_ADDRESS_WGS_A * 2.0, 0.0, 0.0, 1, 0, 1117584000, 1117584000, ER_COMMON_DCOMB, ER_COMMON_DSPAN }
 
 /*
     header - preprocessor macros
@@ -72,7 +72,7 @@
  */
 
     /*! \struct er_view_struct
-     *  \brief View structure
+     *  \brief View structure (revoked)
      *
      *  This structure contains the information describing a model point of
      *  view. It includes the point of view position, angles of sight, and also
@@ -138,6 +138,7 @@
         le_real_t vw_gam;
 
         le_enum_t vw_mod;
+        le_enum_t vw_qry;
         le_time_t vw_tia;
         le_time_t vw_tib;
         le_time_t vw_cmb;
@@ -171,7 +172,7 @@
 
     le_void_t er_view_delete( er_view_t * const er_view );
 
-    /*! \brief accessor methods
+    /*! \brief accessor methods (revoked)
      *
      *  This function compare the content of the two provided view structures
      *  and checks for the identity of the field used to trigger a model update
@@ -293,6 +294,10 @@
      */
 
     le_enum_t er_view_get_mode( er_view_t const * const er_view );
+
+    /* *** */
+
+    le_enum_t er_view_get_query( er_view_t const * const er_view );
 
     /*! \brief accessor methods
      *
@@ -443,6 +448,10 @@
      */
 
     le_void_t er_view_set_mode( er_view_t * const er_view, le_enum_t const er_mode );
+
+    /* *** */
+
+    le_void_t er_view_set_query( er_view_t * const er_view, le_enum_t const er_query );
 
     /*! \brief mutator methods
      *

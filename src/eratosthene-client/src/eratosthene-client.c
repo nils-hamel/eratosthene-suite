@@ -760,6 +760,20 @@
 
             } break;
 
+            case ( SDLK_d ) : {
+
+                /* update query mode */
+                er_view_set_query( & er_client->cl_view, 0 );
+
+            } break;
+
+            case ( SDLK_f ) : {
+
+                /* update query mode */
+                er_view_set_query( & er_client->cl_view, 1 );
+
+            } break;
+
             case ( SDLK_s ) :
             case ( SDLK_KP_PLUS ) : {
 

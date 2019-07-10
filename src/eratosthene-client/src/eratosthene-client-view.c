@@ -65,7 +65,10 @@
         /* check mode component - return answer */
         if ( er_viewa->vw_mod != er_viewb->vw_mod ) return( _LE_FALSE );
 
-        /* check span component  - return answer */
+        /* check mode component - return answer */
+        if ( er_viewa->vw_qry != er_viewb->vw_qry ) return( _LE_FALSE );
+
+        /* check span component - return answer */
         if ( er_viewa->vw_spn != er_viewb->vw_spn ) return( _LE_FALSE );
 
         /* return answer */
@@ -145,8 +148,15 @@
 
     le_enum_t er_view_get_mode( er_view_t const * const er_view ) {
 
-        /* return time mode */
+        /* return convolution mode */
         return( er_view->vw_mod );
+
+    }
+
+    le_enum_t er_view_get_query( er_view_t const * const er_view ) {
+
+        /* return query mode */
+        return( er_view->vw_qry );
 
     }
 
@@ -155,8 +165,11 @@
         /* returned structure variables */
         le_address_t er_addr = LE_ADDRESS_C;
 
-        /* assign address mode */
+        /* assign address convolution mode */
         le_address_set_mode( & er_addr, er_view->vw_mod );
+
+        /* assign address query mode */
+        le_address_set_query( & er_addr, er_view->vw_qry );
 
         /* set address span */
         le_address_set_span( & er_addr, er_view->vw_spn );
@@ -280,8 +293,15 @@
 
     le_void_t er_view_set_mode( er_view_t * const er_view, le_enum_t const er_mode ) {
 
-        /* update mode */
+        /* update convolution mode */
         er_view->vw_mod = er_mode;
+
+    }
+
+    le_void_t er_view_set_query( er_view_t * const er_view, le_enum_t const er_query ) {
+
+        /* update query mode */
+        er_view->vw_qry = er_query;
 
     }
 
