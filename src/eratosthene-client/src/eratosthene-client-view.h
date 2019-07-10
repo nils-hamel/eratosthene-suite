@@ -72,7 +72,7 @@
  */
 
     /*! \struct er_view_struct
-     *  \brief View structure (revoked)
+     *  \brief View structure
      *
      *  This structure contains the information describing a model point of
      *  view. It includes the point of view position, angles of sight, and also
@@ -82,7 +82,7 @@
      *  fives fields that gives the longitude, the latitude, the height above
      *  WGS84 ellipsoid and the two angles of sight.
      *
-     *  A structure field holds the times comparison mode. As the interface
+     *  A structure field holds the times convolution mode. As the interface
      *  allows to browse two different times simultaneously, the mode describes
      *  how to handle them. The remote server implements five comparison modes
      *  through queries :
@@ -95,6 +95,12 @@
      *
      *  These modes allow to emphasise the similarities and differences through
      *  time of the earth model and to manage composition of mixed models.
+     *
+     *  Another fields the query mode. The interface allows to switch between
+     *  to query mode for the cells of the Earth model. The first mode asks for
+     *  the nearest cell, in time, regardless of its content. The second one
+     *  asks for the nearest cell, in time, that is not empty, up to a temporal
+     *  limit given by the comb value (time range).
      *
      *  The two times are then part of the point of view and their value is kept
      *  in this structure through two fields. In addition to their value, a
@@ -118,7 +124,9 @@
      *  \var er_view_struct::vw_gam
      *  Tilt (gamma) angle, in decimal degrees
      *  \var er_view_struct::vw_mod
-     *  Times comparison mode
+     *  Times convolution mode
+     *  \var er_view_struct::vw_qry
+     *  Cell query mode
      *  \var er_view_struct::vw_tia
      *  Primary time value
      *  \var er_view_struct::vw_tib
@@ -172,11 +180,12 @@
 
     le_void_t er_view_delete( er_view_t * const er_view );
 
-    /*! \brief accessor methods (revoked)
+    /*! \brief accessor methods
      *
      *  This function compare the content of the two provided view structures
      *  and checks for the identity of the field used to trigger a model update
-     *  procedure (longitude, latitude, altitude, mode, times and range).
+     *  procedure (longitude, latitude, altitude, convolution and query modes,
+     *  times and range).
      *
      *  If all the considered fields are identical, the function returns the
      *  \b _LE_TRUE value, _LE_FALSE otherwise. This function is used to check
@@ -285,17 +294,25 @@
 
     /*! \brief accessor methods
      *
-     *  This function returns the times comparison mode value contained in the
+     *  This function returns the times convultion mode value contained in the
      *  provided view structure.
      *
-     *  \param  er_view View structure
+     *  \param er_view View structure
      *
-     *  \return Returns the view times comparison mode
+     *  \return Returns the view times convolution mode
      */
 
     le_enum_t er_view_get_mode( er_view_t const * const er_view );
 
-    /* *** */
+    /*! \brief accessor methods
+     *
+     *  This function returns the cells query mode value contained in the
+     *  provided view structure.
+     *
+     *  \param er_view View structure
+     *
+     *  \return Returns the view cell query mode
+     */
 
     le_enum_t er_view_get_query( er_view_t const * const er_view );
 
@@ -305,7 +322,7 @@
      *  the provided view structure.
      *
      *  The two times of the view structure are respectively copied in the
-     *  address structure depending on the structure times comparison mode. The
+     *  address structure depending on the structure times convolution mode. The
      *  first time is copied as the mode value is different of 2 (second time
      *  only). The second time is copied as the mode value is not 1 (first time
      *  only).
@@ -440,16 +457,22 @@
 
     /*! \brief mutator methods
      *
-     *  This function erases the mode field of the provided view structure using
-     *  the provided mode value.
+     *  This function sets the times convolution mode of the provided view
+     *  structure.
      *
      *  \param er_view View structure
-     *  \param er_mode Mode value
+     *  \param er_mode Times convolution mode
      */
 
     le_void_t er_view_set_mode( er_view_t * const er_view, le_enum_t const er_mode );
 
-    /* *** */
+    /*! \brief mutator methods
+     *
+     *  This function sets the cells query mode of the provided view structure.
+     *
+     *  \param er_view View structure
+     *  \param er_mode Cells query mode
+     */
 
     le_void_t er_view_set_query( er_view_t * const er_view, le_enum_t const er_query );
 
