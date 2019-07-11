@@ -151,7 +151,7 @@
                     le_array_serial( & er_array, & er_client->cl_scfg, sizeof( le_size_t ), 0, _LE_GET );
 
                     /* server parameter serialisation */
-                    le_array_serial( & er_array, & er_client->cl_scfg, sizeof( le_time_t ), sizeof( le_size_t ), _LE_GET );
+                    le_array_serial( & er_array, & er_client->cl_tcfg, sizeof( le_time_t ), sizeof( le_size_t ), _LE_GET );
 
                 }
 
