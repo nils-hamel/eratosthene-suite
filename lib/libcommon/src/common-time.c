@@ -24,10 +24,13 @@
     source - conversion methods
  */
 
-    unsigned char * lc_time_to_string( time_t const lc_time, unsigned char * const lc_string, size_t const lc_limit ) {
+    unsigned char * lc_time_to_string( time_t const lc_time, unsigned char * const lc_string, size_t const lc_limit ) { /* ok */
 
         /* time decomposition variable */
         struct tm lc_struct = * gmtime( & lc_time );
+
+        /* force time zone to UTC */
+        setenv( "TZ", "UTC", 1 );
 
         /* compose date string */
         strftime( ( char * ) lc_string, lc_limit, "%Y-%m-%d+%H:%M:%S", & lc_struct );
@@ -42,11 +45,15 @@
         /* time structure variable */
         struct tm lc_time;
 
+        /* force time zone to UTC */
+        setenv( "TZ", "UTC", 1 );
+
         /* convert string into time structure */
         strptime( ( char * ) lc_date, ( char * ) lc_format, & lc_time );
 
         /* convert time structure in timestamps */
-        return(  mktime( & lc_time ) );
+        return( mktime( & lc_time ) );
 
     }
+
 

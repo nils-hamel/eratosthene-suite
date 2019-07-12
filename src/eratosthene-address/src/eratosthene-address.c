@@ -91,12 +91,28 @@
         } else {
 
             /* convert date to timestamps */
-            er_time = ( le_time_t ) lc_time_from_string( er_date, ( unsigned char * ) "%Y-%m-%d-%H-%M-%S" );
+            er_time = ( le_time_t ) lc_time_from_string( er_date, ( unsigned char * ) "%Y-%m-%d+%H:%M:%S" );
 
             /* display result */
             fprintf( stdout, "%s\n%" _LE_TIME_P "\n", er_date, er_time );
 
         }
+
+    }
+
+    le_void_t er_address_time_date( int argc, char ** argv ) {
+
+        /* date string variable */
+        le_char_t er_date[32] = { 0 };
+
+        /* timestamp variable */
+        le_time_t er_time = ( le_time_t ) lc_read_unsigned( argc, argv, "--time", "-s", 0 );
+
+        /* convert timestamp to date */
+        lc_time_to_string( er_time, er_date, 32 );
+
+        /* display result */
+        fprintf( stdout, "%s\n%" _LE_TIME_P "\n", er_date, er_time );
 
     }
 
@@ -107,10 +123,15 @@
     int main( int argc, char ** argv ) {
 
         /* switch on flag */
-        if ( lc_read_flag( argc, argv, "--time", "-t" ) == LC_TRUE ) {
+        if ( lc_read_flag( argc, argv, "--date-time", "-t" ) == LC_TRUE ) {
 
             /* specialised method */
             er_address_time( argc, argv );
+
+        } else if ( lc_read_flag( argc, argv, "--time-date", "-d" ) == LC_TRUE ) {
+
+            /* specialised method */
+            er_address_time_date( argc, argv );
 
         } else if ( lc_read_flag( argc, argv, "--space", "-s" ) == LC_TRUE ) {
 
