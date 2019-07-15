@@ -324,11 +324,22 @@
 
     le_void_t er_view_set_time( er_view_t * const er_view, le_real_t const er_value ) {
 
+        /* increment variable */
+        le_real_t er_increment = ( le_real_t ) er_view->vw_cmb * er_value;
+
+        /* check increment value */
+        if ( fabs( er_increment ) < 1.0 ) {
+
+            /* avoid position lock */
+            er_increment = ( er_increment < 0.0 ) ? -1 : +1;
+
+        }
+
         /* check mode */
         if ( er_view->vw_mod == 2 ) {
 
             /* update time value */
-            er_view->vw_tib += ( le_real_t ) er_view->vw_cmb * er_value;
+            er_view->vw_tib += er_increment;
 
             /* clamp time range */
             er_view->vw_tib = lc_clamp( er_view->vw_tib, -ER_COMMON_UTIME, +ER_COMMON_UTIME );
@@ -336,7 +347,7 @@
         } else {
 
             /* update time value */
-            er_view->vw_tia += ( le_real_t ) er_view->vw_cmb * er_value;
+            er_view->vw_tia += er_increment;
 
             /* clamp time range */
             er_view->vw_tia = lc_clamp( er_view->vw_tia, -ER_COMMON_UTIME, +ER_COMMON_UTIME );
