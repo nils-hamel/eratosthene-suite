@@ -88,9 +88,9 @@
     # define ER_COMMON_UTIME ( _LE_TIME_MAX )
 
     /* define limit and default : comb */
-    # define ER_COMMON_DCOMB ( 31536000 )
-    # define ER_COMMON_LCOMB ( 60 )
-    # define ER_COMMON_UCOMB ( _LE_TIME_MAX )
+    # define ER_COMMON_DCOMB ( _LE_TIME_L( 31536000 ) )
+    # define ER_COMMON_LCOMB ( _LE_TIME_L( 60 ) )
+    # define ER_COMMON_UCOMB ( _LE_TIME_L( 157788000000 ) )
 
     /* define limit and default : address span */
     # define ER_COMMON_DSPAN ( 7 )
