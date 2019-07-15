@@ -356,7 +356,7 @@
 
     }
 
-    le_void_t er_view_set_comb( er_view_t * const er_view, le_real_t const er_value ) {
+    le_void_t er_view_set_comb( er_view_t * const er_view, le_real_t er_value ) {
 
         /* update comb value */
         er_view->vw_cmb = lc_clamp( er_view->vw_cmb * er_value, ER_COMMON_LCOMB, ER_COMMON_UCOMB );

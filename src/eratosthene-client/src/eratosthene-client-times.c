@@ -226,7 +226,7 @@
     le_void_t er_times_display_date( er_times_t * const er_times, le_time_t const er_date, le_byte_t const er_value, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify ) {
 
         /* string array variable */
-        le_char_t er_string[26] = { 0 };
+        le_char_t er_string[32] = { 0 };
 
         /* compose date string */
         lc_time_to_string( er_date, er_string, 32 );

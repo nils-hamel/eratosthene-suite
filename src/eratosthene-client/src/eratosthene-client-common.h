@@ -89,7 +89,7 @@
 
     /* define limit and default : comb */
     # define ER_COMMON_DCOMB ( 31536000 )
-    # define ER_COMMON_LCOMB ( 1 )
+    # define ER_COMMON_LCOMB ( 60 )
     # define ER_COMMON_UCOMB ( _LE_TIME_MAX )
 
     /* define limit and default : address span */

@@ -835,12 +835,12 @@
             if ( er_event.y > 0 ) {
 
                 /* update time position */
-                er_view_set_time( & er_client->cl_view, + 0.02 );
+                er_view_set_time( & er_client->cl_view, + ( 1.0 / ER_COMMON_LCOMB ) );
 
             } else {
 
                 /* update time position */
-                er_view_set_time( & er_client->cl_view, - 0.02 );
+                er_view_set_time( & er_client->cl_view, - ( 1.0 / ER_COMMON_LCOMB ) );
 
             }
 

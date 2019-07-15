@@ -517,7 +517,7 @@
      *  \param er_value Modification factor
      */
 
-    le_void_t er_view_set_comb( er_view_t * const er_view, le_real_t const er_value );
+    le_void_t er_view_set_comb( er_view_t * const er_view, le_real_t er_value );
 
     /*! \brief mutator methods
      *
