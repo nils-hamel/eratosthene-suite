@@ -132,6 +132,7 @@ The _eratosthene-suite_ comes with the following package dependencies (Ubuntu 16
 * build-essential
 * mesa-common-dev
 * libsdl2-dev
+* libpng12-dev
 
 and the following external dependencies provided as sub-modules :
 
