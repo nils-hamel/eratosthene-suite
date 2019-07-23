@@ -95,7 +95,7 @@
     /* define limit and default : address span */
     # define ER_COMMON_DSPAN ( 7 )
     # define ER_COMMON_LSPAN ( 4 )
-    # define ER_COMMON_USPAN ( 8 )
+    # define ER_COMMON_USPAN ( 9 )
 
     /* define limit and default : altitude */
     # define ER_COMMON_LALTI ( LE_ADDRESS_WGS_A * 0.75 )

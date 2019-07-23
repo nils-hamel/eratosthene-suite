@@ -227,7 +227,7 @@
             SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
 
             /* enable double buffer */
-            SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+            SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 2 );
 
             /* create window */
             if ( ( er_window = SDL_CreateWindow( LC_PROJECT, 0, 0, er_display.w, er_display.h, ER_SDL_FLAGS ) ) == NULL ) {

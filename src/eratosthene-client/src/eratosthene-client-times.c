@@ -218,8 +218,14 @@
         /* buffer position */
         glRasterPos2i( 0, er_times->tm_offset );
 
+        /* enable blending */
+        glEnable( GL_BLEND );
+
         /* buffer display */
         glDrawPixels( er_times->tm_width, er_times->tm_height, GL_RGBA, GL_UNSIGNED_BYTE, er_times->tm_buffer );
+
+        /* disable blending */
+        glDisable( GL_BLEND );
 
     }
 

@@ -480,7 +480,7 @@
         gluSphere( er_earth, LE_ADDRESS_WGS_A, 360, 180 );
 
         /* disable blending */
-        glEnable( GL_BLEND );
+        glDisable( GL_BLEND );
 
         /* delete quadric */
         gluDeleteQuadric( er_earth );
