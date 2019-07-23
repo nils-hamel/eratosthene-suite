@@ -464,32 +464,47 @@
         /* projection : model */
         er_client_proj_model( er_client );
 
-        /* matrix - cells */
-        glPushMatrix(); {
+        /* check display flag */
+        if ( er_client->cl_mshow == _LE_TRUE ) {
 
-            /* display cells */
-            er_model_display_cell( & er_client->cl_model, & er_client->cl_view );
+            /* matrix - cells */
+            glPushMatrix(); {
 
-        } glPopMatrix();
+                /* display cells */
+                er_model_display_cell( & er_client->cl_model, & er_client->cl_view );
 
-        /* matrix - earth */
-        glPushMatrix(); {
+            } glPopMatrix();
 
-            /* display earth */
-            er_model_display_earth( & er_client->cl_view );
+        }
 
-        } glPopMatrix();
+        /* check display flag */
+        if ( er_client->cl_wshow == _LE_TRUE ) {
+
+            /* matrix - earth */
+            glPushMatrix(); {
+
+                /* display earth */
+                er_model_display_earth( & er_client->cl_view );
+
+            } glPopMatrix();
+
+        }
 
         /* projection : interface */
         er_client_proj_interface( er_client );
 
-        /* matrix - interface */
-        glPushMatrix(); {
+        /* check display flag */
+        if ( er_client->cl_tshow == _LE_TRUE ) {
 
-            /* display interface */
-            er_times_display( & er_client->cl_times, & er_client->cl_view );
+            /* matrix - interface */
+            glPushMatrix(); {
 
-        } glPopMatrix();
+                /* display interface */
+                er_times_display( & er_client->cl_times, & er_client->cl_view );
+
+            } glPopMatrix();
+
+        }
 
     }
 
@@ -695,6 +710,27 @@
                     }
 
                 }
+
+            } break;
+
+            case ( SDLK_F1 ) : {
+
+                /* update display flag */
+                if ( er_client->cl_mshow == _LE_TRUE ) er_client->cl_mshow = _LE_FALSE; else er_client->cl_mshow = _LE_TRUE;
+
+            } break;
+
+            case ( SDLK_F2 ) : {
+
+                /* update display flag */
+                if ( er_client->cl_wshow == _LE_TRUE ) er_client->cl_wshow = _LE_FALSE; else er_client->cl_wshow = _LE_TRUE;
+
+            } break;
+
+            case ( SDLK_F3 ) : {
+
+                /* update display flag */
+                if ( er_client->cl_tshow == _LE_TRUE ) er_client->cl_tshow = _LE_FALSE; else er_client->cl_tshow = _LE_TRUE;
 
             } break;
 
