@@ -421,7 +421,7 @@
 
     le_void_t er_client_loops_update( er_client_t * const er_client, le_size_t const er_pack, le_size_t const er_delay );
 
-    /*! \brief projection methods
+    /*! \brief projection methods (revoked)
      *
      *  This function is used to set the rendering projection matrix for the
      *  Earth model display.

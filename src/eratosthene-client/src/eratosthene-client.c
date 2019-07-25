@@ -619,17 +619,23 @@
 
     le_void_t er_client_proj_model( er_client_t * const er_client ) {
 
-        /* clipping plane variables */
-        //le_real_t er_neac = er_geodesy_near( er_view_get_alt( & er_client->cl_view ) ); // dev-push
-        //le_real_t er_farc = er_geodesy_far ( er_view_get_alt( & er_client->cl_view ) ); // dev-push
+        /* altitude variable */
+        le_real_t er_altitude = er_view_get_alt( & er_client->cl_view );
 
-        /* compute model scale factor */
-        //er_client->cl_scale = er_geodesy_scale( er_view_get_alt( & er_client->cl_view ) ); //dev-push
+        /* angle variable */
+        le_real_t er_gamma = er_view_get_gam( & er_client->cl_view );
 
-        er_client->cl_scale = er_geodesy_scale( er_view_get_alt( & er_client->cl_view ) );
+        /* plane distance variable */
+        le_real_t er_np = 0.0, er_fp = 0.0;
 
-        le_real_t er_neac = er_geodesy_near( er_view_get_alt( & er_client->cl_view ), er_client->cl_scale );
-        le_real_t er_farc = er_geodesy_far ( er_view_get_alt( & er_client->cl_view ), er_view_get_gam( & er_client->cl_view ), er_client->cl_scale );
+        /* comptue model scale factor */
+        er_client->cl_scale = er_geodesy_scale( er_altitude );
+
+        /* compute near place distance */
+        er_np = er_geodesy_near( er_altitude, er_client->cl_scale );
+
+        /* comptue far place distance */
+        er_fp = er_geodesy_far( er_altitude, er_gamma, er_client->cl_scale );
 
         /* matrix mode to projection */
         glMatrixMode( GL_PROJECTION );
@@ -638,7 +644,7 @@
         glLoadIdentity();
 
         /* compute projection matrix */
-        gluPerspective( 45.0, ( GLdouble ) er_client->cl_width / er_client->cl_height, er_neac, er_farc );
+        gluPerspective( 45.0, ( GLdouble ) er_client->cl_width / er_client->cl_height, er_np, er_fp );
 
         /* matrix mode to modelview */
         glMatrixMode( GL_MODELVIEW );
@@ -653,7 +659,7 @@
         glEnable( GL_DEPTH_TEST );
 
         /* fog configuration */
-        glFogf( GL_FOG_START, er_farc * 0.8 ), glFogf( GL_FOG_END, er_farc );
+        glFogf( GL_FOG_START, er_fp * 0.8 ), glFogf( GL_FOG_END, er_fp );
 
         /* enable fog features */
         glEnable( GL_FOG );
