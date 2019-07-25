@@ -129,7 +129,7 @@
     le_real_t er_geodesy_far( le_real_t const er_altitude, le_real_t const er_gamma, le_real_t const er_scale ) {
 
         /* computation variable */
-        le_real_t er_normal = sqrt( fabs( er_altitude * er_altitude - LE_ADDRESS_WGS_A * LE_ADDRESS_WGS_A ) ); // + thickness
+        le_real_t er_normal = sqrt( fabs( er_altitude * er_altitude - LE_ADDRESS_WGS_A * LE_ADDRESS_WGS_A ) );
 
         /* earth center-tengant angle variable */
         le_real_t er_angle = er_geodesy_angle( er_altitude );
