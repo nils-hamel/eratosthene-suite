@@ -77,6 +77,11 @@
     # define ER_COMMON_SIZE  ( 16384 )
     # define ER_COMMON_PACK  ( 4 )
 
+    /* define mode scale parameter */
+    # define ER_COMMON_SCALE ( 1.0 / 100.0 )
+    # define ER_COMMON_LIMIT ( 2.5e5 ) /* 250 km */
+    # define ER_COMMON_CFACE ( 1.0e6 ) /* 1000 km */
+
     /* define inertial coefficients */
     # define ER_COMMON_INE   ( 1.0 / 100.0 )
     # define ER_COMMON_IML   ( 1.0 / 8.0 )

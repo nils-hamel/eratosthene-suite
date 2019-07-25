@@ -620,11 +620,17 @@
     le_void_t er_client_proj_model( er_client_t * const er_client ) {
 
         /* clipping plane variables */
-        le_real_t er_neac = er_geodesy_near( er_view_get_alt( & er_client->cl_view ) );
-        le_real_t er_farc = er_geodesy_far ( er_view_get_alt( & er_client->cl_view ) );
+        //le_real_t er_neac = er_geodesy_near( er_view_get_alt( & er_client->cl_view ) ); // dev-push
+        //le_real_t er_farc = er_geodesy_far ( er_view_get_alt( & er_client->cl_view ) ); // dev-push
 
         /* compute model scale factor */
+        //er_client->cl_scale = er_geodesy_scale( er_view_get_alt( & er_client->cl_view ) ); //dev-push
+
         er_client->cl_scale = er_geodesy_scale( er_view_get_alt( & er_client->cl_view ) );
+
+        le_real_t er_neac = er_geodesy_near_beta_( er_view_get_alt( & er_client->cl_view ), er_client->cl_scale );
+        le_real_t er_farc = er_geodesy_far_beta ( er_view_get_alt( & er_client->cl_view ), er_view_get_gam( & er_client->cl_view ), er_client->cl_scale );
+
 
         /* matrix mode to projection */
         glMatrixMode( GL_PROJECTION );

@@ -71,6 +71,10 @@
     header - function prototypes
  */
 
+    /* *** */
+
+    le_real_t er_geodesy_angle( le_real_t const er_altitude );
+
     /*! \brief distance methods
      *
      *  This function computes the distance that separates the point of view
@@ -93,7 +97,7 @@
 
     le_real_t er_geodesy_distance( le_address_t const * const er_cell, er_view_t const * const er_view );
 
-    /*! \brief model methods
+    /*! \brief model methods (revoked)
      *
      *  This function computes and returns the distance to the point of view at
      *  which Earth surface elements have to be considered. It then defines, for
@@ -115,6 +119,7 @@
      */
 
     le_real_t er_geodesy_face( le_real_t const er_altitude );
+    le_real_t er_geodesy_face_beta( le_real_t const er_altitude );
 
     /*! \brief model methods
      *
@@ -160,7 +165,7 @@
 
     le_enum_t er_geodesy_select( le_real_t const er_distance, er_view_t const * const er_view, le_real_t const er_scfg, le_real_t const er_scale );
 
-    /*! \brief model functions
+    /*! \brief model functions (revoked)
      *
      *  This function computes the scale factor applied to the model according
      *  to the point of view height.
@@ -176,8 +181,9 @@
      */
 
     le_real_t er_geodesy_scale( le_real_t const er_altitude );
+    le_real_t er_geodesy_scale_beta( le_real_t const er_altitude );
 
-    /*! \brief model functions
+    /*! \brief model functions (revoked)
      *
      *  This function computes the position of the near plane used by OpenGL.
      *
@@ -192,8 +198,10 @@
      */
 
     le_real_t er_geodesy_near( le_real_t const er_altitude );
+    le_real_t er_geodesy_near_beta_( le_real_t const er_altitude, le_real_t const er_scale );
+    le_real_t er_geodesy_near_beta( le_real_t const er_altitude, le_real_t const er_gamma, le_real_t const er_scale );
 
-    /*! \brief model functions
+    /*! \brief model functions (revoked)
      *
      *  This function computes the position of the far plane used by OpenGL.
      *
@@ -212,6 +220,8 @@
      */
 
     le_real_t er_geodesy_far( le_real_t const er_altitude );
+    le_real_t er_geodesy_far_beta_( le_real_t const er_altitude, le_real_t const er_scale );
+    le_real_t er_geodesy_far_beta( le_real_t const er_altitude, le_real_t const er_tilt, le_real_t const er_scale );
 
 /*
     header - C/C++ compatibility
