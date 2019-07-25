@@ -109,7 +109,7 @@
         le_real_t er_normal = er_altitude / LE_ADDRESS_WGS_A - 1.0;
 
         /* compute scale value */
-        return( ER_COMMON_SCALE * ( 1.0 - ER_COMMON_SCALE ) * exp( - LE_PI * er_normal * er_normal ) );
+        return( ER_COMMON_SCALE + ( 1.0 - ER_COMMON_SCALE ) * exp( - LE_PI * er_normal * er_normal ) );
 
     }
 
