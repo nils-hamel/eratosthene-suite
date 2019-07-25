@@ -183,8 +183,7 @@
             if ( er_scale >= ER_COMMON_ENUM ) {
 
                 /* compute and check distance */
-                //if ( ( er_line = er_geodesy_distance( er_enum, er_view ) ) < er_geodesy_face( er_view_get_alt( er_view ) ) ) { // dev-push
-                if ( ( er_line = er_geodesy_distance( er_enum, er_view ) ) < er_geodesy_face_beta( er_view_get_alt( er_view ) ) ) {
+                if ( ( er_line = er_geodesy_distance( er_enum, er_view ) ) < er_geodesy_face( er_view_get_alt( er_view ) ) ) {
 
                     /* check selection criterion */
                     if ( er_geodesy_select( er_line, er_view, er_model->md_scfg, er_scale ) == _LE_TRUE ) { // dev-push

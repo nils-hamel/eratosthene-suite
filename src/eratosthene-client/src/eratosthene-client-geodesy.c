@@ -79,31 +79,11 @@
 
     le_real_t er_geodesy_face( le_real_t const er_altitude ) {
 
-        /* computation variables */
-        le_real_t er_normal = er_altitude / LE_ADDRESS_WGS_A - 1.0;
-
-        /* return evaluation */
-        return( er_altitude * ( 1.0 - 0.75 * exp( - LE_PI * er_normal * er_normal ) ) );
-
-    }
-
-    le_real_t er_geodesy_face_beta( le_real_t const er_altitude ) {
-
         /* computation variable */
         le_real_t er_normal = sqrt( fabs( er_altitude * er_altitude - LE_ADDRESS_WGS_A * LE_ADDRESS_WGS_A ) );
 
         /* clamp and return cutting radius */
         return( er_normal < ER_COMMON_CFACE ? ER_COMMON_CFACE : er_normal );
-
-    }
-
-    le_real_t er_geodesy_radius( le_real_t const er_altitude ) { // delete //
-
-        /* computation variables */
-        le_real_t er_normal = er_altitude / LE_ADDRESS_WGS_A - 1.0;
-
-        /* return evaluation */
-        return( er_altitude * ( 1.0 - 0.98 * exp( - LE_2P * 32.0 * er_normal * er_normal ) ) );
 
     }
 
@@ -125,16 +105,6 @@
 
     le_real_t er_geodesy_scale( le_real_t const er_altitude ) {
 
-        /* computation variables */
-        le_real_t er_normal = er_altitude / LE_ADDRESS_WGS_A - 1.0;
-
-        /* Return evaluation */
-        return( exp( - LE_PI * er_normal * er_normal ) );
-
-    }
-
-    le_real_t er_geodesy_scale_beta( le_real_t const er_altitude ) {
-
         /* computation variable */
         le_real_t er_normal = er_altitude / LE_ADDRESS_WGS_A - 1.0;
 
@@ -143,17 +113,7 @@
 
     }
 
-    le_real_t er_geodesy_near( le_real_t const er_altitude ) {
-
-        /* computation variables */
-        le_real_t er_normal = pow( fabs( er_altitude - LE_ADDRESS_WGS_A ) / ( LE_ADDRESS_WGS_A * 2.0 ), 4 );
-
-        /* return evaluation */
-        return( LE_ADDRESS_WGS_A * er_normal * er_geodesy_scale( er_altitude ) + 1.0 );
-
-    }
-
-    le_real_t er_geodesy_near_beta_( le_real_t const er_altitude, le_real_t const er_scale ) {
+    le_real_t er_geodesy_near( le_real_t const er_altitude, le_real_t const er_scale ) {
 
         /* computation variable */
         le_real_t er_normal = fabs( er_altitude - LE_ADDRESS_WGS_A );
@@ -161,61 +121,26 @@
         /* compute near plane position */
         er_normal = er_scale * pow( er_normal, 0.99 ) * ( 1.0 - exp( - pow( er_normal / 1.9568e+04, 8.0 ) ) );
 
-        /* clamp and return near plane distance */
+        /* clamp, scale and return near plane distance */
         return( er_normal < 1.0 ? 1.0 : er_normal );
 
     }
 
-    le_real_t er_geodesy_near_beta( le_real_t const er_altitude, le_real_t const er_gamma, le_real_t const er_scale ) {
-
-        le_real_t er_normal = 1.0 + fabs( er_altitude - LE_ADDRESS_WGS_A );
-
-        le_real_t er_angle = er_geodesy_angle( er_altitude );
-
-        le_real_t er_correct = er_gamma > 90.0 ? 180.0 - er_gamma : er_gamma;
-
-        return( er_scale * ( er_normal * 0.9 ) );
-
-    }
-
-    le_real_t er_geodesy_far( le_real_t const er_altitude ) {
-
-        /* computation variables */
-        le_real_t er_scale = er_geodesy_scale( er_altitude );
-
-        /* computation vairbales */
-        le_real_t er_plane = er_scale * er_geodesy_radius( er_altitude );
-
-        /* computation variables */
-        le_real_t er_clamp = er_scale * er_geodesy_face( er_altitude );
-
-        /* return evaluation */
-        return( er_plane >= er_clamp ? er_clamp : er_plane );
-
-    }
-
-    le_real_t er_geodesy_far_beta_( le_real_t const er_altitude, le_real_t const er_scale ) {
-
-        /* computation variable */
-        le_real_t er_normal = fabs( er_altitude * er_altitude - LE_ADDRESS_WGS_A * LE_ADDRESS_WGS_A ) / er_altitude;
-
-        /* clam and return far plane distance */
-        return( er_scale * ( er_normal < ER_COMMON_LIMIT ? ER_COMMON_LIMIT : er_normal ) );
-
-    }
-
-    le_real_t er_geodesy_far_beta( le_real_t const er_altitude, le_real_t const er_gamma, le_real_t const er_scale ) {
+    le_real_t er_geodesy_far( le_real_t const er_altitude, le_real_t const er_gamma, le_real_t const er_scale ) {
 
         /* computation variable */
         le_real_t er_normal = sqrt( fabs( er_altitude * er_altitude - LE_ADDRESS_WGS_A * LE_ADDRESS_WGS_A ) ); // + thickness
 
+        /* earth center-tengant angle variable */
         le_real_t er_angle = er_geodesy_angle( er_altitude );
 
+        /* corrected tilt variable */
         le_real_t er_correct = er_gamma > 90.0 ? 180.0 - er_gamma : er_gamma;
 
+        /* compute tilt angle correction factor */
         er_normal *= cos( er_angle - er_correct * LE_D2R );
 
-        /* clam and return far plane distance */
+        /* clamp, scale and return far plane distance */
         return( er_scale * ( er_normal < ER_COMMON_LIMIT ? ER_COMMON_LIMIT : er_normal ) );
 
     }

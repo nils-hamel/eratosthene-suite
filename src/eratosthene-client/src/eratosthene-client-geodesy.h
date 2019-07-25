@@ -71,10 +71,6 @@
     header - function prototypes
  */
 
-    /* *** */
-
-    le_real_t er_geodesy_angle( le_real_t const er_altitude );
-
     /*! \brief distance methods
      *
      *  This function computes the distance that separates the point of view
@@ -96,6 +92,10 @@
      */
 
     le_real_t er_geodesy_distance( le_address_t const * const er_cell, er_view_t const * const er_view );
+
+    /* *** */
+
+    le_real_t er_geodesy_angle( le_real_t const er_altitude );
 
     /*! \brief model methods (revoked)
      *
@@ -119,25 +119,6 @@
      */
 
     le_real_t er_geodesy_face( le_real_t const er_altitude );
-    le_real_t er_geodesy_face_beta( le_real_t const er_altitude );
-
-    /*! \brief model methods
-     *
-     *  This function, similar to the \b er_geodesy_face() function, computes
-     *  and returns the maximum render distance of cells according to the height
-     *  of the point of view.
-     *
-     *  As the point of view height decreases, the cell render distance becomes
-     *  smaller. This allows to take into account that distant cells are not
-     *  relevant for display as the point of view get closer to the Earth
-     *  surface.
-     *
-     *  \param er_altitude Point of view height above WGS84 ellipsoid
-     *
-     *  \return Returns cells render distance
-     */
-
-    le_real_t er_geodesy_radius( le_real_t const er_altitude );
 
     /*! \brief model methods
      *
@@ -181,7 +162,6 @@
      */
 
     le_real_t er_geodesy_scale( le_real_t const er_altitude );
-    le_real_t er_geodesy_scale_beta( le_real_t const er_altitude );
 
     /*! \brief model functions (revoked)
      *
@@ -197,9 +177,7 @@
      *  \return Near plane distance
      */
 
-    le_real_t er_geodesy_near( le_real_t const er_altitude );
-    le_real_t er_geodesy_near_beta_( le_real_t const er_altitude, le_real_t const er_scale );
-    le_real_t er_geodesy_near_beta( le_real_t const er_altitude, le_real_t const er_gamma, le_real_t const er_scale );
+    le_real_t er_geodesy_near( le_real_t const er_altitude, le_real_t const er_scale );
 
     /*! \brief model functions (revoked)
      *
@@ -219,9 +197,7 @@
      *  \return Far plane distance
      */
 
-    le_real_t er_geodesy_far( le_real_t const er_altitude );
-    le_real_t er_geodesy_far_beta_( le_real_t const er_altitude, le_real_t const er_scale );
-    le_real_t er_geodesy_far_beta( le_real_t const er_altitude, le_real_t const er_tilt, le_real_t const er_scale );
+    le_real_t er_geodesy_far( le_real_t const er_altitude, le_real_t const er_tilt, le_real_t const er_scale );
 
 /*
     header - C/C++ compatibility
