@@ -56,7 +56,7 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_TIMES_C      { 0, 0, 0, 0, NULL, 0, 0, 0, 0, 0, 0, ER_FONT_ERATOSTHENE, _LE_FALSE }
+    # define ER_TIMES_C      { 0, 0, 0, 0, 0, NULL, ER_FONT_ERATOSTHENE, _LE_FALSE }
 
     /* define string justification */
     # define ER_TIMES_LEFT   ( 0 )
@@ -64,7 +64,7 @@
     # define ER_TIMES_CENTER ( 2 )
 
     /* define interface string */
-    # define ER_TIMES_MODES  { ( le_char_t * ) "\177", ( le_char_t * ) "ONLY", ( le_char_t * ) "ONLY", ( le_char_t * ) "OR", ( le_char_t * ) "AND", ( le_char_t * ) "XOR" }
+    # define ER_TIMES_MODES  { ( le_char_t * ) "VOID", ( le_char_t * ) "ONLY", ( le_char_t * ) "ONLY", ( le_char_t * ) "OR", ( le_char_t * ) "AND", ( le_char_t * ) "XOR" }
 
 /*
     header - preprocessor macros
@@ -129,16 +129,10 @@
         le_size_t   tm_width;
         le_size_t   tm_height;
         le_size_t   tm_length;
-        le_size_t   tm_offset;
+        le_size_t   tm_left;
+        le_size_t   tm_top;
 
         le_byte_t * tm_buffer;
-
-        le_size_t   tm_sh1;
-        le_size_t   tm_sh2;
-        le_size_t   tm_sh3;
-        le_size_t   tm_bh1;
-        le_size_t   tm_bh2;
-        le_size_t   tm_middle;
 
         er_font_t   tm_font;
 

@@ -29,29 +29,15 @@
         /* created structure variable */
         er_times_t er_times = ER_TIMES_C;
 
-        /* font height variable */
-        le_size_t er_font = er_font_get_height( & er_times.tm_font );
+        /* assign buffer sizes */
+        er_times.tm_width  = 968;
+        er_times.tm_height = er_font_get_height( & er_times.tm_font ) * 5;
 
-        /* assign buffer width */
-        er_times.tm_width = er_width;
+        /* assign buffer position - horizontal */
+        er_times.tm_left = ( er_width  >> 1 ) - ( er_times.tm_width  >> 1 );
 
-        /* assign buffer height */
-        er_times.tm_height = er_font * 5;
-
-        /* assign buffer lower position */
-        er_times.tm_offset = er_height - er_times.tm_height - ( er_height * 0.05 );
-
-        /* assign screen heights */
-        er_times.tm_sh1 = er_font * 0.50;
-        er_times.tm_sh2 = er_font * 3.00;
-        er_times.tm_sh3 = er_font * 3.50;
-
-        /* assign buffer heights */
-        er_times.tm_bh1 = er_font * 1.75;
-        er_times.tm_bh2 = er_font * 3.00;
-
-        /* assign middle position */
-        er_times.tm_middle = er_times.tm_width >> 1;
+        /* assign buffer position - vertical */
+        er_times.tm_top  = er_height - ( er_height >> 4 ) - er_times.tm_height;
 
         /* compute buffer size */
         er_times.tm_length = er_times.tm_width * er_times.tm_height * 4;
@@ -59,12 +45,12 @@
         /* allocate buffer memory */
         if ( ( er_times.tm_buffer = ( le_byte_t * ) malloc( er_times.tm_length ) ) == NULL ) {
 
-            /* send message */
+            /* return created structure */
             return( er_times );
 
         }
 
-        /* initialise buffer memory */
+        /* initialise buffer */
         memset( er_times.tm_buffer, 255, er_times.tm_length );
 
         /* return created structure */
@@ -80,7 +66,7 @@
         /* check buffer memory */
         if ( er_times->tm_buffer != NULL ) {
 
-            /* unallocate buffer memory */
+            /* release buffer memory */
             free( er_times->tm_buffer );
 
         }
@@ -96,78 +82,11 @@
 
     le_void_t er_times_set_buffer( er_times_t * const er_times ) {
 
-        /* buffer period variable */
-        le_size_t er_period = er_times->tm_width << 2;
-
-        /* reset buffer */
+        /* reset buffer alpha channel */
         for ( le_size_t er_parse = 3; er_parse < er_times->tm_length; er_parse += 4 ) {
 
-            /* buffer height detection */
-            if ( ( er_parse / er_period ) < er_times->tm_bh2 ) {
-
-                /* reset buffer alpha */
-                er_times->tm_buffer[er_parse] = 232;
-
-            } else {
-
-                /* reset buffer alpha */
-                er_times->tm_buffer[er_parse] = 240;
-
-            }
-
-        }
-
-    }
-
-    le_void_t er_times_set_slider( er_times_t * const er_times, le_time_t const er_time, le_time_t const er_area ) {
-
-        /* time boundaries variable */
-        le_time_t er_time_l = er_time - ( er_area >> 1 );
-        le_time_t er_time_h = er_time + ( er_area >> 1 );
-
-        /* scale boundaries variable */
-        le_time_t er_scale_l = pow( 10.0, floor( log( er_area * 0.02 ) / log( 10.0 ) ) );
-        le_time_t er_scale_h = pow( 10.0, floor( log( er_area * 0.85 ) / log( 10.0 ) ) );
-
-        /* positive component variable */
-        le_time_t er_shift = 0;
-
-        /* garduation increment variable */
-        le_size_t er_grad = 0;
-
-        /* shading factor variable */
-        le_size_t er_shade = 64 / ( er_times->tm_bh2 - er_times->tm_bh1 );
-
-        /* parsing slider scales */
-        for ( le_size_t er_scale = er_scale_l; er_scale <= er_scale_h; er_scale *= 10 ) {
-
-            /* compute positive component */
-            er_shift = ( er_time_l < 0 ) ? 0 : er_scale;
-
-            /* parsing slider graduation */
-            for ( le_time_t er_parse = ( er_time_l / er_scale ) * er_scale + er_shift; er_parse < er_time_h; er_parse += er_scale ) {
-
-                /* increment position */
-                er_grad = ( ( er_parse - er_time ) * er_times->tm_width ) / er_area + er_times->tm_middle;
-
-                /* display increment */
-                for ( le_size_t er_pixel = er_times->tm_bh1, er_value = 0; er_pixel < er_times->tm_bh2; er_pixel ++, er_value += er_shade ) {
-
-                    /* update interface buffer alpha channel */
-                    er_times->tm_buffer[( ( er_grad + er_pixel * er_times->tm_width ) << 2 ) + 3] -= er_value;
-
-                }
-
-                /* detect largest scale */
-                if ( er_scale == er_scale_h ) {
-
-                    /* display date text */
-                    er_times_display_date( er_times, er_parse, 64, er_grad, er_times->tm_sh1, ER_TIMES_CENTER );
-
-                }
-
-
-            }
+            /* reset alpha value */
+            er_times->tm_buffer[er_parse] = 0;
 
         }
 
@@ -179,53 +98,156 @@
 
     le_void_t er_times_display( er_times_t * const er_times, er_view_t const * const er_view ) {
 
+        /* middle position variable */
+        le_size_t er_middle = er_times->tm_width >> 1;
+
+        /* hieght position variable */
+        le_size_t er_height = 0;
+
+        /* height step variable */
+        le_size_t er_step = er_font_get_height( & er_times->tm_font ) * 2;
+
+        /* mode text variable */
+        le_char_t * er_mode[6] = ER_TIMES_MODES;
+
+        /* query text variable */
+        le_char_t * er_query[2] = { ( le_char_t * ) "NEAR QUERY", ( le_char_t * ) "DEEP QUERY" };
+
+        le_char_t * er_dual[3] = { ( le_char_t * ) "(1)", ( le_char_t * ) "(2)", ( le_char_t * ) "BOTH" };
+
+        le_char_t er_text[32] = { 0 };
+
         /* mode variable */
-        le_enum_t er_mode = er_view_get_mode( er_view );
+        le_enum_t er_mod = er_view_get_mode( er_view );
 
-        /* activity variable */
-        le_enum_t er_active = ( er_mode == 2 ) ? 1 : 0;
+        /* query variable */
+        le_enum_t er_qry = er_view_get_query( er_view );
 
-        /* alpha variable */
-        le_byte_t er_alpha = 0;
+        /* time variable */
+        le_time_t er_tia = er_view_get_time( er_view, 0 );
+        le_time_t er_tib = er_view_get_time( er_view, 1 );
 
-        /* text variable */
-        le_char_t * er_text[6] = ER_TIMES_MODES;
+        /* active time variable */
+        le_size_t er_act = ( er_mod == 2 ) ? 1 : 0;
+
+        /* time variable */
+        le_time_t er_tac = er_view_get_time( er_view, er_act );
+
+        /* comb variable */
+        le_time_t er_cmb = er_view_get_comb( er_view );
 
         /* reset buffer */
         er_times_set_buffer( er_times );
 
-        /* display slider */
-        er_times_set_slider( er_times, er_view_get_time( er_view, er_active ), er_view_get_comb( er_view ) );
+        /* display comb value */
+        er_times_range( er_times, er_cmb, 255, er_middle, er_height, ER_TIMES_CENTER );
 
-        /* display cursor */
-        er_times_display_text( er_times, er_text[0], 64, er_times->tm_middle, er_times->tm_sh2, ER_TIMES_CENTER );
+        /* update comb value */
+        er_cmb >>= 1;
 
-        /* display mode */
-        er_times_display_text( er_times, er_text[er_mode], 64, er_times->tm_middle, er_times->tm_sh3, ER_TIMES_CENTER );
+        /* display time range limit */
+        er_times_display_date( er_times, er_tac - er_cmb, 128, er_middle - 96, er_height, ER_TIMES_RIGHT );
+        er_times_display_date( er_times, er_tac + er_cmb, 128, er_middle + 96, er_height, ER_TIMES_LEFT );
 
-        /* update activity */
-        er_alpha = ( er_mode != 2 ) ? 64 : 208;
+        /* update text height */
+        er_height += er_step;
 
-        /* display time */
-        er_times_display_date( er_times, er_view_get_time( er_view, 0 ), er_alpha, er_times->tm_middle - 24, er_times->tm_sh3, ER_TIMES_RIGHT );
+        sprintf( ( char * ) er_text, "%s - %s", er_dual[(er_mod>=3?3:er_mod)-1], er_query[er_qry] );
 
-        /* update activity */
-        er_alpha = ( er_mode >= 2 ) ? 64 : 208;
+        /* display query */
+        er_times_display_text( er_times, er_text, 255, er_middle, er_height, ER_TIMES_CENTER );
 
-        /* display time */
-        er_times_display_date( er_times, er_view_get_time( er_view, 1 ), er_alpha, er_times->tm_middle + 24, er_times->tm_sh3, ER_TIMES_LEFT );
+        /* update text height */
+        er_height += er_step;
+
+        if ( er_view_get_mode( er_view ) < 3 ) {
+
+            /* display time */
+            er_times_display_date( er_times, er_tac, 255, er_middle, er_height, ER_TIMES_CENTER );
+
+        } else {
+
+            /* display time */
+            er_times_display_date( er_times, er_tia, 255, er_middle - 32, er_height, ER_TIMES_RIGHT );
+
+            /* display time */
+            er_times_display_date( er_times, er_tib, 255, er_middle + 32, er_height, ER_TIMES_LEFT );
+
+            /* display mode */
+            er_times_display_text( er_times, er_mode[er_mod], 255, er_middle, er_height, ER_TIMES_CENTER );
+
+        }
 
         /* buffer position */
-        glRasterPos2i( 0, er_times->tm_offset );
+        glRasterPos2i( er_times->tm_left, er_times->tm_top );
 
         /* enable blending */
         glEnable( GL_BLEND );
 
-        /* buffer display */
+        /* display buffer */
         glDrawPixels( er_times->tm_width, er_times->tm_height, GL_RGBA, GL_UNSIGNED_BYTE, er_times->tm_buffer );
 
         /* disable blending */
         glDisable( GL_BLEND );
+
+    }
+
+    le_void_t er_times_range( er_times_t * const er_times, le_time_t er_range, le_byte_t const er_value, le_size_t const er_x, le_size_t const er_y, le_enum_t const er_justify ) {
+
+        /* string array variable */
+        static le_char_t er_string[32] = { 0 };
+
+        if ( er_range < 60 ) {
+
+            sprintf( ( char * ) er_string, "%" _LE_TIME_P "S", er_range );
+
+            er_times_display_text( er_times, er_string, er_value, er_x, er_y, er_justify );
+
+            return;
+
+        }
+
+        er_range /= 60;
+
+        if ( er_range < 60 ) {
+
+            sprintf( ( char * ) er_string, "%" _LE_TIME_P "M", er_range );
+
+            er_times_display_text( er_times, er_string, er_value, er_x, er_y, er_justify );
+
+            return;
+
+        }
+
+        er_range /= 60;
+
+        if ( er_range < 24 ) {
+
+            sprintf( ( char * ) er_string, "%" _LE_TIME_P "H", er_range );
+
+            er_times_display_text( er_times, er_string, er_value, er_x, er_y, er_justify );
+
+            return;
+
+        }
+
+        er_range /= 24;
+
+        if ( er_range < 365 ) {
+
+            sprintf( ( char * ) er_string, "%" _LE_TIME_P "D", er_range );
+
+            er_times_display_text( er_times, er_string, er_value, er_x, er_y, er_justify );
+
+            return;
+
+        }
+
+        er_range /= 365;
+
+        sprintf( ( char * ) er_string, "%" _LE_TIME_P "Y", er_range );
+
+        er_times_display_text( er_times, er_string, er_value, er_x, er_y, er_justify );
 
     }
 

@@ -119,7 +119,7 @@
         le_real_t er_normal = fabs( er_altitude - LE_ADDRESS_WGS_A );
 
         /* compute near plane position */
-        er_normal = er_scale * pow( er_normal, 0.99 ) * ( 1.0 - exp( - pow( er_normal / 1.9568e+04, 8.0 ) ) );
+        er_normal = er_scale * pow( er_normal, 0.99 ) * ( 1.0 - exp( - pow( er_normal / 19568.0, 8.0 ) ) );
 
         /* clamp, scale and return near plane distance */
         return( er_normal < 1.0 ? 1.0 : er_normal );

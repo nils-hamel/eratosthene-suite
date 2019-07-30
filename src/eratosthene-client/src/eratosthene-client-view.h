@@ -72,7 +72,7 @@
  */
 
     /*! \struct er_view_struct
-     *  \brief View structure
+     *  \brief View structure (revoked)
      *
      *  This structure contains the information describing a model point of
      *  view. It includes the point of view position, angles of sight, and also
