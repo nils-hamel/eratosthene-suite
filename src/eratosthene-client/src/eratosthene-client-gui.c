@@ -127,7 +127,7 @@
         er_gui_set_buffer( er_times );
 
         /* display comb value */
-        er_gui_range( er_times, er_cmb, 255, er_middle, er_height, ER_GUI_CENTER );
+        er_gui_range( er_times, er_cmb / ER_COMMON_LCOMB, 255, er_middle, er_height, ER_GUI_CENTER );
 
         /* update comb value */
         er_cmb >>= 1;
@@ -197,7 +197,7 @@
             if ( ( er_range < er_step[er_parse] ) || ( er_parse == 4 ) ) {
 
                 /* compose step string */
-                sprintf( ( char * ) er_times->gu_text, "%" _LE_TIME_P "%c", er_range, er_char[er_parse] );
+                sprintf( ( char * ) er_times->gu_text, "(%" _LE_TIME_P "%c)", er_range, er_char[er_parse] );
 
                 /* display step string */
                 er_gui_display_text( er_times, er_times->gu_text, er_value, er_x, er_y, er_justify );
