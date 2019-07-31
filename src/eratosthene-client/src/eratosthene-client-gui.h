@@ -18,18 +18,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   eratosthene-client-times.h
+    /*! \file   eratosthene-client-gui.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  eratosthene-suite - client - times
+     *  eratosthene-suite - client - graphical user interface
      */
 
 /*
     header - inclusion guard
  */
 
-    # ifndef __ER_CLIENT_TIMES__
-    # define __ER_CLIENT_TIMES__
+    # ifndef __ER_CLIENT_GUI__
+    # define __ER_CLIENT_GUI__
 
 /*
     header - C/C++ compatibility
@@ -56,15 +56,15 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_TIMES_C      { 0, 0, 0, 0, 0, NULL, { 0 }, ER_TIMES_MODES, ER_TIMES_QUERY, ER_TIMES_TIME, ER_FONT_ERATOSTHENE, _LE_FALSE }
+    # define ER_GUI_C      { 0, 0, 0, 0, 0, NULL, { 0 }, ER_GUI_MODES, ER_GUI_QUERY, ER_GUI_TIME, ER_FONT_ERATOSTHENE, _LE_FALSE }
 
     /* define string justification */
-    # define ER_TIMES_LEFT   ( 0 )
-    # define ER_TIMES_RIGHT  ( 1 )
-    # define ER_TIMES_CENTER ( 2 )
+    # define ER_GUI_LEFT   ( 0 )
+    # define ER_GUI_RIGHT  ( 1 )
+    # define ER_GUI_CENTER ( 2 )
 
     /* define interface string */
-    # define ER_TIMES_MODES  {  \
+    # define ER_GUI_MODES  {    \
     ( le_char_t * ) "",         \
     ( le_char_t * ) "",         \
     ( le_char_t * ) "",         \
@@ -74,13 +74,13 @@
     }
 
     /* define interface string */
-    # define ER_TIMES_QUERY  {  \
+    # define ER_GUI_QUERY  {    \
     ( le_char_t * ) "Q:NEAR",   \
     ( le_char_t * ) "Q:DEEP"    \
     }
 
     /* define interface string */
-    # define ER_TIMES_TIME   {  \
+    # define ER_GUI_TIME   {    \
     ( le_char_t * ) "",         \
     ( le_char_t * ) "T:1",      \
     ( le_char_t * ) "T:2",      \
@@ -101,7 +101,7 @@
     header - structures
  */
 
-    /*! \struct er_times_struct
+    /*! \struct er_gui_struct
      *  \brief Times structure
      *
      *  This structure holds the required information for the display of the
@@ -119,52 +119,52 @@
      *  The structure also contains fields storing pre-computed vertical and
      *  horizontal positions that are used to display slider texts.
      *
-     *  \var er_times_struct::tm_width
+     *  \var er_gui_struct::gu_width
      *  Width of the slider buffer, in pixels
-     *  \var er_times_struct::tm_height
+     *  \var er_gui_struct::gu_height
      *  Height of the slider buffer, in pixels
-     *  \var er_times_struct::tm_length
+     *  \var er_gui_struct::gu_length
      *  Size, in bytes, of the slider buffer
-     *  \var er_times_struct::tm_offset
+     *  \var er_gui_struct::gu_offset
      *  Vertical position of the slider buffer - OpenGL screen position
-     *  \var er_times_struct::tm_buffer
+     *  \var er_gui_struct::gu_buffer
      *  Slider buffer bytes
-     *  \var er_times_struct::tm_sh1
+     *  \var er_gui_struct::gu_sh1
      *  Slider texts vertical position - Buffer position
-     *  \var er_times_struct::tm_sh2
+     *  \var er_gui_struct::gu_sh2
      *  Slider texts vertical position - Buffer position
-     *  \var er_times_struct::tm_sh3
+     *  \var er_gui_struct::gu_sh3
      *  Slider texts vertical position - Buffer position
-     *  \var er_times_struct::tm_bh1
+     *  \var er_gui_struct::gu_bh1
      *  Slider slider vertical position - Buffer position
-     *  \var er_times_struct::tm_bh2
+     *  \var er_gui_struct::gu_bh2
      *  Slider slider vertical position - Buffer position
-     *  \var er_times_struct::tm_middle
+     *  \var er_gui_struct::gu_middle
      *  Slider horizontal middle position - Buffer & OpenGL screen position
-     *  \var er_times_struct::tm_font
+     *  \var er_gui_struct::gu_font
      *  Slider font structure - Text rendering
-     *  \var er_times_struct::_status
+     *  \var er_gui_struct::_status
      *  Standard status field
      */
 
-    typedef struct er_times_struct {
+    typedef struct er_gui_struct {
 
-        le_size_t   tm_width;
-        le_size_t   tm_height;
-        le_size_t   tm_length;
-        le_size_t   tm_left;
-        le_size_t   tm_top;
+        le_size_t   gu_width;
+        le_size_t   gu_height;
+        le_size_t   gu_length;
+        le_size_t   gu_left;
+        le_size_t   gu_top;
 
-        le_byte_t * tm_buffer;
+        le_byte_t * gu_buffer;
 
-        le_char_t   tm_text[32];
-        le_char_t * tm_mode[6];
-        le_char_t * tm_query[2];
-        le_char_t * tm_time[6];
+        le_char_t   gu_text[32];
+        le_char_t * gu_mode[6];
+        le_char_t * gu_query[2];
+        le_char_t * gu_time[6];
 
-        er_font_t   tm_font;
+        er_font_t   gu_font;
 
-    le_enum_t _status; } er_times_t;
+    le_enum_t _status; } er_gui_t;
 
 /*
     header - function prototypes
@@ -187,7 +187,7 @@
      *  \return Returns the constructed time interface structure
      */
 
-    er_times_t er_times_create( le_size_t const er_width, le_size_t const er_height );
+    er_gui_t er_gui_create( le_size_t const er_width, le_size_t const er_height );
 
     /*! \brief constructor/destructor methods
      *
@@ -198,7 +198,7 @@
      *  \param er_times Time structure
      */
 
-    le_void_t er_times_delete( er_times_t * const er_times );
+    le_void_t er_gui_delete( er_gui_t * const er_times );
 
     /*! \brief mutator methods
      *
@@ -209,7 +209,7 @@
      *  \param er_times Time structure
      */
 
-    le_void_t er_times_set_buffer( er_times_t * const er_times );
+    le_void_t er_gui_set_buffer( er_gui_t * const er_times );
 
     /*! \brief mutator methods
      *
@@ -226,7 +226,7 @@
      *  \param er_area  Temporal range of the point of view
      */
 
-    le_void_t er_times_set_slider( er_times_t * const er_times, le_time_t const er_time, le_time_t const er_area );
+    le_void_t er_gui_set_slider( er_gui_t * const er_times, le_time_t const er_time, le_time_t const er_area );
 
     /*! \brief display methods
      *
@@ -246,11 +246,11 @@
      *  \param er_view  View structure
      */
 
-    le_void_t er_times_display( er_times_t * const er_times, er_view_t const * const er_view );
+    le_void_t er_gui_display( er_gui_t * const er_times, er_view_t const * const er_view );
 
     /* *** */
 
-    le_void_t er_times_range( er_times_t * const er_times, le_time_t er_range, le_byte_t const er_value, le_size_t const er_x, le_size_t const er_y, le_enum_t const er_justify );
+    le_void_t er_gui_range( er_gui_t * const er_times, le_time_t er_range, le_byte_t const er_value, le_size_t const er_x, le_size_t const er_y, le_enum_t const er_justify );
 
     /*! \brief display methods
      *
@@ -258,7 +258,7 @@
      *  using the provided time structure font.
      *
      *  The function starts by converting the provided date in a text string
-     *  that is written in the slider buffer using \b er_times_display_text()
+     *  that is written in the slider buffer using \b er_gui_display_text()
      *  function. The date is converted using the libcommon date conversion
      *  function that follows the format : YYYY-MM-DD-hh-mm-ss.
      *
@@ -270,7 +270,7 @@
      *  \param er_justify Text justification
      */
 
-    le_void_t er_times_display_date( er_times_t * const er_times, le_time_t const er_date, le_byte_t const er_value, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify );
+    le_void_t er_gui_display_date( er_gui_t * const er_times, le_time_t const er_date, le_byte_t const er_value, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify );
 
     /*! \brief display methods
      *
@@ -282,8 +282,8 @@
      *  lower-left corner of the area in which the text is displayed.
      *
      *  The justification parameter is used to set text alignment. The three
-     *  usual modes are available : \b ER_TIMES_LEFT, \b ER_TIMES_RIGHT and the
-     *  \b ER_TIMES_CENTER mode.
+     *  usual modes are available : \b ER_GUI_LEFT, \b ER_GUI_RIGHT and the
+     *  \b ER_GUI_CENTER mode.
      *
      *  \param er_times   Time structure
      *  \param er_text    Text string
@@ -293,7 +293,7 @@
      *  \param er_justify Text justification
      */
 
-    le_void_t er_times_display_text( er_times_t * const er_times, le_char_t const * const er_text, le_byte_t const er_value, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify );
+    le_void_t er_gui_display_text( er_gui_t * const er_times, le_char_t const * const er_text, le_byte_t const er_value, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify );
 
 /*
     header - C/C++ compatibility

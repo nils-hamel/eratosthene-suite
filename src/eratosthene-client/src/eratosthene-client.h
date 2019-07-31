@@ -116,7 +116,7 @@
 
     # include "eratosthene-client-common.h"
     # include "eratosthene-client-geodesy.h"
-    # include "eratosthene-client-times.h"
+    # include "eratosthene-client-gui.h"
     # include "eratosthene-client-model.h"
     # include "eratosthene-client-video.h"
     # include "eratosthene-client-view.h"
@@ -130,10 +130,10 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_CLIENT_C      { _LE_SOCK_NULL, 0, 0, ER_COMMON_VIEW, _LE_TRUE, _LE_TRUE, _LE_TRUE, ER_MODEL_C, ER_TIMES_C, ER_VIDEO_C, ER_VIEW_D, ER_VIEW_C, _LE_TIME_MAX, 0, 0, 0, 0, 1.0, 1.0, _LE_FALSE }
+    # define ER_CLIENT_C      { _LE_SOCK_NULL, 0, 0, ER_COMMON_VIEW, _LE_TRUE, _LE_TRUE, _LE_TRUE, ER_MODEL_C, ER_GUI_C, ER_VIDEO_C, ER_VIEW_D, ER_VIEW_C, _LE_TIME_MAX, 0, 0, 0, 0, 1.0, 1.0, _LE_FALSE }
 
     /* define pseudo-constructor */
-    # define ER_CLIENT_I(w,h) { _LE_SOCK_NULL, 0, 0, ER_COMMON_VIEW, _LE_TRUE, _LE_TRUE, _LE_TRUE, ER_MODEL_C, ER_TIMES_C, ER_VIDEO_C, ER_VIEW_D, ER_VIEW_C, _LE_TIME_MAX, w, h, 0, 0, 1.0, 1.0, _LE_FALSE }
+    # define ER_CLIENT_I(w,h) { _LE_SOCK_NULL, 0, 0, ER_COMMON_VIEW, _LE_TRUE, _LE_TRUE, _LE_TRUE, ER_MODEL_C, ER_GUI_C, ER_VIDEO_C, ER_VIEW_D, ER_VIEW_C, _LE_TIME_MAX, w, h, 0, 0, 1.0, 1.0, _LE_FALSE }
 
     /* define window properties */
     # define ER_SDL_FLAGS     ( SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN )
@@ -194,7 +194,7 @@
      *  Execution state value
      *  \var er_client_struct::cl_model
      *  Model sub-module structure
-     *  \var er_client_struct::cl_times
+     *  \var er_client_struct::cl_gui
      *  Time sub-module structure
      *  \var er_client_struct::cl_video
      *  Video sub-module structure
@@ -234,7 +234,7 @@
         le_enum_t  cl_tshow;
 
         er_model_t cl_model;
-        er_times_t cl_times;
+        er_gui_t   cl_gui;
         er_video_t cl_video;
 
         er_view_t  cl_view;

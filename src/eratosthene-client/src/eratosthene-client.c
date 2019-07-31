@@ -60,7 +60,7 @@
         }
 
         /* create client times */
-         if ( le_get_status( er_client.cl_times = er_times_create( er_width, er_height ) ) == _LE_FALSE ) {
+         if ( le_get_status( er_client.cl_gui = er_gui_create( er_width, er_height ) ) == _LE_FALSE ) {
 
             /* delete client structure */
             er_client_delete( & er_client );
@@ -95,7 +95,7 @@
         er_video_delete( & er_client->cl_video );
 
         /* delete client times */
-        er_times_delete( & er_client->cl_times );
+        er_gui_delete( & er_client->cl_gui );
 
         /* delete client model */
         er_model_delete( & er_client->cl_model );
@@ -500,7 +500,7 @@
             glPushMatrix(); {
 
                 /* display interface */
-                er_times_display( & er_client->cl_times, & er_client->cl_view );
+                er_gui_display( & er_client->cl_gui, & er_client->cl_view );
 
             } glPopMatrix();
 
