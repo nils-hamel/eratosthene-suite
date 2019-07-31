@@ -56,7 +56,7 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_TIMES_C      { 0, 0, 0, 0, 0, NULL, ER_FONT_ERATOSTHENE, _LE_FALSE }
+    # define ER_TIMES_C      { 0, 0, 0, 0, 0, NULL, { 0 }, ER_TIMES_MODES, ER_TIMES_QUERY, ER_TIMES_TIME, ER_FONT_ERATOSTHENE, _LE_FALSE }
 
     /* define string justification */
     # define ER_TIMES_LEFT   ( 0 )
@@ -64,7 +64,30 @@
     # define ER_TIMES_CENTER ( 2 )
 
     /* define interface string */
-    # define ER_TIMES_MODES  { ( le_char_t * ) "VOID", ( le_char_t * ) "ONLY", ( le_char_t * ) "ONLY", ( le_char_t * ) "OR", ( le_char_t * ) "AND", ( le_char_t * ) "XOR" }
+    # define ER_TIMES_MODES  {  \
+    ( le_char_t * ) "",         \
+    ( le_char_t * ) "",         \
+    ( le_char_t * ) "",         \
+    ( le_char_t * ) "OR",       \
+    ( le_char_t * ) "AND",      \
+    ( le_char_t * ) "XOR"       \
+    }
+
+    /* define interface string */
+    # define ER_TIMES_QUERY  {  \
+    ( le_char_t * ) "Q:NEAR",   \
+    ( le_char_t * ) "Q:DEEP"    \
+    }
+
+    /* define interface string */
+    # define ER_TIMES_TIME   {  \
+    ( le_char_t * ) "",         \
+    ( le_char_t * ) "T:1",      \
+    ( le_char_t * ) "T:2",      \
+    ( le_char_t * ) "T:*",      \
+    ( le_char_t * ) "T:*",      \
+    ( le_char_t * ) "T:*"       \
+    }
 
 /*
     header - preprocessor macros
@@ -133,6 +156,11 @@
         le_size_t   tm_top;
 
         le_byte_t * tm_buffer;
+
+        le_char_t   tm_text[32];
+        le_char_t * tm_mode[6];
+        le_char_t * tm_query[2];
+        le_char_t * tm_time[6];
 
         er_font_t   tm_font;
 
@@ -219,6 +247,10 @@
      */
 
     le_void_t er_times_display( er_times_t * const er_times, er_view_t const * const er_view );
+
+    /* *** */
+
+    le_void_t er_times_range( er_times_t * const er_times, le_time_t er_range, le_byte_t const er_value, le_size_t const er_x, le_size_t const er_y, le_enum_t const er_justify );
 
     /*! \brief display methods
      *
