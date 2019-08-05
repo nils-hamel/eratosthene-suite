@@ -342,9 +342,8 @@
         glClearColor( er_vector[0], er_vector[1], er_vector[2], er_vector[3] );
 
         /* opengl fog configuration */
-        glFogf ( GL_FOG_MODE   , GL_LINEAR );
-        glFogf ( GL_FOG_DENSITY, 0.3       );
-        glFogfv( GL_FOG_COLOR  , er_vector );
+        glFogf ( GL_FOG_MODE , GL_LINEAR );
+        glFogfv( GL_FOG_COLOR, er_vector );
 
         /* assign ambient color */
         er_vector[0] = 0.4;
@@ -659,7 +658,7 @@
         glEnable( GL_DEPTH_TEST );
 
         /* fog configuration */
-        glFogf( GL_FOG_START, er_fp * 0.8 ), glFogf( GL_FOG_END, er_fp );
+        glFogf( GL_FOG_START, er_fp * 0.87 ), glFogf( GL_FOG_END, er_fp * 0.97 );
 
         /* enable fog features */
         glEnable( GL_FOG );
