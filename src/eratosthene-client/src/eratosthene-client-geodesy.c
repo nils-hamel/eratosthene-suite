@@ -79,8 +79,11 @@
 
     le_real_t er_geodesy_face( le_real_t const er_altitude ) {
 
+        /* largest tile radius variable */
+        le_real_t er_radius = ( LE_ADDRESS_WGS_A * LE_2P ) / pow( 2.0, ER_COMMON_ENUM );
+
         /* computation variable */
-        le_real_t er_normal = sqrt( fabs( er_altitude * er_altitude - LE_ADDRESS_WGS_A * LE_ADDRESS_WGS_A ) );
+        le_real_t er_normal = sqrt( fabs( er_altitude * er_altitude - LE_ADDRESS_WGS_A * LE_ADDRESS_WGS_A ) ) + er_radius;
 
         /* clamp and return cutting radius */
         return( er_normal < ER_COMMON_CFACE ? ER_COMMON_CFACE : er_normal );
