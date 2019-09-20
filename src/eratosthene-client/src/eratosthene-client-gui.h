@@ -56,7 +56,7 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_GUI_C      { 0, 0, 0, 0, 0, NULL, { 0 }, ER_GUI_MODES, ER_GUI_QUERY, ER_GUI_TIME, ER_FONT_ERATOSTHENE, _LE_FALSE }
+    # define ER_GUI_C      { 0, 0, 0, 0, 0, NULL, { 0 }, ER_GUI_MODES, ER_GUI_QUERY, ER_GUI_TIME, ER_GUI_SPAN, ER_FONT_ERATOSTHENE, _LE_FALSE }
 
     /* define string justification */
     # define ER_GUI_LEFT   ( 0 )
@@ -87,6 +87,20 @@
     ( le_char_t * ) "T:*",      \
     ( le_char_t * ) "T:*",      \
     ( le_char_t * ) "T:*"       \
+    }
+
+    /* define interface string */
+    # define ER_GUI_SPAN   {    \
+    ( le_char_t * ) "S:0",      \
+    ( le_char_t * ) "S:1",      \
+    ( le_char_t * ) "S:2",      \
+    ( le_char_t * ) "S:3",      \
+    ( le_char_t * ) "S:4",      \
+    ( le_char_t * ) "S:5",      \
+    ( le_char_t * ) "S:6",      \
+    ( le_char_t * ) "S:7",      \
+    ( le_char_t * ) "S:8",      \
+    ( le_char_t * ) "S:9"       \
     }
 
 /*
@@ -161,6 +175,7 @@
         le_char_t * gu_mode[6];
         le_char_t * gu_query[2];
         le_char_t * gu_time[6];
+        le_char_t * gu_span[10];
 
         er_font_t   gu_font;
 

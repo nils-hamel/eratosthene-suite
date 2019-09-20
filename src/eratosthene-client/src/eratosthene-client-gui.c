@@ -123,6 +123,9 @@
         /* comb variable */
         le_time_t er_cmb = er_view_get_comb( er_view );
 
+        /* span variable */
+        le_size_t er_spn = er_view_get_span( er_view );
+
         /* reset buffer */
         er_gui_set_buffer( er_times );
 
@@ -139,9 +142,12 @@
         /* update text height */
         er_height += er_step;
 
+        /* display query span */
+        er_gui_display_text( er_times, er_times->gu_span[er_spn], 255, er_middle, er_height, ER_GUI_CENTER );
+
         /* compose mode/query text */
-        er_gui_display_text( er_times, er_times->gu_time [er_mod], 255, er_middle - 16, er_height, ER_GUI_RIGHT );
-        er_gui_display_text( er_times, er_times->gu_query[er_qry], 255, er_middle + 16, er_height, ER_GUI_LEFT  );
+        er_gui_display_text( er_times, er_times->gu_time [er_mod], 255, er_middle - 52, er_height, ER_GUI_RIGHT );
+        er_gui_display_text( er_times, er_times->gu_query[er_qry], 255, er_middle + 52, er_height, ER_GUI_LEFT  );
 
         /* update text height */
         er_height += er_step;
