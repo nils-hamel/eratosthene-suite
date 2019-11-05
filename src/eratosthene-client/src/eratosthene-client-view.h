@@ -58,6 +58,7 @@
 
     /* define pseudo-constructor - default point of view */
     # define ER_VIEW_D { 0.0, 0.0, LE_ADDRESS_WGS_A * 2.0, 0.0, 0.0, 1, 0, 1117584000, 1117584000, ER_COMMON_DCOMB, ER_COMMON_DSPAN }
+    //# define ER_VIEW_D { 7.452495, 46.945290, LE_ADDRESS_WGS_A * 1.01, 0.0, 0.0, 1, 0, 1117584000, 1117584000, ER_COMMON_DCOMB, ER_COMMON_DSPAN }
 
 /*
     header - preprocessor macros
