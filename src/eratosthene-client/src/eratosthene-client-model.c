@@ -240,7 +240,7 @@
         /* parsing d-cells array */
         while ( er_parse < er_model->md_size ) {
 
-            /* check v-cell state */
+            /* check d-cell state */
             if ( er_cell_get_flag( er_model->md_cell + er_parse, ER_CELL_DIS ) == ER_CELL_DIS ) {
 
                 /* reset index */
@@ -275,105 +275,102 @@
 
     }
 
-    le_void_t er_model_set_sync( er_model_t * const er_model, le_size_t const er_pack ) {
+    le_void_t er_model_set_detect( er_model_t * const er_model ) {
 
-        /* package size variable */
+        /* serialisation variable */
         le_size_t er_serial = 0;
 
-        /* segment parsing variable */
-        le_size_t er_parse = 0;
+        /* reset address array */
+        le_array_set_size( & er_model->md_addr, 0 );
 
-        /* compose address pack */
-        if ( ( er_serial = er_model_set_sync_pack( er_model, er_pack ) ) != 0 ) {
+        /* parsing v-cell array segment */
+        for ( le_size_t er_parse = 0; er_parse < er_model->md_push; er_parse ++ ) {
 
-            /* write socket-array on socket */
-            if ( le_array_io_write( & er_model->md_addr, LE_MODE_QUER, er_model->md_sock ) == LE_MODE_QUER ) {
+            /* update socket-array size */
+            le_array_set( & er_model->md_addr, LE_ARRAY_ADDR );
 
-                /* parsing v-cell array segment */
-                while ( er_parse < er_serial ) {
+            /* serialise address */
+            er_serial = er_cell_get_sync( er_model->md_virt + er_parse, & er_model->md_addr, er_serial );
 
-                    /* search available d-cell */
-                    er_model_set_next( er_model );
+        }
 
-                    /* update d-cell state */
-                    er_cell_set_zero( er_model->md_cell + er_model->md_free, ER_CELL_DIS );
+        /* write socket-array on socket */
+        if ( le_array_io_write( & er_model->md_addr, LE_MODE_DETE, er_model->md_sock ) == LE_MODE_DETE ) {
 
-                    /* read d-cell data */
-                    if ( er_cell_set_read( er_model->md_cell + er_model->md_free, er_model->md_sock ) == LE_ERROR_SUCCESS ) {
-
-                        /* process d-cell */
-                        if ( er_cell_set_data( er_model->md_cell + er_model->md_free ) != 0 ) {
-
-                            /* synchronise d-cell address */
-                            er_parse = er_cell_set_sync( er_model->md_cell + er_model->md_free, & er_model->md_addr, er_parse );
-
-                            /* update d-cell state */
-                            er_cell_set_flag( er_model->md_cell + er_model->md_free, ER_CELL_SYN | ER_CELL_DIS );
-
-                        /* update parser */
-                        } else { er_parse += LE_ARRAY_ADDR; }
-
-                    /* update parser */
-                    } else { er_parse += LE_ARRAY_ADDR; }
-
-                }
-
-            }
-
-        } else {
-
-            /* update synchronisation flag */
-            er_model->md_sync = _LE_TRUE;
+            /* read socket-array from socket */
+            le_array_io_read( & er_model->md_dete, er_model->md_sock );
 
         }
 
     }
 
-    le_size_t er_model_set_sync_pack( er_model_t * const er_model, le_size_t const er_pack ) {
-
-        /* returned value variable */
-        le_size_t er_serial = 0;
+    le_void_t er_model_set_sync( er_model_t * const er_model ) {
 
         /* reset address pack array */
-        le_array_set_size( & er_model->md_addr, 0 );
+        le_array_set_size( & er_model->md_addr, LE_ARRAY_ADDR );
 
-        /* parsing v-cell array segment */
-        while ( ( er_model->md_synb >= ER_COMMON_ENUM ) && ( er_serial < ( LE_ARRAY_ADDR * er_pack ) ) ) {
+        /* scale-based v-cell selection */
+        if ( er_cell_get_size( er_model->md_virt + er_model->md_syna ) == er_model->md_synb ) {
 
-            /* scale-based v-cell selection */
-            if ( er_cell_get_size( er_model->md_virt + er_model->md_syna ) == er_model->md_synb ) {
+            /* select un-synchronised v-cell */
+            if ( er_cell_get_flag( er_model->md_virt + er_model->md_syna, ER_CELL_SYN ) != ER_CELL_SYN ) {
 
-                /* select un-synchronised v-cell */
-                if ( er_cell_get_flag( er_model->md_virt + er_model->md_syna, ER_CELL_SYN ) != ER_CELL_SYN ) {
+                /* check address state */
+                if ( ( * le_array_mac_byte( & er_model->md_dete, er_model->md_syna ) ) != 0x00 ) {
 
-                    /* update socket-array size */
-                    le_array_set( & er_model->md_addr, LE_ARRAY_ADDR );
+                    /* serialise v-cell address */
+                    er_cell_get_sync( er_model->md_virt + er_model->md_syna, & er_model->md_addr, 0 );
 
-                    /* serialise address */
-                    er_serial = er_cell_get_sync( er_model->md_virt + er_model->md_syna, & er_model->md_addr, er_serial );
+                    /* write socket-array on socket */
+                    if ( le_array_io_write( & er_model->md_addr, LE_MODE_QUER, er_model->md_sock ) == LE_MODE_QUER ) {
 
-                    /* update v-cell state */
-                    er_cell_set_flag( er_model->md_virt + er_model->md_syna, ER_CELL_SYN );
+                        /* search available d-cell */
+                        er_model_set_next( er_model );
+
+                        /* update d-cell state */
+                        er_cell_set_zero( er_model->md_cell + er_model->md_free, ER_CELL_DIS );
+
+                        /* read d-cell data */
+                        if ( er_cell_set_read( er_model->md_cell + er_model->md_free, er_model->md_sock ) == LE_ERROR_SUCCESS ) {
+
+                            /* process d-cell */
+                            if ( er_cell_set_data( er_model->md_cell + er_model->md_free ) != 0 ) {
+
+                                /* synchronise d-cell address */
+                                er_cell_set_sync( er_model->md_cell + er_model->md_free, & er_model->md_addr, 0 );
+
+                                /* update d-cell state */
+                                er_cell_set_flag( er_model->md_cell + er_model->md_free, ER_CELL_SYN | ER_CELL_DIS );
+
+                            }
+
+                        }
+
+                    }
 
                 }
 
             }
 
-            /* update synchronisation index */
-            if ( ( ++ er_model->md_syna ) == er_model->md_push ) {
+        }
 
-                /* update synchronisation index */
-                er_model->md_synb --;
+        /* update synchronisation index */
+        if ( ( ++ er_model->md_syna ) == er_model->md_push ) {
+
+            /* update synchronisation index */
+            if ( ( -- er_model->md_synb ) >= ER_COMMON_ENUM ) {
 
                 /* reset synchronisation index */
                 er_model->md_syna = 0;
 
+            } else {
+
+                /* update synchronisation flag */
+                er_model->md_sync = _LE_TRUE;
+
             }
 
         }
-
-        /* return offset */
-        return( er_serial );
 
     }
 

@@ -61,10 +61,10 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_MODEL_C        { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_COMMON_SIZE, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, _LE_FALSE, _LE_FALSE, _LE_FALSE }
+    # define ER_MODEL_C        { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_COMMON_SIZE, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, LE_ARRAY_C, _LE_FALSE, _LE_FALSE, _LE_FALSE }
 
     /* define pseudo-initialiser */
-    # define ER_MODEL_I(s,p,t) { s, p, t, ER_COMMON_SIZE, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, _LE_FALSE }
+    # define ER_MODEL_I(s,p,t) { s, p, t, ER_COMMON_SIZE, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, LE_ARRAY_C, _LE_TRUE, _LE_TRUE, _LE_FALSE }
 
 /*
     header - preprocessor macros
@@ -182,6 +182,7 @@
         er_cell_t * md_virt;
 
         le_array_t  md_addr;
+        le_array_t  md_dete;
 
         le_enum_t   md_sync;
         le_enum_t   md_tail;
@@ -324,7 +325,11 @@
      *  \param er_model Model structure
      */
 
-    le_void_t er_model_set_fast( er_model_t * const er_model );
+    le_void_t er_model_set_fast( er_model_t * const er_model ); /* delete */
+
+    /* *** */
+
+    le_void_t er_model_set_detect( er_model_t * const er_model );
 
     /*! mutator methods
      *
@@ -357,7 +362,7 @@
      *  \param er_pack  Queries package maximum size
      */
 
-    le_void_t er_model_set_sync( er_model_t * const er_model, le_size_t const er_pack );
+    le_void_t er_model_set_sync( er_model_t * const er_model );
 
     /*! mutator methods
      *
@@ -376,7 +381,7 @@
      *  \return Returns address array size, in bytes
      */
 
-    le_size_t er_model_set_sync_pack( er_model_t * const er_model, le_size_t const er_pack );
+    //le_size_t er_model_set_sync_pack( er_model_t * const er_model, le_size_t const er_pack );
 
     /*! mutator methods
      *

@@ -587,6 +587,9 @@
             /* model/target fast synchronisation */
             er_model_set_fast( & er_client->cl_model );
 
+            /* target content detection */
+            er_model_set_detect( & er_client->cl_model );
+
             /* reset motion time */
             er_client->cl_last = _LE_TIME_MAX;
 
@@ -596,7 +599,7 @@
         if ( er_model_get_sync( & er_client->cl_model ) == _LE_FALSE ) {
 
             /* model synchronisation process */
-            er_model_set_sync( & er_client->cl_model, er_pack );
+            er_model_set_sync( & er_client->cl_model );
 
         } else {
 
