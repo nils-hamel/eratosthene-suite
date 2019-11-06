@@ -93,11 +93,16 @@
 
     le_real_t er_geodesy_distance( le_address_t const * const er_cell, er_view_t const * const er_view );
 
-    /* *** */
+    /*! \brief geodetic methods
+     *
+     *
+     *
+     *  \param er_altitude Height above WGS84 ellipsoid
+     */
 
     le_real_t er_geodesy_angle( le_real_t const er_altitude );
 
-    /*! \brief model methods (revoked)
+    /*! \brief geodetic methods (revoked)
      *
      *  This function computes and returns the distance to the point of view at
      *  which Earth surface elements have to be considered. It then defines, for
@@ -120,7 +125,7 @@
 
     le_real_t er_geodesy_face( le_real_t const er_altitude );
 
-    /*! \brief model methods
+    /*! \brief geodetic methods
      *
      *  This function computes, according to the distance between the cell and
      *  the point of view, the ideal scale (i.e. the ideal number of digits of
@@ -146,7 +151,7 @@
 
     le_enum_t er_geodesy_select( le_real_t const er_distance, er_view_t const * const er_view, le_real_t const er_scfg, le_real_t const er_scale );
 
-    /*! \brief model functions (revoked)
+    /*! \brief geodetic functions (revoked)
      *
      *  This function computes the scale factor applied to the model according
      *  to the point of view height.
@@ -163,7 +168,7 @@
 
     le_real_t er_geodesy_scale( le_real_t const er_altitude );
 
-    /*! \brief model functions (revoked)
+    /*! \brief geodetic functions (revoked)
      *
      *  This function computes the position of the near plane used by OpenGL.
      *
@@ -179,7 +184,7 @@
 
     le_real_t er_geodesy_near( le_real_t const er_altitude, le_real_t const er_scale );
 
-    /*! \brief model functions (revoked)
+    /*! \brief geodetic functions (revoked)
      *
      *  This function computes the position of the far plane used by OpenGL.
      *

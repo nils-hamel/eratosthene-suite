@@ -64,7 +64,7 @@
     }
 
 /*
-    source - model methods
+    source - geodetic methods
  */
 
     le_real_t er_geodesy_angle( le_real_t const er_altitude ) {

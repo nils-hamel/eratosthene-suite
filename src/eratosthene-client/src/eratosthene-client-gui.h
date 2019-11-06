@@ -116,47 +116,67 @@
  */
 
     /*! \struct er_gui_struct
-     *  \brief Times structure
+     *  \brief GUI structure
      *
-     *  This structure holds the required information for the display of the
-     *  temporal navigation slider. The temporal slider is used by the user to
-     *  drive the display of Earth model according to time.
+     *  This structure holds the required element needed to display the GUI
+     *  information. The information are displayed through simple text on the
+     *  screen on top of the model rendering.
      *
-     *  Through this slider, the user can move two separated time values to
-     *  tell the graphical client what to display. In addition, the slider
-     *  allows the user to change the times comparison mode.
+     *  The information include in the first place the position in time of the
+     *  current point of view taking into account the query mode. If only the
+     *  first or second times are active, their are displayed. In case both
+     *  times are active for convolution rendering, they are both displayed
+     *  along with the convolution mode.
      *
-     *  The structure contains fields storing configuration of the slider
-     *  display buffer shown on top of the Earth model. This includes slider
-     *  buffer size and display position along with the buffer actual bytes.
+     *  On a other text line, the information display the index of the active
+     *  time (in case only one time is active), the current query additional
+     *  depth along with the query temporal mode.
      *
-     *  The structure also contains fields storing pre-computed vertical and
-     *  horizontal positions that are used to display slider texts.
+     *  On the last text line, the information display the temporal range of the
+     *  current active time(s). This includes the lower and upper boundary times
+     *  along with the temporal range expressed in human readable format.
+     *
+     *  The first five field are related to the information graphical buffer in
+     *  which the information are rendered and that is stamped on top of the
+     *  model rendering. This includes information about the buffer size, length
+     *  and position on the overall render.
+     *
+     *  The next field is the information rendering buffer itself. It is a byte
+     *  array with RGBA format. The alpha channel is used to only render the
+     *  information text.
+     *
+     *  The next five field are used to store text elements that are used to
+     *  compose and render the information text. These text elements are the
+     *  predictable part of the information texts.
+     *
+     *  The last field holds the font structure that contains the font pixel
+     *  description. The function of the font module are used to render the
+     *  texts in the information buffer.
      *
      *  \var er_gui_struct::gu_width
-     *  Width of the slider buffer, in pixels
+     *  Width of the GUI buffer, in pixels
      *  \var er_gui_struct::gu_height
-     *  Height of the slider buffer, in pixels
+     *  Height of the GUI buffer, in pixels
      *  \var er_gui_struct::gu_length
-     *  Size, in bytes, of the slider buffer
-     *  \var er_gui_struct::gu_offset
-     *  Vertical position of the slider buffer - OpenGL screen position
+     *  Size, in bytes, of the GUI buffer
+     *  \var er_gui_struct::gu_left
+     *  Horizontal position of the GUI buffer, in pixels
+     *  \var er_gui_struct::gu_top
+     *  Vertical position of the GUI buffer, in pixels
      *  \var er_gui_struct::gu_buffer
-     *  Slider buffer bytes
-     *  \var er_gui_struct::gu_sh1
-     *  Slider texts vertical position - Buffer position
-     *  \var er_gui_struct::gu_sh2
-     *  Slider texts vertical position - Buffer position
-     *  \var er_gui_struct::gu_sh3
-     *  Slider texts vertical position - Buffer position
-     *  \var er_gui_struct::gu_bh1
-     *  Slider slider vertical position - Buffer position
-     *  \var er_gui_struct::gu_bh2
-     *  Slider slider vertical position - Buffer position
-     *  \var er_gui_struct::gu_middle
-     *  Slider horizontal middle position - Buffer & OpenGL screen position
+     *  GUI buffer bytes
+     *  \var er_gui_struct::gu_text
+     *  Information text composition string
+     *  \var er_gui_struct::gu_mode
+     *  Predefined text for convolution mode display
+     *  \var er_gui_struct::gu_query
+     *  Predefined text for query mode display
+     *  \var er_gui_struct::gu_time
+     *  Predefined text for time index display
+     *  \var er_gui_struct::gu_span
+     *  Predefined text for query additional depth
      *  \var er_gui_struct::gu_font
-     *  Slider font structure - Text rendering
+     *  Font structure
      *  \var er_gui_struct::_status
      *  Standard status field
      */
@@ -187,128 +207,138 @@
 
     /*! \brief constructor/destructor methods
      *
-     *  This function creates and returns a temporal slider structure. Based on
-     *  the screen resolution and font size, the function pre-computes the
-     *  interface elements horizontal and vertical positions.
+     *  This function creates and returns a GUI structure. The function prepares
+     *  information about the size and position of the GUI information based on
+     *  the resolution of the overall render.
      *
-     *  The function also allocate the memory of the slider buffer and
-     *  initialises its content. As the elements of the slider are drawn through
-     *  the alpha component of the buffer, the initialisation of the RGB
-     *  components made by this function stands during the whole execution.
+     *  The function also initialises the GUI graphical buffer memory in which
+     *  the information are rendered. It also initialise the content of the
+     *  buffer as the text rendering only occurs through the modification of the
+     *  alpha channel.
      *
-     *  \param er_width  OpenGL screen horizontal resolution, in pixels
-     *  \param er_height OpenGL screen vertical resolution, in pixels
+     *  This function returning the created structure, the status is stored in
+     *  the structure itself using the reserved \b _status field. On error, the
+     *  \b _status field is returned with value \b _LE_FALSE and \b _LE_TRUE
+     *  otherwise.
      *
-     *  \return Returns the constructed time interface structure
+     *  \param er_width  Overall render width, in pixels
+     *  \param er_height Overall render height, in pixels
+     *
+     *  \return Returns the constructed GUI structure
      */
 
     er_gui_t er_gui_create( le_size_t const er_width, le_size_t const er_height );
 
     /*! \brief constructor/destructor methods
      *
-     *  This function deletes the provided temporal slider structure. It
-     *  releases the slider buffer memory allocation and clears the structure
-     *  fields using default values.
+     *  This function deletes the provided GUI structures. It releases the GUI
+     *  graphical buffer and resets the structure fields using default values.
      *
-     *  \param er_times Time structure
+     *  \param er_gui GUI structure
      */
 
-    le_void_t er_gui_delete( er_gui_t * const er_times );
+    le_void_t er_gui_delete( er_gui_t * const er_gui );
 
     /*! \brief mutator methods
      *
-     *  This function clears the slider buffer before its update. While the
-     *  elements of the slider are only drawn through the alpha layer of its
-     *  buffer, only the alpha components are reset by the function.
+     *  This function resets the value of the alpha channel component of the
+     *  provided GUI structure graphical buffer. The component are all reset to
+     *  zero.
      *
-     *  \param er_times Time structure
+     *  \param er_gui GUI structure
      */
 
-    le_void_t er_gui_set_buffer( er_gui_t * const er_times );
+    le_void_t er_gui_set_buffer( er_gui_t * const er_gui );
 
-    /*! \brief mutator methods
+    /*! \brief render methods
      *
-     *  This function draws the elements of the temporal slider graduation scale
-     *  in the buffer of the provided time structure.
+     *  This function is responsible of rendering the provided GUI information
+     *  in its graphical buffer based on the provided viewpoint structure.
      *
-     *  The slider drawing is constituted of several passes on different
-     *  log-scale adapted to the provided time window and centred on the time
-     *  position of the point of view. A temporal graduation is displayed along
-     *  with dates that correspond to the highest graduation marks.
+     *  The function draws the three text line that compose the information by
+     *  reading the content of the provided viewpoint.
      *
-     *  \param er_times Time structure
-     *  \param er_time  Position in time of the point of view
-     *  \param er_area  Temporal range of the point of view
+     *  The function uses the font provided through the GUI structure along with
+     *  the predefined text elements.
+     *
+     *  As the information rendering ends, the function stamps the GUI graphical
+     *  buffer on the overall render using its byte content and the position
+     *  information provided by the GUI structure.
+     *
+     *  \param er_gui  GUI structure
+     *  \param er_view View structure
      */
 
-    le_void_t er_gui_set_slider( er_gui_t * const er_times, le_time_t const er_time, le_time_t const er_area );
+    le_void_t er_gui_display( er_gui_t * const er_gui, er_view_t const * const er_view );
 
-    /*! \brief display methods
+    /*! \brief render methods
      *
-     *  This function is responsible of the temporal slider drawing and display
-     *  in the OpenGL buffer. It is also responsible of the display of temporal
-     *  slider texts.
+     *  This function allows to render in the provided GUI structure graphical
+     *  buffer the provided time range in human readable format.
      *
-     *  The function starts by clearing the alpha layer of the slider buffer
-     *  before to draw the graduation scale through the specialised function. It
-     *  then displays the view structure times and the times comparison mode.
+     *  The time value is divided until its best representation, in terms of
+     *  seconds, minutes, hours, days and years, is reached.
      *
-     *  The temporal slider buffer is then drawn in the OpenGL buffer using the
-     *  standard OpenGL routines. As the slider is drawn over the Earth model
-     *  scene, this function has to be called after Earth model rendering.
+     *  The text is then rendered using the provided GUI structure font in its
+     *  graphical buffer. The position of the text (left and top) are given by
+     *  the \b er_x and \b er_y parameter. The alpha value of the text is given
+     *  through the \b er_value parameter. The text justification is provided by
+     *  the \b er_justify parameter.
      *
-     *  \param er_times Time structure
-     *  \param er_view  View structure
-     */
-
-    le_void_t er_gui_display( er_gui_t * const er_times, er_view_t const * const er_view );
-
-    /* *** */
-
-    le_void_t er_gui_range( er_gui_t * const er_times, le_time_t er_range, le_byte_t const er_value, le_size_t const er_x, le_size_t const er_y, le_enum_t const er_justify );
-
-    /*! \brief display methods
-     *
-     *  This function displays the provided date in the temporal slider buffer
-     *  using the provided time structure font.
-     *
-     *  The function starts by converting the provided date in a text string
-     *  that is written in the slider buffer using \b er_gui_display_text()
-     *  function. The date is converted using the libcommon date conversion
-     *  function that follows the format : YYYY-MM-DD-hh-mm-ss.
-     *
-     *  \param er_times   Time structure
-     *  \param er_date    Time value to display
-     *  \param er_value   Display alpha component
-     *  \param er_x       Display x-coordinate
-     *  \param er_y       Display y-coordinate
+     *  \param er_gui     GUI structure
+     *  \param er_range   Time range value
+     *  \param er_value   Rendering alpha value
+     *  \param er_x       Rendering left position, in pixels
+     *  \param er_y       Rendering top position, in pixels
      *  \param er_justify Text justification
      */
 
-    le_void_t er_gui_display_date( er_gui_t * const er_times, le_time_t const er_date, le_byte_t const er_value, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify );
+    le_void_t er_gui_range( er_gui_t * const er_gui, le_time_t er_range, le_byte_t const er_value, le_size_t const er_x, le_size_t const er_y, le_enum_t const er_justify );
 
-    /*! \brief display methods
+    /*! \brief render methods
      *
-     *  This function displays the provided text in the temporal slider buffer
-     *  using the provided time structure font.
+     *  This function allows to render in the provided GUI structure graphical
+     *  buffer the provided date (time) in human readable format.
      *
-     *  As buffers are used through OpenGL rendering, the y-coordinates are
-     *  reversed. It follows that the specified x and y coordinates are the
-     *  lower-left corner of the area in which the text is displayed.
+     *  The function converts the provided date (time) in a date string before
+     *  to render it. The date format is : YYYY-MM-DD+hh:mm:ss.
      *
-     *  The justification parameter is used to set text alignment. The three
-     *  usual modes are available : \b ER_GUI_LEFT, \b ER_GUI_RIGHT and the
-     *  \b ER_GUI_CENTER mode.
+     *  The text is then rendered using the provided GUI structure font in its
+     *  graphical buffer. The position of the text (left and top) are given by
+     *  the \b er_x and \b er_y parameter. The alpha value of the text is given
+     *  through the \b er_value parameter. The text justification is provided by
+     *  the \b er_justify parameter.
      *
-     *  \param er_times   Time structure
+     *  \param er_gui     GUI structure
+     *  \param er_date    Date value
+     *  \param er_value   Rendering alpha value
+     *  \param er_x       Rendering left position, in pixels
+     *  \param er_y       Rendering top position, in pixels
+     *  \param er_justify Text justification
+     */
+
+    le_void_t er_gui_display_date( er_gui_t * const er_gui, le_time_t const er_date, le_byte_t const er_value, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify );
+
+    /*! \brief render methods
+     *
+     *  This function allows to render in the provided GUI structure graphical
+     *  buffer the provided text string.
+     *
+     *  The text is then rendered using the provided GUI structure font in its
+     *  graphical buffer. The position of the text (left and top) are given by
+     *  the \b er_x and \b er_y parameter. The alpha value of the text is given
+     *  through the \b er_value parameter. The text justification is provided by
+     *  the \b er_justify parameter.
+     *
+     *  \param er_gui     GUI structure
      *  \param er_text    Text string
-     *  \param er_value   Display alpha component
-     *  \param er_x       Display x-coordinate
-     *  \param er_y       Display y-coordinate
+     *  \param er_value   Rendering alpha value
+     *  \param er_x       Rendering left position, in pixels
+     *  \param er_y       Rendering top position, in pixels
      *  \param er_justify Text justification
      */
 
-    le_void_t er_gui_display_text( er_gui_t * const er_times, le_char_t const * const er_text, le_byte_t const er_value, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify );
+    le_void_t er_gui_display_text( er_gui_t * const er_gui, le_char_t const * const er_text, le_byte_t const er_value, le_size_t er_x, le_size_t er_y, le_enum_t const er_justify );
 
 /*
     header - C/C++ compatibility
