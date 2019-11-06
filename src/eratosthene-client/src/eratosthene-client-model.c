@@ -100,13 +100,6 @@
 
     }
 
-    le_enum_t er_model_get_tail( er_model_t const * const er_model ) {
-
-        /* return synchronisation flag */
-        return( er_model->md_tail );
-
-    }
-
 /*
     source - mutator methods
  */
@@ -145,9 +138,6 @@
 
         /* reset synchronisation flag */
         er_model->md_sync = _LE_FALSE;
-
-        /* reset synchronisation flag */
-        er_model->md_tail = _LE_FALSE;
 
         /* reset cells state */
         for ( le_size_t er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
@@ -357,6 +347,8 @@
         /* update synchronisation index */
         if ( ( ++ er_model->md_syna ) == er_model->md_push ) {
 
+            er_model_set_hide( er_model );
+
             /* update synchronisation index */
             if ( ( -- er_model->md_synb ) >= ER_COMMON_ENUM ) {
 
@@ -374,23 +366,25 @@
 
     }
 
-    le_void_t er_model_set_tail( er_model_t * const er_model ) {
+    le_void_t er_model_set_hide( er_model_t * const er_model ) {
 
         /* parsing d-cell array tail */
-        for ( le_size_t er_parse = er_model->md_free; er_parse < er_model->md_size; er_parse ++ ) {
+        for ( le_size_t er_parse = er_model->md_free + 1; er_parse < er_model->md_size; er_parse ++ ) {
 
-            /* check d-cell state */
-            if ( er_cell_get_flag( er_model->md_cell + er_parse, ER_CELL_SYN | ER_CELL_DIS ) == ER_CELL_DIS ) {
+            /* scale-based d-cell selection */
+            if ( er_cell_get_size( er_model->md_cell + er_parse ) == er_model->md_synb ) {
 
-                /* update d-cell state */
-                er_cell_set_zero( er_model->md_cell + er_parse, ER_CELL_DIS );
+                /* check d-cell state */
+                if ( er_cell_get_flag( er_model->md_cell + er_parse, ER_CELL_SYN | ER_CELL_DIS ) == ER_CELL_DIS ) {
+
+                    /* update d-cell state */
+                    er_cell_set_zero( er_model->md_cell + er_parse, ER_CELL_DIS );
+
+                }
 
             }
 
         }
-
-        /* update synchronisation flag */
-        er_model->md_tail = _LE_TRUE;
 
     }
 

@@ -392,7 +392,7 @@
 
     le_void_t er_client_loops_event( er_client_t * const er_client );
 
-    /*! \brief loop methods
+    /*! \brief loop methods (revoked)
      *
      *  This function is called by the main and secondary thread to trigger the
      *  Earth model update according to the point of view.
@@ -419,7 +419,7 @@
      *  \param er_delay  Model update delay on point of view motion
      */
 
-    le_void_t er_client_loops_update( er_client_t * const er_client, le_size_t const er_pack, le_size_t const er_delay );
+    le_void_t er_client_loops_update( er_client_t * const er_client, le_size_t const er_delay );
 
     /*! \brief projection methods (revoked)
      *

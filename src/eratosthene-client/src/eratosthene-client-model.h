@@ -61,10 +61,10 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_MODEL_C        { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_COMMON_SIZE, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, LE_ARRAY_C, _LE_FALSE, _LE_FALSE, _LE_FALSE }
+    # define ER_MODEL_C        { _LE_SOCK_NULL, _LE_SIZE_NULL, _LE_TIME_NULL, ER_COMMON_SIZE, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, LE_ARRAY_C, _LE_FALSE, _LE_FALSE }
 
     /* define pseudo-initialiser */
-    # define ER_MODEL_I(s,p,t) { s, p, t, ER_COMMON_SIZE, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, LE_ARRAY_C, _LE_TRUE, _LE_TRUE, _LE_FALSE }
+    # define ER_MODEL_I(s,p,t) { s, p, t, ER_COMMON_SIZE, 0, 0, 0, 0, NULL, NULL, LE_ARRAY_C, LE_ARRAY_C, _LE_TRUE, _LE_FALSE }
 
 /*
     header - preprocessor macros
@@ -79,7 +79,7 @@
  */
 
     /*! \struct er_model_struct
-     *  \brief Model structure
+     *  \brief Model structure (revoked)
      *
      *  This structure is responsible of maintaining the content of Earth model
      *  provided by the remote server. Its role is to maintain the Earth model
@@ -185,7 +185,6 @@
         le_array_t  md_dete;
 
         le_enum_t   md_sync;
-        le_enum_t   md_tail;
 
     le_enum_t _status; } er_model_t;
 
@@ -237,18 +236,6 @@
      */
 
     le_enum_t er_model_get_sync( er_model_t const * const er_model );
-
-    /*! \brief accessor methods
-     *
-     *  This function allows to retrieve the synchronisation post-process state
-     *  flag used during model update.
-     *
-     *  \param er_model Model structure
-     *
-     *  \return Returns synchronisation post-process state flag
-     */
-
-    le_enum_t er_model_get_tail( er_model_t const * const er_model );
 
     /*! \brief mutator methods
      *
@@ -331,7 +318,7 @@
 
     le_void_t er_model_set_detect( er_model_t * const er_model );
 
-    /*! mutator methods
+    /*! mutator methods (revoked)
      *
      *  This function is responsible of the step by step synchronisation
      *  process of the target and actual cell stacks. At each function call,
@@ -383,6 +370,10 @@
 
     //le_size_t er_model_set_sync_pack( er_model_t * const er_model, le_size_t const er_pack );
 
+    /* *** */
+
+    le_void_t er_model_set_hide( er_model_t * const er_model );
+
     /*! mutator methods
      *
      *  This function is responsible of the cleaning of the tail of the actual
@@ -395,7 +386,7 @@
      *  \param er_model Model structure
      */
 
-    le_void_t er_model_set_tail( er_model_t * const er_model );
+    //le_void_t er_model_set_tail( er_model_t * const er_model );
 
     /*! \brief display methods
      *

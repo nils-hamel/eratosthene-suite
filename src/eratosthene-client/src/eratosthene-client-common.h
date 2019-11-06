@@ -75,7 +75,6 @@
     /* define model parameters */
     # define ER_COMMON_ENUM  ( 4 )
     # define ER_COMMON_SIZE  ( 16384 )
-    # define ER_COMMON_PACK  ( 1 )
 
     /* define model scale parameter */
     # define ER_COMMON_SCALE ( 1.0 / 100.0 ) /* scale asymptote */

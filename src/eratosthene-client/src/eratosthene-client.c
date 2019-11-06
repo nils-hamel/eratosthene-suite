@@ -403,7 +403,7 @@
                     er_client->cl_view = er_video_get( & er_client->cl_video );
 
                     /* model update procedure */
-                    er_client_loops_update( er_client, ER_COMMON_SIZE, 0 );
+                    er_client_loops_update( er_client, 0 );
 
                 }
 
@@ -439,7 +439,7 @@
                 if ( er_client->cl_loops == ER_COMMON_VIEW ) {
 
                     /* model update procedure */
-                    er_client_loops_update( er_client, ER_COMMON_PACK, CLOCKS_PER_SEC >> 2 );
+                    er_client_loops_update( er_client, CLOCKS_PER_SEC >> 2 );
 
                 }
 
@@ -556,7 +556,7 @@
 
     }
 
-    le_void_t er_client_loops_update( er_client_t * const er_client, le_size_t const er_pack, le_size_t const er_delay ) {
+    le_void_t er_client_loops_update( er_client_t * const er_client, le_size_t const er_delay ) {
 
         /* address variable */
         le_address_t er_address = LE_ADDRESS_C;
@@ -600,16 +600,6 @@
 
             /* model synchronisation process */
             er_model_set_sync( & er_client->cl_model );
-
-        } else {
-
-            /* check synchronisation flag */
-            if ( er_model_get_tail( & er_client->cl_model ) == _LE_FALSE ) {
-
-                /* model synchronisation tail process */
-                er_model_set_tail( & er_client->cl_model );
-
-            }
 
         }
 
@@ -712,7 +702,7 @@
             case ( SDLK_p ) : {
 
                 /* check model update state */
-                if ( er_model_get_tail( & er_client->cl_model ) == _LE_TRUE ) {
+                if ( er_model_get_sync( & er_client->cl_model ) == _LE_TRUE ) {
 
                     /* check stack state */
                     if ( er_video_get_state( & er_client->cl_video ) == _LE_TRUE ) {
