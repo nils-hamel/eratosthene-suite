@@ -347,6 +347,7 @@
         /* update synchronisation index */
         if ( ( ++ er_model->md_syna ) == er_model->md_push ) {
 
+            /* d-cell stack tail management */
             er_model_set_hide( er_model );
 
             /* update synchronisation index */
@@ -372,7 +373,7 @@
         for ( le_size_t er_parse = er_model->md_free + 1; er_parse < er_model->md_size; er_parse ++ ) {
 
             /* scale-based d-cell selection */
-            if ( er_cell_get_size( er_model->md_cell + er_parse ) == er_model->md_synb ) {
+            if ( er_cell_get_size( er_model->md_cell + er_parse ) >= er_model->md_synb ) {
 
                 /* check d-cell state */
                 if ( er_cell_get_flag( er_model->md_cell + er_parse, ER_CELL_SYN | ER_CELL_DIS ) == ER_CELL_DIS ) {
