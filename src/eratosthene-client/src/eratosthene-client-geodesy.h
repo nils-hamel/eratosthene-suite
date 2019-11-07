@@ -196,7 +196,7 @@
      *  of the OpenGL depth buffer.
      *
      *  \param er_altitude Height above WGS84 ellipsoid (in metres)
-     *  \param er_gamma    Point of view tilt (gamma) angle (in decimal degree)
+     *  \param er_tilt     Point of view tilt (gamma) angle (in decimal degree)
      *  \param er_scale    Current scale value
      *
      *  \return Far plane distance
