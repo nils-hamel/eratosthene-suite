@@ -90,7 +90,7 @@
 
     }
 
-    le_enum_t er_geodesy_select( le_real_t const er_distance, er_view_t const * const er_view, le_real_t const er_scfg, le_real_t const er_scale ) {
+    le_enum_t er_geodesy_select( le_real_t const er_distance, er_view_t const * const er_view, le_size_t const er_scfg, le_size_t const er_scale ) {
 
         /* clamping variables */
         le_real_t er_clamp = er_scfg - er_view_get_span( er_view ) - 2;

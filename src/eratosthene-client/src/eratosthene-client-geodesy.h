@@ -95,63 +95,56 @@
 
     /*! \brief geodetic methods
      *
+     *  This function computes the angles of view of the Earth according to the
+     *  altitude of the viewpoint. This angle separates the direction toward the
+     *  Earth center and toward the tangent of the Earth sphere according to
+     *  the provided altitude.
      *
-     *
-     *  \param er_altitude Height above WGS84 ellipsoid
+     *  \param er_altitude Height above WGS84 ellipsoid (in metres)
      */
 
     le_real_t er_geodesy_angle( le_real_t const er_altitude );
 
-    /*! \brief geodetic methods (revoked)
+    /*! \brief geodetic methods
      *
-     *  This function computes and returns the distance to the point of view at
-     *  which Earth surface elements have to be considered. It then defines, for
-     *  any altitude, which portion of Earth surface is to be considered as
-     *  Earth face seen by the user at the point of view.
+     *  This function computes and returns the maximum cell selection radius
+     *  according to the provided viewpoint altitude. It is used during cell
+     *  enumeration process to decide if a given cell has to be considered as
+     *  part of the 'seen' Earth face.
      *
      *  As the altitude of the point of view decreases, the Earth face is formed
      *  of a smaller portion of Earth surface. This allows to take into account
-     *  that far elements become irrelevant, from the display point of view, as
-     *  the point of view gets closer to Earth.
+     *  that far cells become irrelevant from the user point of view.
      *
-     *  This function is both used to drive to position of the OpenGL far plane
-     *  and to pre-select Earth model cells during cells enumeration at model
-     *  update.
-     *
-     *  \param er_altitude Point of view height above WGS84 ellipsoid
+     *  \param er_altitude Height above WGS84 ellipsoid (in metres)
      *
      *  \return Returns Earth face render distance
      */
 
     le_real_t er_geodesy_face( le_real_t const er_altitude );
 
-    /*! \brief geodetic methods
+    /*! \brief geodetic methods (revoked)
      *
-     *  This function computes, according to the distance between the cell and
-     *  the point of view, the ideal scale (i.e. the ideal number of digits of
-     *  is address spatial index) at which a cell is relevant to display. The
-     *  two last provided values are used to clamp the result.
+     *  This function is used to detect cells that are relevant for display
+     *  according to the distance between the cell center and the position of
+     *  the viewpoint.
      *
-     *  The point of view is also considered to compute the maximum depth at
-     *  which a cell can be considered, which depends on the cell common span
-     *  value.
-     *
-     *  This function is mainly used by the model update process. As it parses
-     *  the possible cells it checks, using this function, if a given cell is
-     *  relevant for display. Otherwise, the enumeration continues considering
-     *  the cell daughters.
+     *  The function applies a selection criterion based on the distance to the
+     *  cell in order to detect render relevancy. As a cell is detected as
+     *  relevant, the function returns \b _LE_TRUE value and the \b _LE_FALSE
+     *  value otherwise.
      *
      *  \param er_distance Distance between the cell and the point of view
-     *  \param er_view View structure
-     *  \param er_scfg     Server spatial parameter - number of scales
-     *  \param er_scale    Enumeration scale - cell address size
+     *  \param er_view     View structure (point of view)
+     *  \param er_scfg     Server spatial parameter
+     *  \param er_scale    Cell address length (enumeration scale)
      *
-     *  \return Returns the ideal depth value
+     *  \return Returns \b _LE_TRUE on selection, \b _LE_FALSE otherwise
      */
 
-    le_enum_t er_geodesy_select( le_real_t const er_distance, er_view_t const * const er_view, le_real_t const er_scfg, le_real_t const er_scale );
+    le_enum_t er_geodesy_select( le_real_t const er_distance, er_view_t const * const er_view, le_size_t const er_scfg, le_size_t const er_scale );
 
-    /*! \brief geodetic functions (revoked)
+    /*! \brief geodetic functions
      *
      *  This function computes the scale factor applied to the model according
      *  to the point of view height.
@@ -161,43 +154,50 @@
      *  modulation functions, to consider the entire Earth within a single
      *  continuous model.
      *
-     *  \param er_altitude Point of view height above WGS84 ellipsoid
+     *  \param er_altitude Height above WGS84 ellipsoid (in metres)
      *
      *  \return Returns the model scale factor
      */
 
     le_real_t er_geodesy_scale( le_real_t const er_altitude );
 
-    /*! \brief geodetic functions (revoked)
+    /*! \brief geodetic functions
      *
      *  This function computes the position of the near plane used by OpenGL.
      *
-     *  The position of the near and far planes are computed according to the
-     *  point of view height that drives the model scale factor. These two
-     *  planes are adapted to the scale factor and Earth size to decrease as
-     *  much as possible the precision load applied on the depth buffer.
+     *  The near plane position is computed taking into account the current
+     *  scale of the rendering. It computes an optimal position of the near
+     *  plane by reducing its position as the altitude goes down.
      *
-     *  \param er_altitude Point of view height above WGS84 ellipsoid
+     *  The value of both near and far planes are optimised to avoid saturation
+     *  of the OpenGL depth buffer.
+     *
+     *  \param er_altitude Height above WGS84 ellipsoid (in metres)
+     *  \param er_scale    Current scale value
      *
      *  \return Near plane distance
      */
 
     le_real_t er_geodesy_near( le_real_t const er_altitude, le_real_t const er_scale );
 
-    /*! \brief geodetic functions (revoked)
+    /*! \brief geodetic functions
      *
      *  This function computes the position of the far plane used by OpenGL.
      *
-     *  The position of the near and far planes are computed according to the
-     *  point of view height that drives the model scale factor. These two
-     *  planes are adapted to the scale factor and Earth size to decrease as
-     *  much as possible the precision load applied on the depth buffer.
+     *  The far plane position is computed taking into account the current scale
+     *  factor of the rendering. It also takes into account the viewpoint tilt
+     *  angle allowing to decrease the position of the far plane as the tilt
+     *  angle goes up.
      *
-     *  In addition, the far plane position computation is linked to the model
-     *  cells render limit as the altitude of the point of view goes toward
-     *  zeros. This allows to fade (fog) the model view at limit of display.
+     *  The far plane position is also used to specify the fog parameters of the
+     *  rendering.
      *
-     *  \param er_altitude Point of view height above WGS84 ellipsoid
+     *  The value of both near and far planes are optimised to avoid saturation
+     *  of the OpenGL depth buffer.
+     *
+     *  \param er_altitude Height above WGS84 ellipsoid (in metres)
+     *  \param er_gamma    Point of view tilt (gamma) angle (in decimal degree)
+     *  \param er_scale    Current scale value
      *
      *  \return Far plane distance
      */
