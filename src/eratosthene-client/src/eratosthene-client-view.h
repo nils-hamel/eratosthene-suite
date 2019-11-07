@@ -75,33 +75,38 @@
     /*! \struct er_view_struct
      *  \brief View structure (revoked)
      *
-     *  This structure contains the information describing a model point of
-     *  view. It includes the point of view position, angles of sight, and also
-     *  fields related to the position in time.
+     *  This structure contains the information describing as user point of view
+     *  in the four-dimensional space. This includes the spatial position, the
+     *  orientation of the view and elements related to the position in time.
      *
-     *  The position and orientation of the point of view is stored through
-     *  fives fields that gives the longitude, the latitude, the height above
-     *  WGS84 ellipsoid and the two angles of sight.
+     *  The position and orientation of the point of view is stored through the
+     *  five first fields that gives the longitude, the latitude, the height
+     *  above WGS84 ellipsoid and the two angles of sight.
      *
-     *  A structure field holds the times convolution mode. As the interface
-     *  allows to browse two different times simultaneously, the mode describes
-     *  how to handle them. The remote server implements five comparison modes
-     *  through queries :
+     *  The two next fields are related to the convolution and query mode. As
+     *  the interface allows to browse through two different times, the mode of
+     *  convolution describe how to handle them. The remote server allows the
+     *  following convolution modes :
      *
      *      mode = 1 : Primary time only
      *      mode = 2 : Secondary time only
-     *      mode = 3 : Primary time (logical or) secondary time
+     *      mode = 3 : Primary time (logical or ) secondary time
      *      mode = 4 : Primary time (logical and) secondary time
      *      mode = 5 : Primary time (logical xor) secondary time
      *
-     *  These modes allow to emphasise the similarities and differences through
-     *  time of the earth model and to manage composition of mixed models.
+     *  The query mode allows to specify to the remote server how the address
+     *  content detection is performed along the time dimension. The following
+     *  values are available :
      *
-     *  Another fields the query mode. The interface allows to switch between
-     *  to query mode for the cells of the Earth model. The first mode asks for
-     *  the nearest cell, in time, regardless of its content. The second one
-     *  asks for the nearest cell, in time, that is not empty, up to a temporal
-     *  limit given by the comb value (time range).
+     *      query = 0 (LE_ADDRESS_NEAR)
+     *      query = 1 (LE_ADDRESS_DEEP)
+     *
+     *  The near mode indicates the server to detects only the nearest storage
+     *  structure of the data without checking if a specific cell contains
+     *  actual data in it. The deep mode indicates the server to search through
+     *  all storage structure (following a proximity order) until the detection
+     *  of data for the cell pointed by the considered address index. Both
+     *  detection mode are clamped by the comb value stored in \b vw_cmb field.
      *
      *  The two times are then part of the point of view and their value is kept
      *  in this structure through two fields. In addition to their value, a
@@ -110,9 +115,9 @@
      *  according to the position in time. This allows to reduce or increase the
      *  view span in the time dimension.
      *
-     *  The last field of the structure holds the value of the model cells
-     *  query depth (span). This allows user to modulate the density of the
-     *  displayed model by simply changing this value.
+     *  The last field holds the value of the model cells query additional depth
+     *  (span). This allows user to modulate the density of the displayed model
+     *  by simply changing this value.
      *
      *  \var er_view_struct::vw_lon
      *  Longitude angle, in decimal degrees
@@ -121,13 +126,13 @@
      *  \var er_view_struct::vw_alt
      *  Height above WGS84 ellipsoid, in metres
      *  \var er_view_struct::vw_azm
-     *  Azimuthal angle, in decimal degrees
+     *  Azimuth angle, in decimal degrees
      *  \var er_view_struct::vw_gam
      *  Tilt (gamma) angle, in decimal degrees
      *  \var er_view_struct::vw_mod
      *  Times convolution mode
      *  \var er_view_struct::vw_qry
-     *  Cell query mode
+     *  Temporal query mode
      *  \var er_view_struct::vw_tia
      *  Primary time value
      *  \var er_view_struct::vw_tib
@@ -135,7 +140,7 @@
      *  \var er_view_struct::vw_cmb
      *  Temporal range (comb)
      *  \var er_view_struct::vw_spn
-     *  Model cells query depth (span)
+     *  Cells query additional depth
      */
 
     typedef struct er_view_struct {
@@ -184,16 +189,16 @@
     /*! \brief accessor methods
      *
      *  This function compare the content of the two provided view structures
-     *  and checks for the identity of the field used to trigger a model update
+     *  and checks for the identity of the fields used to trigger a model update
      *  procedure (longitude, latitude, altitude, convolution and query modes,
      *  times and range).
      *
      *  If all the considered fields are identical, the function returns the
-     *  \b _LE_TRUE value, _LE_FALSE otherwise. This function is used to check
-     *  for a motion of the point of view that requires a update of the model.
+     *  \b _LE_TRUE value, _LE_FALSE otherwise. This function is used to detect
+     *  motion of the point of view.
      *
-     *  \param  er_viewa View structure
-     *  \param  er_viewb View structure
+     *  \param er_viewa View structure
+     *  \param er_viewb View structure
      *
      *  \return Returns _LE_TRUE on pseudo-identity, _LE_FALSE otherwise
      */
@@ -205,7 +210,7 @@
      *  This function returns the longitude value contained in the provided view
      *  structure.
      *
-     *  \param  er_view View structure
+     *  \param er_view View structure
      *
      *  \return Returns the view longitude, in decimal degrees
      */
@@ -217,7 +222,7 @@
      *  This function returns the latitude value contained in the provided view
      *  structure.
      *
-     *  \param  er_view View structure
+     *  \param er_view View structure
      *
      *  \return Returns the view latitude, in decimal degrees
      */
@@ -229,7 +234,7 @@
      *  This function returns the height above WGS84 ellipsoid value contained
      *  in the provided view structure.
      *
-     *  \param  er_view View structure
+     *  \param er_view View structure
      *
      *  \return Returns the view height above WGS84 ellipsoid, in metres
      */
@@ -238,12 +243,12 @@
 
     /*! \brief accessor methods
      *
-     *  This function returns the azimuthal angle value contained in the view
+     *  This function returns the azimuth angle value contained in the view
      *  structure provided as parameter.
      *
-     *  \param  er_view View structure
+     *  \param er_view View structure
      *
-     *  \return Returns the view azimuthal angle, in decimal degrees
+     *  \return Returns the view azimuth angle, in decimal degrees
      */
 
     le_real_t er_view_get_azm( er_view_t const * const er_view );
@@ -253,7 +258,7 @@
      *  This function returns the tilt (gamma) angle value contained in the view
      *  structure provided as parameter.
      *
-     *  \param  er_view View structure
+     *  \param er_view View structure
      *
      *  \return Returns the view tilt (gamma) angle, in decimal degrees
      */
@@ -266,8 +271,8 @@
      *  structure to the provided position array. In addition to the copy, it
      *  also converts the two parametric angles from degrees to radian.
      *
-     *  \param  er_view View structure
-     *  \param  er_pose Position array
+     *  \param er_view View structure
+     *  \param er_pose Position array
      */
 
     le_void_t er_view_get_pose( er_view_t const * const er_view, le_real_t * const er_pose );
@@ -283,7 +288,7 @@
      *  to be reduced in order to keep relevant displacement speed. In addition,
      *  if left-control key is pressed, the inertia is augmented to speed up
      *  the point of view. If the left-shift key is pressed, the inertia is
-     *  decreased to allow fine tune of the point of view.
+     *  decreased to allow fine tuning of the point of view.
      *
      *  \param er_view     View structure
      *  \param er_modifier Keyboard modifier bit-field
@@ -295,7 +300,7 @@
 
     /*! \brief accessor methods
      *
-     *  This function returns the times convultion mode value contained in the
+     *  This function returns the times convolution mode value contained in the
      *  provided view structure.
      *
      *  \param er_view View structure
@@ -312,7 +317,7 @@
      *
      *  \param er_view View structure
      *
-     *  \return Returns the view cell query mode
+     *  \return Returns the view cells query mode
      */
 
     le_enum_t er_view_get_query( er_view_t const * const er_view );
@@ -332,10 +337,13 @@
      *  using the view structure corresponding value. The value of the temporal
      *  range is also packed in the provided address structure.
      *
+     *  The time convolution and cells query modes are also assigned to the
+     *  returned address structure.
+     *
      *  This function is usually used by the model update process to initialise
      *  the enumeration address structure.
      *
-     *  \param  er_view View structure
+     *  \param er_view View structure
      *
      *  \return Returns initialised address structure
      */
@@ -348,8 +356,8 @@
      *  structure. According to the provided index, the function returns the
      *  first or the second time contained in the view structure.
      *
-     *  \param  er_view View structure
-     *  \param  er_time View structure time index
+     *  \param er_view View structure
+     *  \param er_time View structure time index
      *
      *  \return Returns view time
      */
@@ -382,19 +390,16 @@
     /*! \brief mutator methods
      *
      *  This function allows to set the spatial and temporal position of the
-     *  provided view structure.
-     *
-     *  It uses the provided spatial values to set the position of the view in
-     *  space and the temporal values to set its position in time.
+     *  provided view structure using the provided parameters.
      *
      *  \param er_view View structure
-     *  \param er_lon  Longitude value (WGS84 radian)
-     *  \param er_lat  Latitude value (WGS84 radian)
-     *  \param er_alt  Altitude value (height above WGS84 ellipsoid, in metres)
-     *  \param er_azm  Azimuth angle value (in degree)
-     *  \param er_gam  Tilt angle value (in degree)
-     *  \param er_tia  First time value (in seconds, UTC timestamp)
-     *  \param er_tib  Second time value (in seconds, UTC timestamp)
+     *  \param er_lon  Longitude value (in decimal degree)
+     *  \param er_lat  Latitude value (in decimal degree)
+     *  \param er_alt  Altitude value (in metres)
+     *  \param er_azm  Azimuth angle value (in decimal degree)
+     *  \param er_gam  Tilt angle value (in decimal degree)
+     *  \param er_tia  First time value (in seconds)
+     *  \param er_tib  Second time value (in seconds)
      *  \param er_cmb  Temporal comb value (in seconds)
      */
 
@@ -402,17 +407,18 @@
 
     /*! \brief mutator methods
      *
-     *  This function updates the position of the point of view provided by the
-     *  view structure.
+     *  This function updates the position of the point of view contained in the
+     *  provided view structure. It uses the provided x and y motion value that
+     *  are usually linked to mouse motion on the user screen.
      *
      *  It uses the x motion amplitude value to move the point of view along the
-     *  direction defined by the azimuthal angle. The y motion amplitude is used
+     *  direction defined by the azimuth angle. The y motion amplitude is used
      *  to move the point of view along the perpendicular direction to the
-     *  azimuthal direction.
+     *  azimuth direction.
      *
      *  \param er_view   View structure
-     *  \param er_xvalue Motion amplitude - Pro-grade
-     *  \param er_yvalue Motion amplitude - Ortho-grade
+     *  \param er_xvalue Motion amplitude (pro-grade)
+     *  \param er_yvalue Motion amplitude (ortho-grade)
      */
 
     le_void_t er_view_set_plan( er_view_t * const er_view, le_real_t const er_xvalue, le_real_t const er_yvalue );
@@ -433,7 +439,7 @@
 
     /*! \brief mutator methods
      *
-     *  This function adds the provided motion amplitude value to the azimuthal
+     *  This function adds the provided motion amplitude value to the azimuth
      *  angle of the provided view structure.
      *
      *  \param er_view  View structure
@@ -471,8 +477,8 @@
      *
      *  This function sets the cells query mode of the provided view structure.
      *
-     *  \param er_view View structure
-     *  \param er_mode Cells query mode
+     *  \param er_view  View structure
+     *  \param er_query Cells query mode
      */
 
     le_void_t er_view_set_query( er_view_t * const er_view, le_enum_t const er_query );
@@ -482,7 +488,7 @@
      *  This function is used for alignment of the two times of the provided
      *  view structure.
      *
-     *  If the mode is 1, the second time is aligned on the first one. If the
+     *  If the mode is one, the second time is aligned on the first one. If the
      *  mode is two, the first time is aligned on the second one.
      *
      *  \param er_view View structure
