@@ -206,6 +206,10 @@
 
     le_enum_t er_cell_get_equal( er_cell_t const * const er_cell, er_cell_t const * const er_targ );
 
+    /* *** */
+
+    le_enum_t er_cell_get_equal_index( er_cell_t const * const er_cell, er_cell_t const * const er_targ );
+
     /*! \brief accessor methods
      *
      *  This function returns the number of points, that is the number of uv3

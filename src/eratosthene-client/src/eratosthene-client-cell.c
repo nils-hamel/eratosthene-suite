@@ -81,6 +81,13 @@
 
     }
 
+    le_enum_t er_cell_get_equal_index( er_cell_t const * const er_cell, er_cell_t const * const er_targ ) {
+
+        /* compare addresses (index only) */
+        return( le_address_get_equal_index( & er_cell->ce_addr, & er_targ->ce_addr ) );
+
+    }
+
     le_size_t er_cell_get_record( er_cell_t const * const er_cell ) {
 
         /* return number of uv3 records */

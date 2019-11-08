@@ -344,6 +344,9 @@
 
         }
 
+        /* d-cell fast tail management */
+        er_model_set_hide_fast( er_model );
+
         /* update synchronisation index */
         if ( ( ++ er_model->md_syna ) == er_model->md_push ) {
 
@@ -360,6 +363,28 @@
 
                 /* update synchronisation flag */
                 er_model->md_sync = _LE_TRUE;
+
+            }
+
+        }
+
+    }
+
+    le_void_t er_model_set_hide_fast( er_model_t * const er_model ) {
+
+        /* parsing d-cell array */
+        for ( le_size_t er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
+
+            /* check d-cell state */
+            if ( er_cell_get_flag( er_model->md_cell + er_parse, ER_CELL_SYN | ER_CELL_DIS ) == ER_CELL_DIS ) {
+
+                /* detect index identity */
+                if ( er_cell_get_equal_index( er_model->md_cell + er_parse, er_model->md_cell + er_model->md_free ) == _LE_TRUE ) {
+
+                    /* update d-cell state */
+                    er_cell_set_zero( er_model->md_cell + er_parse, ER_CELL_DIS );
+
+                }
 
             }
 

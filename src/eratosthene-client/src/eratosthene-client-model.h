@@ -387,6 +387,10 @@
 
     le_void_t er_model_set_sync( er_model_t * const er_model );
 
+    /* *** */
+
+    le_void_t er_model_set_hide_fast( er_model_t * const er_model );
+
     /*! \brief mutator methods
      *
      *  This function allows to deactivate the cells of the render stack that
