@@ -206,7 +206,17 @@
 
     le_enum_t er_cell_get_equal( er_cell_t const * const er_cell, er_cell_t const * const er_targ );
 
-    /* *** */
+    /*! \brief accessor methods
+     *
+     *  This function compare the two provided cell addresses index only and
+     *  returns _LE_TRUE constant on index identity, _LE_FALSE otherwise.
+     *
+     *  \param er_cell Cell structure
+     *  \param er_targ Cell structure
+     *
+     *  \return Returns _LE_TRUE on addresses index identity and _LE_FALSE
+     *  otherwise
+     */
 
     le_enum_t er_cell_get_equal_index( er_cell_t const * const er_cell, er_cell_t const * const er_targ );
 
