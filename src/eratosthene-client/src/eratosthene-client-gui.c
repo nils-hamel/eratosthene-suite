@@ -130,7 +130,7 @@
         er_gui_set_buffer( er_gui );
 
         /* display comb value */
-        er_gui_range( er_gui, er_cmb, 255, er_middle, er_height, ER_GUI_CENTER );
+        er_gui_range( er_gui, er_cmb / ER_COMMON_LCOMB, 255, er_middle, er_height, ER_GUI_CENTER );
 
         /* update comb value */
         er_cmb >>= 1;
