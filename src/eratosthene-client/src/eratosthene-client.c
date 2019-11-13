@@ -403,7 +403,7 @@
                     er_client->cl_view = er_video_get( & er_client->cl_video );
 
                     /* model update procedure */
-                    er_client_loops_update( er_client, 0 );
+                    while ( er_client_loops_update( er_client, 0 ) == _LE_FALSE );
 
                 }
 
@@ -556,7 +556,7 @@
 
     }
 
-    le_void_t er_client_loops_update( er_client_t * const er_client, le_size_t const er_delay ) {
+    le_enum_t er_client_loops_update( er_client_t * const er_client, le_size_t const er_delay ) {
 
         /* address variable */
         le_address_t er_address = LE_ADDRESS_C;
@@ -601,7 +601,13 @@
             /* model synchronisation process */
             er_model_set_sync( & er_client->cl_model );
 
+            /* send message */
+            return( _LE_FALSE );
+
         }
+
+        /* send message */
+        return( _LE_TRUE );
 
     }
 
