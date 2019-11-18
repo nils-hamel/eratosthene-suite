@@ -849,6 +849,11 @@
 
             } break;
 
+            /* temporary position shortcut */
+            case ( SDLK_y ) : { er_client->cl_view.vw_lon =  6.825284; er_client->cl_view.vw_lat = 47.100033; } break;
+            case ( SDLK_x ) : { er_client->cl_view.vw_lon =  6.147773; er_client->cl_view.vw_lat = 46.205987; } break;
+            case ( SDLK_c ) : { er_client->cl_view.vw_lon = 12.335305; er_client->cl_view.vw_lat = 45.438301; } break;
+
         }
 
     }
