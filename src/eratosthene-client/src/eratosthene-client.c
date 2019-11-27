@@ -382,11 +382,8 @@
         /* master swicth switch */
         if ( omp_get_thread_num() == 0 ) {
 
-            /* critical region variable */
-            le_enum_t er_loop = _LE_TRUE;
-
             /* execution loop */
-            while ( er_loop == _LE_TRUE ) {
+            while ( er_client->cl_loops != ER_COMMON_EXIT ) {
 
                 /* switch on execution mode */
                 if ( er_client->cl_loops == ER_COMMON_VIEW ) {
@@ -421,19 +418,12 @@
 
                 }
 
-                /* execution mode synchronisation */
-                # pragma omp critical
-                er_loop = er_client->cl_loops == ER_COMMON_EXIT ? _LE_FALSE : _LE_TRUE;
-
             }
 
         } else {
 
-            /* critical region variable */
-            le_enum_t er_loop = _LE_TRUE;
-
             /* execution loop */
-            while ( er_loop == _LE_TRUE ) {
+            while ( er_client->cl_loops != ER_COMMON_EXIT ) {
 
                 /* switch on execution mode */
                 if ( er_client->cl_loops == ER_COMMON_VIEW ) {
@@ -442,10 +432,6 @@
                     er_client_loops_update( er_client, CLOCKS_PER_SEC >> 2 );
 
                 }
-
-                /* execution mode synchronisation */
-                # pragma omp critical
-                er_loop = er_client->cl_loops == ER_COMMON_EXIT ? _LE_FALSE : _LE_TRUE;
 
             }
 
