@@ -73,15 +73,15 @@
  */
 
     /*! \struct er_view_struct
-     *  \brief View structure (revoked)
+     *  \brief View structure
      *
      *  This structure contains the information describing as user point of view
      *  in the four-dimensional space. This includes the spatial position, the
      *  orientation of the view and elements related to the position in time.
      *
      *  The position and orientation of the point of view is stored through the
-     *  five first fields that gives the longitude, the latitude, the height
-     *  above WGS84 ellipsoid and the two angles of sight.
+     *  five first fields that gives the longitude, the latitude, the radial
+     *  altitude (from Earth center) and the two angles of sight.
      *
      *  The two next fields are related to the convolution and query mode. As
      *  the interface allows to browse through two different times, the mode of
@@ -188,7 +188,7 @@
 
     /*! \brief accessor methods
      *
-     *  This function compare the content of the two provided view structures
+     *  This function compares the content of the two provided view structures
      *  and checks for the identity of the fields used to trigger a model update
      *  procedure (longitude, latitude, altitude, convolution and query modes,
      *  times and range).
@@ -231,8 +231,8 @@
 
     /*! \brief accessor methods
      *
-     *  This function returns the height above WGS84 ellipsoid value contained
-     *  in the provided view structure.
+     *  This function returns the radial altitude value contained in the
+     *  provided view structure.
      *
      *  \param er_view View structure
      *
@@ -425,8 +425,8 @@
 
     /*! \brief mutator methods
      *
-     *  This function adds the provided motion amplitude value to the height of
-     *  the view structure provided as parameter.
+     *  This function adds the provided motion amplitude value to the radial
+     *  altitude of the view structure provided as parameter.
      *
      *  After height modification, the function checks its value and correct it
      *  as it goes beyond the authorised range.
