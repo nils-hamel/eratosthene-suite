@@ -89,17 +89,17 @@
      *  The model is kept up to date according to the motion of the point of
      *  view through the dynamical update procedure implemented in this module.
      *  Two stacks of cells, each represented by an indexation address and it
-     *  corresponding content, are defined. The first stack contains the cell
+     *  corresponding content, are defined. The first stack contains the cells
      *  that are rendered and so, containing the actual data obtained through
      *  a query to the remote server using its address. The second stack only
-     *  contains 'virtual' cell only represented by and address.
+     *  contains 'virtual' cells only represented by an address.
      *
      *  The second stack then contains the target cells that are set by the
      *  enumeration process responsible of creating the list of all relevant
-     *  address to query to the remote server according to the current point
+     *  addresses to query to the remote server according to the current point
      *  of view. As a motion of the point of view is detected, the target stack
-     *  is updated. The render cell stack is then synchronised step by step with
-     *  the target stack. The synchronisation is made in two phases.
+     *  is updated. The render cells stack is then synchronised step by step
+     *  with the target stack. The synchronisation is made in two phases.
      *
      *  The first phase, that immediately follows each update of the target
      *  stack checks if some required cells are already present in the render
@@ -113,7 +113,7 @@
      *  synchronisation is made cell by cell allowing to interrupt the process
      *  in case a new target stack is defined before the end of this phase.
      *
-     *  The cell of the target stack are processed using their address depth to
+     *  The cells of the target stack are processed using their address depth to
      *  order the query. This allows to query the deeper cells, those close to
      *  the user point of view in the first place. After cells of a given scale
      *  are all synchronised, the cells of the render stack of the same or
@@ -206,7 +206,7 @@
      *  parameters.
      *
      *  In addition, this function also allocate the two cell stacks needed to
-     *  maintain and update the model. The cells of both stack are initialised
+     *  maintain and update the model. The cells of both stacks are initialised
      *  by the function.
      *
      *  This function returning the created structure, the status is stored in
@@ -253,7 +253,7 @@
      *  This function sets the provided model structure free cell index on the
      *  immediate next available cell for data reception. The function uses the
      *  value of the free cell as an index and increases it until an available
-     *  is pointed.
+     *  cell is pointed.
      *
      *  This function is used during model update to find a cell able to read
      *  the answer of an address query made toward the remote server.
@@ -387,7 +387,18 @@
 
     le_void_t er_model_set_sync( er_model_t * const er_model );
 
-    /* *** */
+    /*! \brief mutator methods
+     *
+     *  This function allows to deactivate specific cells of the render stack to
+     *  avoid superposition of multiple cell content.
+     *
+     *  During synchronisation process, as a new cell is set on the render
+     *  stack and its data queried from the remote server, this function search
+     *  in the render stack for a cell with identical address. If such cell is
+     *  found, the function reset its render flag to hide it.
+     *
+     *  \param er_model Model structure
+     */
 
     le_void_t er_model_set_hide_fast( er_model_t * const er_model );
 
