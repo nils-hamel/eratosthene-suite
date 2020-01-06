@@ -2,7 +2,7 @@
  *  eratosthene-suite - common library
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016-2018 DHLAB, EPFL
+ *      Copyright (c) 2016-2020 DHLAB, EPFL
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -93,7 +93,7 @@
      *  \param  lc_path   Exportation path
      *  \param  lc_width  Width, in pixels, of the image
      *  \param  lc_height Height, in pixels, of the image
-     *  \param  lc_bytes  Image bytes (24 bpp RGB)
+     *  \param  lc_bytes  Image bytes (RGB888)
      *
      *  \return Returns LC_TRUE on success, LC_FALSE otherwise
      */

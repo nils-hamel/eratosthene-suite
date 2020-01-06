@@ -2,7 +2,7 @@
  *  eratosthene-suite - common library
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016-2019 DHLAB, EPFL
+ *      Copyright (c) 2016-2020 DHLAB, EPFL
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -74,10 +74,10 @@
      *  This function searches in the provided arguments list if the specified
      *  flag is present, in short or long form.
      *
-     *  \param  argc     Main function parameters
-     *  \param  argv     Main function parameters
-     *  \param  er_long  Argument string - long form
-     *  \param  er_short Argument string - short form
+     *  \param argc     Main function parameters
+     *  \param argv     Main function parameters
+     *  \param er_long  Argument string - long form
+     *  \param er_short Argument string - short form
      *
      *  \return Returns LC_TRUE if switch is found, LC_FALSE otherwise
      */
@@ -90,10 +90,10 @@
      *  argument is present. As it is, the function returns the pointer to the
      *  string containing the parameter of the found argument.
      *
-     *  \param  argc     Main function parameters
-     *  \param  argv     Main function parameters
-     *  \param  er_long  Argument string - long form
-     *  \param  er_short Argument string - short form
+     *  \param argc     Main function parameters
+     *  \param argv     Main function parameters
+     *  \param er_long  Argument string - long form
+     *  \param er_short Argument string - short form
      *
      *  \return Pointer to parameter string on success, NULL otherwise
      */
@@ -109,11 +109,11 @@
      *  When the argument is not found in the list or on missing parameter, the
      *  function simply returns the provided default value.
      *
-     *  \param  argc       Main function parameters
-     *  \param  argv       Main function parameters
-     *  \param  er_long    Argument string - long form
-     *  \param  er_short   Argument string - short form
-     *  \param  er_default Parameter default value
+     *  \param argc       Main function parameters
+     *  \param argv       Main function parameters
+     *  \param er_long    Argument string - long form
+     *  \param er_short   Argument string - short form
+     *  \param er_default Parameter default value
      *
      *  \return Parameter value on success, the default value otherwise
      */
@@ -129,11 +129,11 @@
      *  When the argument is not found in the list or on missing parameter, the
      *  function simply returns the provided default value.
      *
-     *  \param  argc       Main function parameters
-     *  \param  argv       Main function parameters
-     *  \param  er_long    Argument string - long form
-     *  \param  er_short   Argument string - short form
-     *  \param  er_default Parameter default value
+     *  \param argc       Main function parameters
+     *  \param argv       Main function parameters
+     *  \param er_long    Argument string - long form
+     *  \param er_short   Argument string - short form
+     *  \param er_default Parameter default value
      *
      *  \return Parameter value on success, the default value otherwise
      */
@@ -149,11 +149,11 @@
      *  When the argument is not found in the list or on missing parameter, the
      *  function simply returns the provided default value.
      *
-     *  \param  argc       Main function parameters
-     *  \param  argv       Main function parameters
-     *  \param  er_long    Argument string - long form
-     *  \param  er_short   Argument string - short form
-     *  \param  er_default Parameter default value
+     *  \param argc       Main function parameters
+     *  \param argv       Main function parameters
+     *  \param er_long    Argument string - long form
+     *  \param er_short   Argument string - short form
+     *  \param er_default Parameter default value
      *
      *  \return Parameter value on success, the default value otherwise
      */
