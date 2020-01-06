@@ -165,14 +165,14 @@
      *
      *  The next field is used to control the state of the execution of the
      *  software. Its value indicates the execution mode that can take several
-     *  value depending on the mode. Two execution mode are available : the user
-     *  controlled interface and the automatic point of view used to create
-     *  video frame along a user pre-defined path. If the value is in the third
+     *  value depending on the mode. Two execution modes are available : the
+     *  user controlled interface and the automatic point of view used to create
+     *  video frames along a user pre-defined path. If the value is in the third
      *  mode, it simply indicates the execution to stop.
      *
-     *  The three next field are related to the rendering display management.
+     *  The three next fields are related to the rendering display management.
      *  Thier value, that are simple boolean values, indicates if the model, the
-     *  Earth wireframe and the information have to be displayed or not.
+     *  Earth wireframe and the GUI information have to be displayed or not.
      *
      *  The three next fields hold the structure of the sub-modules. Sub-modules
      *  are initialised and used through their representation in this structure.
@@ -341,10 +341,9 @@
      *  The main function allows to query and display a four dimensional model
      *  of the Earth through communication with a remote server :
      *
-     *      ./-client --ip/-i     [remote server IP address]
-     *                --port/-p   [remote server service port]
+     *      ./-client --ip/-i --port/-p [remote server address and service]
      *                --export/-e [video frame exportation directory]
-     *                --frame/-f  [video frame count]
+     *                --frame/-f [video frame count]
      *
      *  The main function starts by creating the graphical context of the
      *  client by creating the render window and context.
@@ -367,11 +366,11 @@
      *  first thread is used being responsible of both rendering and model
      *  update. The interface events are not handled in this execution mode.
      *
-     *  As the main execution loop is terminated, the main function destroy the
+     *  As the main execution loop is terminated, the main function destroys the
      *  client main structure and the graphical context.
      *
-     *  \param argc Main function parameters
-     *  \param argv Main function parameters
+     *  \param argc Standard parameters
+     *  \param argv Standard parameters
      *
      *  \return Standard exit code
      */
@@ -380,8 +379,8 @@
 
     /*! \brief loop methods
      *
-     *  This function is responsible of the OpenGL configuration and the main
-     *  execution loops and threads management.
+     *  This function is responsible of the OpenGL configuration and main loop
+     *  threads management.
      *
      *  Two threads are created by this function. The principal thread is
      *  responsible of the graphical process and events management. The second
@@ -389,7 +388,7 @@
      *  of the point of view through queries to the remote server.
      *
      *  The user events are processed through the principal thread. As an event
-     *  is catched, the specialised callback processes are called to handle the
+     *  is catch, the specialised callback processes are called to handle the
      *  event. The user events are also used to interrupt the main loop causing
      *  the function to exit.
      *
@@ -429,7 +428,7 @@
 
     le_void_t er_client_loops_event( er_client_t * const er_client );
 
-    /*! \brief loop methods (revoked)
+    /*! \brief loop methods
      *
      *  This function is called by the main and secondary thread to trigger the
      *  Earth model update according to the point of view.
@@ -440,7 +439,7 @@
      *  to reduce the frequency, and so bandwidth usage, when successive and
      *  close modifications of the point of view are performed.
      *
-     *  As the delay passed, the function prepare and triggers the model update
+     *  As the delay passed, the function prepares and triggers the model update
      *  procedure. The target cell stack is updated and the fast update process
      *  is executed. The cell state detection is also made through a specific
      *  query to the remove server. The delay clock is also reset at this point.

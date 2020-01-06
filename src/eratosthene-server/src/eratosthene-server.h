@@ -159,8 +159,8 @@
      *  As the main server instance exits, the main function deletes the server
      *  structure and exits.
      *
-     *  \param argc Main function parameters
-     *  \param argv Main function parameters
+     *  \param argc Standard parameters
+     *  \param argv Standard parameters
      *
      *  \return Standard exit code
      */
