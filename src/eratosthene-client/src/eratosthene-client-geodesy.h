@@ -100,7 +100,7 @@
      *  Earth center and toward the tangent of the Earth sphere according to
      *  the provided altitude.
      *
-     *  \param er_altitude Height above WGS84 ellipsoid (in metres)
+     *  \param er_altitude Radial altitude, in metres, from Earth center
      */
 
     le_real_t er_geodesy_angle( le_real_t const er_altitude );
@@ -116,14 +116,14 @@
      *  of a smaller portion of Earth surface. This allows to take into account
      *  that far cells become irrelevant from the user point of view.
      *
-     *  \param er_altitude Height above WGS84 ellipsoid (in metres)
+     *  \param er_altitude Radial altitude, in metres, from Earth center
      *
      *  \return Returns Earth face render distance
      */
 
     le_real_t er_geodesy_face( le_real_t const er_altitude );
 
-    /*! \brief geodetic methods (revoked)
+    /*! \brief geodetic methods
      *
      *  This function is used to detect cells that are relevant for display
      *  according to the distance between the cell center and the position of
@@ -154,7 +154,7 @@
      *  modulation functions, to consider the entire Earth within a single
      *  continuous model.
      *
-     *  \param er_altitude Height above WGS84 ellipsoid (in metres)
+     *  \param er_altitude Radial altitude, in metres, from Earth center
      *
      *  \return Returns the model scale factor
      */
@@ -172,7 +172,7 @@
      *  The value of both near and far planes are optimised to avoid saturation
      *  of the OpenGL depth buffer.
      *
-     *  \param er_altitude Height above WGS84 ellipsoid (in metres)
+     *  \param er_altitude Radial altitude, in metres, from Earth center
      *  \param er_scale    Current scale value
      *
      *  \return Near plane distance
@@ -195,7 +195,7 @@
      *  The value of both near and far planes are optimised to avoid saturation
      *  of the OpenGL depth buffer.
      *
-     *  \param er_altitude Height above WGS84 ellipsoid (in metres)
+     *  \param er_altitude Radial altitude, in metres, from Earth center
      *  \param er_tilt     Point of view tilt (gamma) angle (in decimal degree)
      *  \param er_scale    Current scale value
      *
