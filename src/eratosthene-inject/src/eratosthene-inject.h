@@ -2,7 +2,7 @@
  *  eratosthene-suite - inject
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016-2019 DHLAB, EPFL
+ *      Copyright (c) 2016-2020 DHLAB, EPFL
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -90,7 +90,7 @@
      *  \section license Copyright and License
      *
      *  **eratosthene-suite** - Nils Hamel <br >
-     *  Copyright (c) 2016-2019 DHLAB, EPFL
+     *  Copyright (c) 2016-2020 DHLAB, EPFL
      *
      *  This program is licensed under the terms of the GNU GPLv3.
      */
@@ -149,18 +149,19 @@
     /*! \brief injection method
      *
      *  This function is responsible of data injection toward the specified
-     *  remote server through the socket descriptor.
+     *  remote server through the provided socket descriptor.
      *
-     *  The input data are provided through the uv3 file path that contains them
-     *  and the specified time value. The uv3 file is read by chunks and each
-     *  chunk is written on the socket through a socket-array until the end of
-     *  file is reached.
+     *  The content of the provided uv3 file is read and written in the socket
+     *  toward the remote server. The content is read and send by chunks. The
+     *  injection ends as the last chunk of data is sent through the socket.
      *
      *  The provided time value has to be given in UTC seconds through a UNIX
      *  timestamp value.
      *
+     *  The execution is blocked during chunks writing on the socket.
+     *
      *  \param er_path   uv3 file path
-     *  \param er_time   Injection time value - UTC UNIX timestamp
+     *  \param er_time   Injection time value - UNIX timestamp
      *  \param er_socket Remote server socket
      *
      *  \return Returns EXIT_SUCCESS on success, EXIT_FAILURE otherwise
@@ -170,22 +171,22 @@
 
     /*! \brief main function
      *
-     *  The main function is responsible of injection of the provided model
-     *  into the remote server :
+     *  The main function is responsible of the injection of the provided model
+     *  into the specified remote server :
      *
-     *      ./inject --ip/-i --port/-p [remote server service]
+     *      ./inject --ip/-i --port/-p [remote server address and service]
      *               --time/-t [injection time]
      *               --uv3 [uv3 model file path]
      *
-     *  The main function starts by reading the remote server service parameters
-     *  and creates a connection toward it.
+     *  The main function starts by reading the remote server address and
+     *  service parameters and creates a connection toward it.
      *
      *  The function then reads and checks the injection model file path before
      *  to call the specialised injection function. The execution is blocked by
-     *  the model injection until the entire file is sent.
+     *  the model injection until the entire file is sent to the remote server.
      *
-     *  \param argc Main function parameters
-     *  \param argv Main function parameters
+     *  \param argc Standard parameters
+     *  \param argv Standard parameters
      *
      *  \return Standard exit code
      */
