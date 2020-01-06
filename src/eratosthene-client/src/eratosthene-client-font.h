@@ -669,8 +669,8 @@
      *
      *  The x and y coordinates of the string are the lower-left corner of the
      *  area on which the string is displayed. The graphical buffer is seen as
-     *  a standard OpenGL graphical buffer that is reverse in terms of y. In
-     *  addition, it is assumed to be in RGBA format.
+     *  a standard OpenGL graphical buffer that is reverse in terms of y axis.
+     *  In addition, it is assumed to be in RGBA format.
      *
      *  This function draws the characters of the provided string in the alpha
      *  layer of the graphical buffer only, the color values being left
