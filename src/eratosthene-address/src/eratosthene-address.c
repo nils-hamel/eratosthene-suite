@@ -2,7 +2,7 @@
  *  eratosthene-suite - address
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016-2019 DHLAB, EPFL
+ *      Copyright (c) 2016-2020 DHLAB, EPFL
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
         le_real_t er_pose[3] = { 0.0 };
 
         /* address structure variables */
-        le_address_t er_addr = LE_ADDRESS_C_SIZE( lc_read_unsigned( argc, argv, "--scale", "-s", LE_ADDRESS_DEPTH_A ) );
+        le_address_t er_addr = LE_ADDRESS_C_SIZE( lc_read_unsigned( argc, argv, "--scale", "-c", LE_ADDRESS_DEPTH_A ) );
 
         /* read position parameters */
         er_pose[0] = lc_read_double( argc, argv, "--longitude", "-l", 0.0 );
@@ -74,7 +74,7 @@
     source - time conversion methods
  */
 
-    le_void_t er_address_time( int argc, char ** argv ) {
+    le_void_t er_address_date_time( int argc, char ** argv ) {
 
         /* timestamps variables */
         le_time_t er_time = _LE_TIME_NULL;
@@ -126,7 +126,7 @@
         if ( lc_read_flag( argc, argv, "--date-time", "-t" ) == LC_TRUE ) {
 
             /* specialised method */
-            er_address_time( argc, argv );
+            er_address_date_time( argc, argv );
 
         } else if ( lc_read_flag( argc, argv, "--time-date", "-d" ) == LC_TRUE ) {
 
