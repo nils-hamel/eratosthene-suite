@@ -334,6 +334,9 @@
 
                             }
 
+                            /* hide previous corresponding cell */
+                            er_model_set_hide_fast( er_model );
+
                         }
 
                     }
@@ -343,9 +346,6 @@
             }
 
         }
-
-        /* d-cell fast tail management */
-        er_model_set_hide_fast( er_model );
 
         /* update synchronisation index */
         if ( ( ++ er_model->md_syna ) == er_model->md_push ) {
