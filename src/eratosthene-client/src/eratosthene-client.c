@@ -88,8 +88,20 @@
 
     le_void_t er_client_delete( er_client_t * const er_client ) {
 
+        /* socket-array variable */
+        le_array_t er_array = LE_ARRAY_C;
+
         /* deleted structure variables */
         er_client_t er_delete = ER_CLIENT_C;
+
+        /* update socket-array size */
+        le_array_set_size( & er_array, 0 );
+
+        /* send termination signal */
+        le_array_io_write( & er_array, LE_MODE_NULL, er_client->cl_socket );
+
+        /* release array */
+        le_array_delete( & er_array );
 
         /* delete client video */
         er_video_delete( & er_client->cl_video );
@@ -429,7 +441,7 @@
                 if ( er_client->cl_loops == ER_COMMON_VIEW ) {
 
                     /* model update procedure */
-                    er_client_loops_update( er_client, CLOCKS_PER_SEC >> 2 );
+                    er_client_loops_update( er_client, CLOCKS_PER_SEC );
 
                 }
 

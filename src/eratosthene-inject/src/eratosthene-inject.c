@@ -93,6 +93,12 @@
 
                 }
 
+                /* update socket-array size */
+                le_array_set_size( & er_array, 0 );
+
+                /* write terminal array */
+                le_array_io_write( & er_array, LE_MODE_NULL, er_socket );
+
             }
 
             /* delete stream */
