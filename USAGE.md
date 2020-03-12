@@ -27,6 +27,7 @@ in the _eratosthene-suite_ main directory.
 
     $ brew install libomp
     $ brew install sdl2
+    $ brew install libpng
 
 If these dependencies are installed as a framework, it is necessary to change the line _MAKE_FLNK_ (39) of the _eratosthene-client_ software _Makefile_. Considering _SDL2_ installed as a framework, the correction is :
 
