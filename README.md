@@ -122,7 +122,15 @@ The Eratosthene Project solution provides a network based solution allowing to m
 
 Each implemented tool comes with its own documentation that explains the implemented solution and gives examples of usages and results :
 
+_Auxiliary tools_
+
  * [Times, dates, position and index conversion](src/eratosthene-address)
+
+_Server & data injection_
+
+ * [Server and service instance](src/eratosthene-server)
+
+_Graphical client_
 
 
 A detailed documentation of specific file formats used by the tools of this suite can be found of the [format page](FORMAT.md).
