@@ -129,6 +129,7 @@ _Auxiliary tools_
 _Server & data injection_
 
  * [Server and service instance](src/eratosthene-server)
+ * [Models injection](src/eratosthene-inject)
 
 _Graphical client_
 
