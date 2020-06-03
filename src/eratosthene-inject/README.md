@@ -4,7 +4,7 @@ This tool allows to inject data in a instance of an _eratosthene_ service. It ta
 
 ## Usage
 
-The three dimensional model to inject in any instance of _eratosthene_ service has to be in _UV3_ format. For a detailed description of the format, see the [format](FORMAT.md) page.
+The three dimensional model to inject in any instance of _eratosthene_ service has to be in _UV3_ format. For a detailed description of the format, see the [format](../../FORMAT.md) page.
 
 The spatial coordinates of the model to inject have to be expressed in the _WGS84_ coordinates frame for longitudes and latitudes. Their values have to be expressed in radian in the [-pi, +pi] range for the longitudes and in radian in the [-pi/2, +pi/2] range for latitudes. The latitude is understood as the geographical latitude, not the geocentric latitude. The altitude has to be expressed in metres and as a height above the _WGS84_ ellipsoid. The form of a vertex has then to follows :
 

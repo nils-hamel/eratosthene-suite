@@ -128,11 +128,12 @@ _Auxiliary tools_
 
 _Server & data injection_
 
- * [Server and service instance](src/eratosthene-server)
+ * [Server instances](src/eratosthene-server)
  * [Models injection](src/eratosthene-inject)
 
 _Graphical client_
 
+ * [Graphical interface](src/eratosthene-client)
 
 A detailed documentation of specific file formats used by the tools of this suite can be found of the [format page](FORMAT.md).
 
