@@ -118,6 +118,12 @@ The previous illustrations show examples of land register and polygonal models i
 
 The Eratosthene Project solution provides a network based solution allowing to manage large models of different scale and type representing the reality at different epochs within a unified interface. It ensures a fluid communication and continuity between the models offering a way to efficiently browse the Earth through space and time.
 
+## eratosthene-suite
+
+...
+
+A detailed documentation of specific file formats used by the tools of this suite can be found of the [format page](FORMAT.md).
+
 ## Copyright and License
 
 **eratosthene-suite** - Nils Hamel <br >
@@ -127,14 +133,14 @@ This program is licensed under the terms of the GNU GPLv3.
 
 ## Dependencies
 
-The _eratosthene-suite_ comes with the following package dependencies (Ubuntu 16.04 LTS) :
+The _eratosthene-suite_ comes with the following package (Ubuntu 16.04 LTS) dependencies ([Instructions](DEPEND.md)) :
 
 * build-essential
 * mesa-common-dev
 * libsdl2-dev
 * libpng12-dev
 
-and the following external dependencies provided as sub-modules :
+and the following external dependencies provided as sub-modules ([Instructions](DEPEND.md)) :
 
 * liberatosthene 1.2
 
