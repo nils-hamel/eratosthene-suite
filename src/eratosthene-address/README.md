@@ -1,6 +1,6 @@
 ## Overview
 
-This tool allows to perform simple date to time conversion and inversely. It implements a procedure that avoid the consideration of the computer local time parameters. In addition, this tool allows to convert a geographical position in the three dimensional space to an _eratosthene_ index.
+This tool allows to perform simple date to time conversion and inversely. It implements a procedure that avoid the consideration of the computer local time parameters. In addition, this tool allows to convert a geographical position in the three dimensional space into an _eratosthene_ index.
 
 ## Usage
 
@@ -34,7 +34,7 @@ produces the following output :
     6.79999999701978e+00, 4.51999999210238e+01, 3.69999257766158e+02
     12200100116103015334615075713640, 32
 
-The provided position coordinates are repeated and their corresponding _eratosthene_ index is given. The index is converted back to a spatial position by the tool and displayed as the second position. This allows to check how the number of scale, provided by the _--scale_ parameter, influence the precision of the position. For example, reducing the scale value :
+The provided position coordinates are repeated and their corresponding _eratosthene_ index is given. The index is converted back to a spatial position by the tool and displayed as the second position. This allows to check how the number of scales, provided by the _--scale_ parameter, influence the precision of the position. For example, reducing the scale value :
 
     ./eratosthene-address --space --longitude 6.8 --latitude 45.2 --altitude 370 --scale 16
 
@@ -45,4 +45,4 @@ gives :
     6.79504394531251e+00, 4.51977539062500e+01, 0.00000000000000e+00
     1220010011610301, 16
 
-One can see how the scale value decrease reduces the precision of the position.
+The position is expected to be given in _WGS84_ decimal degrees for the longitude and latitude and in metres above the _WGS84_ ellipsoid.

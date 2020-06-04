@@ -1,10 +1,10 @@
 ## Overview
 
-The [_liberatosthene_](https://github.com/nils-hamel/liberatosthene) and _eratosthene-suite_ offer an four dimensional indexation framework for large scale three dimensional models. It allows to organize, store and broacast network access to large scale model referenced in both space and time in an efficient manner.
+The [_liberatosthene_](https://github.com/nils-hamel/liberatosthene) and _eratosthene-suite_ offer an four dimensional indexation framework for large scale three dimensional models. It allows to organize, store and broadcast network access to large scale models referenced in both space and time in an efficient manner.
 
-Initially, the framework solved the problem of large scale point-based models management and visualisation. As _LIDAR_ and _structure from motion_ being able to produce large point-based model, their storage and exploitation become a major challenge with the increase of their size. In addition, these technologie also alows to create model of the same location at different times, showing that any environment is _truely_ a four dimensional object.
+Initially, the framework solved the problem of large scale point-based models management and visualization. As _LIDAR_ and _structure from motion_ being able to produce large point-based models, their storage and exploitation become a major challenge with the increase of their size. In addition, these technologies also allow to create models of the same location at different times increasing the data management problem.
 
-To solve the initial challenge, the _eratosthene_ framework implemented an _Earth-attached_ indexation formalism for point based models. This allows to browse arbitrary large model through a simple series of multi-scale and time-attached queries. On the following image, a graphical wiew created with the framework shows the ability of managing large scale models as the _SRTM_ topographic model weighting around _500_ Gio as a monolythic object :
+To solve the initial challenge, the _eratosthene_ framework implemented an _Earth-attached_ indexation formalism for point based models. This allows to browse arbitrary large models through a simple series of multi-scale and time-attached queries. On the following image, a graphical view created with the framework shows the ability of managing large scale models such as the _SRTM_ topographic model weighting around _500_ Gio as a monolithic object :
 
 <br />
 <p align="center">
@@ -16,7 +16,7 @@ To solve the initial challenge, the _eratosthene_ framework implemented an _Eart
 </p>
 <br />
 
-Another example of large scale model being able to be efficiently stored and accessed through the _eratosthene_ framework are the following _LIDAR_ model of the _Geneva_ state weighting up to _256_ Gio as a monolythic objet :
+Another example of large scale model being able to be efficiently stored and accessed through the _eratosthene_ framework are the following _LIDAR_ model of the _Geneva_ state weighting up to _256_ Gio as a monolithic object :
 
 <br />
 <p align="center">
@@ -40,7 +40,7 @@ Of course, any type of point-based models can be considered through the _eratost
 </p>
 <br />
 
-The indexation formalism implemented initially for the point-based model allows to deal with model coming with any type of scale, from large scale topographic models to very specifically located models :
+The indexation formalism implemented initially for the point-based models allows to deal with model coming with any type of scale, from large scale topographic models to very specifically located models in order to ensure a continuity in the space dimensions :
 
 <br />
 <p align="center">
@@ -52,7 +52,7 @@ The indexation formalism implemented initially for the point-based model allows 
 </p>
 <br />
 
-The implemented indexation formalisme is then able to store and broadcast wide variety of models through a single and unified formalism creating a multi-scale and temporal continuity between the models. An example of temporal continuity is shown on the following images :
+The implemented indexation formalism is then able to store and broadcast wide variety of models through a single and unified formalism creating a spatial and temporal continuity between the models. An example of temporal continuity is shown on the following images showing the same location at different position in time :
 
 <br />
 <p align="center">
@@ -64,7 +64,7 @@ The implemented indexation formalisme is then able to store and broadcast wide v
 </p>
 <br />
 
-In addition, the indexation formalism applied on point based models offer a natural spatio-temporal grid on which operation can be easily performed. For example, logical convolutions can be computed on the fly on point-based model as illustrated on the following images :
+In addition, the indexation formalism applied on point based models offer a natural spatio-temporal grid on which specific operations can be easily performed. For example, logical convolutions can be computed on the fly on point-based models. This allows for example to apply an _AND_ logical operator between two different positions in time to show only the elements identical on both time as illustrated on the following images :
 
 <br />
 <p align="center">
@@ -76,9 +76,7 @@ In addition, the indexation formalism applied on point based models offer a natu
 </p>
 <br />
 
-This allows to access time-composite model showing very specific feature as element identical from a time to another as on the previous images.
-
-In a second evolution, the framework and indexation formalism were adapted to be able to ingest, store and broadcast all type of graphical primitives. The temporal and multi-scale architecture were then extended to take into account such type of primitive. As a result, arbitrary large vector models can be handled by the framework :
+In a second evolution, the framework and indexation formalism were adapted to be able to ingest, store and broadcast all types of graphical primitives. The temporal and spatial multi-scale architecture were then extended to take into account such type of primitives. As a result, arbitrary large vector models can be handled by the framework :
 
 <br />
 <p align="center">
@@ -90,7 +88,7 @@ In a second evolution, the framework and indexation formalism were adapted to be
 </p>
 <br />
 
-This evolution lead to a much richer framework able to ensure the continuity between the scales, the time and the different types of model. As an example, the following image shows example of communication between different type of data :
+This evolution lead to a much richer framework able to ensure the continuity between space, time and the different types of model. As an example, the following image shows example of communication between different type of data such as vector models and point-based models :
 
 <br />
 <p align="center">
@@ -102,11 +100,11 @@ This evolution lead to a much richer framework able to ensure the continuity bet
 </p>
 <br />
 
-The _eratosthene-suite_ repository store the front-end elements of the _eratosthene_ framework while the [_liberatosthene_](https://github.com/nils-hamel/liberatosthene) repository hold the library implementing the details of the framework and its generalized _Earth-attached_ indexation formalism.
+The _eratosthene-suite_ repository stores the front-end elements of the _eratosthene_ framework while the [_liberatosthene_](https://github.com/nils-hamel/liberatosthene) repository hold the library implementing the details of the framework and its generalized _Earth-attached_ space-time indexation formalism.
 
 ## eratosthene-suite
 
-Each implemented tool comes with its own documentation that explains the implemented solution and gives examples of usages and results :
+Each implemented tool of the suite comes with its own documentation that explains the implemented solution and gives examples of usages and results :
 
 _Server & data injection_
 
