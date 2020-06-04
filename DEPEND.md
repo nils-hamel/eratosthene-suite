@@ -12,7 +12,7 @@ sudo apt-get install build-essential mesa-common-dev libsdl2-dev libpng12-dev do
 
 ### MacOS
 
-The dependencies are here installed through the _homebrew_ tool.
+The dependencies are here installed through the _homebrew_ tool :
 
 ```
 brew install gcc
@@ -22,9 +22,9 @@ brew install sdl2
 brew install libpng
 ```
 
-It is assumed here that _OpenMP_ and _SLD2_ are installed through the _homebrew_ tool. If these dependencies are installed as a framework, it is necessary to change the line _MAKE_FLNK_ (39) of the _eratosthene-client_ software _Makefile_. Considering _SDL2_ installed as a framework, the correction is :
+If these dependencies are installed as a frameworks, it is necessary to change the line _MAKE_FLNK_ (39) of the _eratosthene-client_ software _Makefile_. Considering _SDL2_ installed as a framework, the correction is :
 
-    -lSDL2 to -framework SDL2
+    -lSDL2 replaced by -framework SDL2
 
 and the same for the other dependencies.
 
