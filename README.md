@@ -126,7 +126,7 @@ A detailed documentation of specific file formats used by the tools of this suit
 **eratosthene-suite** - Nils Hamel <br >
 Copyright (c) 2016-2020 DHLAB, EPFL
 
-This program is licensed under the terms of the GNU GPLv3.
+This program is licensed under the terms of the GNU GPLv3. Documentation and illustrations are licensed under the terms of the CC BY 4.0.
 
 ## Dependencies
 
