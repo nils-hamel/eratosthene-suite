@@ -10,7 +10,7 @@ The following sections give the installation instructions for the required distr
 sudo apt-get install build-essential mesa-common-dev libsdl2-dev libpng12-dev doxygen
 ```
 
-### MacOS
+### MacOS (Experimental)
 
 The dependencies are here installed through the _homebrew_ tool :
 
