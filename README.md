@@ -139,7 +139,7 @@ The _eratosthene-suite_ comes with the following package (Ubuntu 16.04 LTS) depe
 
 and the following external dependencies provided as sub-modules ([Instructions](DEPEND.md)) :
 
-* liberatosthene 1.2
+* liberatosthene 1.3
 
 The code documentation is built using Doxygen.
 
