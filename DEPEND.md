@@ -4,6 +4,12 @@ The following sections give the installation instructions for the required distr
 
 ## Required distribution packages
 
+### Ubuntu 20.04 LTS
+
+```
+sudo apt-get install build-essential mesa-common-dev libsdl2-dev libpng-dev doxygen
+```
+
 ### Ubuntu 16.04 LTS
 
 ```

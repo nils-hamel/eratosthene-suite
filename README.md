@@ -130,12 +130,12 @@ This program is licensed under the terms of the GNU GPLv3. Documentation and ill
 
 ## Dependencies
 
-The _eratosthene-suite_ comes with the following package (Ubuntu 16.04 LTS) dependencies ([Instructions](DEPEND.md)) :
+The _eratosthene-suite_ comes with the following package (Ubuntu 20.04 LTS) dependencies ([Instructions](DEPEND.md)) :
 
 * build-essential
 * mesa-common-dev
 * libsdl2-dev
-* libpng12-dev
+* libpng-dev
 
 and the following external dependencies provided as sub-modules ([Instructions](DEPEND.md)) :
 
