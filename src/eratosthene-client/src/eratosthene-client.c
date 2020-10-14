@@ -358,22 +358,31 @@
         glFogfv( GL_FOG_COLOR, er_vector );
 
         /* assign ambient color */
-        er_vector[0] = 0.4;
-        er_vector[1] = 0.4;
-        er_vector[2] = 0.4;
-        er_vector[3] = 1.0;
+        er_vector[0] = 0.2;
+        er_vector[1] = 0.2;
+        er_vector[2] = 0.2;
+        er_vector[3] = 0.0;
 
         /* light ambient color */
         glLightfv( GL_LIGHT0, GL_AMBIENT, er_vector );
 
         /* assign diffuse color */
-        er_vector[0] = 1.0;
-        er_vector[1] = 1.0;
-        er_vector[2] = 1.0;
-        er_vector[3] = 1.0;
+        er_vector[0] = 0.8;
+        er_vector[1] = 0.8;
+        er_vector[2] = 0.8;
+        er_vector[3] = 0.0;
 
         /* light diffuse color */
         glLightfv( GL_LIGHT0, GL_DIFFUSE, er_vector );
+
+        /* assign specular color */
+        er_vector[0] = 0.0;
+        er_vector[1] = 0.0;
+        er_vector[2] = 0.0;
+        er_vector[3] = 0.0;
+
+        /* light specular color */
+        glLightfv( GL_LIGHT0, GL_SPECULAR, er_vector );
 
         /* assign light direction */
         er_vector[0] = 0.0;
@@ -383,6 +392,12 @@
 
         /* light direction */
         glLightfv( GL_LIGHT0, GL_POSITION, er_vector );
+
+        /* enable polygon color for lighting model */
+        glEnable( GL_COLOR_MATERIAL );
+
+        /* lighting model */
+        glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE );
 
         /* disable dynamic thread */
         omp_set_dynamic( 0 );
@@ -741,6 +756,44 @@
 
             } break;
 
+            case ( SDLK_F5 ) : {
+
+                /* update polygon mode */
+                glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+
+            } break;
+
+            case ( SDLK_F6 ) : {
+
+                /* update polygon mode */
+                glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+
+            } break;
+
+            case ( SDLK_F7 ) : {
+
+                /* update polygon mode */
+                glPolygonMode( GL_FRONT_AND_BACK, GL_POINT );
+
+            } break;
+
+            case ( SDLK_F8 ) : {
+
+                /* check face culling */
+                if ( glIsEnabled( GL_CULL_FACE ) ) {
+
+                    /* disable face culling */
+                    glDisable( GL_CULL_FACE );
+
+                } else {
+
+                    /* enable face culling */
+                    glEnable( GL_CULL_FACE );
+
+                }
+
+            } break;
+
             case ( SDLK_1 ) :
             case ( SDLK_2 ) :
             case ( SDLK_3 ) :
@@ -803,6 +856,13 @@
 
             } break;
 
+            case ( SDLK_z ) : {
+
+                /* update dual-model mode */
+                er_view_set_mode( & er_client->cl_view, 6 );
+
+            } break;
+
             case ( SDLK_d ) : {
 
                 /* update query mode */
@@ -833,6 +893,13 @@
 
             } break;
 
+            case ( SDLK_g ) : {
+
+                /* swap times */
+                er_view_set_swap_times( & er_client->cl_view );
+
+            } break;
+
             case ( SDLK_i ) : {
 
                 /* push current view on stack */
@@ -847,10 +914,8 @@
 
             } break;
 
-            /* temporary position shortcut */
-            case ( SDLK_y ) : { er_client->cl_view.vw_lon =  6.825284; er_client->cl_view.vw_lat = 47.100033; } break;
-            case ( SDLK_x ) : { er_client->cl_view.vw_lon =  6.147773; er_client->cl_view.vw_lat = 46.205987; } break;
-            case ( SDLK_c ) : { er_client->cl_view.vw_lon = 12.335305; er_client->cl_view.vw_lat = 45.438301; } break;
+            /* temporary features */
+            case ( SDLK_y ) : { er_model_research( & er_client->cl_model ); } break;
 
         }
 

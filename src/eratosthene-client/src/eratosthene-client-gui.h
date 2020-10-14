@@ -68,9 +68,9 @@
     ( le_char_t * ) "",         \
     ( le_char_t * ) "",         \
     ( le_char_t * ) "",         \
-    ( le_char_t * ) "OR",       \
-    ( le_char_t * ) "AND",      \
-    ( le_char_t * ) "XOR"       \
+    ( le_char_t * ) "+",        \
+    ( le_char_t * ) "DDH",      \
+    ( le_char_t * ) "DDM"       \
     }
 
     /* define interface string */

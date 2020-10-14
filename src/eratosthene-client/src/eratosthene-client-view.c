@@ -175,20 +175,20 @@
         le_address_set_span( & er_addr, er_view->vw_spn );
 
         /* check mode */
-        if ( er_view->vw_mod != 2 ) {
+        //if ( er_view->vw_mod != 2 ) {
 
             /* assign address times */
             le_address_set_time( & er_addr, 0, er_view->vw_tia );
 
-        }
+        //}
 
         /* check mode */
-        if ( er_view->vw_mod != 1 ) {
+        //if ( er_view->vw_mod != 1 ) {
 
             /* assign address time */
             le_address_set_time( & er_addr, 1, er_view->vw_tib );
 
-        }
+        //}
 
         /* set address comb */
         le_address_set_time( & er_addr, 2, er_view->vw_cmb );
@@ -353,6 +353,19 @@
             er_view->vw_tia = lc_clamp( er_view->vw_tia, -ER_COMMON_UTIME, +ER_COMMON_UTIME );
 
         }
+
+    }
+
+    le_void_t er_view_set_swap_times( er_view_t * const er_view ) {
+
+        /* push variable */
+        le_time_t er_swap = er_view->vw_tib;
+
+        /* swap time */
+        er_view->vw_tib = er_view->vw_tia;
+
+        /* pop time */
+        er_view->vw_tia = er_swap;
 
     }
 

@@ -57,7 +57,8 @@
     # define ER_VIEW_C { 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, ER_COMMON_DSPAN }
 
     /* define pseudo-constructor - default point of view */
-    # define ER_VIEW_D { 0.0, 0.0, LE_ADDRESS_WGS_A * 2.0, 0.0, 0.0, 1, 0, 1117584000, 1117584000, ER_COMMON_DCOMB, ER_COMMON_DSPAN }
+    //# define ER_VIEW_D { 0.0, 0.0, LE_ADDRESS_WGS_A * 2.0, 0.0, 0.0, 1, 0, 1117584000, 1117584000, ER_COMMON_DCOMB, ER_COMMON_DSPAN }
+    # define ER_VIEW_D { 8.883813, 47.555506, LE_ADDRESS_WGS_A * 1.05, 0.0, 0.0, 1, 0, 1580515200, 1580515200, ER_COMMON_DCOMB, ER_COMMON_DSPAN }
 
 /*
     header - preprocessor macros
@@ -362,6 +363,16 @@
      */
 
     le_time_t er_view_get_time( er_view_t const * const er_view, le_enum_t const er_time );
+
+    /*! \brief accessor methods
+     *
+     *  This function allows to swap the two times of the provided view
+     *  structure.
+     *
+     *  \param er_view View structure
+     */
+
+    le_void_t er_view_set_swap_times( er_view_t * const er_view );
 
     /*! \brief accessor methods
      *

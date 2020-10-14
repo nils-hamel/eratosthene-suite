@@ -160,6 +160,9 @@
         /* distance variables */
         le_real_t er_line = 0.0;
 
+        /* depth limit condition */
+        le_byte_t er_limit = _LE_FALSE;
+
         /* scale digit enumeration */
         for ( le_size_t er_digit = 0; er_digit < er_base; er_digit ++ ) {
 
@@ -175,8 +178,21 @@
                 /* compute and check distance */
                 if ( ( er_line = er_geodesy_distance( er_enum, er_view ) ) < er_geodesy_face( er_view_get_alt( er_view ) ) ) {
 
+                    /* compute depth limit condition */
+                    if ( ( er_scale + 3 + er_view_get_span( er_view ) ) < er_model->md_scfg ) {
+
+                        /* update depth limit condition */
+                        er_limit = _LE_FALSE;
+
+                    } else {
+
+                        /* update depth limit condition */
+                        er_limit = _LE_TRUE;
+
+                    }
+
                     /* check selection criterion */
-                    if ( er_geodesy_select( er_line, er_view, er_model->md_scfg, er_scale ) == _LE_TRUE ) {
+                    if ( ( er_geodesy_select( er_line, er_view, er_model->md_scfg, er_scale ) == _LE_TRUE ) || ( er_limit == _LE_TRUE ) ) {
 
                         /* check target size - fail-safe */
                         if ( er_model->md_push < er_model->md_size ) {
@@ -196,13 +212,8 @@
 
                     } else {
 
-                        /* check enumeration boundary */
-                        if ( ( er_scale + 2 + er_view_get_span( er_view ) ) < er_model->md_scfg ) {
-
-                            /* continue enumeration */
-                            er_model_set_enum( er_model, er_enum, er_scale + 1, er_view );
-
-                        }
+                        /* continue enumeration */
+                        er_model_set_enum( er_model, er_enum, er_scale + 1, er_view );
 
                     }
 
@@ -501,6 +512,36 @@
 
         /* delete quadric */
         gluDeleteQuadric( er_earth );
+
+    }
+
+/*
+    source - research methods (temporary)
+ */
+
+    le_void_t er_model_research( er_model_t const * const er_model ) {
+
+        /* string buffer */
+        le_char_t er_string[1024] = { 0 };
+
+        /* parsing cell array */
+        for ( le_size_t er_parse = 0; er_parse < er_model->md_size; er_parse ++ ) {
+
+            /* check d-cell flag */
+            if ( er_cell_get_flag( er_model->md_cell + er_parse, ER_CELL_DIS ) == ER_CELL_DIS ) {
+
+                /* reset string */
+                memset( er_string, 0x00, 1024 );
+
+                /* convert address to string */
+                le_address_ct_string( & ( er_model->md_cell + er_parse )->ce_addr, er_string );
+
+                /* display address */
+                fprintf( stderr, "%s\n", er_string );
+
+            }
+
+        }
 
     }
 

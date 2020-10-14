@@ -470,6 +470,10 @@
 
     le_void_t er_model_display_earth( er_view_t const * const er_view );
 
+    /*! \brief Temporary method - Display cell address in terminal */
+
+    le_void_t er_model_research( er_model_t const * const er_model );
+
 /*
     header - C/C++ compatibility
  */
