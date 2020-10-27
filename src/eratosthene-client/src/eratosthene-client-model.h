@@ -189,7 +189,7 @@
         er_cell_t * md_virt;
 
         le_array_t  md_addr;
-        le_array_t  md_dete;
+        le_array_t  md_jump;
 
         le_enum_t   md_sync;
 
@@ -332,27 +332,7 @@
 
     le_void_t er_model_set_fast( er_model_t * const er_model );
 
-    /*! \brief mutator methods
-     *
-     *  This function implements a specific query to the remote server and takes
-     *  place immediately after a target stack update and fast synchronisation
-     *  process.
-     *
-     *  The function packs all the cell addresses of the target stack into a
-     *  single query to the remote server in order to retrieve a list of flag
-     *  indicating for each cell if they contain actual data in the server.
-     *
-     *  This allows the subsequent step by step synchronisation process not to
-     *  query the cell addresses that contains no data. This allows to improve
-     *  the efficiency of the model update and to save bandwidth between the
-     *  client and remote server.
-     *
-     *  \param er_model Model structure
-     */
-
-    le_void_t er_model_set_detect( er_model_t * const er_model );
-
-    /*! \brief mutator methods
+    /*! \brief mutator methods (outdated documentation)
      *
      *  This function implements the step by step synchronisation process after
      *  an update of the target stack. The process consists in a succession of

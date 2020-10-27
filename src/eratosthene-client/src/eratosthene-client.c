@@ -601,7 +601,7 @@
             er_model_set_fast( & er_client->cl_model );
 
             /* target content detection */
-            er_model_set_detect( & er_client->cl_model );
+            //er_model_set_detect( & er_client->cl_model );
 
             /* reset motion time */
             er_client->cl_last = _LE_TIME_MAX;
@@ -853,13 +853,6 @@
 
                 /* update dual-model mode */
                 er_view_set_mode( & er_client->cl_view, 5 );
-
-            } break;
-
-            case ( SDLK_z ) : {
-
-                /* update dual-model mode */
-                er_view_set_mode( & er_client->cl_view, 6 );
 
             } break;
 
