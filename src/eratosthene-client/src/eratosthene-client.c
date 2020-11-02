@@ -456,7 +456,7 @@
                 if ( er_client->cl_loops == ER_COMMON_VIEW ) {
 
                     /* model update procedure */
-                    er_client_loops_update( er_client, CLOCKS_PER_SEC );
+                    er_client_loops_update( er_client, CLOCKS_PER_SEC >> 1 );
 
                 }
 
@@ -599,9 +599,6 @@
 
             /* model/target fast synchronisation */
             er_model_set_fast( & er_client->cl_model );
-
-            /* target content detection */
-            //er_model_set_detect( & er_client->cl_model );
 
             /* reset motion time */
             er_client->cl_last = _LE_TIME_MAX;
@@ -908,7 +905,8 @@
             } break;
 
             /* temporary features */
-            case ( SDLK_y ) : { er_model_research( & er_client->cl_model ); } break;
+            case ( SDLK_y ) : { er_client->cl_view.vw_tia = 946717200; } break;
+            //case ( SDLK_y ) : { er_model_research( & er_client->cl_model ); } break;
 
         }
 

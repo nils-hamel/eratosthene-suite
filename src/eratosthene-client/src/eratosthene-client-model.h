@@ -369,21 +369,6 @@
 
     /*! \brief mutator methods
      *
-     *  This function allows to deactivate specific cells of the render stack to
-     *  avoid superposition of multiple cell content.
-     *
-     *  During synchronisation process, as a new cell is set on the render
-     *  stack and its data queried from the remote server, this function search
-     *  in the render stack for a cell with identical address. If such cell is
-     *  found, the function reset its render flag to hide it.
-     *
-     *  \param er_model Model structure
-     */
-
-    le_void_t er_model_set_hide_fast( er_model_t * const er_model );
-
-    /*! \brief mutator methods
-     *
      *  This function allows to deactivate the cells of the render stack that
      *  are no more in use.
      *
