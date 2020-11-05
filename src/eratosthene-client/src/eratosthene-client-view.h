@@ -1,8 +1,9 @@
 /*
  *  eratosthene-suite - client
  *
- *      Nils Hamel - nils.hamel@bluewin.ch
+ *      Nils Hamel - nils.hamel@alumni.epfl.ch
  *      Copyright (c) 2016-2020 DHLAB, EPFL
+ *      Copyright (c) 2020 Republic and Canton of Geneva
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -59,7 +60,7 @@
     /* define pseudo-constructor - default point of view */
     //# define ER_VIEW_D { 0.0, 0.0, LE_ADDRESS_WGS_A * 2.0, 0.0, 0.0, 1, 0, 1117584000, 1117584000, ER_COMMON_DCOMB, ER_COMMON_DSPAN }
     //# define ER_VIEW_D { 8.883813, 47.555506, LE_ADDRESS_WGS_A * 1.05, 0.0, 0.0, 1, 0, 946706400, 947462400, ER_COMMON_DCOMB, ER_COMMON_DSPAN } 
-    # define ER_VIEW_D { 8.883813, 47.555506, LE_ADDRESS_WGS_A * 1.05, 0.0, 0.0, 1, 0, 1580515200, 1580515200, ER_COMMON_DCOMB, ER_COMMON_DSPAN }
+    # define ER_VIEW_D { 8.883813, 47.555506, LE_ADDRESS_WGS_A * 1.05, 0.0, 0.0, 1, 0, 1602892800, 1602547200, ER_COMMON_DCOMB, ER_COMMON_DSPAN }
 
 /*
     header - preprocessor macros
