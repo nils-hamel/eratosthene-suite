@@ -20,7 +20,7 @@
  */
 
     /*! \file   common-args.h
-     *  \author Nils Hamel <nils.hamel@bluewin.ch>
+     *  \author Nils Hamel <nils.hamel@alumni.epfl.ch>
      *
      *  eratosthene-suite - common library - args
      */

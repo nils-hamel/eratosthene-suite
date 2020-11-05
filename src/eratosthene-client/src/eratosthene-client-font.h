@@ -20,7 +20,7 @@
  */
 
     /*! \file   eratosthene-client-font.h
-     *  \author Nils Hamel <nils.hamel@bluewin.ch>
+     *  \author Nils Hamel <nils.hamel@alumni.epfl.ch>
      *
      *  eratosthene-suite - client - font
      */

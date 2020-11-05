@@ -20,7 +20,7 @@
  */
 
     /*! \file   common-time.h
-     *  \author Nils Hamel <nils.hamel@bluewin.ch>
+     *  \author Nils Hamel <nils.hamel@alumni.epfl.ch>
      *
      *  eratosthene-suite - common library - time
      */
