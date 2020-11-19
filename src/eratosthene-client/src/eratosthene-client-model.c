@@ -108,7 +108,7 @@
     le_void_t er_model_set_next( er_model_t * const er_model ) {
 
         /* search available d-cell */
-        while ( er_model->md_free < er_model->md_size ) {
+        while ( ( ++ er_model->md_free ) < er_model->md_size ) {
 
             /* check cell state */
             if ( er_cell_get_flag( er_model->md_cell + er_model->md_free, ER_CELL_SYN ) != ER_CELL_SYN ) {
@@ -116,8 +116,7 @@
                 /* d-cell found */
                 return;
 
-            /* update index */
-            } else { er_model->md_free ++; }
+            }
 
         }
 
@@ -126,16 +125,16 @@
     le_void_t er_model_set_prep( er_model_t * const er_model ) {
 
         /* reset synchronisation index */
-        er_model->md_syna = 0;
+        er_model->md_syna = +0;
 
         /* reset synchronisation index */
-        er_model->md_synb = 0;
+        er_model->md_synb = +0;
 
         /* reset synchronisation index */
-        er_model->md_free = 0;
+        er_model->md_push = +0;
 
         /* reset synchronisation index */
-        er_model->md_push = 0;
+        er_model->md_free = -1;
 
         /* reset synchronisation flag */
         er_model->md_sync = _LE_FALSE;

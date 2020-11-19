@@ -72,10 +72,10 @@
  */
 
     /* define pseudo-constructor */
-    # define ER_CLIENT_C      { _LE_SOCK_NULL, 0, 0, ER_COMMON_VIEW, _LE_TRUE, _LE_TRUE, _LE_TRUE, ER_MODEL_C, ER_GUI_C, ER_VIDEO_C, ER_VIEW_D, ER_VIEW_C, _LE_TIME_MAX, 0, 0, 0, 0, 1.0, 1.0, _LE_FALSE }
+    # define ER_CLIENT_C      { _LE_SOCK_NULL, 0, 0, ER_COMMON_VIEW, _LE_TRUE, _LE_TRUE, _LE_TRUE, ER_MODEL_C, ER_GUI_C, ER_VIDEO_C, ER_VIEW_D, ER_VIEW_C, _LE_TIME_MAX, 0, 0, 0, 0, 1.0, 1.0, { ER_VIEW_C }, _LE_FALSE }
 
     /* define pseudo-constructor */
-    # define ER_CLIENT_I(w,h) { _LE_SOCK_NULL, 0, 0, ER_COMMON_VIEW, _LE_TRUE, _LE_TRUE, _LE_TRUE, ER_MODEL_C, ER_GUI_C, ER_VIDEO_C, ER_VIEW_D, ER_VIEW_C, _LE_TIME_MAX, w, h, 0, 0, 1.0, 1.0, _LE_FALSE }
+    # define ER_CLIENT_I(w,h) { _LE_SOCK_NULL, 0, 0, ER_COMMON_VIEW, _LE_TRUE, _LE_TRUE, _LE_TRUE, ER_MODEL_C, ER_GUI_C, ER_VIDEO_C, ER_VIEW_D, ER_VIEW_C, _LE_TIME_MAX, w, h, 0, 0, 1.0, 1.0, { ER_VIEW_C }, _LE_FALSE }
 
     /* define window properties */
     # define ER_SDL_FLAGS     ( SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN )
@@ -215,6 +215,8 @@
         le_real_t  cl_inertia;
 
         le_real_t  cl_scale;
+
+        er_view_t  cl_mem[4];
 
     le_enum_t _status; } er_client_t;
 

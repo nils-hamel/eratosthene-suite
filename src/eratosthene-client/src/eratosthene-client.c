@@ -905,9 +905,27 @@
 
             } break;
 
-            /* temporary features */
-            case ( SDLK_y ) : { er_client->cl_view.vw_tia = 946717200; } break;
-            //case ( SDLK_y ) : { er_model_research( & er_client->cl_model ); } break;
+            case ( SDLK_F9  ) :
+            case ( SDLK_F10 ) :
+            case ( SDLK_F11 ) :
+            case ( SDLK_F12 ) : {
+
+                /* check modifier */
+                if ( ( SDL_GetModState() & KMOD_LSHIFT ) != 0 ) {
+
+                    /* pop point of view */
+                    er_client->cl_view.vw_tia = er_client->cl_mem[er_event.keysym.sym - SDLK_F9].vw_tia;
+                    er_client->cl_view.vw_tib = er_client->cl_mem[er_event.keysym.sym - SDLK_F9].vw_tib;
+
+                } else if ( ( SDL_GetModState() & KMOD_LCTRL ) != 0 ) {
+
+                    /* push point of view */
+                    er_client->cl_mem[er_event.keysym.sym - SDLK_F9].vw_tia = er_client->cl_view.vw_tia;
+                    er_client->cl_mem[er_event.keysym.sym - SDLK_F9].vw_tib = er_client->cl_view.vw_tib;
+
+                }
+
+            } break;
 
         }
 
