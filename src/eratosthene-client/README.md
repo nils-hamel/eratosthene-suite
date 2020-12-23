@@ -45,3 +45,16 @@ In order to create animation out of the interface, this tool comes with an autom
 The exportation directory points to the location where the successive rendering buffers are saved. The amount of frames tells the interface how to scale the motion steps to cover the whole trajectory while exporting the specified amount of frames. Choosing _1800_ as a frames count could for example lead to the creation of an _30_ seconds animation at _60_ frames per second.
 
 As the interface show up, the user is invited to choose a position in space and time as a starting point. To push a position in the trajectory stack, use the **I** key. This process is repeated until the desired trajectory is obtained - at least to points of view have to be pushed. To start the automatic trajectory and exportation, use the **P** key. To reset the stack of pushed point of view, use the **O** key.
+
+### View Settings
+
+It is possible that the platform's default **point of view** is not suitable for the data injected. This means the user can find it hard to zoom into the desired dataset. If that is the case, one can alter the default point of view of the platform by making simple changes on the eratosthene-client-view.h file from the /eratosthene-suite/src/eratosthene-client/src/ folder path. On line 64, one can alter the first and second values for the desired WGS84 Longitude and Latitude values (decimal degrees). The third numeric value refers to the height in relation to the globe, which can be changed as well. A third option refers to the default position in time in the graphical client, which refers to the forth numeric value, and can be changes for the time one wants to make the injection with.
+
+Below there is an example of changes in the point of view and position in time using the centroid of Switzerland and 10:00 on the 23rd of December, 2020.
+```
+    /* define pseudo-constructor - default point of view */
+    //# define ER_VIEW_D {  8.883813, 47.555506, LE_ADDRESS_WGS_A * 1.05, 0.0, 0.0, 1, 0, 1117584000, 1117584000, ER_COMMON_DCOMB, ER_COMMON_DSPAN }
+    //# define ER_VIEW_D { 8.883813, 47.555506, LE_ADDRESS_WGS_A * 1.05, 0.0, 0.0, 1, 0, 946706400, 947462400, ER_COMMON_DCOMB, ER_COMMON_DSPAN } 
+    //# define ER_VIEW_D { 8.883813, 47.555506, LE_ADDRESS_WGS_A * 1.05, 0.0, 0.0, 1, 0, 1602892800, 1602547200, ER_COMMON_DCOMB, ER_COMMON_DSPAN }
+    # define ER_VIEW_D { 8.226880703, 46.801337231, LE_ADDRESS_WGS_A * 1.05, 0.0, 0.0, 1, 0, 1608717600, 947030400, ER_COMMON_DCOMB, ER_COMMON_DSPAN }
+```
